@@ -305,8 +305,9 @@ export const tpCatalog=[
 export const tpSpecialties=tpCatalog.map(x=>x.specialty);
 export const tpSectors=[...new Set(tpCatalog.map(x=>x.sector))];
 export const tpModules:TPModule[]=[
-{id:"elec-3-m1",sector:"Electricidad",specialty:"Electricidad",level:"3° Medio TP",code:"M01",name:"Instalación de motores eléctricos y equipos de calefacción",oa:[],source:"Currículum Nacional · MINEDUC"},
-{id:"elec-3-m4",sector:"Electricidad",specialty:"Electricidad",level:"3° Medio TP",code:"M04",name:"Mantenimiento de máquinas, equipos y sistemas eléctricos",oa:[],source:"Currículum Nacional · MINEDUC"},
+{id:"elec-3-m1",sector:"Electricidad",specialty:"Electricidad",level:"3° Medio TP",code:"M01",name:"Instalación de motores eléctricos y equipos de calefacción",oa:["OA 4"],source:"Currículum Nacional · MINEDUC"},
+{id:"elec-3-m3",sector:"Electricidad",specialty:"Electricidad",level:"3° Medio TP",code:"M03",name:"Elaboración de proyectos eléctricos",oa:["OA 1","OA 2","OA 5"],source:"Currículum Nacional · MINEDUC"},
+{id:"elec-3-m4",sector:"Electricidad",specialty:"Electricidad",level:"3° Medio TP",code:"M04",name:"Mantenimiento de máquinas, equipos y sistemas eléctricos",oa:["OA 6"],source:"Currículum Nacional · MINEDUC"},
 {id:"elec-4-m5",sector:"Electricidad",specialty:"Electricidad",level:"4° Medio TP",code:"M05",name:"Instalación de sistemas de control eléctrico industrial",oa:[],source:"Currículum Nacional · MINEDUC"},
 {id:"elec-4-m6",sector:"Electricidad",specialty:"Electricidad",level:"4° Medio TP",code:"M06",name:"Instalaciones eléctricas industriales",oa:[],source:"Currículum Nacional · MINEDUC"},
 {id:"mec-3-m1",sector:"Metalmecánica",specialty:"Mecánica Industrial",level:"3° Medio TP",code:"M01",name:"Soldadura industrial",oa:["OA 3","OA 6"],source:"Currículum Nacional · MINEDUC"},
@@ -314,6 +315,9 @@ export const tpModules:TPModule[]=[
 {id:"mec-3-m3",sector:"Metalmecánica",specialty:"Mecánica Industrial",level:"3° Medio TP",code:"M03",name:"Medición y verificación",oa:["OA 2"],source:"Currículum Nacional · MINEDUC"},
 {id:"mec-3-m4",sector:"Metalmecánica",specialty:"Mecánica Industrial",level:"3° Medio TP",code:"M04",name:"Mecánica de banco",oa:[],source:"Currículum Nacional · MINEDUC"},
 {id:"mec-3-m5",sector:"Metalmecánica",specialty:"Mecánica Industrial",level:"3° Medio TP",code:"M05",name:"Lectura de manuales y planos",oa:["OA 1","OA 7"],source:"Currículum Nacional · MINEDUC"},
+{id:"mec-4-me-0",sector:"Metalmecánica",specialty:"Mecánica Industrial",mention:"Mantenimiento Electromecánico",level:"4° Medio TP",code:"M00",name:"Emprendimiento y empleabilidad",oa:[],source:"Currículum Nacional · MINEDUC"},
+{id:"mec-4-me-2",sector:"Metalmecánica",specialty:"Mecánica Industrial",mention:"Mantenimiento Electromecánico",level:"4° Medio TP",code:"M02",name:"Detección de fallas en sistemas industriales",oa:[],source:"Currículum Nacional · MINEDUC"},
+{id:"mec-4-me-3",sector:"Metalmecánica",specialty:"Mecánica Industrial",mention:"Mantenimiento Electromecánico",level:"4° Medio TP",code:"M03",name:"Control de procesos industriales",oa:[],source:"Currículum Nacional · MINEDUC"},
 {id:"mec-4-me-1",sector:"Metalmecánica",specialty:"Mecánica Industrial",mention:"Mantenimiento Electromecánico",level:"4° Medio TP",code:"M01",name:"Mantenimiento y reparación industrial",oa:["OA 1","OA 4"],source:"Currículum Nacional · MINEDUC"},
 {id:"mec-4-me-4",sector:"Metalmecánica",specialty:"Mecánica Industrial",mention:"Mantenimiento Electromecánico",level:"4° Medio TP",code:"M04",name:"Montaje de equipos y sistemas industriales",oa:["OA 5"],source:"Currículum Nacional · MINEDUC"},
 {id:"mec-4-mh-2",sector:"Metalmecánica",specialty:"Mecánica Industrial",mention:"Máquinas-Herramientas",level:"4° Medio TP",code:"M02",name:"Fresado de piezas y conjuntos mecánicos",oa:["OA 2"],source:"Currículum Nacional · MINEDUC"},
