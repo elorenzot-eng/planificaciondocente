@@ -19,7 +19,7 @@ export async function GET() {
   if (!admin) return NextResponse.json({error:"No autorizado"},{status:401});
   const organizations = await prisma.organization.findMany({
     where: admin.role === "SUPERADMIN" ? {} : { id: admin.organizationId },
-    include: { schools: { where: admin.role === "DIRECTOR" ? { users: { some: { id: admin.id } } } : {}, orderBy:{name:"asc"}}, users: { where: admin.role === "DIRECTOR" ? { schoolId: { not: null }, school: { users: { some: { id: admin.id } } } } : {}, select: { id:true,name:true,email:true,role:true,active:true,schoolId:true } } },
+    include: { schools: { where: admin.role === "DIRECTOR" ? { users: { some: { id: admin.id } } } : {}, orderBy:{name:"asc"}}, users: { where: admin.role === "DIRECTOR" ? { schoolId: { not: null }, school: { users: { some: { id: admin.id } } } } : {}, select: { id:true,name:true,email:true,role:true,accountType:true,active:true,schoolId:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyPriceClp:true,monthlyAiLimit:true,monthlyAiUsed:true } } },
     orderBy: { createdAt: "desc" }
   });
   return NextResponse.json(organizations);
@@ -29,6 +29,16 @@ export async function POST(req: Request) {
   const admin = await currentAdmin();
   if (!admin) return NextResponse.json({error:"No autorizado"},{status:401});
   const body = await req.json();
+
+  if (body.kind === "subscription") {
+    if (admin.role !== "SUPERADMIN") return NextResponse.json({error:"Solo el Superadministrador puede gestionar suscripciones"},{status:403});
+    const id=String(body.id||""); const status=String(body.status||"");
+    if (!id || !["TRIAL","ACTIVE","PAST_DUE","CANCELED"].includes(status)) return NextResponse.json({error:"Suscripción no válida"},{status:400});
+    const target=await prisma.user.findFirst({where:{id,accountType:"INDIVIDUAL"},select:{id:true}});
+    if(!target)return NextResponse.json({error:"Suscriptor individual no encontrado"},{status:404});
+    const item=await prisma.user.update({where:{id},data:{subscriptionStatus:status as any,active:status!=="CANCELED",...(status==="ACTIVE"?{subscriptionEndsAt:new Date(Date.now()+30*24*60*60*1000),monthlyPriceClp:25000}:{}),...(status==="TRIAL"?{trialEndsAt:new Date(Date.now()+3*24*60*60*1000)}:{})},select:{id:true,name:true,email:true,active:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyPriceClp:true,monthlyAiLimit:true,monthlyAiUsed:true}});
+    return NextResponse.json(item);
+  }
 
   if (body.kind === "organization") {
     if (admin.role !== "SUPERADMIN") return NextResponse.json({error:"Solo el Superadministrador puede crear sostenedores"},{status:403});
