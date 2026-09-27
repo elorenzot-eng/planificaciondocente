@@ -28,6 +28,10 @@ enum AssessmentType {
   FORMATIVE
   SUMMATIVE
 }
+enum OfferingSource {
+  MINEDUC
+  INSTITUTIONAL
+}
 
 model Organization {
   id String @id @default(cuid())
@@ -77,6 +81,7 @@ model AcademicYear {
   courses Course[]
   plannings Planning[]
   assessments Assessment[]
+  hcOfferings HCCurricularOffering[]
   @@unique([schoolId,year])
 }
 model Course {
@@ -181,4 +186,20 @@ model TeachingAssignment {
   createdAt DateTime @default(now())
   @@unique([courseId,subject,teacherId])
   @@index([teacherId])
+}
+
+model HCCurricularOffering {
+  id String @id @default(cuid())
+  name String
+  area String?
+  level String
+  source OfferingSource @default(MINEDUC)
+  officialCode String?
+  weeklyHours Int?
+  active Boolean @default(true)
+  academicYearId String
+  academicYear AcademicYear @relation(fields:[academicYearId],references:[id],onDelete:Cascade)
+  createdAt DateTime @default(now())
+  @@unique([academicYearId,level,name])
+  @@index([academicYearId,level,active])
 }
