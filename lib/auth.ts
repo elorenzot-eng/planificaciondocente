@@ -1,7 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 const key = () => new TextEncoder().encode(process.env.AUTH_SECRET || "");
-export async function createSession(payload:{id:string;name:string;email:string;role:string;organizationId:string;schoolId:string|null}){
+export async function createSession(payload:{id:string;name:string;email:string;role:string;accountType?:string;organizationId:string;schoolId:string|null}){
   if(!process.env.AUTH_SECRET) throw new Error("AUTH_SECRET no configurado");
   const token=await new SignJWT(payload).setProtectedHeader({alg:"HS256"}).setIssuedAt().setExpirationTime("12h").sign(key());
   const store=await cookies();store.set("pd_session",token,{httpOnly:true,secure:process.env.NODE_ENV==="production",sameSite:"lax",path:"/",maxAge:43200});
