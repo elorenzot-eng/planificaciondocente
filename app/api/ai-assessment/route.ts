@@ -25,3 +25,13 @@ export async function POST(req:Request){
  let text=outputText(raw).trim().replace(/^\`\`\`json\s*/i,"").replace(/\`\`\`$/,"").trim();let generated:any;try{generated=JSON.parse(text)}catch{return NextResponse.json({error:"La IA respondió en un formato no válido. Intenta nuevamente."},{status:502})}
  const assessment=await prisma.assessment.create({data:{title:String(generated.titulo||`Evaluación ${subject} · ${course.name}`),type:type as any,track:course.track,content:generated,userId:u.id,courseId:course.id,academicYearId:course.academicYearId,objectives:{create:objectives.map(o=>({objectiveId:o.id}))}},include:{course:true,objectives:{include:{objective:true}}}});return NextResponse.json({assessment},{status:201});
 }
+export async function PATCH(req:Request){
+ const u=await currentUser();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
+ const b=await req.json();const assessment=await prisma.assessment.findUnique({where:{id:String(b.id||"")},include:{course:true}});
+ if(!assessment)return NextResponse.json({error:"Evaluación no encontrada"},{status:404});
+ if(u.role==="DOCENTE"&&assessment.userId!==u.id)return NextResponse.json({error:"No autorizado"},{status:403});
+ if(u.role!=="SUPERADMIN"&&assessment.course.schoolId!==u.schoolId)return NextResponse.json({error:"No autorizado"},{status:403});
+ if(!b.content||typeof b.content!=="object")return NextResponse.json({error:"Contenido no válido"},{status:400});
+ const updated=await prisma.assessment.update({where:{id:assessment.id},data:{title:String(b.title||assessment.title),content:b.content}});
+ return NextResponse.json({assessment:updated});
+}
