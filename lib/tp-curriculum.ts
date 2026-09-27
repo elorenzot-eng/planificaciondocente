@@ -1,5 +1,309 @@
 export type TPModule={id:string;sector:string;specialty:string;mention?:string;level:"3° Medio TP"|"4° Medio TP";code:string;name:string;oa:string[];source:string};
-export const tpSpecialties=["Electricidad","Mecánica Industrial"];
+export const tpCatalog=[
+  {
+    "id": "01",
+    "sector": "Maderero",
+    "specialty": "Forestal",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "02",
+    "sector": "Maderero",
+    "specialty": "Muebles y Terminaciones en Madera",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "03",
+    "sector": "Agropecuario",
+    "specialty": "Agropecuaria",
+    "mentions": [
+      "Agricultura",
+      "Pecuaria",
+      "Viticultura"
+    ],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "04",
+    "sector": "Alimentación",
+    "specialty": "Elaboración Industrial de Alimentos",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "05",
+    "sector": "Alimentación",
+    "specialty": "Gastronomía",
+    "mentions": [
+      "Cocina",
+      "Pastelería y Repostería"
+    ],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "06",
+    "sector": "Construcción",
+    "specialty": "Construcción",
+    "mentions": [
+      "Edificación",
+      "Terminaciones de la Construcción",
+      "Obras Viales e Infraestructura"
+    ],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "07",
+    "sector": "Construcción",
+    "specialty": "Instalaciones Sanitarias",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "08",
+    "sector": "Construcción",
+    "specialty": "Montaje Industrial",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "09",
+    "sector": "Construcción",
+    "specialty": "Refrigeración y Climatización",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "10",
+    "sector": "Metalmecánica",
+    "specialty": "Mecánica Industrial",
+    "mentions": [
+      "Mantenimiento Electromecánico",
+      "Máquinas-Herramientas",
+      "Matricería"
+    ],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "11",
+    "sector": "Metalmecánica",
+    "specialty": "Construcciones Metálicas",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "12",
+    "sector": "Metalmecánica",
+    "specialty": "Mecánica Automotriz",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "13",
+    "sector": "Metalmecánica",
+    "specialty": "Mecánica de Mantenimiento de Aeronaves",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "14",
+    "sector": "Electricidad",
+    "specialty": "Electricidad",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "15",
+    "sector": "Electricidad",
+    "specialty": "Electrónica",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "16",
+    "sector": "Marítimo",
+    "specialty": "Acuicultura",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "17",
+    "sector": "Marítimo",
+    "specialty": "Operaciones Portuarias",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "18",
+    "sector": "Marítimo",
+    "specialty": "Pesquería",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "19",
+    "sector": "Marítimo",
+    "specialty": "Tripulación de Naves Mercantes y Especiales",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "20",
+    "sector": "Minero",
+    "specialty": "Explotación Minera",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "21",
+    "sector": "Minero",
+    "specialty": "Metalurgia Extractiva",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "22",
+    "sector": "Minero",
+    "specialty": "Asistencia en Geología",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "23",
+    "sector": "Gráfico",
+    "specialty": "Gráfica",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "24",
+    "sector": "Gráfico",
+    "specialty": "Dibujo Técnico",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "25",
+    "sector": "Confección",
+    "specialty": "Vestuario y Confección Textil",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "26",
+    "sector": "Administración",
+    "specialty": "Contabilidad",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "27",
+    "sector": "Administración",
+    "specialty": "Administración",
+    "mentions": [
+      "Recursos Humanos",
+      "Logística"
+    ],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "28",
+    "sector": "Salud y Educación",
+    "specialty": "Atención de Enfermería",
+    "mentions": [
+      "Enfermería",
+      "Adulto Mayor"
+    ],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "29",
+    "sector": "Salud y Educación",
+    "specialty": "Atención de Párvulos",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "30",
+    "sector": "Química e Industria",
+    "specialty": "Química Industrial",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "31",
+    "sector": "Tecnología y Comunicaciones",
+    "specialty": "Conectividad y Redes",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "32",
+    "sector": "Tecnología y Comunicaciones",
+    "specialty": "Programación",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "33",
+    "sector": "Tecnología y Comunicaciones",
+    "specialty": "Telecomunicaciones",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "34",
+    "sector": "Hotelería y Turismo",
+    "specialty": "Servicios de Hotelería",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  },
+  {
+    "id": "35",
+    "sector": "Hotelería y Turismo",
+    "specialty": "Servicios de Turismo",
+    "mentions": [],
+    "status": "vigente",
+    "source": "MINEDUC · Bases Curriculares FDTP 2013 / Decreto 876"
+  }
+] as const;
+export const tpSpecialties=tpCatalog.map(x=>x.specialty);
+export const tpSectors=[...new Set(tpCatalog.map(x=>x.sector))];
 export const tpModules:TPModule[]=[
 {id:"elec-3-m1",sector:"Electricidad",specialty:"Electricidad",level:"3° Medio TP",code:"M01",name:"Instalación de motores eléctricos y equipos de calefacción",oa:[],source:"Currículum Nacional · MINEDUC"},
 {id:"elec-3-m4",sector:"Electricidad",specialty:"Electricidad",level:"3° Medio TP",code:"M04",name:"Mantenimiento de máquinas, equipos y sistemas eléctricos",oa:[],source:"Currículum Nacional · MINEDUC"},
