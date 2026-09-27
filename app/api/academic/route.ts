@@ -20,6 +20,12 @@ export async function GET(req:Request){
  const teachers=await prisma.user.findMany({where:{schoolId,active:true,role:"DOCENTE"},select:{id:true,name:true,email:true},orderBy:{name:"asc"}});
  return NextResponse.json({school,academicYear,courses,teachers});
 }
+export async function PUT(req:Request){
+ const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
+ const b=await req.json();const schoolId=u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");if(!schoolId)return NextResponse.json({error:"Establecimiento requerido"},{status:400});
+ const school=await prisma.school.findFirst({where:{id:schoolId,...(u.role==="SUPERADMIN"?{}:{organizationId:u.organizationId})}});if(!school)return NextResponse.json({error:"No autorizado"},{status:403});
+ const year=Number(b.year||2027);const ay=await prisma.academicYear.upsert({where:{schoolId_year:{schoolId,year}},update:{jec:Boolean(b.jec)},create:{schoolId,year,jec:Boolean(b.jec)}});return NextResponse.json(ay);
+}
 export async function POST(req:Request){
  const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
  const b=await req.json(); const schoolId=u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");
