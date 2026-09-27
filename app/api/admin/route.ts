@@ -17,12 +17,13 @@ async function currentAdmin() {
 export async function GET() {
   const admin = await currentAdmin();
   if (!admin) return NextResponse.json({error:"No autorizado"},{status:401});
+  const individualSubscribers = admin.role === "SUPERADMIN" ? await prisma.user.findMany({where:{accountType:"INDIVIDUAL"},select:{id:true,name:true,email:true,active:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyPriceClp:true,monthlyAiLimit:true,monthlyAiUsed:true},orderBy:{name:"asc"}}) : [];
   const organizations = await prisma.organization.findMany({
     where: admin.role === "SUPERADMIN" ? {} : { id: admin.organizationId },
     include: { schools: { where: admin.role === "DIRECTOR" ? { users: { some: { id: admin.id } } } : {}, orderBy:{name:"asc"}}, users: { where: admin.role === "DIRECTOR" ? { schoolId: { not: null }, school: { users: { some: { id: admin.id } } } } : {}, select: { id:true,name:true,email:true,role:true,accountType:true,active:true,schoolId:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyPriceClp:true,monthlyAiLimit:true,monthlyAiUsed:true } } },
     orderBy: { createdAt: "desc" }
   });
-  return NextResponse.json(organizations);
+  return NextResponse.json({organizations,individualSubscribers});
 }
 
 export async function POST(req: Request) {
