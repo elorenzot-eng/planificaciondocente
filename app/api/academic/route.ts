@@ -22,12 +22,12 @@ export async function GET(req:Request){
 }
 export async function PUT(req:Request){
  const u=await context(); if(!u||(!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role)&&u.accountType!=="INDIVIDUAL"))return NextResponse.json({error:"No autorizado"},{status:401});
- const b=await req.json();const schoolId=u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");if(!schoolId)return NextResponse.json({error:"Establecimiento requerido"},{status:400});
+ const b=await req.json();const schoolId=u.accountType==="INDIVIDUAL"||u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");if(!schoolId)return NextResponse.json({error:"Establecimiento requerido"},{status:400});
  const school=await prisma.school.findFirst({where:{id:schoolId,...(u.role==="SUPERADMIN"?{}:{organizationId:u.organizationId})}});if(!school)return NextResponse.json({error:"No autorizado"},{status:403});
  const year=Number(b.year||2027);if(typeof b.jec!=="boolean")return NextResponse.json({error:"Régimen JEC no válido"},{status:400});const ay=await prisma.academicYear.upsert({where:{schoolId_year:{schoolId,year}},update:{jec:b.jec},create:{schoolId,year,jec:b.jec}});return NextResponse.json(ay);
 }
 export async function POST(req:Request){
- const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
+ const u=await context(); if(!u||(!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role)&&u.accountType!=="INDIVIDUAL"))return NextResponse.json({error:"No autorizado"},{status:401});
  const b=await req.json(); const schoolId=u.accountType==="INDIVIDUAL"||u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");
  if(!schoolId)return NextResponse.json({error:"Establecimiento requerido"},{status:400});
  const school=await prisma.school.findFirst({where:{id:schoolId,...(u.role==="SUPERADMIN"?{}:{organizationId:u.organizationId})}});
@@ -48,7 +48,7 @@ export async function POST(req:Request){
 }
 
 export async function PATCH(req:Request){
- const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
+ const u=await context(); if(!u||(!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role)&&u.accountType!=="INDIVIDUAL"))return NextResponse.json({error:"No autorizado"},{status:401});
  const b=await req.json();
  if(b.kind==="course"){
   const course=await prisma.course.findUnique({where:{id:String(b.id)},include:{_count:{select:{plannings:true,assessments:true}}}});
@@ -61,7 +61,7 @@ export async function PATCH(req:Request){
  return NextResponse.json({error:"Operación no válida"},{status:400});
 }
 export async function DELETE(req:Request){
- const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
+ const u=await context(); if(!u||(!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role)&&u.accountType!=="INDIVIDUAL"))return NextResponse.json({error:"No autorizado"},{status:401});
  const b=await req.json();
  if(b.kind==="assignment"){
   const a=await prisma.teachingAssignment.findUnique({where:{id:String(b.id)},include:{course:true}});
