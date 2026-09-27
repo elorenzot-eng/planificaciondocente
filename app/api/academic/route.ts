@@ -39,3 +39,36 @@ export async function POST(req:Request){
  }
  return NextResponse.json({error:"Operación no válida"},{status:400});
 }
+
+export async function PATCH(req:Request){
+ const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
+ const b=await req.json();
+ if(b.kind==="course"){
+  const course=await prisma.course.findUnique({where:{id:String(b.id)},include:{_count:{select:{plannings:true,assessments:true}}}});
+  if(!course)return NextResponse.json({error:"Curso no encontrado"},{status:404});
+  const school=await prisma.school.findFirst({where:{id:course.schoolId,...(u.role==="SUPERADMIN"?{}:{organizationId:u.organizationId})}});
+  if(!school||(u.role==="DIRECTOR"||u.role==="UTP")&&course.schoolId!==u.schoolId)return NextResponse.json({error:"No autorizado"},{status:403});
+  const data:any={};if(b.track&&["PARVULARIA","BASICA","HC","TP"].includes(String(b.track)))data.track=b.track;if(b.name)data.name=String(b.name);if(b.level)data.level=String(b.level);
+  return NextResponse.json(await prisma.course.update({where:{id:course.id},data}));
+ }
+ return NextResponse.json({error:"Operación no válida"},{status:400});
+}
+export async function DELETE(req:Request){
+ const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
+ const b=await req.json();
+ if(b.kind==="assignment"){
+  const a=await prisma.teachingAssignment.findUnique({where:{id:String(b.id)},include:{course:true}});
+  if(!a)return NextResponse.json({error:"Asignación no encontrada"},{status:404});
+  if(u.role!=="SUPERADMIN"&&(a.course.schoolId!==u.schoolId&&u.role!=="SOSTENEDOR"))return NextResponse.json({error:"No autorizado"},{status:403});
+  if(u.role==="SOSTENEDOR"){const s=await prisma.school.findFirst({where:{id:a.course.schoolId,organizationId:u.organizationId}});if(!s)return NextResponse.json({error:"No autorizado"},{status:403})}
+  await prisma.teachingAssignment.delete({where:{id:a.id}});return NextResponse.json({ok:true});
+ }
+ if(b.kind==="course"){
+  const course=await prisma.course.findUnique({where:{id:String(b.id)},include:{_count:{select:{plannings:true,assessments:true}}}});
+  if(!course)return NextResponse.json({error:"Curso no encontrado"},{status:404});
+  if(u.role!=="SUPERADMIN"){const s=await prisma.school.findFirst({where:{id:course.schoolId,organizationId:u.organizationId}});if(!s||(u.role==="DIRECTOR"||u.role==="UTP")&&course.schoolId!==u.schoolId)return NextResponse.json({error:"No autorizado"},{status:403})}
+  if(course._count.plannings||course._count.assessments)return NextResponse.json({error:"No se puede eliminar: el curso ya tiene historial curricular"},{status:409});
+  await prisma.course.delete({where:{id:course.id}});return NextResponse.json({ok:true});
+ }
+ return NextResponse.json({error:"Operación no válida"},{status:400});
+}
