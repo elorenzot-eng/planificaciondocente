@@ -47,7 +47,7 @@ export async function POST(req:Request){
  const ids=Array.isArray(b.objectiveIds)?b.objectiveIds.map(String):[];
  const objectives=await prisma.learningObjective.findMany({where:{id:{in:ids},level:course.level,subject}});
  if(!objectives.length)return NextResponse.json({error:"Selecciona al menos un OA oficial disponible"},{status:400});
- const duration=String(b.duration||"90 minutos");const modality=String(b.modality||"Clase a clase");const instructions=String(b.instructions||"");
+ const duration=String(b.duration||"90 minutos");const modality=String(b.modality||"Clase a clase");const instructions=String(b.instructions||"");const includeAdaptations=b.includeAdaptations===true;const adaptationContext=String(b.adaptationContext||"").trim();
  const prompt=`Genera una planificación docente chilena en español. No inventes ni modifiques los OA entregados. Curso: ${course.name}. Nivel: ${course.level}. Asignatura: ${subject}. Duración: ${duration}. Modalidad: ${modality}. OA oficiales: ${objectives.map(o=>o.code+": "+o.text).join(" | ")}. Indicaciones adicionales: ${instructions||"ninguna"}. Devuelve SOLO JSON válido con estas claves: titulo, objetivoClase, indicadores (array), inicio, desarrollo, cierre, recursos (array), evaluacionFormativa, dua (array), evidencia, observaciones. Los campos inicio/desarrollo/cierre deben ser objetos con minutos, actividadesDocente y actividadesEstudiantes.`;
  const ai=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,"Content-Type":"application/json"},body:JSON.stringify({model:process.env.OPENAI_MODEL||"gpt-5.6-terra",input:prompt})});
  const raw=await ai.json();
