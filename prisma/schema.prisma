@@ -5,6 +5,10 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+enum AccountType {
+  INSTITUTIONAL
+  INDIVIDUAL
+}
 enum Role {
   SUPERADMIN
   SOSTENEDOR
@@ -62,6 +66,7 @@ model User {
   email String @unique
   name String
   role Role
+  accountType AccountType @default(INSTITUTIONAL)
   active Boolean @default(true)
   passwordHash String?
   organizationId String
