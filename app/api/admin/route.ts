@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
+import bcrypt from "bcryptjs";
+import { getSession } from "../../../lib/auth";
 
 export async function GET() {
+  const session=await getSession(); if(!session || !["SUPERADMIN","SOSTENEDOR"].includes(String(session.role))) return NextResponse.json({error:"No autorizado"},{status:401});
   const organizations = await prisma.organization.findMany({
     include: { schools: true, users: { select: { id:true,name:true,email:true,role:true,active:true,schoolId:true } } },
     orderBy: { createdAt: "desc" }
@@ -10,6 +13,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const session=await getSession(); if(!session || !["SUPERADMIN","SOSTENEDOR"].includes(String(session.role))) return NextResponse.json({error:"No autorizado"},{status:401});
   const body = await req.json();
   if (body.kind === "organization") {
     if (!body.name) return NextResponse.json({error:"Nombre requerido"},{status:400});
@@ -25,9 +29,8 @@ export async function POST(req: Request) {
   }
   if (body.kind === "user") {
     if (!body.name || !body.email || !body.organizationId || !body.role) return NextResponse.json({error:"Datos de usuario incompletos"},{status:400});
-    const item = await prisma.user.create({data:{
-      name:body.name,email:String(body.email).toLowerCase(),role:body.role,organizationId:body.organizationId,schoolId:body.schoolId||null
-    }});
+    const passwordHash=body.password?await bcrypt.hash(String(body.password),12):null;
+    const item = await prisma.user.create({data:{name:body.name,email:String(body.email).toLowerCase(),role:body.role,passwordHash,organizationId:body.organizationId,schoolId:body.schoolId||null}});
     return NextResponse.json(item,{status:201});
   }
   return NextResponse.json({error:"Operación no válida"},{status:400});
