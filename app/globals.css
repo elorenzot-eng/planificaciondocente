@@ -32,3 +32,10 @@ nav button{border:0;text-align:left;background:transparent;padding:13px 14px;bor
  .actions{display:none!important}
  @page{size:A4;margin:16mm}
 }
+
+.screenOnly{display:none}
+@media print{
+ .screenOnly{display:none!important}
+ .studentPrint:not(.screenOnly),.keyPrint:not(.screenOnly){display:block!important}
+ .keyPrint h2,.studentPrint h2{text-align:center;font-size:18pt;margin-bottom:16px}
+}
