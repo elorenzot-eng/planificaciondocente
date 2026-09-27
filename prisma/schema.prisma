@@ -9,6 +9,12 @@ enum AccountType {
   INSTITUTIONAL
   INDIVIDUAL
 }
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
 enum Role {
   SUPERADMIN
   SOSTENEDOR
@@ -67,6 +73,12 @@ model User {
   name String
   role Role
   accountType AccountType @default(INSTITUTIONAL)
+  subscriptionStatus SubscriptionStatus?
+  trialEndsAt DateTime?
+  subscriptionEndsAt DateTime?
+  monthlyAiLimit Int?
+  monthlyAiUsed Int @default(0)
+  aiUsageResetAt DateTime?
   active Boolean @default(true)
   passwordHash String?
   organizationId String
