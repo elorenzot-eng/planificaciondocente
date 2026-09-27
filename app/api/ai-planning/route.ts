@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { getSession } from "../../../lib/auth";
+import {checkAiEntitlement,chargeAiUse} from "../../../lib/ai-entitlement";
 
 const pilotOA=[
  {code:"MA08 OA 01",text:"Mostrar que comprenden la multiplicación y la división de números enteros: representándolos de manera concreta, pictórica y simbólica; aplicando procedimientos usados en la multiplicación y la división de números naturales; aplicando la regla de los signos de la operación; resolviendo problemas rutinarios y no rutinarios."},
@@ -56,5 +57,5 @@ export async function POST(req:Request){
  let text=outputText(raw).trim().replace(/^\`\`\`json\s*/i,"").replace(/\`\`\`$/,"").trim();let generated:any;
  try{generated=JSON.parse(text)}catch{return NextResponse.json({error:"La IA respondió en un formato no válido. Intenta nuevamente."},{status:502})}
  const planning=await prisma.planning.create({data:{title:String(generated.titulo||`Planificación ${subject} · ${course.name}`),track:course.track,content:generated,userId:u.id,courseId:course.id,academicYearId:course.academicYearId,objectives:{create:objectives.map(o=>({objectiveId:o.id}))}},include:{course:true,objectives:{include:{objective:true}},implementation:true}});
- return NextResponse.json({planning},{status:201});
+ await chargeAiUse(u.id);return NextResponse.json({planning},{status:201});
 }
