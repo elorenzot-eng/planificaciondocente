@@ -33,7 +33,7 @@ export async function GET(){
  else if(u.role==="SOSTENEDOR"){if(!u.organizationId)return NextResponse.json({error:"Usuario sin organización"},{status:403});where.school={organizationId:u.organizationId}};
  const courses=await prisma.course.findMany({where,include:{teachingAssignments:{where:u.role==="DOCENTE"?{teacherId:u.id}:{},select:{subject:true,teacherId:true}},academicYear:true},orderBy:{name:"asc"}});
  const objectives=await prisma.learningObjective.findMany({where:{level:"8° Básico",subject:"Matemática"},orderBy:{code:"asc"}});
- const planningScope:any=u.role==="DOCENTE"?{userId:u.id}:u.role==="SOSTENEDOR"?{course:{school:{organizationId:u.organizationId}}}:u.role==="DIRECTOR"||u.role==="UTP"?{course:{schoolId:u.schoolId}}:{};const plannings=await prisma.planning.findMany({where:planningScope,include:{course:true,objectives:{include:{objective:true}}},orderBy:{createdAt:"desc"},take:10});
+ const planningScope:any=u.role==="DOCENTE"?{userId:u.id}:u.role==="SOSTENEDOR"?{course:{school:{organizationId:u.organizationId}}}:u.role==="DIRECTOR"||u.role==="UTP"?{course:{schoolId:u.schoolId}}:{};const plannings=await prisma.planning.findMany({where:planningScope,include:{course:true,objectives:{include:{objective:true}},implementation:true},orderBy:{createdAt:"desc"},take:10});
  return NextResponse.json({courses,objectives,plannings,aiReady:!!process.env.OPENAI_API_KEY});
 }
 export async function POST(req:Request){
@@ -55,6 +55,6 @@ export async function POST(req:Request){
  if(!ai.ok)return NextResponse.json({error:"La IA no pudo generar la planificación",detail:raw?.error?.message||"Error OpenAI"},{status:502});
  let text=outputText(raw).trim().replace(/^\`\`\`json\s*/i,"").replace(/\`\`\`$/,"").trim();let generated:any;
  try{generated=JSON.parse(text)}catch{return NextResponse.json({error:"La IA respondió en un formato no válido. Intenta nuevamente."},{status:502})}
- const planning=await prisma.planning.create({data:{title:String(generated.titulo||`Planificación ${subject} · ${course.name}`),track:course.track,content:generated,userId:u.id,courseId:course.id,academicYearId:course.academicYearId,objectives:{create:objectives.map(o=>({objectiveId:o.id}))}},include:{course:true,objectives:{include:{objective:true}}}});
+ const planning=await prisma.planning.create({data:{title:String(generated.titulo||`Planificación ${subject} · ${course.name}`),track:course.track,content:generated,userId:u.id,courseId:course.id,academicYearId:course.academicYearId,objectives:{create:objectives.map(o=>({objectiveId:o.id}))}},include:{course:true,objectives:{include:{objective:true}},implementation:true}});
  return NextResponse.json({planning},{status:201});
 }
