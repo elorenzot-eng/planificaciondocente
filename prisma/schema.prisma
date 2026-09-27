@@ -88,6 +88,7 @@ model User {
   school School? @relation(fields:[schoolId],references:[id])
   plannings Planning[]
   assessments Assessment[]
+  supportMaterials SupportMaterial[]
   teachingAssignments TeachingAssignment[]
   hcTeachingAssignments HCTeachingAssignment[]
 }
@@ -100,6 +101,7 @@ model AcademicYear {
   courses Course[]
   plannings Planning[]
   assessments Assessment[]
+  supportMaterials SupportMaterial[]
   hcOfferings HCCurricularOffering[]
   @@unique([schoolId,year])
 }
@@ -114,6 +116,7 @@ model Course {
   academicYear AcademicYear @relation(fields:[academicYearId],references:[id],onDelete:Cascade)
   plannings Planning[]
   assessments Assessment[]
+  supportMaterials SupportMaterial[]
   teachingAssignments TeachingAssignment[]
   hcTeachingAssignments HCTeachingAssignment[]
   @@index([schoolId,academicYearId])
@@ -262,4 +265,23 @@ model CurriculumModuleObjective {
   objective LearningObjective @relation(fields:[objectiveId],references:[id],onDelete:Cascade)
   @@id([moduleId,objectiveId])
   @@index([objectiveId])
+}
+
+model SupportMaterial {
+  id String @id @default(cuid())
+  title String
+  materialType String
+  subject String?
+  topic String
+  content Json
+  userId String
+  courseId String
+  academicYearId String
+  user User @relation(fields:[userId],references:[id])
+  course Course @relation(fields:[courseId],references:[id])
+  academicYear AcademicYear @relation(fields:[academicYearId],references:[id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId,createdAt])
+  @@index([courseId])
 }
