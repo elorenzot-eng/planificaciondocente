@@ -91,6 +91,7 @@ model User {
   supportMaterials SupportMaterial[]
   teachingAssignments TeachingAssignment[]
   hcTeachingAssignments HCTeachingAssignment[]
+  subscriptionPayments SubscriptionPayment[]
 }
 model AcademicYear {
   id String @id @default(cuid())
@@ -284,4 +285,19 @@ model SupportMaterial {
   updatedAt DateTime @updatedAt
   @@index([userId,createdAt])
   @@index([courseId])
+}
+
+model SubscriptionPayment {
+  id String @id @default(cuid())
+  commerceOrder String @unique
+  flowToken String? @unique
+  flowOrder Int?
+  userId String
+  amount Int
+  status String @default("PENDING")
+  paidAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@index([userId,createdAt])
 }
