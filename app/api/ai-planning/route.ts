@@ -56,6 +56,9 @@ export async function POST(req:Request){
  if(!ai.ok)return NextResponse.json({error:"La IA no pudo generar la planificación",detail:raw?.error?.message||"Error OpenAI"},{status:502});
  let text=outputText(raw).trim().replace(/^\`\`\`json\s*/i,"").replace(/\`\`\`$/,"").trim();let generated:any;
  try{generated=JSON.parse(text)}catch{return NextResponse.json({error:"La IA respondió en un formato no válido. Intenta nuevamente."},{status:502})}
+ const moments=["inicio","desarrollo","cierre"] as const;
+ const validMoments=moments.every(k=>generated?.[k]&&generated[k].minutos!==undefined&&String(generated[k].actividadesDocente||"").trim()&&String(generated[k].actividadesEstudiantes||"").trim());
+ if(!validMoments)return NextResponse.json({error:"La IA no entregó una planificación completa con Inicio, Desarrollo y Cierre. Intenta nuevamente."},{status:502});
  const planning=await prisma.planning.create({data:{title:String(generated.titulo||`Planificación ${subject} · ${course.name}`),track:course.track,content:generated,userId:u.id,courseId:course.id,academicYearId:course.academicYearId,objectives:{create:objectives.map(o=>({objectiveId:o.id}))}},include:{course:true,objectives:{include:{objective:true}},implementation:true}});
  await chargeAiUse(u.id);return NextResponse.json({planning},{status:201});
 }
