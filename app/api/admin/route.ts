@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     if (!id || !["TRIAL","ACTIVE","PAST_DUE","CANCELED"].includes(status)) return NextResponse.json({error:"Suscripción no válida"},{status:400});
     const target=await prisma.user.findFirst({where:{id,accountType:"INDIVIDUAL"},select:{id:true}});
     if(!target)return NextResponse.json({error:"Suscriptor individual no encontrado"},{status:404});
-    const item=await prisma.user.update({where:{id},data:{subscriptionStatus:status as any,active:status!=="CANCELED",...(status==="ACTIVE"?{subscriptionEndsAt:new Date(Date.now()+30*24*60*60*1000),monthlyPriceClp:25000,monthlyAiLimit:90,monthlyAiUsed:0,aiUsageResetAt:new Date(Date.now()+30*24*60*60*1000)}:{}),...(status==="TRIAL"?{trialEndsAt:new Date(Date.now()+3*24*60*60*1000),monthlyAiLimit:10,monthlyAiUsed:0}:{})},select:{id:true,name:true,email:true,active:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyPriceClp:true,monthlyAiLimit:true,monthlyAiUsed:true}});
+    const item=await prisma.user.update({where:{id},data:{subscriptionStatus:status as any,active:status!=="CANCELED",...(status==="ACTIVE"?{subscriptionEndsAt:new Date(Date.now()+30*24*60*60*1000),monthlyPriceClp:24990,monthlyAiLimit:90,monthlyAiUsed:0,aiUsageResetAt:new Date(Date.now()+30*24*60*60*1000)}:{}),...(status==="TRIAL"?{trialEndsAt:new Date(Date.now()+3*24*60*60*1000),monthlyAiLimit:10,monthlyAiUsed:0}:{})},select:{id:true,name:true,email:true,active:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyPriceClp:true,monthlyAiLimit:true,monthlyAiUsed:true}});
     return NextResponse.json(item);
   }
 
