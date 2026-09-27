@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+enum Role { SUPERADMIN SOSTENEDOR DIRECTOR UTP DOCENTE }
+enum Track { PARVULARIA BASICA HC TP }
+enum PlanningStatus { DRAFT APPROVED IMPLEMENTED }
+enum AssessmentType { DIAGNOSTIC FORMATIVE SUMMATIVE }
+
+model Organization {
+  id String @id @default(cuid())
+  name String
+  schools School[]
+  users User[]
+  createdAt DateTime @default(now())
+}
+model School {
+  id String @id @default(cuid())
+  name String
+  rbd String?
+  organizationId String
+  organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade)
+  years AcademicYear[]
+  users User[]
+  courses Course[]
+  @@index([organizationId])
+}
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  name String
+  role Role
+  organizationId String
+  schoolId String?
+  organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade)
+  school School? @relation(fields:[schoolId],references:[id])
+  plannings Planning[]
+  assessments Assessment[]
+}
+model AcademicYear {
+  id String @id @default(cuid())
+  year Int
+  schoolId String
+  school School @relation(fields:[schoolId],references:[id],onDelete:Cascade)
+  courses Course[]
+  plannings Planning[]
+  assessments Assessment[]
+  @@unique([schoolId,year])
+}
+model Course {
+  id String @id @default(cuid())
+  name String
+  level String
+  track Track
+  schoolId String
+  academicYearId String
+  school School @relation(fields:[schoolId],references:[id],onDelete:Cascade)
+  academicYear AcademicYear @relation(fields:[academicYearId],references:[id],onDelete:Cascade)
+  plannings Planning[]
+  assessments Assessment[]
+  @@index([schoolId,academicYearId])
+}
+model LearningObjective {
+  id String @id @default(cuid())
+  code String
+  text String
+  level String
+  subject String?
+  specialty String?
+  module String?
+  source String
+  planningLinks PlanningObjective[]
+  assessmentLinks AssessmentObjective[]
+  @@index([level,subject])
+  @@index([specialty,module])
+}
+model Planning {
+  id String @id @default(cuid())
+  title String
+  status PlanningStatus @default(DRAFT)
+  track Track
+  content Json
+  userId String
+  courseId String
+  academicYearId String
+  user User @relation(fields:[userId],references:[id])
+  course Course @relation(fields:[courseId],references:[id])
+  academicYear AcademicYear @relation(fields:[academicYearId],references:[id])
+  objectives PlanningObjective[]
+  implementation ImplementationRecord?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model PlanningObjective {
+  planningId String
+  objectiveId String
+  planning Planning @relation(fields:[planningId],references:[id],onDelete:Cascade)
+  objective LearningObjective @relation(fields:[objectiveId],references:[id])
+  @@id([planningId,objectiveId])
+}
+model ImplementationRecord {
+  id String @id @default(cuid())
+  planningId String @unique
+  implementedAt DateTime
+  evidence String?
+  notes String?
+  planning Planning @relation(fields:[planningId],references:[id],onDelete:Cascade)
+}
+model Assessment {
+  id String @id @default(cuid())
+  title String
+  type AssessmentType
+  track Track
+  content Json
+  userId String
+  courseId String
+  academicYearId String
+  user User @relation(fields:[userId],references:[id])
+  course Course @relation(fields:[courseId],references:[id])
+  academicYear AcademicYear @relation(fields:[academicYearId],references:[id])
+  objectives AssessmentObjective[]
+  result AssessmentResult?
+  createdAt DateTime @default(now())
+}
+model AssessmentObjective {
+  assessmentId String
+  objectiveId String
+  assessment Assessment @relation(fields:[assessmentId],references:[id],onDelete:Cascade)
+  objective LearningObjective @relation(fields:[objectiveId],references:[id])
+  @@id([assessmentId,objectiveId])
+}
+model AssessmentResult {
+  id String @id @default(cuid())
+  assessmentId String @unique
+  achievement Float
+  students Int?
+  notes String?
+  assessment Assessment @relation(fields:[assessmentId],references:[id],onDelete:Cascade)
+}
