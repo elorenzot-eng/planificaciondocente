@@ -76,6 +76,7 @@ model User {
   subscriptionStatus SubscriptionStatus?
   trialEndsAt DateTime?
   subscriptionEndsAt DateTime?
+  monthlyPriceClp Int?
   monthlyAiLimit Int?
   monthlyAiUsed Int @default(0)
   aiUsageResetAt DateTime?
