@@ -16,3 +16,19 @@ nav button{border:0;text-align:left;background:transparent;padding:13px 14px;bor
 
 .hcOfferCard{border:1px solid #e7e9ef;border-radius:14px;padding:0 14px 12px;margin:10px 0}.hcAssign{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center;padding:10px 0}.hcAssign select{min-width:0}
 @media(max-width:800px){.hcOfferings .builder,.hcAssign{grid-template-columns:1fr}}
+
+.printStudentData{font-size:12px;border-bottom:1px solid #dce5ef;padding:8px 0 14px;margin-bottom:10px}
+@media print{
+ body{background:#fff!important}
+ aside,header,footer,.noPrint,.form,.step,.success{display:none!important}
+ main,.workspace,.builder,.preview{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+ .panel,.preview,.doc{border:0!important;box-shadow:none!important;padding:0!important}
+ .studentPrint{font-family:Arial,sans-serif;color:#000}
+ .studentPrint h2{text-align:center;font-size:18pt;margin:0 0 16px}
+ .studentPrint .doc{font-size:11pt}
+ .studentPrint .doc b{color:#000}
+ .studentPrint .doc p{color:#000;line-height:1.45;break-inside:avoid}
+ .studentPrint .doc h3{color:#000;break-after:avoid}
+ .actions{display:none!important}
+ @page{size:A4;margin:16mm}
+}
