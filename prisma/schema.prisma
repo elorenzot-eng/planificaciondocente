@@ -71,6 +71,7 @@ model User {
 model AcademicYear {
   id String @id @default(cuid())
   year Int
+  jec Boolean?
   schoolId String
   school School @relation(fields:[schoolId],references:[id],onDelete:Cascade)
   courses Course[]
