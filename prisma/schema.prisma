@@ -5,10 +5,29 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum Role {\n  SUPERADMIN\n  SOSTENEDOR\n  DIRECTOR\n  UTP\n  DOCENTE\n}
-enum Track {\n  PARVULARIA\n  BASICA\n  HC\n  TP\n}
-enum PlanningStatus {\n  DRAFT\n  APPROVED\n  IMPLEMENTED\n}
-enum AssessmentType {\n  DIAGNOSTIC\n  FORMATIVE\n  SUMMATIVE\n}
+enum Role {
+  SUPERADMIN
+  SOSTENEDOR
+  DIRECTOR
+  UTP
+  DOCENTE
+}
+enum Track {
+  PARVULARIA
+  BASICA
+  HC
+  TP
+}
+enum PlanningStatus {
+  DRAFT
+  APPROVED
+  IMPLEMENTED
+}
+enum AssessmentType {
+  DIAGNOSTIC
+  FORMATIVE
+  SUMMATIVE
+}
 
 model Organization {
   id String @id @default(cuid())
