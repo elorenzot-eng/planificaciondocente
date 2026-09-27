@@ -40,6 +40,7 @@ model User {
   name String
   role Role
   active Boolean @default(true)
+  passwordHash String?
   organizationId String
   schoolId String?
   organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade)
