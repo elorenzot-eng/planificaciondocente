@@ -4,7 +4,7 @@ import { getSession } from "../../../lib/auth";
 
 async function context(){
  const s=await getSession(); if(!s?.id)return null;
- const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{id:true,role:true,active:true,organizationId:true,schoolId:true}});
+ const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{id:true,role:true,accountType:true,active:true,organizationId:true,schoolId:true}});
  return u?.active?u:null;
 }
 export async function GET(req:Request){
@@ -21,14 +21,14 @@ export async function GET(req:Request){
  return NextResponse.json({school,academicYear,courses,teachers});
 }
 export async function PUT(req:Request){
- const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
+ const u=await context(); if(!u||(!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role)&&u.accountType!=="INDIVIDUAL"))return NextResponse.json({error:"No autorizado"},{status:401});
  const b=await req.json();const schoolId=u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");if(!schoolId)return NextResponse.json({error:"Establecimiento requerido"},{status:400});
  const school=await prisma.school.findFirst({where:{id:schoolId,...(u.role==="SUPERADMIN"?{}:{organizationId:u.organizationId})}});if(!school)return NextResponse.json({error:"No autorizado"},{status:403});
  const year=Number(b.year||2027);if(typeof b.jec!=="boolean")return NextResponse.json({error:"Régimen JEC no válido"},{status:400});const ay=await prisma.academicYear.upsert({where:{schoolId_year:{schoolId,year}},update:{jec:b.jec},create:{schoolId,year,jec:b.jec}});return NextResponse.json(ay);
 }
 export async function POST(req:Request){
  const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
- const b=await req.json(); const schoolId=u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");
+ const b=await req.json(); const schoolId=u.accountType==="INDIVIDUAL"||u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");
  if(!schoolId)return NextResponse.json({error:"Establecimiento requerido"},{status:400});
  const school=await prisma.school.findFirst({where:{id:schoolId,...(u.role==="SUPERADMIN"?{}:{organizationId:u.organizationId})}});
  if(!school)return NextResponse.json({error:"Establecimiento no autorizado"},{status:403});
