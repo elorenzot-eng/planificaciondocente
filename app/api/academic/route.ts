@@ -24,7 +24,7 @@ export async function PUT(req:Request){
  const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
  const b=await req.json();const schoolId=u.role==="DIRECTOR"||u.role==="UTP"?u.schoolId:String(b.schoolId||"");if(!schoolId)return NextResponse.json({error:"Establecimiento requerido"},{status:400});
  const school=await prisma.school.findFirst({where:{id:schoolId,...(u.role==="SUPERADMIN"?{}:{organizationId:u.organizationId})}});if(!school)return NextResponse.json({error:"No autorizado"},{status:403});
- const year=Number(b.year||2027);const ay=await prisma.academicYear.upsert({where:{schoolId_year:{schoolId,year}},update:{jec:Boolean(b.jec)},create:{schoolId,year,jec:Boolean(b.jec)}});return NextResponse.json(ay);
+ const year=Number(b.year||2027);if(typeof b.jec!=="boolean")return NextResponse.json({error:"Régimen JEC no válido"},{status:400});const ay=await prisma.academicYear.upsert({where:{schoolId_year:{schoolId,year}},update:{jec:b.jec},create:{schoolId,year,jec:b.jec}});return NextResponse.json(ay);
 }
 export async function POST(req:Request){
  const u=await context(); if(!u||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP"].includes(u.role))return NextResponse.json({error:"No autorizado"},{status:401});
@@ -35,7 +35,8 @@ export async function POST(req:Request){
  const year=Number(b.year||2027); const ay=await prisma.academicYear.upsert({where:{schoolId_year:{schoolId,year}},update:{},create:{schoolId,year}});
  if(b.kind==="course"){
   if(!b.name||!b.level||!["PARVULARIA","BASICA","HC","TP"].includes(String(b.track)))return NextResponse.json({error:"Datos del curso incompletos"},{status:400});
-  return NextResponse.json(await prisma.course.create({data:{name:String(b.name),level:String(b.level),track:b.track,schoolId,academicYearId:ay.id}}),{status:201});
+  const existing=await prisma.course.findFirst({where:{schoolId,academicYearId:ay.id,name:String(b.name).trim()}});if(existing)return NextResponse.json({error:"El curso ya existe para este año académico"},{status:409});
+  return NextResponse.json(await prisma.course.create({data:{name:String(b.name).trim(),level:String(b.level),track:b.track,schoolId,academicYearId:ay.id}}),{status:201});
  }
  if(b.kind==="assignment"){
   const course=await prisma.course.findFirst({where:{id:String(b.courseId),schoolId,academicYearId:ay.id}});
