@@ -70,3 +70,52 @@ export async function POST(req: Request) {
   }
   return NextResponse.json({error:"Operación no válida"},{status:400});
 }
+
+
+export async function PATCH(req: Request) {
+  const admin = await currentAdmin();
+  if (!admin) return NextResponse.json({error:"No autorizado"},{status:401});
+  const body = await req.json();
+  const kind = String(body.kind||"");
+  const id = String(body.id||"");
+  if (!id) return NextResponse.json({error:"Identificador requerido"},{status:400});
+
+  if (kind === "school") {
+    const school = await prisma.school.findUnique({where:{id},select:{id:true,organizationId:true}});
+    if (!school || (admin.role !== "SUPERADMIN" && school.organizationId !== admin.organizationId)) return NextResponse.json({error:"Establecimiento no autorizado"},{status:403});
+    const item = await prisma.school.update({where:{id},data:{
+      ...(typeof body.active === "boolean" ? {active:body.active} : {}),
+      ...(body.name ? {name:String(body.name).trim()} : {}),
+      ...(body.rbd !== undefined ? {rbd:body.rbd?String(body.rbd).trim():null} : {}),
+      ...(body.commune !== undefined ? {commune:body.commune?String(body.commune).trim():null} : {}),
+      ...(body.region !== undefined ? {region:body.region?String(body.region):null} : {})
+    }});
+    return NextResponse.json(item);
+  }
+
+  if (kind === "user") {
+    const target = await prisma.user.findUnique({where:{id},select:{id:true,role:true,organizationId:true}});
+    if (!target || target.role === "SUPERADMIN" || (admin.role !== "SUPERADMIN" && target.organizationId !== admin.organizationId)) return NextResponse.json({error:"Usuario no autorizado"},{status:403});
+    if (admin.role === "SOSTENEDOR" && target.role === "SOSTENEDOR") return NextResponse.json({error:"Un sostenedor no puede modificar otra cuenta sostenedor"},{status:403});
+    const data:any = {};
+    if (typeof body.active === "boolean") data.active=body.active;
+    if (body.name) data.name=String(body.name).trim();
+    if (body.password) {
+      if (String(body.password).length < 12) return NextResponse.json({error:"La contraseña debe tener al menos 12 caracteres"},{status:400});
+      data.passwordHash=await bcrypt.hash(String(body.password),12);
+    }
+    const item = await prisma.user.update({where:{id},data,select:{id:true,name:true,email:true,role:true,active:true,schoolId:true}});
+    return NextResponse.json(item);
+  }
+
+  if (kind === "organization") {
+    if (admin.role !== "SUPERADMIN") return NextResponse.json({error:"Solo el Superadministrador puede modificar sostenedores"},{status:403});
+    const item = await prisma.organization.update({where:{id},data:{
+      ...(typeof body.active === "boolean" ? {active:body.active} : {}),
+      ...(body.name ? {name:String(body.name).trim()} : {}),
+      ...(body.rut !== undefined ? {rut:body.rut?String(body.rut).trim():null} : {})
+    }});
+    return NextResponse.json(item);
+  }
+  return NextResponse.json({error:"Operación no válida"},{status:400});
+}
