@@ -3,35 +3,70 @@ import { prisma } from "../../../lib/prisma";
 import bcrypt from "bcryptjs";
 import { getSession } from "../../../lib/auth";
 
+async function currentAdmin() {
+  const session = await getSession();
+  if (!session?.id) return null;
+  const user = await prisma.user.findUnique({
+    where: { id: String(session.id) },
+    select: { id:true, role:true, active:true, organizationId:true }
+  });
+  if (!user?.active || !["SUPERADMIN","SOSTENEDOR"].includes(user.role)) return null;
+  return user;
+}
+
 export async function GET() {
-  const session=await getSession(); if(!session || !["SUPERADMIN","SOSTENEDOR"].includes(String(session.role))) return NextResponse.json({error:"No autorizado"},{status:401});
+  const admin = await currentAdmin();
+  if (!admin) return NextResponse.json({error:"No autorizado"},{status:401});
   const organizations = await prisma.organization.findMany({
-    include: { schools: true, users: { select: { id:true,name:true,email:true,role:true,active:true,schoolId:true } } },
+    where: admin.role === "SUPERADMIN" ? {} : { id: admin.organizationId },
+    include: { schools: {orderBy:{name:"asc"}}, users: { select: { id:true,name:true,email:true,role:true,active:true,schoolId:true } } },
     orderBy: { createdAt: "desc" }
   });
   return NextResponse.json(organizations);
 }
 
 export async function POST(req: Request) {
-  const session=await getSession(); if(!session || !["SUPERADMIN","SOSTENEDOR"].includes(String(session.role))) return NextResponse.json({error:"No autorizado"},{status:401});
+  const admin = await currentAdmin();
+  if (!admin) return NextResponse.json({error:"No autorizado"},{status:401});
   const body = await req.json();
+
   if (body.kind === "organization") {
-    if (!body.name) return NextResponse.json({error:"Nombre requerido"},{status:400});
-    const item = await prisma.organization.create({data:{name:body.name,rut:body.rut||null}});
+    if (admin.role !== "SUPERADMIN") return NextResponse.json({error:"Solo el Superadministrador puede crear sostenedores"},{status:403});
+    if (!String(body.name||"").trim()) return NextResponse.json({error:"Nombre requerido"},{status:400});
+    const item = await prisma.organization.create({data:{name:String(body.name).trim(),rut:body.rut?String(body.rut).trim():null}});
     return NextResponse.json(item,{status:201});
   }
+
   if (body.kind === "school") {
-    if (!body.name || !body.organizationId) return NextResponse.json({error:"Nombre y sostenedor requeridos"},{status:400});
+    const organizationId = admin.role === "SUPERADMIN" ? String(body.organizationId||"") : admin.organizationId;
+    if (!String(body.name||"").trim() || !organizationId) return NextResponse.json({error:"Nombre y sostenedor requeridos"},{status:400});
+    const org = await prisma.organization.findUnique({where:{id:organizationId},select:{id:true,active:true}});
+    if (!org?.active) return NextResponse.json({error:"Sostenedor no válido"},{status:400});
     const item = await prisma.school.create({data:{
-      name:body.name,rbd:body.rbd||null,commune:body.commune||null,region:body.region||null,organizationId:body.organizationId
+      name:String(body.name).trim(),rbd:body.rbd?String(body.rbd).trim():null,commune:body.commune?String(body.commune).trim():null,region:body.region?String(body.region):null,organizationId
     }});
     return NextResponse.json(item,{status:201});
   }
+
   if (body.kind === "user") {
-    if (!body.name || !body.email || !body.organizationId || !body.role) return NextResponse.json({error:"Datos de usuario incompletos"},{status:400});
-    const passwordHash=body.password?await bcrypt.hash(String(body.password),12):null;
-    const item = await prisma.user.create({data:{name:body.name,email:String(body.email).toLowerCase(),role:body.role,passwordHash,organizationId:body.organizationId,schoolId:body.schoolId||null}});
-    return NextResponse.json(item,{status:201});
+    const organizationId = admin.role === "SUPERADMIN" ? String(body.organizationId||"") : admin.organizationId;
+    const role = String(body.role||"");
+    const allowed = admin.role === "SUPERADMIN" ? ["SOSTENEDOR","DIRECTOR","UTP","DOCENTE"] : ["DIRECTOR","UTP","DOCENTE"];
+    const password = String(body.password||"");
+    if (!String(body.name||"").trim() || !String(body.email||"").trim() || !organizationId || !allowed.includes(role)) return NextResponse.json({error:"Datos de usuario o rol no válidos"},{status:400});
+    if (password.length < 12) return NextResponse.json({error:"La contraseña debe tener al menos 12 caracteres"},{status:400});
+    if (body.schoolId) {
+      const school = await prisma.school.findFirst({where:{id:String(body.schoolId),organizationId,active:true},select:{id:true}});
+      if (!school) return NextResponse.json({error:"El establecimiento no pertenece al sostenedor seleccionado"},{status:400});
+    }
+    if (role !== "SOSTENEDOR" && !body.schoolId) return NextResponse.json({error:"Director, UTP y Docente deben estar asociados a un establecimiento"},{status:400});
+    const passwordHash = await bcrypt.hash(password,12);
+    try {
+      const item = await prisma.user.create({data:{name:String(body.name).trim(),email:String(body.email).trim().toLowerCase(),role:role as any,passwordHash,organizationId,schoolId:body.schoolId?String(body.schoolId):null}});
+      return NextResponse.json({id:item.id,name:item.name,email:item.email,role:item.role,schoolId:item.schoolId},{status:201});
+    } catch {
+      return NextResponse.json({error:"No fue posible crear el usuario. Verifica que el correo no esté registrado."},{status:400});
+    }
   }
   return NextResponse.json({error:"Operación no válida"},{status:400});
 }
