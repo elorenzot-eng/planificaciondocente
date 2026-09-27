@@ -4,3 +4,5 @@ Plataforma SaaS de gestión curricular, planificación y evaluación con IA. Nú
 <!-- deploy-sync: academic-jec-fix -->
 
 <!-- railway-sync-confirmed -->
+
+<!-- auto-deploy-enabled -->
