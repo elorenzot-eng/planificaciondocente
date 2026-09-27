@@ -12,7 +12,7 @@ const pilotOA=[
 
 async function currentUser(){
  const s=await getSession(); if(!s?.id)return null;
- const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{id:true,role:true,active:true,organizationId:true,schoolId:true}});
+ const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{id:true,role:true,accountType:true,active:true,organizationId:true,schoolId:true}});
  return u?.active?u:null;
 }
 async function ensurePilotOA(){
@@ -29,7 +29,7 @@ export async function GET(){
  const u=await currentUser();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
  await ensurePilotOA();
  const where:any={academicYear:{year:2027}};
- if(u.role==="DOCENTE"){if(!u.schoolId)return NextResponse.json({error:"Usuario docente sin establecimiento"},{status:403});where.schoolId=u.schoolId;where.teachingAssignments={some:{teacherId:u.id}}}
+ if(u.role==="DOCENTE"){if(!u.schoolId)return NextResponse.json({error:"Usuario docente sin establecimiento"},{status:403});where.schoolId=u.schoolId;if(u.accountType!=="INDIVIDUAL")where.teachingAssignments={some:{teacherId:u.id}}}
  else if(u.role==="DIRECTOR"||u.role==="UTP"){if(!u.schoolId)return NextResponse.json({error:"Usuario sin establecimiento"},{status:403});where.schoolId=u.schoolId}
  else if(u.role==="SOSTENEDOR"){if(!u.organizationId)return NextResponse.json({error:"Usuario sin organización"},{status:403});where.school={organizationId:u.organizationId}};
  const courses=await prisma.course.findMany({where,include:{teachingAssignments:{where:u.role==="DOCENTE"?{teacherId:u.id}:{},select:{subject:true,teacherId:true}},academicYear:true},orderBy:{name:"asc"}});
@@ -45,7 +45,7 @@ export async function POST(req:Request){
  if(!course)return NextResponse.json({error:"Curso no encontrado"},{status:404});
  if(u.role==="SOSTENEDOR"&&course.school.organizationId!==u.organizationId)return NextResponse.json({error:"Curso no autorizado"},{status:403});if((u.role==="DIRECTOR"||u.role==="UTP"||u.role==="DOCENTE")&&(!u.schoolId||course.schoolId!==u.schoolId))return NextResponse.json({error:"Curso no autorizado"},{status:403});
  const subject=String(b.subject||"").trim();const moduleId=String(b.moduleId||"").trim();
- if(u.role==="DOCENTE"&&!course.teachingAssignments.some(a=>a.teacherId===u.id&&(a.subject===subject||!!moduleId)))return NextResponse.json({error:"No tienes esta asignación docente"},{status:403});
+ if(u.role==="DOCENTE"&&u.accountType!=="INDIVIDUAL"&&!course.teachingAssignments.some(a=>a.teacherId===u.id&&(a.subject===subject||!!moduleId)))return NextResponse.json({error:"No tienes esta asignación docente"},{status:403});
  const ids=Array.isArray(b.objectiveIds)?b.objectiveIds.map(String):[];
  const objectives=moduleId?await prisma.learningObjective.findMany({where:{id:{in:ids},moduleLinks:{some:{moduleId,module:{active:true}}}}}):await prisma.learningObjective.findMany({where:{id:{in:ids},level:course.level,subject}});
  if(!objectives.length)return NextResponse.json({error:"Selecciona al menos un OA oficial disponible"},{status:400});
