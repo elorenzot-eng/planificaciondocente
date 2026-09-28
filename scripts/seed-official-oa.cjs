@@ -68,6 +68,52 @@ const history8=[
 ["HI08 OA 22","Aplicar el concepto de desarrollo para analizar diversos aspectos de las regiones en Chile, considerando el índice de desarrollo humano, la diversidad productiva, de intercambio y de consumo, las ventajas comparativas, la inserción en los mercados internacionales, y el desarrollo sustentable."]
 ];
 
+
+const arts8=[
+["AR08 OA 01","Crear trabajos visuales basados en la apreciación y el análisis de manifestaciones estéticas referidas a la relación entre personas, naturaleza y medioambiente, en diferentes contextos."],
+["AR08 OA 02","Crear trabajos visuales a partir de diferentes desafíos creativos, experimentando con materiales sustentables en técnicas de impresión, papeles y textiles."],
+["AR08 OA 03","Crear trabajos visuales a partir de diferentes desafíos creativos, usando medios de expresión contemporáneos como la instalación."],
+["AR08 OA 04","Analizar manifestaciones visuales patrimoniales y contemporáneas, contemplando criterios como: contexto, materialidad, lenguaje visual y propósito expresivo."],
+["AR08 OA 05","Evaluar trabajos visuales personales y de sus pares, considerando criterios como: materialidad, lenguaje visual y propósito expresivo."],
+["AR08 OA 06","Comparar y valorar espacios de difusión de las artes visuales, considerando: medios de expresión presentes, espacio, montaje, público y aporte a la comunidad."]
+];
+const music8=[
+["MU08 OA 01","Comunicar sentimientos, sensaciones e ideas al escuchar manifestaciones y obras musicales de Chile y el mundo, presentes en la tradición, oral, escrita y popular, integrando sus conocimientos en expresiones verbales, visuales, sonoras y corporales."],
+["MU08 OA 02","Describir analíticamente los elementos del lenguaje musical y los procedimientos compositivos evidentes en la música escuchada, interpretada y creada, y su relación con el propósito expresivo."],
+["MU08 OA 03","Cantar y tocar repertorio relacionado con la música escuchada, desarrollando habilidades tales como comprensión rítmica, melódica, conciencia de textura y estilo, expresividad, rigurosidad, fluidez de fraseo y dinámica, entre otros."],
+["MU08 OA 04","Interpretar repertorio diverso a una y más voces, con precisión rítmica y melódica, incorporando como guía el uso de medios de registro y transmisión, en la presentación de su quehacer musical."],
+["MU08 OA 05","Improvisar y crear música aplicando experiencias y conocimientos a partir de indicaciones determinadas, dando énfasis a acompañamientos y variaciones rítmicas, melódicas y/o armónicas."],
+["MU08 OA 06","Explicar fortalezas y áreas de crecimiento personal en la audición, interpretación, creación y reflexión, y su influencia en el trabajo musical propio y colectivo."],
+["MU08 OA 07","Apreciar el rol de la música en la sociedad a partir del repertorio trabajado, respetando la diversidad y riqueza de los contextos socioculturales."]
+];
+const physicalEducation8=[
+["EF08 OA 01","Seleccionar, combinar y aplicar con mayor dominio las habilidades motrices específicas de locomoción, manipulación y estabilidad en, al menos: Un deporte individual (atletismo, gimnasia artística, entre otros). Un deporte de oposición (tenis, bádminton, entre otros). Un deporte de colaboración (escalada, vóleibol duplas, entre otros). Un deporte de oposición/colaboración (básquetbol, hándbol, hockey, entre otros). Una danza (folclórica, moderna, entre otras)."],
+["EF08 OA 02","Seleccionar, evaluar y aplicar estrategias y tácticas específicas para la resolución de problemas durante la práctica de juegos o deportes; por ejemplo: ubicar la pelota lejos de un contrincante, utilizar los espacios para recibir un objeto sin oponentes, aplicar un sistema de juego (uno contra uno, tres contra tres, entre otros), entre otros."],
+["EF08 OA 03","Desarrollar la resistencia cardiovascular, la fuerza muscular, la velocidad y la flexibilidad para alcanzar una condición física saludable, considerando: Frecuencia. Intensidad. Tiempo de duración y recuperación. Progresión. Tipo de ejercicio (correr, andar en bicicleta, realizar trabajo de fuerza, ejercicios de flexibilidad, entre otros)."],
+["EF08 OA 04","Practicar regularmente una variedad de actividades físicas alternativas y/o deportivas en diferentes entornos, aplicando conductas de autocuidado y seguridad, como realizar al menos 30 minutos diarios de actividades físicas de su interés, evitar el consumo de drogas, tabaco y alcohol, ejecutar un calentamiento, aplicar reglas y medidas de seguridad, hidratarse con agua de forma permanente, entre otras."],
+["EF08 OA 05","Participar y promover una variedad de actividades físicas y/o deportivas de su interés y que se desarrollan en su comunidad escolar y/o en su entorno; por ejemplo: Promover la práctica regular de actividad física y deportiva. Participar en la organización de una variedad de actividades físicas y/o deportivas que sean de interés personal y de la comunidad. Utilizar estrategias para promover la práctica regular de actividad física; por ejemplo: elaborar afiches o diarios murales, entre otras."]
+];
+const technology8=[
+["TE08 OA 01","Identificar oportunidades o necesidades personales, grupales o locales que impliquen la creación de un producto tecnológico, reflexionando acerca de sus posibles aportes."],
+["TE08 OA 02","Diseñar y crear un producto tecnológico que atienda a la oportunidad o necesidad establecida, respetando criterios de eficiencia y sustentabilidad, y utilizando herramientas TIC en distintas etapas del proceso."],
+["TE08 OA 03","Evaluar el producto tecnológico creado, aplicando criterios propios y técnicos, y proponer mejoras asociadas tanto a los procesos como al producto final."],
+["TE08 OA 04","Comunicar el diseño, la planificación u otros procesos de la creación de productos tecnológicos, utilizando herramientas TIC, considerando diferentes tipos de objetivos y audiencias, y teniendo en cuenta aspectos éticos."],
+["TE08 OA 05","Examinar soluciones tecnológicas existentes que respondan a las oportunidades o necesidades establecidas considerando los destinatarios, aspectos técnicos y funcionales."],
+["TE08 OA 06","Establecer impactos positivos y/o negativos de las soluciones tecnológicas analizadas considerando aspectos éticos, ambientales y sociales, entre otros."]
+];
+const orientation8=[
+["OR08 OA 01","Construir, en forma individual y colectiva, representaciones positivas de sí mismos, incorporando sus características, motivaciones, intereses y capacidades, considerando las experiencias de cambio asociadas a la pubertad y adolescencia."],
+["OR08 OA 02","Analizar, considerando sus experiencias e inquietudes, la importancia que tiene para el desarrollo personal la integración de las distintas dimensiones de la sexualidad, el cuidado del cuerpo y la intimidad, discriminando formas de relacionarse en un marco de respeto y el uso de fuentes de información apropiadas para su desarrollo personal."],
+["OR08 OA 03","Identificar situaciones que puedan exponer a las y los adolescentes al consumo de sustancias nocivas para el organismo, conductas sexuales riesgosas, conductas violentas, entre otras problemáticas; reconociendo la importancia de desarrollar estrategias para enfrentarlas, y contar con recursos tales como: la comunicación asertiva y la ayuda de personas significativas y/o especializadas, dentro o fuera del establecimiento."],
+["OR08 OA 04","Integrar a su vida cotidiana acciones que favorezcan el bienestar y la vida saludable en el plano personal y en la comunidad escolar, optando por una alimentación saludable, un descanso apropiado, realizando actividad física o practicando deporte, resguardando la intimidad e integridad del cuerpo, incorporando medidas de seguridad en el uso de redes sociales, entre otros."],
+["OR08 OA 05","Analizar sus relaciones, presenciales o virtuales a través de las redes sociales, y las de su entorno inmediato atendiendo a los derechos de las personas involucradas considerando los principios de igualdad, dignidad, inclusión y no discriminación, identificando circunstancias en las que no se ha actuado conforme a estos derechos, y reconociendo el impacto en el bienestar de quienes se vean involucrados."],
+["OR08 OA 06","Resolver conflictos y desacuerdos a través del diálogo, la escucha empática y la búsqueda de soluciones en forma respetuosa y sin violencia, reconociendo que el conflicto es una oportunidad de aprendizaje y desarrollo inherente a las relaciones humanas."],
+["OR08 OA 07","Reconocer intereses, inquietudes, problemas o necesidades compartidas con su grupo de pertenencia, ya sea dentro del curso u otros espacios de participación, y colaborar para alcanzar metas comunes valorando el trabajo en equipo y los aportes de cada uno de sus miembros."],
+["OR08 OA 08","Elaborar acuerdos orientados al logro de fines compartidos por el curso, utilizando para esto los espacios de participación disponibles, como Consejo de Curso, asambleas, encuentros u otros, contribuyendo democráticamente a través del diálogo, el debate y el reconocimiento de representantes democráticamente electos; respetando la diversidad de opiniones y el derecho de hombres y mujeres."],
+["OR08 OA 09","Reconocer sus intereses, motivaciones, necesidades y capacidades, comprendiendo la relevancia del aprendizaje escolar sistemático para la exploración y desarrollo de estos, así como para la elaboración de sus proyectos personales."],
+["OR08 OA 10","Gestionar de manera autónoma su propio proceso de aprendizaje escolar, a través del establecimiento de metas progresivas de aprendizaje, la definición de líneas de acción para lograrlas, el monitoreo de logros y la redefinición de acciones que resulten necesarias."]
+];
+
 async function syncBlock({level,subject,objectives,expected}){
  if(objectives.length!==expected) throw new Error(`OA catalog mismatch for ${subject} ${level}: expected ${expected}, got ${objectives.length}`);
  let created=0,updated=0;
@@ -85,7 +131,12 @@ const blocks=[
  {level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8},
  {level:"8° Básico",subject:"Lengua y Literatura",expected:26,objectives:language8},
  {level:"8° Básico",subject:"Ciencias Naturales",expected:15,objectives:science8},
- {level:"8° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:22,objectives:history8}
+ {level:"8° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:22,objectives:history8},
+ {level:"8° Básico",subject:"Artes Visuales",expected:6,objectives:arts8},
+ {level:"8° Básico",subject:"Música",expected:7,objectives:music8},
+ {level:"8° Básico",subject:"Educación Física y Salud",expected:5,objectives:physicalEducation8},
+ {level:"8° Básico",subject:"Tecnología",expected:6,objectives:technology8},
+ {level:"8° Básico",subject:"Orientación",expected:10,objectives:orientation8}
 ];
 async function main(){
  for(const block of blocks){
