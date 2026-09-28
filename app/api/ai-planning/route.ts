@@ -3,24 +3,10 @@ import { prisma } from "../../../lib/prisma";
 import { getSession } from "../../../lib/auth";
 import {checkAiEntitlement,chargeAiUse} from "../../../lib/ai-entitlement";
 
-const officialOA1BasicScience=[{"code":"CN01 OA 01","text":"Reconocer y observar, por medio de la exploración, que los seres vivos crecen, responden a estímulos del medio, se reproducen y necesitan agua, alimento y aire para vivir, comparándolos con las cosas no vivas.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 02","text":"Observar y comparar animales de acuerdo a características como tamaño, cubierta corporal, estructuras de desplazamiento y hábitat, entre otras.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 03","text":"Observar e identificar, por medio de la exploración, las estructuras principales de las plantas: hojas, flores, tallos y raíces.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 04","text":"Observar y clasificar semillas, frutos, flores y tallos a partir de criterios como tamaño, forma, textura y color, entre otros.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 05","text":"Reconocer y comparar diversas plantas y animales de nuestro país, considerando las características observables, y proponiendo medidas para su cuidado.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 06","text":"Identificar y describir la ubicación y la función de los sentidos proponiendo medidas para protegerlos y para prevenir situaciones de riesgo.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 07","text":"Describir, dar ejemplos y practicar hábitos de vida saludable para mantener el cuerpo sano y prevenir enfermedades (actividad física, aseo del cuerpo, lavado de alimentos y alimentación saludable, entre otros).","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 08","text":"Explorar y describir los diferentes tipos de materiales en diversos objetos, clasificándolos según sus propiedades (goma-flexible, plástico-impermeable) e identificando su uso en la vida cotidiana.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 09","text":"Observar y describir los cambios que se producen en los materiales al aplicarles fuerza, luz, calor y agua.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 10","text":"Diseñar instrumentos tecnológicos simples considerando diversos materiales y sus propiedades para resolver problemas cotidianos.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 11","text":"Describir y registrar el ciclo diario y las diferencias entre el día y la noche, a partir de la observación del Sol, la Luna, las estrellas y la luminosidad del cielo, entre otras, y sus efectos en los seres vivos y el ambiente.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"},{"code":"CN01 OA 12","text":"Describir y comunicar los cambios del ciclo de las estaciones y sus efectos en los seres vivos y el ambiente.","level":"1° Básico","subject":"Ciencias Naturales","source":"Currículum Nacional · MINEDUC"}];
-const pilotOA=[
- {code:"MA08 OA 01",text:"Mostrar que comprenden la multiplicación y la división de números enteros: representándolos de manera concreta, pictórica y simbólica; aplicando procedimientos usados en la multiplicación y la división de números naturales; aplicando la regla de los signos de la operación; resolviendo problemas rutinarios y no rutinarios."},
- {code:"MA08 OA 02",text:"Utilizar las operaciones de multiplicación y división con los números racionales en el contexto de la resolución de problemas: representándolos en la recta numérica; involucrando diferentes conjuntos numéricos (fracciones, decimales y números enteros)."},
- {code:"MA08 OA 03",text:"Explicar la multiplicación, la división y el proceso de formar potencias de potencias de base natural y exponente natural hasta 3, de manera concreta, pictórica y simbólica."},
- {code:"MA08 OA 07",text:"Mostrar que comprenden la noción de función por medio de un cambio lineal: utilizando tablas; usando metáforas de máquinas; estableciendo reglas entre x e y; representando de manera gráfica (plano cartesiano, diagramas de venn), de manera manual y/o con software educativo."}
-];
-
 async function currentUser(){
  const s=await getSession(); if(!s?.id)return null;
  const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{id:true,role:true,accountType:true,active:true,organizationId:true,schoolId:true}});
  return u?.active?u:null;
-}
-async function ensurePilotOA(){
- for(const oa of [...pilotOA,...officialOA1BasicScience]){
-  const exists=await prisma.learningObjective.findFirst({where:{code:oa.code,level:"8° Básico",subject:"Matemática"}});
-  if(!exists)await prisma.learningObjective.create({data:{...oa,level:"8° Básico",subject:"Matemática",source:"Currículum Nacional · MINEDUC"}});
- }
 }
 function outputText(data:any){
  if(typeof data?.output_text==="string")return data.output_text;
@@ -28,7 +14,6 @@ function outputText(data:any){
 }
 export async function GET(){
  const u=await currentUser();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
- await ensurePilotOA();
  const where:any={academicYear:{year:2027}};
  if(u.role==="DOCENTE"){if(!u.schoolId)return NextResponse.json({error:"Usuario docente sin establecimiento"},{status:403});where.schoolId=u.schoolId;if(u.accountType!=="INDIVIDUAL")where.teachingAssignments={some:{teacherId:u.id}}}
  else if(u.role==="DIRECTOR"||u.role==="UTP"){if(!u.schoolId)return NextResponse.json({error:"Usuario sin establecimiento"},{status:403});where.schoolId=u.schoolId}
