@@ -23,21 +23,21 @@ const mathematics8=[
 ["MA08 OA 16","Evaluar la forma en que los datos están presentados: comparando la información de los mismos datos representada en distintos tipos de gráficos para determinar fortalezas y debilidades de cada uno; representándolas con diagramas, incluyendo el diagrama de cajón, de manera manual y/o con software educativo; detectando manipulaciones de gráficos para representar datos."],
 ["MA08 OA 17","Explicar el principio combinatorio multiplicativo: a partir de situaciones concretas; representándolo con tablas y árboles regulares, de manera manual y/o con software educativo; utilizándolo para calcular la probabilidad de un evento compuesto."]
 ];
-async function syncBlock({level,subject,objectives,expected}){
+async function syncBlock({level,subject,objectives,expected,sourceUrl}){
  if(objectives.length!==expected) throw new Error(`OA catalog mismatch for ${subject} ${level}: expected ${expected}, got ${objectives.length}`);
  let created=0,updated=0;
  for(const [code,text] of objectives){
   const rows=await prisma.learningObjective.findMany({where:{code,level,subject},orderBy:{id:"asc"}});
   if(rows.length){
-   await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source}});
+   await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source,sourceUrl}});
    if(rows.length>1) await prisma.learningObjective.deleteMany({where:{id:{in:rows.slice(1).map(x=>x.id)}}});
    updated++;
-  }else{await prisma.learningObjective.create({data:{code,text,level,subject,source}});created++;}
+  }else{await prisma.learningObjective.create({data:{code,text,level,subject,source,sourceUrl}});created++;}
  }
  return {created,updated};
 }
 const blocks=[
- {level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8}
+ {level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8,sourceUrl:"https://www.curriculumnacional.cl/curriculum/7o-basico-2o-medio/matematica/8-basico"}
 ];
 async function main(){
  for(const block of blocks){
