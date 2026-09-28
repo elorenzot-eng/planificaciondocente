@@ -6,15 +6,15 @@ const block=(level,subject,slug,objectives)=>({level,subject,expected:objectives
 module.exports=[
 block("3° Medio","Matemática","matematica/3-medio-fg",[
 ["FG-MATE-3M-OAC-01","Resolver problemas con números complejos, representándolos de forma pictórica y simbólica y apoyándose en herramientas tecnológicas."],
-["FG-MATE-3M-OAC-02","Tomar decisiones en situaciones de incertidumbre mediante análisis crítico de datos y modelos probabilísticos."],
-["FG-MATE-3M-OAC-03","Aplicar modelos matemáticos de crecimiento y decrecimiento para analizar fenómenos y resolver problemas."],
-["FG-MATE-3M-OAC-04","Resolver problemas geométricos mediante relaciones métricas y representaciones analíticas, con apoyo de herramientas tecnológicas."]
+["FG-MATE-3M-OAC-02","Tomar decisiones en situaciones de incerteza que involucren el análisis de datos estadísticos con medidas de dispersión y probabilidades condicionales."],
+["FG-MATE-3M-OAC-03","Aplicar modelos matemáticos que describen fenómenos o situaciones de crecimiento y decrecimiento, involucrando funciones exponencial y logarítmica, de forma manuscrita y con herramientas tecnológicas."],
+["FG-MATE-3M-OAC-04","Resolver problemas de geometría euclidiana que involucren relaciones métricas entre ángulos, arcos, cuerdas y secantes en la circunferencia, de forma manuscrita y con herramientas tecnológicas."]
 ]),
 block("4° Medio","Matemática","matematica/4-medio-fg",[
 ["FG-MATE-4M-OAC-01","Fundamentar decisiones financieras y económicas personales o comunitarias mediante porcentajes, tasas de interés e índices económicos."],
 ["FG-MATE-4M-OAC-02","Fundamentar decisiones en situaciones de incertidumbre mediante análisis crítico de datos y los modelos binomial y normal."],
-["FG-MATE-4M-OAC-03","Construir modelos de crecimiento, decrecimiento y fenómenos periódicos utilizando funciones potencia y trigonométricas."],
-["FG-MATE-4M-OAC-04","Resolver problemas de rectas y circunferencias en el plano mediante representación analítica, procedimientos manuales y herramientas tecnológicas."]
+["FG-MATE-4M-OAC-03","Construir modelos de situaciones o fenómenos de crecimiento, decrecimiento y periódicos que involucren funciones potencia de exponente entero y trigonométricas seno y coseno, de forma manuscrita y con herramientas tecnológicas."],
+["FG-MATE-4M-OAC-04","Resolver problemas acerca de rectas y circunferencias en el plano mediante su representación analítica, de forma manuscrita y con herramientas tecnológicas."]
 ]),
 block("3° Medio","Lengua y Literatura","lengua-literatura/3-medio-fg",[
 ["FG-LELI-3M-OAC-01","Formular interpretaciones literarias considerando recursos de la obra y relaciones intertextuales con otros referentes culturales y artísticos."],
