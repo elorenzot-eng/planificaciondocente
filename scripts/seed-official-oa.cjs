@@ -1,10 +1,25 @@
 const {PrismaClient}=require("@prisma/client");
 const prisma=new PrismaClient();
 const source="Currículum Nacional · MINEDUC";
+const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
 const level="8° Básico";
 const subject="Matemática";
 // Every block is checked against verifiedOATotals before it is persisted.
+const science1=[
+["CN01 OA 01","Reconocer y observar, por medio de la exploración, que los seres vivos crecen, responden a estímulos del medio, se reproducen y necesitan agua, alimento y aire para vivir, comparándolos con las cosas no vivas."],
+["CN01 OA 02","Observar y comparar animales de acuerdo a características como tamaño, cubierta corporal, estructuras de desplazamiento y hábitat, entre otras."],
+["CN01 OA 03","Observar e identificar, por medio de la exploración, las estructuras principales de las plantas: hojas, flores, tallos y raíces."],
+["CN01 OA 04","Observar y clasificar semillas, frutos, flores y tallos a partir de criterios como tamaño, forma, textura y color, entre otros."],
+["CN01 OA 05","Reconocer y comparar diversas plantas y animales de nuestro país, considerando las características observables, y proponiendo medidas para su cuidado."],
+["CN01 OA 06","Identificar y describir la ubicación y la función de los sentidos proponiendo medidas para protegerlos y para prevenir situaciones de riesgo."],
+["CN01 OA 07","Describir, dar ejemplos y practicar hábitos de vida saludable para mantener el cuerpo sano y prevenir enfermedades (actividad física, aseo del cuerpo, lavado de alimentos y alimentación saludable, entre otros)."],
+["CN01 OA 08","Explorar y describir los diferentes tipos de materiales en diversos objetos, clasificándolos según sus propiedades (goma-flexible, plástico-impermeable) e identificando su uso en la vida cotidiana."],
+["CN01 OA 09","Observar y describir los cambios que se producen en los materiales al aplicarles fuerza, luz, calor y agua."],
+["CN01 OA 10","Diseñar instrumentos tecnológicos simples considerando diversos materiales y sus propiedades para resolver problemas cotidianos."],
+["CN01 OA 11","Describir y registrar el ciclo diario y las diferencias entre el día y la noche, a partir de la observación del Sol, la Luna, las estrellas y la luminosidad del cielo, entre otras, y sus efectos en los seres vivos y el ambiente."],
+["CN01 OA 12","Describir y comunicar los cambios del ciclo de las estaciones y sus efectos en los seres vivos y el ambiente."]
+];
 const mathematics8=[
 ["MA08 OA 01","Mostrar que comprenden la multiplicación y la división de números enteros: representándolos de manera concreta, pictórica y simbólica; aplicando procedimientos usados en la multiplicación y la división de números naturales; aplicando la regla de los signos de la operación; resolviendo problemas rutinarios y no rutinarios."],
 ["MA08 OA 02","Utilizar las operaciones de multiplicación y división con los números racionales en el contexto de la resolución de problemas: representándolos en la recta numérica; involucrando diferentes conjuntos numéricos (fracciones, decimales y números enteros)."],
@@ -134,30 +149,31 @@ const english8=[
 ["IN08 OA 16","Demostrar conocimiento y uso del lenguaje en sus textos escritos por medio de las siguientes funciones: expresar cantidades, contar y enumerar; por ejemplo: there are a lot of people; all the/several people; she is the first/third; two hundred and fifty; expresar gustos, preferencias y opiniones; por ejemplo: I love/enjoy/hate/don't mind playing the piano; I'd/would like...I know...; I find...; comparar; por ejemplo: he is taller than Tom; this supermarket is the best/most expensive in the city; solicitar y dar información sobre tiempo; por ejemplo: When is the party? On Saturday, at 10:00 o'clock/tomorrow/next week/year; in December; expresar intenciones, planes futuros y predicciones; por ejemplo: I'm going to Easter Island next week; she's arriving tomorrow morning; Man will land on Mars in the year 2500/in the future; identificar y describir objetos, lugares y personas; por ejemplo: it's a big brown building; they are French; the man in...; the woman with...; the location/accommodation/destination was great; expresar tiempo, y dirección; por ejemplo: on Monday; in December; at 5 o'clock, into the bank; out of the store; from the supermarket; to school; expresarse con claridad, usando palabras y expresiones de uso común, sinónimos y palabras compuestas; por ejemplo: I like/love swimming; arrive at the station; look at; get on/off the bus; let's...; go on holidays; download; señalar frecuencia y secuencia de acciones; por ejemplo: I never/always/sometimes visit the country; first..., next..., then...; unir ideas; por ejemplo: he came and then we watched the film; it was far so we took the bus; I'll wait until Monday; the library is the best in town. It also has...; expresar condiciones; por ejemplo: If you cook, I'll help you."]
 ];
 
-async function syncBlock({level,subject,objectives,expected}){
+async function syncBlock({level,subject,objectives,expected,sourceUrl}){
  if(objectives.length!==expected) throw new Error(`OA catalog mismatch for ${subject} ${level}: expected ${expected}, got ${objectives.length}`);
  let created=0,updated=0;
  for(const [code,text] of objectives){
   const rows=await prisma.learningObjective.findMany({where:{code,level,subject},orderBy:{id:"asc"}});
   if(rows.length){
-   await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source,sourceUrl:sourceUrl7to2m}});
+   await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source,sourceUrl}});
    if(rows.length>1) await prisma.learningObjective.deleteMany({where:{id:{in:rows.slice(1).map(x=>x.id)}}});
    updated++;
-  }else{await prisma.learningObjective.create({data:{code,text,level,subject,source,sourceUrl:sourceUrl7to2m}});created++;}
+  }else{await prisma.learningObjective.create({data:{code,text,level,subject,source,sourceUrl}});created++;}
  }
  return {created,updated};
 }
 const blocks=[
- {level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8},
- {level:"8° Básico",subject:"Lengua y Literatura",expected:26,objectives:language8},
- {level:"8° Básico",subject:"Ciencias Naturales",expected:15,objectives:science8},
- {level:"8° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:22,objectives:history8},
- {level:"8° Básico",subject:"Artes Visuales",expected:6,objectives:arts8},
- {level:"8° Básico",subject:"Música",expected:7,objectives:music8},
- {level:"8° Básico",subject:"Educación Física y Salud",expected:5,objectives:physicalEducation8},
- {level:"8° Básico",subject:"Tecnología",expected:6,objectives:technology8},
- {level:"8° Básico",subject:"Orientación",expected:10,objectives:orientation8},
- {level:"8° Básico",subject:"Idioma Extranjero: Inglés",expected:16,objectives:english8}
+ {level:"1° Básico",subject:"Ciencias Naturales",expected:12,objectives:science1,sourceUrl:sourceUrl1to6},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Lengua y Literatura",expected:26,objectives:language8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Ciencias Naturales",expected:15,objectives:science8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:22,objectives:history8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Artes Visuales",expected:6,objectives:arts8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Música",expected:7,objectives:music8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Educación Física y Salud",expected:5,objectives:physicalEducation8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Tecnología",expected:6,objectives:technology8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Orientación",expected:10,objectives:orientation8},
+ {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Idioma Extranjero: Inglés",expected:16,objectives:english8}
 ];
 async function main(){
  for(const block of blocks){
