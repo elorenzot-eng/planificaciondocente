@@ -72,34 +72,26 @@ block("4° Medio","Filosofía","filosofia/4-medio-fg",[
 ["FG-FILO-4M-OAC-04","Formular posiciones filosóficas propias fundamentadas mediante análisis de textos, conceptos y problemas relevantes."],
 ["FG-FILO-4M-OAC-05","Aplicar herramientas filosóficas para examinar críticamente dilemas y controversias de la sociedad contemporánea."]
 ]),
-block("3° Medio","Ciencias para la Ciudadanía","ciencias-ciudadania/3-medio-fg",Array.from({length:12},(_,i)=>["FG-CICI-3M-OAC-"+String(i+1).padStart(2,"0"),[
-"Analizar la relación entre salud, bienestar y estilos de vida mediante evidencia científica y decisiones informadas.",
-"Explicar factores biológicos, ambientales y sociales asociados a salud y prevención de enfermedades.",
-"Evaluar medidas de prevención, diagnóstico y tratamiento considerando evidencia, riesgos y beneficios.",
-"Investigar problemas de salud pública y proponer acciones fundamentadas para el cuidado individual y colectivo.",
-"Analizar amenazas naturales y riesgos socioambientales considerando evidencia científica y características del territorio.",
-"Evaluar medidas de prevención, mitigación y adaptación frente a riesgos naturales y emergencias.",
-"Analizar impactos ambientales de actividades humanas y alternativas de desarrollo sustentable.",
-"Proponer soluciones a problemas socioambientales integrando evidencia científica, tecnología y participación ciudadana.",
-"Analizar el papel de la tecnología en la sociedad y sus impactos sobre personas, comunidades y ambiente.",
-"Evaluar controversias sociocientíficas considerando evidencia, incertidumbre, ética y diversidad de perspectivas.",
-"Investigar innovaciones científicas y tecnológicas y comunicar sus alcances, limitaciones, riesgos y oportunidades.",
-"Tomar decisiones responsables sobre problemas científicos y tecnológicos de interés ciudadano utilizando fuentes confiables."
-][i]])),
-block("4° Medio","Ciencias para la Ciudadanía","ciencias-ciudadania/4-medio-fg",Array.from({length:12},(_,i)=>["FG-CICI-4M-OAC-"+String(i+1).padStart(2,"0"),[
-"Evaluar problemas de salud y bienestar integrando evidencia científica, factores de riesgo y acciones preventivas.",
-"Analizar información científica sobre enfermedades, salud mental, nutrición y estilos de vida para fundamentar decisiones.",
-"Evaluar tecnologías y estrategias de diagnóstico, prevención y tratamiento considerando beneficios, riesgos y aspectos éticos.",
-"Diseñar acciones de promoción de salud y bienestar pertinentes al contexto de la comunidad.",
-"Analizar riesgos naturales y antrópicos mediante modelos, datos y evidencia científica.",
-"Evaluar estrategias comunitarias de reducción de riesgos, resiliencia y adaptación frente a emergencias y cambio ambiental.",
-"Investigar problemas ambientales complejos considerando sistemas naturales, actividad humana y sustentabilidad.",
-"Proponer soluciones sustentables evaluando dimensiones científicas, tecnológicas, sociales y económicas.",
-"Analizar innovaciones tecnológicas y sus transformaciones en la vida cotidiana, el trabajo y la sociedad.",
-"Evaluar críticamente información y controversias sociocientíficas presentes en medios y plataformas digitales.",
-"Argumentar decisiones sobre ciencia y tecnología considerando evidencia, incertidumbre, ética y consecuencias sociales.",
-"Desarrollar proyectos de investigación y comunicación científica orientados a problemas de interés ciudadano."
-][i]])),
+block("3° Medio","Ciencias para la Ciudadanía","ciencias-ciudadania/3-medio-fg",[
+["FG-CICI-3y4-OAC-01","Analizar, a partir de evidencias, situaciones de transmisión de agentes infecciosos a nivel nacional y mundial y evaluar críticamente posibles medidas de prevención."],
+["FG-CICI-3y4-OAC-02","Investigar y comparar diversas medicinas considerando su origen, conocimientos y prácticas para comprender su contribución a la salud."],
+["FG-CICI-3y4-OAC-03","Analizar, a partir de modelos, riesgos de origen natural o provocados por la acción humana en el contexto local y evaluar capacidades de prevención, mitigación y adaptación."],
+["FG-CICI-3y4-OAC-04","Investigar amenazas naturales y antrópicas, evaluando sus riesgos para la sociedad y el ambiente mediante evidencia científica y tecnológica."],
+["FG-CICI-3y4-OAC-05","Analizar cómo el desarrollo científico y tecnológico influye en la calidad de vida, la sociedad y el ambiente, considerando beneficios, riesgos e implicancias."],
+["FG-CICI-3y4-OAC-06","Evaluar críticamente información científica y tecnológica de diversas fuentes, distinguiendo evidencia, interpretación, alcances y limitaciones."],
+["FG-CICI-3y4-OAC-07","Diseñar proyectos para encontrar soluciones a problemas de interés científico y ciudadano, integrando creatividad, evidencia y herramientas tecnológicas."],
+["FG-CICI-3y4-OAC-08","Analizar críticamente implicancias sociales, económicas, éticas y ambientales de controversias públicas que involucran ciencia y tecnología."]
+]),
+block("4° Medio","Ciencias para la Ciudadanía","ciencias-ciudadania/4-medio-fg",[
+["FG-CICI-3y4-OAC-01","Analizar, a partir de evidencias, situaciones de transmisión de agentes infecciosos a nivel nacional y mundial y evaluar críticamente posibles medidas de prevención."],
+["FG-CICI-3y4-OAC-02","Investigar y comparar diversas medicinas considerando su origen, conocimientos y prácticas para comprender su contribución a la salud."],
+["FG-CICI-3y4-OAC-03","Analizar, a partir de modelos, riesgos de origen natural o provocados por la acción humana en el contexto local y evaluar capacidades de prevención, mitigación y adaptación."],
+["FG-CICI-3y4-OAC-04","Investigar amenazas naturales y antrópicas, evaluando sus riesgos para la sociedad y el ambiente mediante evidencia científica y tecnológica."],
+["FG-CICI-3y4-OAC-05","Analizar cómo el desarrollo científico y tecnológico influye en la calidad de vida, la sociedad y el ambiente, considerando beneficios, riesgos e implicancias."],
+["FG-CICI-3y4-OAC-06","Evaluar críticamente información científica y tecnológica de diversas fuentes, distinguiendo evidencia, interpretación, alcances y limitaciones."],
+["FG-CICI-3y4-OAC-07","Diseñar proyectos para encontrar soluciones a problemas de interés científico y ciudadano, integrando creatividad, evidencia y herramientas tecnológicas."],
+["FG-CICI-3y4-OAC-08","Analizar críticamente implicancias sociales, económicas, éticas y ambientales de controversias públicas que involucran ciencia y tecnología."]
+]),
 block("3° Medio","Idioma Extranjero: Inglés","ingles/3-medio-fg",[
 ["FG-INGL-3M-OAC-01","Comprender textos orales y audiovisuales en inglés sobre temas actuales, identificando ideas, detalles, relaciones y puntos de vista."],
 ["FG-INGL-3M-OAC-02","Comprender textos escritos y multimodales en inglés, evaluando propósito, información relevante y perspectivas."],
