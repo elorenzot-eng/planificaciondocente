@@ -418,3 +418,13 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .nextCreation small{font-weight:900;letter-spacing:.09em;color:#159fd3}.nextCreation h3{margin:4px 0 5px;color:#123f6d;font-size:1.35rem}.nextCreation p{margin:0;color:#60758c}
 .nextCreationActions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.nextCreationActions button{border:1px solid #cbdbe8;background:#fff;color:#123f6d;font-weight:800;border-radius:10px;padding:11px 14px}.nextCreationActions button:first-child{background:#123f6d;color:#fff;border-color:#123f6d}.nextCreationActions button:nth-child(2){border-color:#e83e8c;color:#b91c65}
 @media(max-width:850px){.nextCreation{align-items:flex-start;flex-direction:column}.nextCreationActions{justify-content:flex-start}}
+
+
+/* Educantay · Mi espacio docente */
+.folderStats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 18px}
+.folderStats button{background:#fff;border:1px solid #dbe6ef;border-radius:16px;padding:17px 20px;text-align:left;box-shadow:0 8px 24px rgba(18,63,109,.05);cursor:pointer;transition:.18s ease}
+.folderStats button:hover,.folderStats button.active{transform:translateY(-1px);border-color:#159fd3;box-shadow:0 10px 26px rgba(18,63,109,.09)}
+.folderStats button:nth-child(2).active{border-color:#159fd3}.folderStats button:nth-child(3).active{border-color:#e83e8c}.folderStats button:nth-child(4).active{border-color:#e2ad19}
+.folderStats b{display:block;font-size:1.55rem;color:#123f6d}.folderStats span{color:#657a90;font-weight:700}
+.folderFilters{margin-bottom:16px}.folderActions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.folderActions button{white-space:nowrap}.folderActions .folderPrimary{background:#123f6d;color:#fff;border-color:#123f6d}
+@media(max-width:800px){.folderStats{grid-template-columns:1fr 1fr}.folderActions{justify-content:flex-start}}
