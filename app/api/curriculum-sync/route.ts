@@ -10,6 +10,7 @@ async function admin(){
 }
 export async function GET(){
  const u=await admin();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
+ const duplicateGroups=await prisma.learningObjective.groupBy({by:["code","level","subject"],_count:{_all:true},having:{id:{_count:{gt:1}}}} as any);
  const rows=await prisma.learningObjective.groupBy({by:["level","subject"],where:{subject:{not:null}},_count:{_all:true},orderBy:[{level:"asc"},{subject:"asc"}]});
  return NextResponse.json({coverage:rows.map(x=>({level:x.level,subject:x.subject,count:x._count._all}))});
 }
