@@ -14,7 +14,7 @@ export const OA_CATALOG_SCOPE = {
   subjects1to4: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects5to6: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects7to2m: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lengua y Literatura","Matemática","Música","Orientación","Tecnología"],
-  subjects3to4m: ["Lengua y Literatura","Matemática","Idioma Extranjero: Inglés","Ciencias para la Ciudadanía","Educación Ciudadana","Filosofía"]
+  subjects3to4m: ["Lengua y Literatura","Matemática","Idioma Extranjero: Inglés","Ciencias para la Ciudadanía","Educación Ciudadana","Filosofía","Biología Celular y Molecular","Ciencias de la Salud","Física","Química","Geometría 3D"]
 } as const;
 
 export function expectedOASubjects(level:string): readonly string[] {
@@ -130,8 +130,8 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Tecnología":6,
   "Orientación":10
  },
- "3° Medio HC":{"Matemática":4,"Lengua y Literatura":9,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":6},
- "4° Medio HC":{"Matemática":4,"Lengua y Literatura":8,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":5},
+ "3° Medio HC":{"Matemática":4,"Lengua y Literatura":9,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":6,"Biología Celular y Molecular":7,"Ciencias de la Salud":5,"Física":6,"Química":7,"Geometría 3D":5},
+ "4° Medio HC":{"Matemática":4,"Lengua y Literatura":8,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":5,"Biología Celular y Molecular":7,"Ciencias de la Salud":5,"Física":6,"Química":7},
  "2° Medio":{
   "Matemática":12,
   "Lengua y Literatura":24,
@@ -250,5 +250,6 @@ export const loadedCatalogBlocks = new Set([
  "2° Medio|Tecnología",
  "2° Medio|Orientación",
  "3° Medio HC|Matemática","3° Medio HC|Lengua y Literatura","3° Medio HC|Idioma Extranjero: Inglés","3° Medio HC|Ciencias para la Ciudadanía","3° Medio HC|Educación Ciudadana","3° Medio HC|Filosofía",
- "4° Medio HC|Matemática","4° Medio HC|Lengua y Literatura","4° Medio HC|Idioma Extranjero: Inglés","4° Medio HC|Ciencias para la Ciudadanía","4° Medio HC|Educación Ciudadana","4° Medio HC|Filosofía"]);
+ "4° Medio HC|Matemática","4° Medio HC|Lengua y Literatura","4° Medio HC|Idioma Extranjero: Inglés","4° Medio HC|Ciencias para la Ciudadanía","4° Medio HC|Educación Ciudadana","4° Medio HC|Filosofía",
+ "3° Medio HC|Biología Celular y Molecular","4° Medio HC|Biología Celular y Molecular","3° Medio HC|Ciencias de la Salud","4° Medio HC|Ciencias de la Salud","3° Medio HC|Física","4° Medio HC|Física","3° Medio HC|Química","4° Medio HC|Química","3° Medio HC|Geometría 3D"]);
 export function isCatalogBlockSeeded(level:string,subject:string){return loadedCatalogBlocks.has(level+"|"+subject)}
