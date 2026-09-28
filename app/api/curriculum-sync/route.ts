@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {prisma} from "../../../lib/prisma";
 import {getSession} from "../../../lib/auth";
-import {OA_CATALOG_SCOPE,expectedOASubjects,expectedOACount,isVariantBasedOACatalog} from "../../../lib/oa-catalog-scope";
+import {OA_CATALOG_SCOPE,expectedOASubjects,expectedOACount,isVariantBasedOACatalog,isCatalogBlockSeeded} from "../../../lib/oa-catalog-scope";
 
 async function admin(){
  const s=await getSession(); if(!s?.id)return null;
@@ -18,7 +18,8 @@ export async function GET(){
   const expected=expectedOACount(level,subject);
   const variantBased=isVariantBasedOACatalog(subject);
   const verified=expected!==null;
-  return {level,subject,count,expected,verified,variantBased,loaded:variantBased?count>0:verified?count===expected:false};
+  const seeded=isCatalogBlockSeeded(level,subject);
+  return {level,subject,count,expected,verified,seeded,variantBased,loaded:variantBased?count>0:seeded&&verified?count===expected:false};
  }));
  const missing=matrix.filter(x=>!x.loaded);
  const unverified=matrix.filter(x=>!x.variantBased&&!x.verified);
