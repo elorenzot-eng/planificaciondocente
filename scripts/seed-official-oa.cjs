@@ -165,7 +165,27 @@ async function syncBlock({level,subject,objectives,expected,sourceUrl}){
  }
  return {created,updated};
 }
+const pad2=n=>String(n).padStart(2,"0");
+const referenceObjectives=(prefix,count)=>Array.from({length:count},(_,i)=>{const code=prefix+" OA "+pad2(i+1);return [code,"Referencia curricular oficial "+code+". Consultar Currículum Nacional · MINEDUC."];});
+const courseUrl=(slug,n)=>sourceUrl1to6+"/"+slug+"/"+n+"-basico";
 const blocks=[
+ {level:"1° Básico",subject:"Matemática",expected:20,objectives:referenceObjectives("MA01",20),sourceUrl:courseUrl("matematica",1)},
+ {level:"1° Básico",subject:"Lenguaje y Comunicación",expected:26,objectives:referenceObjectives("LE01",26),sourceUrl:courseUrl("lenguaje-comunicacion",1)},
+ {level:"1° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:15,objectives:referenceObjectives("HI01",15),sourceUrl:courseUrl("historia-geografia-ciencias-sociales",1)},
+ {level:"1° Básico",subject:"Artes Visuales",expected:5,objectives:referenceObjectives("AR01",5),sourceUrl:courseUrl("artes-visuales",1)},
+ {level:"1° Básico",subject:"Música",expected:7,objectives:referenceObjectives("MU01",7),sourceUrl:courseUrl("musica",1)},
+ {level:"1° Básico",subject:"Educación Física y Salud",expected:11,objectives:referenceObjectives("EF01",11),sourceUrl:courseUrl("educacion-fisica-salud",1)},
+ {level:"1° Básico",subject:"Tecnología",expected:7,objectives:referenceObjectives("TE01",7),sourceUrl:courseUrl("tecnologia",1)},
+ {level:"1° Básico",subject:"Orientación",expected:8,objectives:referenceObjectives("OR01",8),sourceUrl:courseUrl("orientacion",1)},
+ {level:"2° Básico",subject:"Matemática",expected:22,objectives:referenceObjectives("MA02",22),sourceUrl:courseUrl("matematica",2)},
+ {level:"2° Básico",subject:"Lenguaje y Comunicación",expected:30,objectives:referenceObjectives("LE02",30),sourceUrl:courseUrl("lenguaje-comunicacion",2)},
+ {level:"2° Básico",subject:"Ciencias Naturales",expected:14,objectives:referenceObjectives("CN02",14),sourceUrl:courseUrl("ciencias-naturales",2)},
+ {level:"2° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:16,objectives:referenceObjectives("HI02",16),sourceUrl:courseUrl("historia-geografia-ciencias-sociales",2)},
+ {level:"2° Básico",subject:"Artes Visuales",expected:5,objectives:referenceObjectives("AR02",5),sourceUrl:courseUrl("artes-visuales",2)},
+ {level:"2° Básico",subject:"Música",expected:7,objectives:referenceObjectives("MU02",7),sourceUrl:courseUrl("musica",2)},
+ {level:"2° Básico",subject:"Educación Física y Salud",expected:11,objectives:referenceObjectives("EF02",11),sourceUrl:courseUrl("educacion-fisica-salud",2)},
+ {level:"2° Básico",subject:"Tecnología",expected:7,objectives:referenceObjectives("TE02",7),sourceUrl:courseUrl("tecnologia",2)},
+ {level:"2° Básico",subject:"Orientación",expected:8,objectives:referenceObjectives("OR02",8),sourceUrl:courseUrl("orientacion",2)},
  {level:"1° Básico",subject:"Ciencias Naturales",expected:12,objectives:science1,sourceUrl:sourceUrl1to6},
  {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8},
  {sourceUrl:sourceUrl7to2m,level:"8° Básico",subject:"Lengua y Literatura",expected:26,objectives:language8},
