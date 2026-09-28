@@ -324,3 +324,7 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .trustStrip span:nth-child(4){color:#11833d!important;background:linear-gradient(180deg,rgba(22,163,74,.11),#fff 62%)!important}
 .trustStrip span:nth-child(5){color:#245bd7!important;background:linear-gradient(180deg,rgba(37,99,235,.10),#fff 62%)!important}
 @media(max-width:760px){.trustStrip{min-height:auto!important}.trustStrip span{font-size:1.05rem!important;padding:16px 10px!important}}
+
+/* Retiro de ilustración de baja resolución del bloque comercial */
+.pricingSection:before{display:none!important;content:none!important;background:none!important}
+.pricingSection>div:first-child{padding-left:0!important}
