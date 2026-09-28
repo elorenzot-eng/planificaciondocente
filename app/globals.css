@@ -328,3 +328,8 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 /* Retiro de ilustración de baja resolución del bloque comercial */
 .pricingSection:before{display:none!important;content:none!important;background:none!important}
 .pricingSection>div:first-child{padding-left:0!important}
+
+/* Ilustración docente de reemplazo en alta nitidez para la portada */
+.pricingSection:before{display:block!important;content:""!important;position:absolute!important;left:24px!important;bottom:0!important;width:230px!important;height:230px!important;background:transparent url("/planificaciondocente-docente-ia.webp") center bottom/contain no-repeat!important;border-radius:24px!important;opacity:1!important}
+.pricingSection>div:first-child{padding-left:220px!important}
+@media(max-width:900px){.pricingSection:before{position:relative!important;left:auto!important;bottom:auto!important;width:min(260px,70vw)!important;height:240px!important;margin:0 auto 8px!important}.pricingSection>div:first-child{padding-left:0!important}}
