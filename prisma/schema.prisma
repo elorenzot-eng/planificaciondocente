@@ -314,3 +314,19 @@ model PasswordResetToken {
   user User @relation(fields:[userId],references:[id],onDelete:Cascade)
   @@index([userId,expiresAt])
 }
+
+model AgendaTask {
+  id String @id @default(cuid())
+  title String
+  kind String
+  scheduledAt DateTime
+  completed Boolean @default(false)
+  notes String?
+  userId String
+  courseId String?
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  course Course? @relation(fields:[courseId],references:[id],onDelete:SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId,scheduledAt])
+}
