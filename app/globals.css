@@ -314,3 +314,13 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .landingHero .eyebrow{font-size:.94rem!important;font-weight:900!important;letter-spacing:.13em!important}
 .landingCta.big{font-size:1.05rem!important;padding:15px 23px!important}
 @media(max-width:760px){.heroBenefits{grid-template-columns:1fr}.landingHero .heroCopy h1{font-size:clamp(2.25rem,12vw,3.5rem)!important}.heroLead{font-size:1.05rem!important}}
+
+/* Franja de capacidades: lectura inmediata y sello de marca */
+.trustStrip{min-height:112px!important;align-items:stretch!important}
+.trustStrip span{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;font-size:clamp(1.08rem,1.35vw,1.34rem)!important;font-weight:900!important;line-height:1.15!important;letter-spacing:-.015em!important;padding:22px 16px!important;color:#123f6d!important;background:#fff!important}
+.trustStrip span:nth-child(1){color:#159fd3!important;background:linear-gradient(180deg,rgba(56,189,248,.11),#fff 62%)!important}
+.trustStrip span:nth-child(2){color:#b78200!important;background:linear-gradient(180deg,rgba(244,197,66,.15),#fff 62%)!important}
+.trustStrip span:nth-child(3){color:#d92b79!important;background:linear-gradient(180deg,rgba(232,62,140,.11),#fff 62%)!important}
+.trustStrip span:nth-child(4){color:#11833d!important;background:linear-gradient(180deg,rgba(22,163,74,.11),#fff 62%)!important}
+.trustStrip span:nth-child(5){color:#245bd7!important;background:linear-gradient(180deg,rgba(37,99,235,.10),#fff 62%)!important}
+@media(max-width:760px){.trustStrip{min-height:auto!important}.trustStrip span{font-size:1.05rem!important;padding:16px 10px!important}}
