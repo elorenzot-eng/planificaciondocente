@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" role="img" aria-label="PlanificaciónDocente PD">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#39d342"/><stop offset="1" stop-color="#008f35"/></linearGradient></defs>
+<rect width="240" height="180" fill="transparent"/>
+<g transform="translate(16 12)">
+<path d="M22 150V12h66c46 0 72 24 72 58 0 35-26 59-72 59H50v21H22zm28-48h36c29 0 44-11 44-32 0-20-15-31-44-31H50v63z" fill="#06336d"/>
+<path d="M105 150V42h36c48 0 76 22 76 54s-28 54-76 54h-36zm29-26h9c28 0 44-10 44-28s-16-28-44-28h-9v56z" fill="url(#g)"/>
+<rect x="116" y="106" width="12" height="32" rx="3" fill="#39d342"/>
+<rect x="132" y="91" width="12" height="47" rx="3" fill="#20b83b"/>
+<rect x="148" y="75" width="12" height="63" rx="3" fill="#079638"/>
+</g></svg>
