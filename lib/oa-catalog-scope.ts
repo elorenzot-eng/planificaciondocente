@@ -158,7 +158,7 @@ export const loadedCatalogBlocks = new Set([
  "8° Básico|Educación Física y Salud",
  "8° Básico|Tecnología",
  "8° Básico|Orientación",
- "8° Básico|Idioma Extranjero: Inglés"
+ "8° Básico|Idioma Extranjero: Inglés",
 
  "1° Básico|Matemática",
  "1° Básico|Lenguaje y Comunicación",
