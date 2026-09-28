@@ -10,7 +10,7 @@ export const OA_CATALOG_SCOPE = {
   licensingNote: "La ficha oficial de Bases Curriculares 7° Básico a 2° Medio informa restricciones de uso comercial. Verificar autorización/licencia antes de persistir o redistribuir textos íntegros de OA en el SaaS.",
   optionalPrograms1to4: ["Inglés (Propuesta)"],
   separatePrograms: ["Religión"],
-  catalogStatus: "IN_PROGRESS",
+  catalogStatus: "GENERAL_FORMATION_3_4_MEDIO_LOADED",
   subjects1to4: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects5to6: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects7to2m: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lengua y Literatura","Matemática","Música","Orientación","Tecnología"],
