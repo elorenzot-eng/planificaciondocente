@@ -3,9 +3,8 @@ const prisma=new PrismaClient();
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
-const level="8° Básico";
-const subject="Matemática";
-// Every block is checked against verifiedOATotals before it is persisted.
+// Every block is checked against an expected total before it is persisted.
+// Keep this seed additive: new verified blocks are appended; existing levels are never replaced wholesale.
 const science1=[
 ["CN01 OA 01","Reconocer y observar, por medio de la exploración, que los seres vivos crecen, responden a estímulos del medio, se reproducen y necesitan agua, alimento y aire para vivir, comparándolos con las cosas no vivas."],
 ["CN01 OA 02","Observar y comparar animales de acuerdo a características como tamaño, cubierta corporal, estructuras de desplazamiento y hábitat, entre otras."],
