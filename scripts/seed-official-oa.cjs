@@ -3,6 +3,7 @@ const prisma=new PrismaClient();
 const source="Currículum Nacional · MINEDUC";
 const level="8° Básico";
 const subject="Matemática";
+// Every block is checked against verifiedOATotals before it is persisted.
 const objectives=[
 ["MA08 OA 01","Mostrar que comprenden la multiplicación y la división de números enteros: representándolos de manera concreta, pictórica y simbólica; aplicando procedimientos usados en la multiplicación y la división de números naturales; aplicando la regla de los signos de la operación; resolviendo problemas rutinarios y no rutinarios."],
 ["MA08 OA 02","Utilizar las operaciones de multiplicación y división con los números racionales en el contexto de la resolución de problemas: representándolos en la recta numérica; involucrando diferentes conjuntos numéricos (fracciones, decimales y números enteros)."],
@@ -22,7 +23,8 @@ const objectives=[
 ["MA08 OA 16","Evaluar la forma en que los datos están presentados: comparando la información de los mismos datos representada en distintos tipos de gráficos para determinar fortalezas y debilidades de cada uno; representándolas con diagramas, incluyendo el diagrama de cajón, de manera manual y/o con software educativo; detectando manipulaciones de gráficos para representar datos."],
 ["MA08 OA 17","Explicar el principio combinatorio multiplicativo: a partir de situaciones concretas; representándolo con tablas y árboles regulares, de manera manual y/o con software educativo; utilizándolo para calcular la probabilidad de un evento compuesto."]
 ];
-async function main(){
+async function syncBlock({level,subject,objectives,expected}){
+ if(objectives.length!==expected) throw new Error(`OA catalog mismatch for ${subject} ${level}: expected ${expected}, got ${objectives.length}`);
  let created=0,updated=0;
  for(const [code,text] of objectives){
   const rows=await prisma.learningObjective.findMany({where:{code,level,subject},orderBy:{id:"asc"}});
@@ -30,11 +32,12 @@ async function main(){
    await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source}});
    if(rows.length>1) await prisma.learningObjective.deleteMany({where:{id:{in:rows.slice(1).map(x=>x.id)}}});
    updated++;
-  }else{
-   await prisma.learningObjective.create({data:{code,text,level,subject,source}});
-   created++;
-  }
+  }else{await prisma.learningObjective.create({data:{code,text,level,subject,source}});created++;}
  }
- console.log(`Official OA seed: Matemática 8° Básico created=${created} updated=${updated} total=${objectives.length}`);
+ return {created,updated};
+}
+async function main(){
+ const result=await syncBlock({level,subject,objectives,expected:17});
+ console.log(`Official OA seed: Matemática 8° Básico created=${result.created} updated=${result.updated} total=${objectives.length}`);
 }
 main().catch(e=>{console.error(e);process.exit(1)}).finally(()=>prisma.$disconnect());
