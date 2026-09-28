@@ -162,7 +162,10 @@ async function syncBlock({level,subject,objectives,expected,sourceUrl}){
  for(const [code,text] of objectives){
   const rows=await prisma.learningObjective.findMany({where:{code,level,subject},orderBy:{id:"asc"}});
   if(rows.length){
-   await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source,sourceUrl}});
+   const incomingGeneric=String(text).startsWith("Referencia curricular oficial ");
+   const existingGeneric=String(rows[0].text||"").startsWith("Referencia curricular oficial ");
+   const data=(!incomingGeneric||existingGeneric)?{text,source,sourceUrl}:{source,sourceUrl};
+   await prisma.learningObjective.update({where:{id:rows[0].id},data});
    if(rows.length>1) await prisma.learningObjective.deleteMany({where:{id:{in:rows.slice(1).map(x=>x.id)}}});
    updated++;
   }else{await prisma.learningObjective.create({data:{code,text,level,subject,source,sourceUrl}});created++;}
