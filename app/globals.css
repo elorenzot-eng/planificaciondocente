@@ -144,3 +144,77 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .brand{display:flex;align-items:center;gap:10px}
 .brand .pdLogo{width:54px;height:44px;object-fit:contain;flex:0 0 auto;border-radius:8px}
 .brand>div{line-height:1.05}
+
+/* ===== Sello cromático institucional global =====
+   Azul · amarillo · fucsia · verde en todos los contenedores funcionales */
+.workspace .panel,
+.workspace .moduleCard,
+.workspace .specialtyCard,
+.workspace .hcOfferCard,
+.workspace .callout,
+.workspace .kpi,
+.workspace .visualCard,
+.workspace .visualOrganizer,
+.workspace .visualActivity,
+.workspace .curriculumSource,
+.workspace .tpContext,
+.workspace .oa,
+.workspace .hcOfferings .form{
+ position:relative;
+ overflow:hidden;
+ border-top-width:4px;
+ border-top-style:solid;
+}
+
+/* Secuencia por agrupación: conserva una lectura ordenada y reconocible */
+.workspace .panel:nth-of-type(4n+1),
+.workspace .moduleCard:nth-child(4n+1),
+.workspace .specialtyCard:nth-child(4n+1),
+.workspace .hcOfferCard:nth-child(4n+1),
+.workspace .callout:nth-child(4n+1),
+.workspace .kpi:nth-child(4n+1),
+.workspace .visualCard:nth-child(4n+1),
+.workspace .oa:nth-child(4n+1){border-top-color:var(--blue)}
+
+.workspace .panel:nth-of-type(4n+2),
+.workspace .moduleCard:nth-child(4n+2),
+.workspace .specialtyCard:nth-child(4n+2),
+.workspace .hcOfferCard:nth-child(4n+2),
+.workspace .callout:nth-child(4n+2),
+.workspace .kpi:nth-child(4n+2),
+.workspace .visualCard:nth-child(4n+2),
+.workspace .oa:nth-child(4n+2){border-top-color:var(--yellow)}
+
+.workspace .panel:nth-of-type(4n+3),
+.workspace .moduleCard:nth-child(4n+3),
+.workspace .specialtyCard:nth-child(4n+3),
+.workspace .hcOfferCard:nth-child(4n+3),
+.workspace .callout:nth-child(4n+3),
+.workspace .kpi:nth-child(4n+3),
+.workspace .visualCard:nth-child(4n+3),
+.workspace .oa:nth-child(4n+3){border-top-color:var(--magenta)}
+
+.workspace .panel:nth-of-type(4n),
+.workspace .moduleCard:nth-child(4n),
+.workspace .specialtyCard:nth-child(4n),
+.workspace .hcOfferCard:nth-child(4n),
+.workspace .callout:nth-child(4n),
+.workspace .kpi:nth-child(4n),
+.workspace .visualCard:nth-child(4n),
+.workspace .oa:nth-child(4n){border-top-color:var(--green)}
+
+/* Bloques singulares también llevan la identidad de marca */
+.workspace .curriculumSource,.workspace .tpContext{border-top-color:var(--blue)}
+.workspace .visualOrganizer{border-top-color:var(--yellow)}
+.workspace .visualActivity{border-top-color:var(--green)}
+.workspace .hcOfferings .form:nth-child(odd){border-top-color:var(--magenta)}
+.workspace .hcOfferings .form:nth-child(even){border-top-color:var(--green)}
+
+/* Formularios principales: azul para configuración, fucsia para resultado */
+.workspace .builder>.panel:first-child{border-top-color:var(--blue)}
+.workspace .builder>.panel:nth-child(2){border-top-color:var(--magenta)}
+
+/* Pequeño marcador cromático en títulos para reforzar marca sin saturar */
+.workspace .panel>h2:first-child,.workspace .panel>.panelHead h2{
+ color:var(--navy);
+}
