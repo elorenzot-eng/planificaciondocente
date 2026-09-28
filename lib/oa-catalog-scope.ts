@@ -52,7 +52,11 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Matemática":24,
   "Lenguaje y Comunicación":30,
   "Ciencias Naturales":14,
-  "Historia, Geografía y Ciencias Sociales":22
+  "Historia, Geografía y Ciencias Sociales":22,
+  "Artes Visuales":5,
+  "Música":8,
+  "Educación Física y Salud":11,
+  "Tecnología":7
  }
 };
 export function expectedOACount(level:string,subject:string){return verifiedOATotals[level]?.[subject]??null}
