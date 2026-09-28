@@ -253,3 +253,18 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .rubricTable th small,.rubricTable td small{display:block;margin-top:4px;font-weight:600;color:var(--muted)}
 .rubricCriterion{background:#f8fafc;color:#172033;font-weight:800}
 @media print{.rubricTableWrap{overflow:visible}.rubricTable{font-size:9pt;table-layout:fixed}.rubricTable th,.rubricTable td{padding:2mm;break-inside:avoid}.rubricTable thead{display:table-header-group}.rubricTable tr{break-inside:avoid}}
+
+/* Formatos nativos de instrumentos de evaluación */
+.structuredInstrument{margin:14px 0 20px}.instrumentTableWrap{width:100%;overflow-x:auto}
+.instrumentTable{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;line-height:1.35;background:#fff}
+.instrumentTable th,.instrumentTable td{border:1px solid #aebccc;padding:8px;vertical-align:top;text-align:left}
+.instrumentTable thead th{background:#eef5fb;color:var(--navy);font-weight:800;text-align:center}
+.instrumentTable thead th:first-child{text-align:left;width:28%}.instrumentTable tbody th{background:#f8fafc}
+.instrumentTable th small{display:block;margin-top:4px;color:var(--muted);font-weight:600}
+.checkBox{display:block;width:16px;height:16px;border:1.5px solid #65788d;border-radius:2px;margin:2px auto}
+.anecdotalGrid{display:grid;grid-template-columns:1fr 1fr;border:1px solid #aebccc;background:#fff}
+.anecdotalField{padding:10px 12px;min-height:70px;border-right:1px solid #d6dde6;border-bottom:1px solid #d6dde6}
+.anecdotalField:nth-child(even){border-right:0}.anecdotalField b{color:var(--navy)}.anecdotalField p{margin:7px 0 0;white-space:pre-wrap}
+.instrumentNotes{border:1px solid #d6dde6;border-top:0;padding:12px;background:#fff}
+@media(max-width:720px){.anecdotalGrid{grid-template-columns:1fr}.anecdotalField{border-right:0}}
+@media print{.instrumentTableWrap{overflow:visible}.instrumentTable{font-size:9pt}.instrumentTable thead{display:table-header-group}.instrumentTable tr,.anecdotalField{break-inside:avoid}.anecdotalGrid{grid-template-columns:1fr 1fr}}
