@@ -59,6 +59,14 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Tecnología":7,
   "Idioma Extranjero: Inglés":16,
   "Orientación":9
+ },
+ "6° Básico":{
+  "Matemática":24,
+  "Lenguaje y Comunicación":31,
+  "Ciencias Naturales":18,
+  "Historia, Geografía y Ciencias Sociales":26,
+  "Idioma Extranjero: Inglés":16,
+  "Orientación":9
  }
 };
 export const variantBasedSubjects = ["Lengua y Cultura de los Pueblos Originarios Ancestrales"] as const;
