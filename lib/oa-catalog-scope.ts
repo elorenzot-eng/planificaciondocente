@@ -27,11 +27,24 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Matemática":20,
   "Lenguaje y Comunicación":26,
   "Historia, Geografía y Ciencias Sociales":15,
-  "Ciencias Naturales":12
+  "Ciencias Naturales":12,
+  "Historia, Geografía y Ciencias Sociales":15,
+  "Artes Visuales":5,
+  "Música":7,
+  "Educación Física y Salud":11,
+  "Tecnología":7,
+  "Orientación":8
  },
  "2° Básico":{
   "Matemática":22,
-  "Lenguaje y Comunicación":30
+  "Lenguaje y Comunicación":30,
+  "Ciencias Naturales":14,
+  "Historia, Geografía y Ciencias Sociales":16,
+  "Artes Visuales":5,
+  "Música":7,
+  "Educación Física y Salud":11,
+  "Tecnología":7,
+  "Orientación":8
  },
  "3° Básico":{
   "Matemática":26,
@@ -39,7 +52,10 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Ciencias Naturales":13,
   "Artes Visuales":5,
   "Música":8,
-  "Tecnología":7
+  "Tecnología":7,
+  "Historia, Geografía y Ciencias Sociales":16,
+  "Educación Física y Salud":11,
+  "Orientación":8
  },
  "4° Básico":{
   "Matemática":27,
@@ -47,7 +63,10 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Ciencias Naturales":17,
   "Historia, Geografía y Ciencias Sociales":18,
   "Música":8,
-  "Tecnología":7
+  "Tecnología":7,
+  "Artes Visuales":5,
+  "Educación Física y Salud":11,
+  "Orientación":8
  },
  "5° Básico":{
   "Matemática":24,
@@ -70,7 +89,8 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Orientación":9,
   "Música":8,
   "Educación Física y Salud":11,
-  "Tecnología":7
+  "Tecnología":7,
+  "Artes Visuales":5
  },
  "7° Básico":{
   "Matemática":19,
