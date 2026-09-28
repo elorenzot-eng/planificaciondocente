@@ -243,3 +243,13 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .writeLine.short{max-width:150px}
 @media(max-width:720px){.studentDataGrid{grid-template-columns:1fr}.studentDataCell:nth-child(odd){border-right:0}.studentDataCell:nth-last-child(2){border-bottom:1px solid #e5eaf1}}
 @media print{.printStudentData{break-inside:avoid}.studentDataGrid{grid-template-columns:1fr 1fr}.studentDataCell:nth-child(odd){border-right:1px solid #d6dde6}.studentDataCell{min-height:9mm;padding:2.5mm 4mm}.studentDataTitle{padding:2.5mm 4mm}}
+
+/* Rúbrica: matriz auténtica criterios × niveles de desempeño */
+.rubricTableWrap{width:100%;overflow-x:auto;margin:12px 0 18px}
+.rubricTable{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;line-height:1.35;background:#fff}
+.rubricTable th,.rubricTable td{border:1px solid #aebccc;padding:9px;vertical-align:top;text-align:left;overflow-wrap:anywhere}
+.rubricTable thead th{background:#eef5fb;color:var(--navy);text-align:center;font-weight:800}
+.rubricTable thead th:first-child{width:22%;text-align:left}
+.rubricTable th small,.rubricTable td small{display:block;margin-top:4px;font-weight:600;color:var(--muted)}
+.rubricCriterion{background:#f8fafc;color:#172033;font-weight:800}
+@media print{.rubricTableWrap{overflow:visible}.rubricTable{font-size:9pt;table-layout:fixed}.rubricTable th,.rubricTable td{padding:2mm;break-inside:avoid}.rubricTable thead{display:table-header-group}.rubricTable tr{break-inside:avoid}}
