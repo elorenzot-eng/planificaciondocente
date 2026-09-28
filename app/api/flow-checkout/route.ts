@@ -8,10 +8,10 @@ export async function POST(){
  const s=await getSession();if(!s?.id)return NextResponse.json({error:"No autorizado"},{status:401});
  const u=await prisma.user.findUnique({where:{id:String(s.id)}});if(!u||u.accountType!=="INDIVIDUAL")return NextResponse.json({error:"Cuenta no habilitada"},{status:403});
  if(!process.env.FLOW_API_KEY||!process.env.FLOW_SECRET_KEY)return NextResponse.json({error:"Flow no configurado"},{status:503});
- const base=process.env.APP_URL||"https://planificaciondocente-web-production.up.railway.app";
- const commerceOrder="PD-"+u.id+"-"+Date.now();
+ const base=process.env.APP_URL||"https://educantay.cl";
+ const commerceOrder="EDU-"+u.id+"-"+Date.now();
  await prisma.subscriptionPayment.create({data:{commerceOrder,userId:u.id,amount:24990}});
- const p:Record<string,string>={apiKey:process.env.FLOW_API_KEY,commerceOrder,subject:"Plan Individual PlanificacionDocente",currency:"CLP",amount:"24990",email:u.email,paymentMethod:"9",urlConfirmation:base+"/api/flow-confirmation",urlReturn:base+"/api/flow-return",optional:JSON.stringify({userId:u.id})};
+ const p:Record<string,string>={apiKey:process.env.FLOW_API_KEY,commerceOrder,subject:"Plan Individual Educantay",currency:"CLP",amount:"24990",email:u.email,paymentMethod:"9",urlConfirmation:base+"/api/flow-confirmation",urlReturn:base+"/api/flow-return",optional:JSON.stringify({userId:u.id})};
  try{
   const body=new URLSearchParams({...p,s:sign(p)});
   const r=await fetch(API+"/payment/create",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
