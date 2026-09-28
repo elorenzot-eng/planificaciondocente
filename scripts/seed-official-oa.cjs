@@ -7,6 +7,7 @@ const oa12m=require("./catalogs/oa-1-2-medio.cjs");
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
+const sourceUrl3to4m="https://www.curriculumnacional.cl/curriculum/3o-4o-medio";
 // Every block is checked against an expected total before it is persisted.
 // Keep this seed additive: new verified blocks are appended; existing levels are never replaced wholesale.
 const science1=[
