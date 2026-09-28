@@ -268,3 +268,12 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .instrumentNotes{border:1px solid #d6dde6;border-top:0;padding:12px;background:#fff}
 @media(max-width:720px){.anecdotalGrid{grid-template-columns:1fr}.anecdotalField{border-right:0}}
 @media print{.instrumentTableWrap{overflow:visible}.instrumentTable{font-size:9pt}.instrumentTable thead{display:table-header-group}.instrumentTable tr,.anecdotalField{break-inside:avoid}.anecdotalGrid{grid-template-columns:1fr 1fr}}
+
+/* Descarga directa y recientes · Material de apoyo IA */
+.materialActions{display:flex;align-items:center;gap:14px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.materialActions .primary{width:auto;min-width:230px}.materialActions span{font-size:12px;color:var(--muted)}
+.materialRecentGrid{gap:10px}.materialRecentCard{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:74px;padding:12px 14px}
+.materialRecentCard>div{display:grid;gap:3px;min-width:0}.materialRecentCard small{letter-spacing:.12em;color:var(--muted);font-weight:800}
+.materialRecentCard b{display:block;line-height:1.25;overflow-wrap:anywhere}.materialRecentCard span{font-size:12px;color:var(--muted)}
+.secondary.compact{width:auto;min-width:72px;padding:8px 11px;white-space:nowrap}
+@media(max-width:700px){.materialActions{align-items:stretch;flex-direction:column}.materialActions .primary{width:100%}.materialRecentCard{align-items:flex-start;flex-direction:column}.secondary.compact{width:100%}}
