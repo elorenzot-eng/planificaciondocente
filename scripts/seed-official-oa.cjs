@@ -1,5 +1,7 @@
 const {PrismaClient}=require("@prisma/client");
 const prisma=new PrismaClient();
+const oa34=require("./catalogs/oa-3-4-basico.cjs");
+const oa56=require("./catalogs/oa-5-6-basico.cjs");
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
@@ -169,6 +171,8 @@ const pad2=n=>String(n).padStart(2,"0");
 const referenceObjectives=(prefix,count)=>Array.from({length:count},(_,i)=>{const code=prefix+" OA "+pad2(i+1);return [code,"Referencia curricular oficial "+code+". Consultar Currículum Nacional · MINEDUC."];});
 const courseUrl=(slug,n)=>sourceUrl1to6+"/"+slug+"/"+n+"-basico";
 const blocks=[
+ ...oa34,
+ ...oa56,
  {level:"1° Básico",subject:"Matemática",expected:20,objectives:referenceObjectives("MA01",20),sourceUrl:courseUrl("matematica",1)},
  {level:"1° Básico",subject:"Lenguaje y Comunicación",expected:26,objectives:referenceObjectives("LE01",26),sourceUrl:courseUrl("lenguaje-comunicacion",1)},
  {level:"1° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:15,objectives:referenceObjectives("HI01",15),sourceUrl:courseUrl("historia-geografia-ciencias-sociales",1)},
