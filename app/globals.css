@@ -537,3 +537,9 @@ aside .role{border-top:1px solid rgba(255,255,255,.12);padding-top:15px!importan
 .publicLanding .landingNav .landingBrand img{width:82px!important;height:68px!important;object-fit:contain!important}
 .publicLanding .landingNav .landingBrand b{font-size:inherit!important;font-weight:900!important}
 @media(max-width:600px){.publicLanding .landingNav .landingBrand{gap:9px!important;font-size:25px!important}.publicLanding .landingNav .landingBrand img{width:62px!important;height:52px!important}}
+
+/* Educantay · énfasis tipográfico definitivo del logotipo de portada */
+html body .publicLanding nav.landingNav .landingBrand>b{font-size:52px!important;line-height:1!important;font-weight:900!important;letter-spacing:.045em!important;color:#123f6d!important;white-space:nowrap!important}
+html body .publicLanding nav.landingNav .landingBrand>img{width:96px!important;height:78px!important}
+html body .publicLanding nav.landingNav{min-height:112px!important}
+@media(max-width:600px){html body .publicLanding nav.landingNav .landingBrand>b{font-size:32px!important}html body .publicLanding nav.landingNav .landingBrand>img{width:68px!important;height:56px!important}html body .publicLanding nav.landingNav{min-height:82px!important}}
