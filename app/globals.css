@@ -428,3 +428,19 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .folderStats b{display:block;font-size:1.55rem;color:#123f6d}.folderStats span{color:#657a90;font-weight:700}
 .folderFilters{margin-bottom:16px}.folderActions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.folderActions button{white-space:nowrap}.folderActions .folderPrimary{background:#123f6d;color:#fff;border-color:#123f6d}
 @media(max-width:800px){.folderStats{grid-template-columns:1fr 1fr}.folderActions{justify-content:flex-start}}
+
+
+/* Educantay · refinamiento gráfico de tarjetas */
+.folderStats{gap:16px}
+.folderStats .folderStat{min-height:112px;display:flex;align-items:center;gap:16px;padding:20px;border-width:1px 1px 1px 5px;position:relative;overflow:hidden}
+.folderStats .folderStat::after{content:"";position:absolute;width:72px;height:72px;border-radius:50%;right:-24px;top:-24px;background:currentColor;opacity:.055}
+.folderStatIcon{width:46px;height:46px;flex:0 0 46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:900;background:#eef6fb;color:#123f6d}
+.folderStat>div{display:flex;flex-direction:column;min-width:0}.folderStats .folderStat b{font-size:1.75rem;line-height:1;color:#123f6d;margin-bottom:7px}.folderStats .folderStat span:not(.folderStatIcon){font-size:.94rem;color:#263f58}.folderStats .folderStat small{display:block;margin-top:3px;color:#8090a0;font-size:.76rem}
+.folderStat.all{border-left-color:#123f6d;color:#123f6d}.folderStat.planning{border-left-color:#159fd3;color:#159fd3}.folderStat.assessment{border-left-color:#e83e8c;color:#e83e8c}.folderStat.material{border-left-color:#e2ad19;color:#b88400}
+.folderStat.planning .folderStatIcon{background:#e9f8fd;color:#159fd3}.folderStat.assessment .folderStatIcon{background:#fff0f7;color:#d92b79}.folderStat.material .folderStatIcon{background:#fff8df;color:#b88400}
+.folderStats .folderStat.active{background:linear-gradient(135deg,#fff,#f7fbfe);box-shadow:0 12px 30px rgba(18,63,109,.11)}
+.folderDocCard{border:1px solid #e2eaf1!important;border-left-width:4px!important;border-radius:14px!important;margin:10px 0;padding:15px 17px!important;background:#fff;box-shadow:0 5px 16px rgba(18,63,109,.035);transition:.18s ease}
+.folderDocCard:hover{transform:translateY(-1px);box-shadow:0 9px 24px rgba(18,63,109,.075)}
+.folderDocCard.planning{border-left-color:#159fd3!important}.folderDocCard.assessment{border-left-color:#e83e8c!important}.folderDocCard.material{border-left-color:#e2ad19!important}
+.folderDocCard>div:first-child b{color:#123f6d;font-size:1rem}.folderDocCard>div:first-child span{margin-top:5px;color:#718296}
+@media(max-width:1050px){.folderStats{grid-template-columns:1fr 1fr}}@media(max-width:560px){.folderStats{grid-template-columns:1fr}.folderStats .folderStat{min-height:94px}}
