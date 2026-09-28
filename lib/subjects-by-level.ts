@@ -18,6 +18,6 @@ export function curricularSubjects(level:string){return subjectsByLevel[level]||
 // Asignaturas cuyos OA se sincronizan desde Bases Curriculares MINEDUC.
 // Religión se mantiene en la oferta escolar, pero fuera del catálogo OA general porque posee programas/decretos específicos.
 export const officialOASubjectsByLevel: Record<string,string[]> = Object.fromEntries(
- Object.entries(subjectsByLevel).map(([level,subjects])=>[level,subjects.filter(subject=>subject!=="Religión")])
+ Object.entries(subjectsByLevel).map(([level,subjects])=>[level,(level==="3° Medio"||level==="4° Medio")?["Lengua y Literatura","Matemática","Idioma Extranjero: Inglés","Ciencias para la Ciudadanía","Educación Ciudadana","Filosofía","Química","Geometría 3D"]:subjects.filter(subject=>subject!=="Religión")])
 );
 export function officialOASubjects(level:string){return officialOASubjectsByLevel[level]||[]}
