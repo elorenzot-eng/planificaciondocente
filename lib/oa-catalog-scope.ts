@@ -28,7 +28,6 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Lenguaje y Comunicación":26,
   "Historia, Geografía y Ciencias Sociales":15,
   "Ciencias Naturales":12,
-  "Historia, Geografía y Ciencias Sociales":15,
   "Artes Visuales":5,
   "Música":7,
   "Educación Física y Salud":11,
