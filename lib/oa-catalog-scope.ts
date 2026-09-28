@@ -124,3 +124,20 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
 export const variantBasedSubjects = ["Lengua y Cultura de los Pueblos Originarios Ancestrales"] as const;
 export function expectedOACount(level:string,subject:string){return verifiedOATotals[level]?.[subject]??null}
 export function isVariantBasedOACatalog(subject:string){return variantBasedSubjects.includes(subject as any)}
+
+// Bloques cuyo contenido curricular ha sido efectivamente incorporado al seed maestro.
+// verifiedOATotals solo expresa cantidades contrastadas; no implica que el texto del catálogo esté cargado.
+export const loadedCatalogBlocks = new Set([
+ "1° Básico|Ciencias Naturales",
+ "8° Básico|Matemática",
+ "8° Básico|Lengua y Literatura",
+ "8° Básico|Ciencias Naturales",
+ "8° Básico|Historia, Geografía y Ciencias Sociales",
+ "8° Básico|Artes Visuales",
+ "8° Básico|Música",
+ "8° Básico|Educación Física y Salud",
+ "8° Básico|Tecnología",
+ "8° Básico|Orientación",
+ "8° Básico|Idioma Extranjero: Inglés"
+]);
+export function isCatalogBlockSeeded(level:string,subject:string){return loadedCatalogBlocks.has(level+"|"+subject)}
