@@ -17,7 +17,8 @@ export async function GET(){
   const count=coverage.find(x=>x.level===level&&x.subject===subject)?.count??0;
   const expected=expectedOACount(level,subject);
   const variantBased=isVariantBasedOACatalog(subject);
-  return {level,subject,count,expected,variantBased,loaded:variantBased?count>0:expected===null?count>0:count===expected};
+  const verified=expected!==null;
+  return {level,subject,count,expected,verified,variantBased,loaded:variantBased?count>0:verified?count===expected:false};
  }));
  return NextResponse.json({catalogStatus:OA_CATALOG_SCOPE.catalogStatus,coverage,matrix,missing:matrix.filter(x=>!x.loaded),duplicates:duplicateGroups});
 }
