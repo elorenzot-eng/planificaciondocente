@@ -43,6 +43,31 @@ const science8=[
 ["CN08 OA 15","Investigar y argumentar, en base a evidencias, que existen algunos elementos químicos más frecuentes en la Tierra que son comunes en los seres vivos y son soporte para la vida, como el carbono, el hidrógeno, el oxígeno y el nitrógeno."]
 ];
 
+const history8=[
+["HI08 OA 01","Analizar, apoyándose en diversas fuentes, la centralidad del ser humano y su capacidad de transformar el mundo en las expresiones culturales del Humanismo y del Renacimiento."],
+["HI08 OA 02","Comparar la sociedad medieval y moderna, considerando los cambios que implicó la ruptura de la unidad religiosa de Europa, el surgimiento del Estado centralizado, el impacto de la imprenta en la difusión del conocimiento y de las ideas, la revolución científica y el nacimiento de la ciencia moderna, entre otros."],
+["HI08 OA 03","Caracterizar el Estado moderno considerando sus principales rasgos, como la concentración del poder en la figura del rey, el desarrollo de la burocracia y de un sistema fiscal centralizado, la expansión del territorio, la creación de ejércitos profesionales y el monopolio del comercio internacional, y contrastar con la fragmentación del poder que caracterizó a la Edad Media."],
+["HI08 OA 04","Caracterizar la economía mercantilista del siglo XVI, considerando fenómenos económicos como la acumulación y circulación de metales preciosos, la ampliación de rutas comerciales, la expansión mundial de la economía europea, la revolución de los precios y el aumento de la competencia, entre otros."],
+["HI08 OA 05","Argumentar por qué la llegada de los europeos a América implicó un enfrentamiento entre culturas, considerando aspectos como la profundidad de las diferencias culturales, la magnitud del escenario natural americano, y la desarticulación de la cosmovisión de las sociedades indígenas."],
+["HI08 OA 06","Analizar los factores que explican la rapidez de la conquista y la caída de los grandes imperios americanos, considerando aspectos como la organización política, las diferencias en la forma de hacer la guerra, los intereses de los conquistadores y la catástrofe demográfica."],
+["HI08 OA 07","Analizar y evaluar el impacto de la conquista de América en la cultura europea, considerando la ampliación del mundo conocido, el desafío de representar una nueva realidad y los debates morales relacionados con la condición humana de los indígenas."],
+["HI08 OA 08","Analizar el rol de la ciudad en la administración del territorio del Imperio español, considerando las instituciones que concentraba, la relación con la metrópoli, el monopolio del comercio y la consolidación del poder local de las elites criollas."],
+["HI08 OA 09","Caracterizar el barroco a través de distintas expresiones culturales de la sociedad colonial, como el arte, la arquitectura, la música, el teatro y las ceremonias, entre otros."],
+["HI08 OA 10","Explicar la importancia de los mercados americanos en el comercio atlántico de los siglos XVII y XVIII, considerando el monopolio comercial, la exportación de materias primas, las distintas regiones productivas, el tráfico y empleo masivo de mano de obra esclava y el desarrollo de rutas comerciales."],
+["HI08 OA 11","Analizar el proceso de formación de la sociedad colonial americana considerando elementos como la evangelización, la esclavitud y otras formas de trabajo no remunerado (por ejemplo, encomienda y mita), los roles de género, la transculturación, el mestizaje, la sociedad de castas, entre otros."],
+["HI08 OA 12","Analizar y evaluar las formas de convivencia y los tipos de conflicto que surgen entre españoles, mestizos y mapuches como resultado del fracaso de la conquista de Arauco, y relacionar con el consiguiente desarrollo de una sociedad de frontera durante la Colonia en Chile."],
+["HI08 OA 13","Analizar el rol de la hacienda en la conformación de los principales rasgos del Chile colonial, considerando el carácter rural de la economía, el desarrollo de un sistema de inquilinaje, la configuración de una elite terrateniente y de una sociedad con rasgos estamentales, y reconocer la proyección de estos elementos en los siglos XIX y XX."],
+["HI08 OA 14","Caracterizar la Ilustración como corriente de pensamiento basada en la razón, considerando sus principales ideas tales como el ordenamiento constitucional, la separación y el equilibrio de poderes del Estado, los principios de libertad, igualdad y soberanía popular y la secularización, y fundamentar su rol en la crítica al absolutismo y en la promoción del ideario republicano."],
+["HI08 OA 15","Analizar cómo las ideas ilustradas se manifestaron en los procesos revolucionarios de fines del siglo XVIII y comienzos del siglo XIX, considerando la independencia de Estados Unidos, la Revolución Francesa y las independencias de las colonias españolas en Latinoamérica."],
+["HI08 OA 16","Explicar la independencia de las colonias hispanoamericanas como un proceso continental, marcado por la crisis del sistema colonial, la apropiación de las ideas ilustradas y la opción por el modelo republicano, y analizar en este marco el proceso de Independencia de Chile."],
+["HI08 OA 17","Contrastar las distintas posturas que surgieron en el debate sobre la legitimidad de la conquista durante el siglo XVI, y fundamentar la relevancia de este debate para la concepción de los derechos humanos en la actualidad."],
+["HI08 OA 18","Explicar el concepto de derechos del hombre y del ciudadano difundido en el marco de la Ilustración y la Revolución francesa, y reconocer su vigencia actual en los derechos humanos."],
+["HI08 OA 19","Evaluar las principales transformaciones y desafíos que generó la independencia de Chile, como la conformación de un orden republicano, la constitución de una ciudadanía inspirada en la soberanía popular y la formación de un Estado nacional, y fundamentar la relevancia de estas transformaciones para el Chile de la actualidad."],
+["HI08 OA 20","Explicar los criterios que definen a una región, considerando factores físicos y humanos que la constituyen (por ejemplo, vegetación, suelo, clima, lengua común, religión, historia, entre otros), y dar ejemplos de distintos tipos de regiones en Chile y en América (culturales, geográficas, económicas, político-administrativas, etc.)."],
+["HI08 OA 21","Analizar y evaluar problemas asociados a la región en Chile -como los grados de conexión y de aislamiento (considerando redes de transporte y comunicaciones, acceso a bienes, servicios e información, entre otros), índices demográficos y migración- y su impacto en diversos ámbitos (mercado laboral, servicios de salud, relación campo-ciudad y centro-periferia, entre otros)."],
+["HI08 OA 22","Aplicar el concepto de desarrollo para analizar diversos aspectos de las regiones en Chile, considerando el índice de desarrollo humano, la diversidad productiva, de intercambio y de consumo, las ventajas comparativas, la inserción en los mercados internacionales, y el desarrollo sustentable."]
+];
+
 async function syncBlock({level,subject,objectives,expected}){
  if(objectives.length!==expected) throw new Error(`OA catalog mismatch for ${subject} ${level}: expected ${expected}, got ${objectives.length}`);
  let created=0,updated=0;
@@ -59,7 +84,8 @@ async function syncBlock({level,subject,objectives,expected}){
 const blocks=[
  {level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8},
  {level:"8° Básico",subject:"Lengua y Literatura",expected:26,objectives:language8},
- {level:"8° Básico",subject:"Ciencias Naturales",expected:15,objectives:science8}
+ {level:"8° Básico",subject:"Ciencias Naturales",expected:15,objectives:science8},
+ {level:"8° Básico",subject:"Historia, Geografía y Ciencias Sociales",expected:22,objectives:history8}
 ];
 async function main(){
  for(const block of blocks){
