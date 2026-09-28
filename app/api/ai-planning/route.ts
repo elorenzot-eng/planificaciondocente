@@ -21,7 +21,7 @@ export async function GET(){
  const courses=await prisma.course.findMany({where,include:{teachingAssignments:{where:u.role==="DOCENTE"?{teacherId:u.id}:{},select:{subject:true,teacherId:true}},academicYear:true},orderBy:{name:"asc"}});
  const objectives=await prisma.learningObjective.findMany({where:{OR:[{moduleLinks:{some:{module:{active:true}}}},{moduleLinks:{none:{}}}]},include:{moduleLinks:{include:{module:true}}},orderBy:[{level:"asc"},{subject:"asc"},{code:"asc"}]}); const tpModules=await prisma.curriculumModule.findMany({where:{active:true},include:{objectives:{include:{objective:true}}},orderBy:[{specialty:"asc"},{level:"asc"},{code:"asc"}]});
  const planningScope:any=u.role==="DOCENTE"?{userId:u.id}:u.role==="SOSTENEDOR"?{course:{school:{organizationId:u.organizationId}}}:u.role==="DIRECTOR"||u.role==="UTP"?{course:{schoolId:u.schoolId}}:{};const plannings=await prisma.planning.findMany({where:planningScope,include:{course:true,objectives:{include:{objective:true}},implementation:true},orderBy:{createdAt:"desc"},take:10});
- return NextResponse.json({courses,objectives,tpModules,plannings,aiReady:!!process.env.OPENAI_API_KEY});
+ return NextResponse.json({courses,objectives,tpModules,plannings,aiReady:!!process.env.OPENAI_API_KEY,accountType:u.accountType});
 }
 export async function POST(req:Request){
  const u=await currentUser();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
@@ -30,7 +30,7 @@ export async function POST(req:Request){
  const b=await req.json();
  const course=await prisma.course.findUnique({where:{id:String(b.courseId||"")},include:{academicYear:true,teachingAssignments:true,school:true}});
  if(!course)return NextResponse.json({error:"Curso no encontrado"},{status:404});
- if(u.role==="SOSTENEDOR"&&course.school.organizationId!==u.organizationId)return NextResponse.json({error:"Curso no autorizado"},{status:403});if((u.role==="DIRECTOR"||u.role==="UTP"||u.role==="DOCENTE")&&(!u.schoolId||course.schoolId!==u.schoolId))return NextResponse.json({error:"Curso no autorizado"},{status:403});
+ if(u.role==="SOSTENEDOR"&&course.school.organizationId!==u.organizationId)return NextResponse.json({error:"Curso no autorizado"},{status:403});if(u.accountType!=="INDIVIDUAL"&&(u.role==="DIRECTOR"||u.role==="UTP"||u.role==="DOCENTE")&&(!u.schoolId||course.schoolId!==u.schoolId))return NextResponse.json({error:"Curso no autorizado"},{status:403});if(u.accountType==="INDIVIDUAL"&&course.schoolId!==u.schoolId)return NextResponse.json({error:"Curso personal no autorizado"},{status:403});
  const subject=String(b.subject||"").trim();const moduleId=String(b.moduleId||"").trim();
  if(u.role==="DOCENTE"&&u.accountType!=="INDIVIDUAL"&&!course.teachingAssignments.some(a=>a.teacherId===u.id&&(a.subject===subject||!!moduleId)))return NextResponse.json({error:"No tienes esta asignación docente"},{status:403});
  const ids=Array.isArray(b.objectiveIds)?b.objectiveIds.map(String):[];
