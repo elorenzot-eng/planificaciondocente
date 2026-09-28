@@ -5,7 +5,7 @@ export const OA_CATALOG_SCOPE = {
     basic7to2m: "https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio",
     medio3to4: "https://www.curriculumnacional.cl/curriculum/3o-4o-medio"
   },
-  levels: ["1° Básico","2° Básico","3° Básico","4° Básico","5° Básico","6° Básico","7° Básico","8° Básico","1° Medio","2° Medio","3° Medio","4° Medio"],
+  levels: ["1° Básico","2° Básico","3° Básico","4° Básico","5° Básico","6° Básico","7° Básico","8° Básico","1° Medio","2° Medio","3° Medio HC","4° Medio HC"],
   catalogPolicy: "Catálogo referencial de OA basado en Currículum Nacional · MINEDUC. Para uso comercial, conservar código, nivel, asignatura y referencia oficial; no reproducir masivamente textos íntegros sin una licencia/autorización compatible. Excluir documentos identificados como propuesta, borrador o consulta pública del catálogo vigente. Inglés 1°-4° (Propuesta) y Religión se gestionan separadamente.",
   licensingNote: "La ficha oficial de Bases Curriculares 7° Básico a 2° Medio informa restricciones de uso comercial. Verificar autorización/licencia antes de persistir o redistribuir textos íntegros de OA en el SaaS.",
   optionalPrograms1to4: ["Inglés (Propuesta)"],
@@ -21,7 +21,7 @@ export function expectedOASubjects(level:string): readonly string[] {
  if(["1° Básico","2° Básico","3° Básico","4° Básico"].includes(level)) return OA_CATALOG_SCOPE.subjects1to4;
  if(["5° Básico","6° Básico"].includes(level)) return OA_CATALOG_SCOPE.subjects5to6;
  if(["7° Básico","8° Básico","1° Medio","2° Medio"].includes(level)) return OA_CATALOG_SCOPE.subjects7to2m;
- if(["3° Medio","4° Medio"].includes(level)) return OA_CATALOG_SCOPE.subjects3to4m;
+ if(["3° Medio HC","4° Medio HC"].includes(level)) return OA_CATALOG_SCOPE.subjects3to4m;
  return [];
 }
 
@@ -130,8 +130,8 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Tecnología":6,
   "Orientación":10
  },
- "3° Medio":{"Matemática":4,"Lengua y Literatura":9,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":12,"Educación Ciudadana":8,"Filosofía":6},
- "4° Medio":{"Matemática":4,"Lengua y Literatura":8,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":12,"Educación Ciudadana":8,"Filosofía":5},
+ "3° Medio HC":{"Matemática":4,"Lengua y Literatura":9,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":6},
+ "4° Medio HC":{"Matemática":4,"Lengua y Literatura":8,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":5},
  "2° Medio":{
   "Matemática":12,
   "Lengua y Literatura":24,
@@ -249,6 +249,6 @@ export const loadedCatalogBlocks = new Set([
  "2° Medio|Educación Física y Salud",
  "2° Medio|Tecnología",
  "2° Medio|Orientación",
- "3° Medio|Matemática","3° Medio|Lengua y Literatura","3° Medio|Idioma Extranjero: Inglés","3° Medio|Ciencias para la Ciudadanía","3° Medio|Educación Ciudadana","3° Medio|Filosofía",
- "4° Medio|Matemática","4° Medio|Lengua y Literatura","4° Medio|Idioma Extranjero: Inglés","4° Medio|Ciencias para la Ciudadanía","4° Medio|Educación Ciudadana","4° Medio|Filosofía"]);
+ "3° Medio HC|Matemática","3° Medio HC|Lengua y Literatura","3° Medio HC|Idioma Extranjero: Inglés","3° Medio HC|Ciencias para la Ciudadanía","3° Medio HC|Educación Ciudadana","3° Medio HC|Filosofía",
+ "4° Medio HC|Matemática","4° Medio HC|Lengua y Literatura","4° Medio HC|Idioma Extranjero: Inglés","4° Medio HC|Ciencias para la Ciudadanía","4° Medio HC|Educación Ciudadana","4° Medio HC|Filosofía"]);
 export function isCatalogBlockSeeded(level:string,subject:string){return loadedCatalogBlocks.has(level+"|"+subject)}
