@@ -94,6 +94,7 @@ model User {
   subscriptionPayments SubscriptionPayment[]
   passwordResetTokens PasswordResetToken[]
   agendaTasks AgendaTask[]
+  subscriptionReminders SubscriptionReminder[]
 }
 model AcademicYear {
   id String @id @default(cuid())
@@ -331,4 +332,15 @@ model AgendaTask {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([userId,scheduledAt])
+}
+
+model SubscriptionReminder {
+  id String @id @default(cuid())
+  userId String
+  subscriptionEndsAt DateTime
+  daysBefore Int
+  sentAt DateTime @default(now())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@unique([userId,subscriptionEndsAt,daysBefore])
+  @@index([subscriptionEndsAt,daysBefore])
 }
