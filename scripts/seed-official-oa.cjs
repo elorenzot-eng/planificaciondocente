@@ -150,6 +150,10 @@ const english8=[
 
 async function syncBlock({level,subject,objectives,expected,sourceUrl}){
  if(objectives.length!==expected) throw new Error(`OA catalog mismatch for ${subject} ${level}: expected ${expected}, got ${objectives.length}`);
+ const codes=objectives.map(([code])=>code);
+ const duplicateCodes=codes.filter((code,index)=>codes.indexOf(code)!==index);
+ if(duplicateCodes.length) throw new Error(`Duplicate OA codes for ${subject} ${level}: ${[...new Set(duplicateCodes)].join(", ")}`);
+ if(objectives.some(([code,text])=>!String(code).trim()||!String(text).trim())) throw new Error(`Empty OA code/text for ${subject} ${level}`);
  let created=0,updated=0;
  for(const [code,text] of objectives){
   const rows=await prisma.learningObjective.findMany({where:{code,level,subject},orderBy:{id:"asc"}});
