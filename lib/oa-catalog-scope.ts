@@ -56,7 +56,11 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Artes Visuales":5,
   "Música":8,
   "Educación Física y Salud":11,
-  "Tecnología":7
+  "Tecnología":7,
+  "Idioma Extranjero: Inglés":16,
+  "Orientación":9
  }
 };
+export const variantBasedSubjects = ["Lengua y Cultura de los Pueblos Originarios Ancestrales"] as const;
 export function expectedOACount(level:string,subject:string){return verifiedOATotals[level]?.[subject]??null}
+export function isVariantBasedOACatalog(subject:string){return variantBasedSubjects.includes(subject as any)}
