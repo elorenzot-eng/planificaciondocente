@@ -131,6 +131,7 @@ model LearningObjective {
   specialty String?
   module String?
   source String
+  sourceUrl String?
   planningLinks PlanningObjective[]
   assessmentLinks AssessmentObjective[]
   moduleLinks CurriculumModuleObjective[]
