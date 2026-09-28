@@ -411,3 +411,10 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .landingBrand b{letter-spacing:.035em;color:#123f6d}.heroActions a{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 @media(max-width:900px){.workflowGrid{grid-template-columns:1fr 1fr}.institutionalBand{margin:20px;align-items:flex-start;flex-direction:column;padding:28px}}
 @media(max-width:600px){.workflowGrid{grid-template-columns:1fr}}
+
+
+/* Educantay · continuidad de una planificación */
+.nextCreation{margin:18px 0;padding:20px;border:1px solid #cfe5f4;border-radius:18px;background:linear-gradient(120deg,#f4fbff,#fff);display:flex;align-items:center;justify-content:space-between;gap:22px}
+.nextCreation small{font-weight:900;letter-spacing:.09em;color:#159fd3}.nextCreation h3{margin:4px 0 5px;color:#123f6d;font-size:1.35rem}.nextCreation p{margin:0;color:#60758c}
+.nextCreationActions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.nextCreationActions button{border:1px solid #cbdbe8;background:#fff;color:#123f6d;font-weight:800;border-radius:10px;padding:11px 14px}.nextCreationActions button:first-child{background:#123f6d;color:#fff;border-color:#123f6d}.nextCreationActions button:nth-child(2){border-color:#e83e8c;color:#b91c65}
+@media(max-width:850px){.nextCreation{align-items:flex-start;flex-direction:column}.nextCreationActions{justify-content:flex-start}}
