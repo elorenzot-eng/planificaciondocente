@@ -4,7 +4,7 @@ const source="Currículum Nacional · MINEDUC";
 const level="8° Básico";
 const subject="Matemática";
 // Every block is checked against verifiedOATotals before it is persisted.
-const objectives=[
+const mathematics8=[
 ["MA08 OA 01","Mostrar que comprenden la multiplicación y la división de números enteros: representándolos de manera concreta, pictórica y simbólica; aplicando procedimientos usados en la multiplicación y la división de números naturales; aplicando la regla de los signos de la operación; resolviendo problemas rutinarios y no rutinarios."],
 ["MA08 OA 02","Utilizar las operaciones de multiplicación y división con los números racionales en el contexto de la resolución de problemas: representándolos en la recta numérica; involucrando diferentes conjuntos numéricos (fracciones, decimales y números enteros)."],
 ["MA08 OA 03","Explicar la multiplicación, la división y el proceso de formar potencias de potencias de base natural y exponente natural hasta 3, de manera concreta, pictórica y simbólica."],
@@ -36,8 +36,13 @@ async function syncBlock({level,subject,objectives,expected}){
  }
  return {created,updated};
 }
+const blocks=[
+ {level:"8° Básico",subject:"Matemática",expected:17,objectives:mathematics8}
+];
 async function main(){
- const result=await syncBlock({level,subject,objectives,expected:17});
- console.log(`Official OA seed: Matemática 8° Básico created=${result.created} updated=${result.updated} total=${objectives.length}`);
+ for(const block of blocks){
+  const result=await syncBlock(block);
+  console.log(`Official OA seed: ${block.subject} ${block.level} created=${result.created} updated=${result.updated} total=${block.objectives.length}`);
+ }
 }
 main().catch(e=>{console.error(e);process.exit(1)}).finally(()=>prisma.$disconnect());
