@@ -218,3 +218,14 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .workspace .panel>h2:first-child,.workspace .panel>.panelHead h2{
  color:var(--navy);
 }
+
+/* Ilustraciones IA insertadas en recursos */
+.imageToggle{display:flex;grid-template-columns:auto 1fr;align-items:center;gap:10px;padding:12px 14px;margin:12px 0 14px;background:#f8fbff;border:1px solid #dce9f8;border-radius:12px}
+.imageToggle input{width:18px;height:18px}.imageToggle span{font-size:13px;font-weight:750;color:var(--navy)}
+.generatedImages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0}
+.generatedImages figure,.assessmentIllustration{margin:0;padding:10px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+.generatedImages img,.assessmentIllustration img{display:block;width:100%;max-height:420px;object-fit:contain;border-radius:10px;background:#f8fafc}
+.generatedImages figcaption{font-size:11px;color:var(--muted);line-height:1.4;margin-top:8px}
+.assessmentIllustration{max-width:430px;margin:12px auto}.assessmentIllustration img{max-height:330px}
+@media(max-width:700px){.generatedImages{grid-template-columns:1fr}}
+@media print{.generatedImages{grid-template-columns:repeat(2,1fr)}.generatedImages figure,.assessmentIllustration{box-shadow:none;break-inside:avoid}.assessmentIllustration img{max-height:75mm}}
