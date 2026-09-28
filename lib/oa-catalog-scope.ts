@@ -5,7 +5,8 @@ export const OA_CATALOG_SCOPE = {
     basic7to2m: "https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio"
   },
   levels: ["1° Básico","2° Básico","3° Básico","4° Básico","5° Básico","6° Básico","7° Básico","8° Básico","1° Medio","2° Medio"],
-  catalogPolicy: "OA de Bases Curriculares MINEDUC en catálogo oficial; Inglés 1°-4° (Propuesta) y Religión se identifican y gestionan separadamente.",
+  catalogPolicy: "Catálogo referencial de OA basado en Currículum Nacional · MINEDUC. Para uso comercial, conservar código, nivel, asignatura y referencia oficial; no reproducir masivamente textos íntegros sin una licencia/autorización compatible. Inglés 1°-4° (Propuesta) y Religión se gestionan separadamente.",
+  licensingNote: "La ficha oficial de Bases Curriculares 7° Básico a 2° Medio informa restricciones de uso comercial. Verificar autorización/licencia antes de persistir o redistribuir textos íntegros de OA en el SaaS.",
   optionalPrograms1to4: ["Inglés (Propuesta)"],
   separatePrograms: ["Religión"],
   catalogStatus: "IN_PROGRESS",
