@@ -93,6 +93,7 @@ model User {
   hcTeachingAssignments HCTeachingAssignment[]
   subscriptionPayments SubscriptionPayment[]
   passwordResetTokens PasswordResetToken[]
+  agendaTasks AgendaTask[]
 }
 model AcademicYear {
   id String @id @default(cuid())
@@ -121,6 +122,7 @@ model Course {
   supportMaterials SupportMaterial[]
   teachingAssignments TeachingAssignment[]
   hcTeachingAssignments HCTeachingAssignment[]
+  agendaTasks AgendaTask[]
   @@index([schoolId,academicYearId])
 }
 model LearningObjective {
