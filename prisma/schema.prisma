@@ -95,6 +95,9 @@ model User {
   passwordResetTokens PasswordResetToken[]
   agendaTasks AgendaTask[]
   subscriptionReminders SubscriptionReminder[]
+  supportTickets SupportTicket[] @relation("SupportRequester")
+  assignedSupportTickets SupportTicket[] @relation("SupportAssignee")
+  supportMessages SupportMessage[]
 }
 model AcademicYear {
   id String @id @default(cuid())
@@ -343,4 +346,48 @@ model SubscriptionReminder {
   user User @relation(fields:[userId],references:[id],onDelete:Cascade)
   @@unique([userId,subscriptionEndsAt,daysBefore])
   @@index([subscriptionEndsAt,daysBefore])
+}
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_USER
+  RESOLVED
+  CLOSED
+}
+enum SupportTicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+model SupportTicket {
+  id String @id @default(cuid())
+  number Int @unique @default(autoincrement())
+  category String
+  subject String
+  detail String
+  status SupportTicketStatus @default(OPEN)
+  priority SupportTicketPriority @default(NORMAL)
+  requesterId String
+  assigneeId String?
+  requester User @relation("SupportRequester",fields:[requesterId],references:[id],onDelete:Cascade)
+  assignee User? @relation("SupportAssignee",fields:[assigneeId],references:[id],onDelete:SetNull)
+  messages SupportMessage[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  resolvedAt DateTime?
+  @@index([requesterId,status])
+  @@index([status,updatedAt])
+}
+model SupportMessage {
+  id String @id @default(cuid())
+  ticketId String
+  authorId String
+  body String
+  internal Boolean @default(false)
+  ticket SupportTicket @relation(fields:[ticketId],references:[id],onDelete:Cascade)
+  author User @relation(fields:[authorId],references:[id],onDelete:Cascade)
+  createdAt DateTime @default(now())
+  @@index([ticketId,createdAt])
 }
