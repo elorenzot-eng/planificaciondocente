@@ -6,6 +6,7 @@ export const OA_CATALOG_SCOPE = {
   },
   levels: ["1° Básico","2° Básico","3° Básico","4° Básico","5° Básico","6° Básico","7° Básico","8° Básico","1° Medio","2° Medio"],
   catalogPolicy: "Solo OA oficiales de Bases Curriculares MINEDUC; propuestas y Religión se gestionan separadamente.",
+  catalogStatus: "IN_PROGRESS",
   subjects1to4: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología"],
   subjects5to6: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología"],
   subjects7to2m: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lengua y Literatura","Matemática","Música","Orientación","Tecnología"]
