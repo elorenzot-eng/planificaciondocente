@@ -21,8 +21,9 @@ export async function POST(req:Request){
  if(!items.length)return NextResponse.json({error:"No se recibieron OA"},{status:400});
  let created=0,updated=0;
  for(const raw of items){
-  const code=String(raw.code||"").trim(),text=String(raw.text||"").trim(),level=String(raw.level||"").trim(),subject=String(raw.subject||"").trim();
+  const code=String(raw.code||"").trim().replace(/\s+/g," "),text=String(raw.text||"").trim(),level=String(raw.level||"").trim(),subject=String(raw.subject||"").trim();
   if(!code||!text||!level||!subject||!allowedLevels.includes(level))continue;
+   if(!/^[A-Z]{2,4}(?:0[1-9]|1[0-2]|[1-2]M) OA [0-9]{2}$/.test(code))continue;
    const source=String(raw.source||"").trim();
    if(source!=="Currículum Nacional · MINEDUC")continue;
   const existing=await prisma.learningObjective.findFirst({where:{code,level,subject}});
