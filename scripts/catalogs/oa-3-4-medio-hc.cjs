@@ -28,8 +28,8 @@ block("3° Medio","Lengua y Literatura","lengua-literatura/3-medio-fg",[
 ["FG-LELI-3M-OAC-09","Investigar y comunicar temas de interés aplicando criterios éticos, rigurosos y responsables en el uso de información y fuentes."]
 ]),
 block("4° Medio","Lengua y Literatura","lengua-literatura/4-medio-fg",[
-["FG-LELI-4M-OAC-01","Formular interpretaciones de obras literarias considerando perspectivas, recursos, contexto y relaciones con otros textos y manifestaciones culturales."],
-["FG-LELI-4M-OAC-02","Proponer distintas interpretaciones de una obra literaria fundamentándolas con evidencia textual y marcos de análisis pertinentes."],
+["FG-LELI-4M-OAC-01","Formular interpretaciones de obras que aborden un mismo tema o problema, comparando su relación con los contextos de producción y recepción, el tratamiento del tema y el efecto estético producido."],
+["FG-LELI-4M-OAC-02","Proponer distintas interpretaciones para una obra literaria a partir de un criterio de análisis, fundamentándolas con evidencia del texto coherente con el criterio adoptado."],
 ["FG-LELI-4M-OAC-03","Evaluar críticamente textos no literarios orales, escritos y audiovisuales considerando intenciones, veracidad, ideologías, puntos de vista y posicionamiento del enunciador."],
 ["FG-LELI-4M-OAC-04","Evaluar críticamente argumentaciones de diversos ámbitos atendiendo a la calidad de evidencias, razonamientos, supuestos y recursos persuasivos."],
 ["FG-LELI-4M-OAC-05","Producir textos orales, escritos o audiovisuales coherentes y cohesionados, aplicando procesos de escritura y adecuándose al género y la audiencia."],
