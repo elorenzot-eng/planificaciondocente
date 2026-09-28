@@ -15,14 +15,17 @@ export async function GET(){
 export async function POST(req:Request){
  const u=await admin();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
  const b=await req.json();const items=Array.isArray(b.objectives)?b.objectives:[];
+ const allowedLevels=["1° Básico","2° Básico","3° Básico","4° Básico","5° Básico","6° Básico","7° Básico","8° Básico","1° Medio","2° Medio"];
  if(!items.length)return NextResponse.json({error:"No se recibieron OA"},{status:400});
  let created=0,updated=0;
  for(const raw of items){
   const code=String(raw.code||"").trim(),text=String(raw.text||"").trim(),level=String(raw.level||"").trim(),subject=String(raw.subject||"").trim();
-  if(!code||!text||!level||!subject)continue;
+  if(!code||!text||!level||!subject||!allowedLevels.includes(level))continue;
+   const source=String(raw.source||"").trim();
+   if(source!=="Currículum Nacional · MINEDUC")continue;
   const existing=await prisma.learningObjective.findFirst({where:{code,level,subject}});
-  if(existing){await prisma.learningObjective.update({where:{id:existing.id},data:{text,source:String(raw.source||"Currículum Nacional · MINEDUC")}});updated++}
-  else{await prisma.learningObjective.create({data:{code,text,level,subject,source:String(raw.source||"Currículum Nacional · MINEDUC")}});created++}
+  if(existing){await prisma.learningObjective.update({where:{id:existing.id},data:{text,source}});updated++}
+  else{await prisma.learningObjective.create({data:{code,text,level,subject,source}});created++}
  }
  return NextResponse.json({ok:true,created,updated,total:created+updated});
 }
