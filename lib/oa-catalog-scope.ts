@@ -16,3 +16,13 @@ export function expectedOASubjects(level:string): readonly string[] {
  if(["7° Básico","8° Básico","1° Medio","2° Medio"].includes(level)) return OA_CATALOG_SCOPE.subjects7to2m;
  return [];
 }
+
+export const verifiedOATotals: Record<string,Record<string,number>> = {
+ "1° Básico":{
+  "Matemática":20,
+  "Lenguaje y Comunicación":26,
+  "Historia, Geografía y Ciencias Sociales":15,
+  "Ciencias Naturales":12
+ }
+};
+export function expectedOACount(level:string,subject:string){return verifiedOATotals[level]?.[subject]??null}
