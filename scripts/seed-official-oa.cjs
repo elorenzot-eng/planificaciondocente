@@ -1,6 +1,7 @@
 const {PrismaClient}=require("@prisma/client");
 const prisma=new PrismaClient();
 const source="Currículum Nacional · MINEDUC";
+const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
 const level="8° Básico";
 const subject="Matemática";
 // Every block is checked against verifiedOATotals before it is persisted.
@@ -139,10 +140,10 @@ async function syncBlock({level,subject,objectives,expected}){
  for(const [code,text] of objectives){
   const rows=await prisma.learningObjective.findMany({where:{code,level,subject},orderBy:{id:"asc"}});
   if(rows.length){
-   await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source}});
+   await prisma.learningObjective.update({where:{id:rows[0].id},data:{text,source,sourceUrl:sourceUrl7to2m}});
    if(rows.length>1) await prisma.learningObjective.deleteMany({where:{id:{in:rows.slice(1).map(x=>x.id)}}});
    updated++;
-  }else{await prisma.learningObjective.create({data:{code,text,level,subject,source}});created++;}
+  }else{await prisma.learningObjective.create({data:{code,text,level,subject,source,sourceUrl:sourceUrl7to2m}});created++;}
  }
  return {created,updated};
 }
