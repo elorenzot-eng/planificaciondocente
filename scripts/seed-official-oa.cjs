@@ -10,6 +10,7 @@ const oa34mHCVerifiedExtra=require("./catalogs/oa-3-4-medio-hc-verified-extra.cj
 const oa34mHCMathLanguage=require("./catalogs/oa-3-4-medio-hc-matematica-lengua.cjs");
 const oa34mHCHistoryPhilosophy=require("./catalogs/oa-3-4-medio-hc-historia-filosofia.cjs");
 const oa34mHCPhilosophyExtra=require("./catalogs/oa-3-4-medio-hc-filosofia-extra.cjs");
+const oa34mHCGeneralElectives=require("./catalogs/oa-3-4-medio-hc-general-electives.cjs");
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
@@ -194,7 +195,7 @@ const blocks=[
  ...oa12m,
  ...oa34mHC,
  ...oa34mHCSciences,
- ...oa34mHCVerifiedExtra,...oa34mHCMathLanguage,...oa34mHCHistoryPhilosophy,...oa34mHCPhilosophyExtra,
+ ...oa34mHCVerifiedExtra,...oa34mHCMathLanguage,...oa34mHCHistoryPhilosophy,...oa34mHCPhilosophyExtra,...oa34mHCGeneralElectives,
  {level:"1° Básico",subject:"Matemática",expected:20,objectives:[
 ["MA01 OA 01","Conteo de números hasta 100 en distintas secuencias."],
 ["MA01 OA 02","Uso de números ordinales del 1.º al 10.º."],
