@@ -10,7 +10,7 @@ make("5° Básico","Música","MU05",8,"musica",5),
 make("5° Básico","Educación Física y Salud","EF05",11,"educacion-fisica-salud",5),
 make("5° Básico","Tecnología","TE05",7,"tecnologia",5),
 make("5° Básico","Orientación","OR05",9,"orientacion",5),
-make("5° Básico","Idioma Extranjero: Inglés","EN05",16,"ingles",5),
+make("5° Básico","Idioma Extranjero: Inglés","IN05",16,"ingles",5),
 make("6° Básico","Matemática","MA06",24,"matematica",6),
 make("6° Básico","Lenguaje y Comunicación","LE06",31,"lenguaje-comunicacion",6),
 make("6° Básico","Ciencias Naturales","CN06",18,"ciencias-naturales",6),
@@ -20,5 +20,5 @@ make("6° Básico","Música","MU06",8,"musica",6),
 make("6° Básico","Educación Física y Salud","EF06",11,"educacion-fisica-salud",6),
 make("6° Básico","Tecnología","TE06",7,"tecnologia",6),
 make("6° Básico","Orientación","OR06",9,"orientacion",6),
-make("6° Básico","Idioma Extranjero: Inglés","EN06",16,"ingles",6)
+make("6° Básico","Idioma Extranjero: Inglés","IN06",16,"ingles",6)
 ];
