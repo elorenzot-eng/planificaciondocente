@@ -14,7 +14,7 @@ export const OA_CATALOG_SCOPE = {
   subjects1to4: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects5to6: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects7to2m: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lengua y Literatura","Matemática","Música","Orientación","Tecnología"],
-  subjects3to4m: ["Lengua y Literatura","Matemática","Idioma Extranjero: Inglés","Ciencias para la Ciudadanía","Educación Ciudadana","Filosofía","Biología Celular y Molecular","Ciencias de la Salud","Física","Química","Geometría 3D"]
+  subjects3to4m: ["Lengua y Literatura","Matemática","Idioma Extranjero: Inglés","Ciencias para la Ciudadanía","Educación Ciudadana","Filosofía","Biología Celular y Molecular","Biología de los Ecosistemas","Ciencias de la Salud","Física","Química","Geometría 3D","Límites, Derivadas e Integrales","Pensamiento Computacional y Programación","Probabilidades y Estadística Descriptiva e Inferencial","Lectura y Escritura Especializadas","Participación y Argumentación en Democracia","Taller de Literatura"]
 } as const;
 
 export function expectedOASubjects(level:string): readonly string[] {
@@ -130,8 +130,8 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Tecnología":6,
   "Orientación":10
  },
- "3° Medio HC":{"Matemática":4,"Lengua y Literatura":9,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":6,"Biología Celular y Molecular":7,"Ciencias de la Salud":5,"Física":6,"Química":7,"Geometría 3D":5},
- "4° Medio HC":{"Matemática":4,"Lengua y Literatura":8,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":5,"Biología Celular y Molecular":7,"Ciencias de la Salud":5,"Física":6,"Química":7},
+ "3° Medio HC":{"Matemática":4,"Lengua y Literatura":9,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":6,"Biología Celular y Molecular":7,"Biología de los Ecosistemas":5,"Ciencias de la Salud":5,"Física":6,"Química":7,"Geometría 3D":5,"Límites, Derivadas e Integrales":5,"Pensamiento Computacional y Programación":5,"Probabilidades y Estadística Descriptiva e Inferencial":4,"Lectura y Escritura Especializadas":5,"Participación y Argumentación en Democracia":7,"Taller de Literatura":6},
+ "4° Medio HC":{"Matemática":4,"Lengua y Literatura":8,"Idioma Extranjero: Inglés":4,"Ciencias para la Ciudadanía":8,"Educación Ciudadana":8,"Filosofía":5,"Biología Celular y Molecular":7,"Biología de los Ecosistemas":5,"Ciencias de la Salud":5,"Física":6,"Química":7,"Geometría 3D":5,"Límites, Derivadas e Integrales":5,"Pensamiento Computacional y Programación":5,"Probabilidades y Estadística Descriptiva e Inferencial":4,"Lectura y Escritura Especializadas":5,"Participación y Argumentación en Democracia":7,"Taller de Literatura":6},
  "2° Medio":{
   "Matemática":12,
   "Lengua y Literatura":24,
