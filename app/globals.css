@@ -41,3 +41,66 @@ nav button{border:0;text-align:left;background:transparent;padding:13px 14px;bor
 }
 
 .kpis>.kpi:nth-child(4n+1){border-top:4px solid var(--cyan)}.kpis>.kpi:nth-child(4n+2){border-top:4px solid var(--yellow)}.kpis>.kpi:nth-child(4n+3){border-top:4px solid var(--magenta)}.kpis>.kpi:nth-child(4n){border-top:4px solid var(--green)}
+
+
+/* ===== Identidad visual PlanificaciónDocente · línea DotacionDocente ===== */
+:root{
+ --navy:#123f6d;--blue:#2563eb;--cyan:#38bdf8;--yellow:#f4c542;
+ --magenta:#e83e8c;--green:#16a34a;--bg:#f6f8fc;--border:#e5eaf1;
+ --text:#172033;--muted:#6b7d90;--radius:16px;--shadow:0 8px 26px rgba(18,63,109,.07)
+}
+body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);letter-spacing:-.01em}
+aside{background:linear-gradient(180deg,#123f6d 0%,#0d3157 100%);padding:28px 18px;box-shadow:8px 0 30px rgba(18,63,109,.08)}
+.brand{font-size:24px;letter-spacing:-.5px;margin:2px 10px 34px}
+nav{gap:6px}
+nav button{font-family:inherit;padding:12px 14px;border-radius:11px;color:#c7d7e6;transition:.18s ease;font-weight:550}
+nav button:hover{background:rgba(255,255,255,.08);color:#fff;transform:translateX(2px)}
+nav button.active{background:#fff;color:var(--navy)!important;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.workspace{padding:32px 38px}
+header{align-items:center;margin-bottom:24px}
+header small,.panel small,.cards small{font-size:10px;letter-spacing:1.35px}
+h1{font-size:30px;letter-spacing:-.7px;margin:5px 0;color:var(--navy)}
+h2,h3,strong,b{letter-spacing:-.015em}
+header p{color:var(--muted)}
+select,input,textarea,button{font-family:inherit}
+select,label select,label input,textarea{border-color:#dce4ed;border-radius:10px;transition:border-color .18s,box-shadow .18s}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(56,189,248,.13)}
+.panel,.cards article,.moduleCard,.specialtyCard,.hcOfferCard{border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);background:#fff}
+.panel{padding:21px}
+.cards{gap:15px}
+.cards article{position:relative;overflow:hidden;min-height:118px}
+.cards article:before,.panel.accent:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cyan)}
+.cards article:nth-child(4n+2):before{background:var(--yellow)}
+.cards article:nth-child(4n+3):before{background:var(--magenta)}
+.cards article:nth-child(4n):before{background:var(--green)}
+.cards strong{font-size:29px;letter-spacing:-1px}
+.builder{gap:20px}
+.builder>.panel{position:relative;overflow:hidden}
+.builder>.panel:first-child{border-top:4px solid var(--cyan)}
+.builder>.panel:nth-child(2){border-top:4px solid var(--magenta)}
+.step{color:var(--blue);letter-spacing:1.5px}
+.oa{border:1px solid #dce9f8;background:#f8fbff;border-radius:12px;transition:.18s ease}
+.oa:hover{border-color:var(--cyan);box-shadow:0 5px 16px rgba(56,189,248,.09)}
+.oa b{color:var(--navy)}
+.primary{background:linear-gradient(135deg,#2563eb,#1d5bc9);border-radius:11px;box-shadow:0 6px 16px rgba(37,99,235,.18);transition:.18s ease}
+.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 9px 20px rgba(37,99,235,.23)}
+.actions button,.placeholder button,.adminTabs button,.moduleActions button{transition:.18s ease}
+.actions button:hover,.placeholder button:hover,.adminTabs button:hover,.moduleActions button:hover{border-color:var(--cyan);background:#f5fbff}
+.doc{background:#fff;border-color:#e5eaf1;border-radius:13px}
+.doc h3{color:var(--navy);padding-bottom:7px;border-bottom:2px solid #eef3f8}
+.curriculumSource,.tpContext{background:#f7fbff;border-color:#d7e9f7}
+.success{background:#ecf9f1;color:#147a42;border-left:4px solid var(--green)}
+.verified{background:#ecf9f1;color:#147a42}
+.good{background:#eaf8ef;color:#147a42}.warn{background:#fff8e5;color:#9a6800}.bad{background:#fff0f3;color:#b92d5e}
+.moduleGrid,.specialtyGrid{gap:14px}
+.moduleCard,.specialtyCard{position:relative;overflow:hidden;transition:.18s ease}
+.moduleCard:hover,.specialtyCard:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,109,.10)}
+.moduleGrid>.moduleCard:nth-child(4n+1),.specialtyGrid>.specialtyCard:nth-child(4n+1){border-top:4px solid var(--cyan)}
+.moduleGrid>.moduleCard:nth-child(4n+2),.specialtyGrid>.specialtyCard:nth-child(4n+2){border-top:4px solid var(--yellow)}
+.moduleGrid>.moduleCard:nth-child(4n+3),.specialtyGrid>.specialtyCard:nth-child(4n+3){border-top:4px solid var(--magenta)}
+.moduleGrid>.moduleCard:nth-child(4n),.specialtyGrid>.specialtyCard:nth-child(4n){border-top:4px solid var(--green)}
+.tpHero{box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.1)}
+.matrix table{border-radius:12px;overflow:hidden}.matrix th{color:var(--navy);background:#f8fafc;font-weight:800}
+.role{color:#fff}.role small{color:#aac0d3}
+.logout{font-family:inherit}
+@media(max-width:1050px){.workspace{padding:25px}}
