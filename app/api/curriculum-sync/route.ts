@@ -20,7 +20,10 @@ export async function GET(){
   const verified=expected!==null;
   return {level,subject,count,expected,verified,variantBased,loaded:variantBased?count>0:verified?count===expected:false};
  }));
- return NextResponse.json({catalogStatus:OA_CATALOG_SCOPE.catalogStatus,coverage,matrix,missing:matrix.filter(x=>!x.loaded),duplicates:duplicateGroups});
+ const missing=matrix.filter(x=>!x.loaded);
+ const unverified=matrix.filter(x=>!x.variantBased&&!x.verified);
+ const complete=missing.length===0&&duplicateGroups.length===0&&unverified.length===0;
+ return NextResponse.json({catalogStatus:complete?"COMPLETE":"IN_PROGRESS",complete,coverage,matrix,missing,unverified,duplicates:duplicateGroups});
 }
 export async function POST(req:Request){
  const u=await admin();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
