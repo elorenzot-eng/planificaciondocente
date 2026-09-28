@@ -178,6 +178,7 @@ const pad2=n=>String(n).padStart(2,"0");
 const referenceObjectives=(prefix,count)=>Array.from({length:count},(_,i)=>{const code=prefix+" OA "+pad2(i+1);return [code,"Referencia curricular oficial "+code+". Consultar Currículum Nacional · MINEDUC."];});
 const courseUrl=(slug,n)=>sourceUrl1to6+"/"+slug+"/"+n+"-basico";
 const blocks=[
+ {level:"3° Medio HC",subject:"Geometría 3D",expected:5,sourceUrl:sourceUrl3to4m+"/geometria-3d/3-medio-hc",objectives:[["MA-GE3D-3y4-OAC-01","Isometrías y homotecias mediante vectores y representaciones digitales."],["MA-GE3D-3y4-OAC-02","Puntos, rectas y planos en el espacio tridimensional mediante vectores."],["MA-GE3D-3y4-OAC-03","Relaciones entre figuras 3D y 2D mediante vistas, cortes y proyecciones."],["MA-GE3D-3y4-OAC-04","Área y volumen de figuras 3D generadas por rotación o traslación."],["MA-GE3D-3y4-OAC-05","Perspectiva, proyección y puntos de fuga aplicados al diseño."]]},
  ...oa34,
  ...oa56,
  ...oa7,
