@@ -4,6 +4,7 @@ const oa34=require("./catalogs/oa-3-4-basico.cjs");
 const oa56=require("./catalogs/oa-5-6-basico.cjs");
 const oa7=require("./catalogs/oa-7-basico.cjs");
 const oa12m=require("./catalogs/oa-1-2-medio.cjs");
+const oa34mHC=require("./catalogs/oa-3-4-medio-hc.cjs");
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
@@ -185,6 +186,7 @@ const blocks=[
  ...oa56,
  ...oa7,
  ...oa12m,
+ ...oa34mHC,
  {level:"1° Básico",subject:"Matemática",expected:20,objectives:[
 ["MA01 OA 01","Conteo de números hasta 100 en distintas secuencias."],
 ["MA01 OA 02","Uso de números ordinales del 1.º al 10.º."],
