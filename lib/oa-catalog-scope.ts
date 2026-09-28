@@ -130,7 +130,7 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
  "2° Medio":{
   "Matemática":12,
   "Lengua y Literatura":24,
-  "Ciencias Naturales":13,
+  "Ciencias Naturales":18,
   "Historia, Geografía y Ciencias Sociales":25,
   "Idioma Extranjero: Inglés":16,
   "Artes Visuales":6,
