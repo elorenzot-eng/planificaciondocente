@@ -9,7 +9,9 @@ export async function GET(){
  const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{id:true,accountType:true,active:true,schoolId:true}});
  if(!u?.active||u.accountType!=="INDIVIDUAL"||!u.schoolId)return NextResponse.json({error:"Disponible solo para cuentas individuales"},{status:403});
  const courses=await prisma.course.findMany({where:{schoolId:u.schoolId,academicYear:{year:2027}},include:{teachingAssignments:{where:{teacherId:u.id},orderBy:{subject:"asc"}}},orderBy:{level:"asc"}});
- return NextResponse.json({courses});
+ const ids=courses.map(x=>x.id);const [plannings,assessments,materials]=ids.length?await Promise.all([prisma.planning.findMany({where:{userId:u.id,courseId:{in:ids}},select:{id:true,title:true,courseId:true,createdAt:true},orderBy:{createdAt:"desc"}}),prisma.assessment.findMany({where:{userId:u.id,courseId:{in:ids}},select:{id:true,title:true,courseId:true,createdAt:true},orderBy:{createdAt:"desc"}}),prisma.supportMaterial.findMany({where:{userId:u.id,courseId:{in:ids}},select:{id:true,title:true,materialType:true,courseId:true,createdAt:true},orderBy:{createdAt:"desc"}})]):[[],[],[]];
+ const workspaces=courses.map(course=>{const docs=[...plannings.filter(x=>x.courseId===course.id).map(x=>({...x,docType:"Planificación"})),...assessments.filter(x=>x.courseId===course.id).map(x=>({...x,docType:"Evaluación"})),...materials.filter(x=>x.courseId===course.id).map(x=>({...x,docType:"Material"}))].sort((a,b)=>b.createdAt.getTime()-a.createdAt.getTime());return {...course,workspace:{plannings:plannings.filter(x=>x.courseId===course.id).length,assessments:assessments.filter(x=>x.courseId===course.id).length,materials:materials.filter(x=>x.courseId===course.id).length,total:docs.length,recent:docs.slice(0,5)}}});
+ return NextResponse.json({courses:workspaces});
 }
 
 export async function POST(req:Request){
