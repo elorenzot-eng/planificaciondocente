@@ -373,3 +373,27 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 
 /* Centro de soporte · Plan Individual */
 .supportHero{display:flex;justify-content:space-between;align-items:center;gap:24px;background:linear-gradient(125deg,#123f6d,#2563eb);color:#fff}.supportHero h2,.supportHero p,.supportHero small{color:#fff}.supportHero h2{font-size:clamp(2rem,4vw,3.5rem);margin:5px 0}.supportHero p{max-width:720px;font-size:1.05rem}.supportBadge{background:#fff;color:#123f6d;border-radius:16px;padding:18px 22px;min-width:190px;display:flex;flex-direction:column}.supportBadge b{font-size:1.1rem}.supportBadge span{font-size:.88rem;color:#60758c}.supportGrid{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px;margin-top:18px}.supportTopics{display:grid;gap:10px}.supportTopics button{text-align:left;background:#fff;border:1px solid var(--border);border-left:5px solid var(--cyan);border-radius:12px;padding:14px 16px;font-weight:800;color:#123f6d}.supportTopics button:nth-child(2){border-left-color:var(--yellow)}.supportTopics button:nth-child(3){border-left-color:var(--magenta)}.supportTopics button:nth-child(4){border-left-color:var(--green)}.supportTopics button span{display:block;margin-top:4px;font-weight:500;color:#6b7d90;font-size:.86rem}.supportActions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}.supportMail{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.supportHint{font-size:.85rem;color:#6b7d90;margin-top:12px}@media(max-width:850px){.supportHero{align-items:flex-start;flex-direction:column}.supportGrid{grid-template-columns:1fr}.supportBadge{width:100%}}
+
+/* Sello de puntos del logo: verde · amarillo · rojo, compacto junto al nombre */
+.brand:after{
+ content:""!important;
+ display:block!important;
+ flex:0 0 42px!important;
+ width:42px!important;
+ height:38px!important;
+ margin:0 0 0 -2px!important;
+ font-size:0!important;
+ letter-spacing:0!important;
+ text-shadow:none!important;
+ background:
+  radial-gradient(circle at 6px 6px,#16a34a 0 6px,transparent 6.5px),
+  radial-gradient(circle at 21px 6px,#f4c542 0 6px,transparent 6.5px),
+  radial-gradient(circle at 36px 6px,#e83e5b 0 6px,transparent 6.5px),
+  radial-gradient(circle at 6px 19px,#16a34a 0 6px,transparent 6.5px),
+  radial-gradient(circle at 21px 19px,#f4c542 0 6px,transparent 6.5px),
+  radial-gradient(circle at 36px 19px,#e83e5b 0 6px,transparent 6.5px),
+  radial-gradient(circle at 6px 32px,#16a34a 0 6px,transparent 6.5px),
+  radial-gradient(circle at 21px 32px,#f4c542 0 6px,transparent 6.5px),
+  radial-gradient(circle at 36px 32px,#e83e5b 0 6px,transparent 6.5px)!important;
+}
+.brand{gap:8px!important}
