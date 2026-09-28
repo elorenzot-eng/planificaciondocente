@@ -469,3 +469,11 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .planningBuilder .preview{border-top-color:#159fd3}.assessmentBuilder .preview{border-top-color:#e83e8c}
 .creationMaterial>.primary,.creationForm>.primary{min-height:46px;border-radius:11px;font-weight:900;box-shadow:0 5px 14px rgba(18,63,109,.12)}
 @media(max-width:650px){.creationModuleHead{align-items:flex-start;flex-wrap:wrap}.creationModuleHead>b{margin-left:62px}}
+
+
+/* Educantay · navegación interna */
+.educantayBrand{display:flex!important;align-items:center;gap:11px;padding-bottom:17px!important;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.12)}
+.educantayBrand>div{display:flex;flex-direction:column;line-height:1.05}.educantayBrand b{font-size:1.03rem;letter-spacing:.08em}.educantayBrand small{font-size:.63rem;letter-spacing:.02em;opacity:.62;margin-top:5px;font-weight:600}
+.educantayNav{display:flex;flex-direction:column;gap:4px}.educantayNav button{display:flex!important;align-items:center;gap:10px;min-height:42px;border-radius:10px!important;padding:9px 11px!important;transition:.16s ease;position:relative}.educantayNav button i{width:25px;height:25px;flex:0 0 25px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:.83rem;background:rgba(255,255,255,.07);opacity:.82}.educantayNav button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.educantayNav button:hover{transform:translateX(2px);background:rgba(255,255,255,.07)!important}.educantayNav button.active{background:#fff!important;color:#123f6d!important;font-weight:900;box-shadow:0 6px 18px rgba(0,0,0,.12)}.educantayNav button.active i{background:#e9f8fd;color:#159fd3;opacity:1}.educantayNav button.active::before{content:"";position:absolute;left:-1px;top:9px;bottom:9px;width:3px;border-radius:4px;background:#159fd3}
+aside .role{border-top:1px solid rgba(255,255,255,.12);padding-top:15px!important;margin-top:10px}.role .logout{border-radius:9px!important;margin-top:11px!important}
