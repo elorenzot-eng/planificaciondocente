@@ -10,7 +10,7 @@ export const OA_CATALOG_SCOPE = {
   licensingNote: "La ficha oficial de Bases Curriculares 7° Básico a 2° Medio informa restricciones de uso comercial. Verificar autorización/licencia antes de persistir o redistribuir textos íntegros de OA en el SaaS.",
   optionalPrograms1to4: ["Inglés (Propuesta)"],
   separatePrograms: ["Religión"],
-  catalogStatus: "GENERAL_FORMATION_3_4_MEDIO_LOADED",
+  catalogStatus: "GENERAL_FORMATION_3_4_MEDIO_AND_LCPO_1_6_LOADED",
   subjects1to4: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects5to6: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lenguaje y Comunicación","Matemática","Música","Orientación","Tecnología","Lengua y Cultura de los Pueblos Originarios Ancestrales"],
   subjects7to2m: ["Artes Visuales","Ciencias Naturales","Educación Física y Salud","Historia, Geografía y Ciencias Sociales","Idioma Extranjero: Inglés","Lengua y Literatura","Matemática","Música","Orientación","Tecnología"],
@@ -27,6 +27,7 @@ export function expectedOASubjects(level:string): readonly string[] {
 
 export const verifiedOATotals: Record<string,Record<string,number>> = {
  "1° Básico":{
+  "Lengua y Cultura de los Pueblos Originarios Ancestrales":29,
   "Matemática":20,
   "Lenguaje y Comunicación":26,
   "Historia, Geografía y Ciencias Sociales":15,
@@ -38,6 +39,7 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Orientación":8
  },
  "2° Básico":{
+  "Lengua y Cultura de los Pueblos Originarios Ancestrales":27,
   "Matemática":22,
   "Lenguaje y Comunicación":30,
   "Ciencias Naturales":14,
@@ -49,6 +51,7 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Orientación":8
  },
  "3° Básico":{
+  "Lengua y Cultura de los Pueblos Originarios Ancestrales":26,
   "Matemática":26,
   "Lenguaje y Comunicación":31,
   "Ciencias Naturales":13,
@@ -60,6 +63,7 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Orientación":8
  },
  "4° Básico":{
+  "Lengua y Cultura de los Pueblos Originarios Ancestrales":29,
   "Matemática":27,
   "Lenguaje y Comunicación":30,
   "Ciencias Naturales":17,
@@ -71,6 +75,7 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Orientación":8
  },
  "5° Básico":{
+  "Lengua y Cultura de los Pueblos Originarios Ancestrales":29,
   "Matemática":24,
   "Lenguaje y Comunicación":30,
   "Ciencias Naturales":14,
@@ -83,6 +88,7 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Orientación":9
  },
  "6° Básico":{
+  "Lengua y Cultura de los Pueblos Originarios Ancestrales":28,
   "Matemática":24,
   "Lenguaje y Comunicación":31,
   "Ciencias Naturales":18,
@@ -152,6 +158,12 @@ export function isVariantBasedOACatalog(subject:string){return variantBasedSubje
 // Bloques cuyo contenido curricular ha sido efectivamente incorporado al seed maestro.
 // verifiedOATotals solo expresa cantidades contrastadas; no implica que el texto del catálogo esté cargado.
 export const loadedCatalogBlocks = new Set([
+ "1° Básico|Lengua y Cultura de los Pueblos Originarios Ancestrales",
+ "2° Básico|Lengua y Cultura de los Pueblos Originarios Ancestrales",
+ "3° Básico|Lengua y Cultura de los Pueblos Originarios Ancestrales",
+ "4° Básico|Lengua y Cultura de los Pueblos Originarios Ancestrales",
+ "5° Básico|Lengua y Cultura de los Pueblos Originarios Ancestrales",
+ "6° Básico|Lengua y Cultura de los Pueblos Originarios Ancestrales",
  "1° Básico|Ciencias Naturales",
  "8° Básico|Matemática",
  "8° Básico|Lengua y Literatura",
