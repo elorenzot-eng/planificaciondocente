@@ -104,3 +104,25 @@ select:focus,input:focus,textarea:focus{outline:none;border-color:var(--cyan);bo
 .role{color:#fff}.role small{color:#aac0d3}
 .logout{font-family:inherit}
 @media(max-width:1050px){.workspace{padding:25px}}
+
+
+/* Cuadros de mando y cuenta individual */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:16px 0 20px}
+.kpi{min-height:105px;padding:18px;text-align:left;border:1px solid var(--border);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);font-family:inherit;cursor:default;transition:.18s ease}
+button.kpi{cursor:pointer}
+button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,109,.11)}
+.kpi b{display:block;color:var(--navy);font-size:18px;margin-bottom:7px}
+.kpi span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+.kpis>.kpi:nth-child(4n+1){border-top:4px solid var(--cyan)}
+.kpis>.kpi:nth-child(4n+2){border-top:4px solid var(--yellow)}
+.kpis>.kpi:nth-child(4n+3){border-top:4px solid var(--magenta)}
+.kpis>.kpi:nth-child(4n){border-top:4px solid var(--green)}
+.formGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+.callout{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.formGrid>.callout:nth-child(4n+1){border-top:4px solid var(--cyan)}
+.formGrid>.callout:nth-child(4n+2){border-top:4px solid var(--yellow)}
+.formGrid>.callout:nth-child(4n+3){border-top:4px solid var(--magenta)}
+.formGrid>.callout:nth-child(4n){border-top:4px solid var(--green)}
+.callout>b{color:var(--navy)}.callout p{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:0}
+@media(max-width:1000px){.kpis,.formGrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.kpis,.formGrid{grid-template-columns:1fr}}
