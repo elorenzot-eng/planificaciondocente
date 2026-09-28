@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {prisma} from "../../../lib/prisma";
 import {getSession} from "../../../lib/auth";
-import {OA_CATALOG_SCOPE,expectedOASubjects} from "../../../lib/oa-catalog-scope";
+import {OA_CATALOG_SCOPE,expectedOASubjects,expectedOACount} from "../../../lib/oa-catalog-scope";
 
 async function admin(){
  const s=await getSession(); if(!s?.id)return null;
