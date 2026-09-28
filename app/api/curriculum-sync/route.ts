@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {prisma} from "../../../lib/prisma";
 import {getSession} from "../../../lib/auth";
-import {OA_CATALOG_SCOPE,expectedOASubjects,expectedOACount} from "../../../lib/oa-catalog-scope";
+import {OA_CATALOG_SCOPE,expectedOASubjects,expectedOACount,isVariantBasedOACatalog} from "../../../lib/oa-catalog-scope";
 
 async function admin(){
  const s=await getSession(); if(!s?.id)return null;
@@ -16,7 +16,8 @@ export async function GET(){
  const matrix=OA_CATALOG_SCOPE.levels.flatMap(level=>expectedOASubjects(level).map(subject=>{
   const count=coverage.find(x=>x.level===level&&x.subject===subject)?.count??0;
   const expected=expectedOACount(level,subject);
-  return {level,subject,count,expected,loaded:expected===null?count>0:count===expected};
+  const variantBased=isVariantBasedOACatalog(subject);
+  return {level,subject,count,expected,variantBased,loaded:variantBased?count>0:expected===null?count>0:count===expected};
  }));
  return NextResponse.json({catalogStatus:OA_CATALOG_SCOPE.catalogStatus,coverage,matrix,missing:matrix.filter(x=>!x.loaded),duplicates:duplicateGroups});
 }
