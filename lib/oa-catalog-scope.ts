@@ -39,6 +39,14 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Artes Visuales":5,
   "Música":8,
   "Tecnología":7
+ },
+ "4° Básico":{
+  "Matemática":27,
+  "Lenguaje y Comunicación":30,
+  "Ciencias Naturales":17,
+  "Historia, Geografía y Ciencias Sociales":18,
+  "Música":8,
+  "Tecnología":7
  }
 };
 export function expectedOACount(level:string,subject:string){return verifiedOATotals[level]?.[subject]??null}
