@@ -25,8 +25,8 @@ export async function GET(){
 }
 export async function POST(req:Request){
  const u=await currentUser();if(!u)return NextResponse.json({error:"No autorizado"},{status:401});
- const entitlement=await checkAiEntitlement(u.id);if(!entitlement.ok)return NextResponse.json({error:entitlement.error},{status:402});
- if(!process.env.OPENAI_API_KEY)return NextResponse.json({error:"OPENAI_API_KEY no configurada"},{status:503});
+ const entitlement=await checkAiEntitlement(u.id);if(!entitlement.ok){console.error("[ai-planning] entitlement blocked",{userId:u.id,error:entitlement.error});return NextResponse.json({error:entitlement.error,stage:"entitlement"},{status:402});}
+ if(!process.env.OPENAI_API_KEY){console.error("[ai-planning] OPENAI_API_KEY missing");return NextResponse.json({error:"OPENAI_API_KEY no configurada",stage:"configuration"},{status:503});}
  const b=await req.json();
  const course=await prisma.course.findUnique({where:{id:String(b.courseId||"")},include:{academicYear:true,teachingAssignments:true,school:true}});
  if(!course)return NextResponse.json({error:"Curso no encontrado"},{status:404});
@@ -40,9 +40,9 @@ export async function POST(req:Request){
  const adaptationInstruction=includeAdaptations?`Incluye adecuacionesCurriculares como array separado de DUA. Contexto entregado por el docente: ${adaptationContext||"sin contexto adicional"}. Propón ajustes de acceso, metodología, recursos, tiempo, participación o evaluación según corresponda. No inventes diagnósticos ni datos personales y no modifiques los OA oficiales.`:"No generes adecuaciones curriculares individualizadas; usa solo principios generales DUA.";const prompt=`Genera una planificación docente chilena en español. No inventes ni modifiques los OA entregados. ${adaptationInstruction} Curso: ${course.name}. Nivel: ${course.level}. Asignatura: ${subject}. Duración: ${duration}. Modalidad: ${modality}. Referencias curriculares MINEDUC seleccionadas: ${objectives.map(o=>o.code+": "+o.text).join(" | ")}. Usa estas referencias para crear contenido pedagógico original; no inventes códigos OA ni atribuyas a MINEDUC textos generados por la IA. Indicaciones adicionales: ${instructions||"ninguna"}. Devuelve SOLO JSON válido con estas claves: titulo, objetivoClase, indicadores (array), inicio, desarrollo, cierre, recursos (array), evaluacionFormativa, dua (array), adecuacionesCurriculares (array), evidencia, observaciones. Los campos inicio/desarrollo/cierre deben ser objetos con minutos, actividadesDocente y actividadesEstudiantes.`;
  const ai=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,"Content-Type":"application/json"},body:JSON.stringify({model:process.env.OPENAI_MODEL||"gpt-5.6-terra",input:prompt})});
  const raw=await ai.json();
- if(!ai.ok)return NextResponse.json({error:"La IA no pudo generar la planificación",detail:raw?.error?.message||"Error OpenAI"},{status:502});
- let text=outputText(raw).trim().replace(/^\`\`\`json\s*/i,"").replace(/\`\`\`$/,"").trim();let generated:any;
- try{generated=JSON.parse(text)}catch{return NextResponse.json({error:"La IA respondió en un formato no válido. Intenta nuevamente."},{status:502})}
+ if(!ai.ok){console.error("[ai-planning] OpenAI error",{status:ai.status,model:process.env.OPENAI_MODEL||"gpt-5.6-terra",error:raw?.error});return NextResponse.json({error:"La IA no pudo generar la planificación",detail:raw?.error?.message||"Error OpenAI",stage:"openai",status:ai.status},{status:502});}
+ let text=outputText(raw).trim().replace(/^\`\`\`json\s*/i,"").replace(/\`\`\`$/,"").trim();if(!text){console.error("[ai-planning] empty OpenAI output",{responseId:raw?.id,status:raw?.status,incomplete:raw?.incomplete_details});return NextResponse.json({error:"La IA no devolvió contenido para la planificación.",detail:raw?.incomplete_details?.reason||raw?.status||"Respuesta vacía",stage:"output"},{status:502})}let generated:any;
+ try{generated=JSON.parse(text)}catch(e){console.error("[ai-planning] invalid JSON",{responseId:raw?.id,text:text.slice(0,500)});return NextResponse.json({error:"La IA respondió en un formato no válido. Intenta nuevamente.",stage:"json"},{status:502})}
  const moments=["inicio","desarrollo","cierre"] as const;
  const validMoments=moments.every(k=>generated?.[k]&&generated[k].minutos!==undefined&&String(generated[k].actividadesDocente||"").trim()&&String(generated[k].actividadesEstudiantes||"").trim());
  if(!validMoments)return NextResponse.json({error:"La IA no entregó una planificación completa con Inicio, Desarrollo y Cierre. Intenta nuevamente."},{status:502});
