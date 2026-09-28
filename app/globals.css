@@ -229,3 +229,17 @@ button.kpi:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,63,10
 .assessmentIllustration{max-width:430px;margin:12px auto}.assessmentIllustration img{max-height:330px}
 @media(max-width:700px){.generatedImages{grid-template-columns:1fr}}
 @media print{.generatedImages{grid-template-columns:repeat(2,1fr)}.generatedImages figure,.assessmentIllustration{box-shadow:none;break-inside:avoid}.assessmentIllustration img{max-height:75mm}}
+
+/* Encabezado simétrico para instrumentos de evaluación */
+.printStudentData{border:1px solid #ccd5e0;border-radius:4px;margin:14px 0 18px;overflow:hidden;background:#fff}
+.studentDataTitle{padding:10px 14px;border-bottom:1px solid #dbe2ea;font-size:14px;color:#172033}
+.studentDataGrid{display:grid;grid-template-columns:1fr 1fr}
+.studentDataCell{min-height:42px;display:grid;grid-template-columns:max-content 1fr;align-items:center;gap:8px;padding:7px 14px;border-bottom:1px solid #e5eaf1}
+.studentDataCell:nth-child(odd){border-right:1px solid #e5eaf1}
+.studentDataCell:nth-last-child(-n+2){border-bottom:0}
+.studentDataCell b{white-space:nowrap}
+.studentDataCell>span:not(.writeLine){min-width:0}
+.writeLine{display:block;height:18px;border-bottom:1px solid #172033;min-width:90px}
+.writeLine.short{max-width:150px}
+@media(max-width:720px){.studentDataGrid{grid-template-columns:1fr}.studentDataCell:nth-child(odd){border-right:0}.studentDataCell:nth-last-child(2){border-bottom:1px solid #e5eaf1}}
+@media print{.printStudentData{break-inside:avoid}.studentDataGrid{grid-template-columns:1fr 1fr}.studentDataCell:nth-child(odd){border-right:1px solid #d6dde6}.studentDataCell{min-height:9mm;padding:2.5mm 4mm}.studentDataTitle{padding:2.5mm 4mm}}
