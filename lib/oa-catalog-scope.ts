@@ -72,7 +72,7 @@ export const verifiedOATotals: Record<string,Record<string,number>> = {
   "Tecnología":7
  },
  "7° Básico":{
-  "Matemática":16,
+  "Matemática":19,
   "Lengua y Literatura":25,
   "Ciencias Naturales":14,
   "Historia, Geografía y Ciencias Sociales":20,
