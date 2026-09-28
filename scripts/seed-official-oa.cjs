@@ -1,6 +1,7 @@
 const {PrismaClient}=require("@prisma/client");
 const prisma=new PrismaClient();
 const oa34=require("./catalogs/oa-3-4-basico.cjs");
+const oaLCPO=require("./catalogs/oa-lengua-cultura-pueblos-originarios-1-6.cjs");
 const oa56=require("./catalogs/oa-5-6-basico.cjs");
 const oa7=require("./catalogs/oa-7-basico.cjs");
 const oa12m=require("./catalogs/oa-1-2-medio.cjs");
@@ -191,6 +192,7 @@ const blocks=[
  {level:"4° Medio HC",subject:"Geometría 3D",expected:5,sourceUrl:sourceUrl3to4m+"/geometria-3d/4-medio-hc",objectives:[["MA-GE3D-3y4-OAC-01","Isometrías y homotecias mediante vectores y representaciones digitales."],["MA-GE3D-3y4-OAC-02","Puntos, rectas y planos en el espacio tridimensional mediante vectores."],["MA-GE3D-3y4-OAC-03","Relaciones entre figuras 3D y 2D mediante vistas, cortes y proyecciones."],["MA-GE3D-3y4-OAC-04","Área y volumen de figuras 3D generadas por rotación o traslación."],["MA-GE3D-3y4-OAC-05","Perspectiva, proyección y puntos de fuga aplicados al diseño."]]},
  ...oa34,
  ...oa56,
+ ...oaLCPO,
  ...oa7,
  ...oa12m,
  ...oa34mHC,
