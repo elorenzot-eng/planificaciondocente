@@ -17,3 +17,10 @@
 @media(max-width:520px){.loginPage{padding:14px}.loginCard{max-width:100%;padding:30px 23px}.educantayLoginBrand img{width:43px;height:43px}}
 
 .educantayLoading{display:flex;align-items:center;justify-content:center;gap:14px;min-height:74px}.educantayLoading img{width:48px;height:48px;object-fit:contain}.educantayLoading>div{display:flex;flex-direction:column}.educantayLoading b{color:#123f6d;letter-spacing:.09em;font-size:1.05rem}.educantayLoading span{color:#72869a;font-size:.78rem;margin-top:4px}
+
+/* Educantay · marca destacada en acceso y creación de cuenta */
+.loginCard .educantayLoginBrand{gap:18px!important;margin-bottom:32px!important}
+.loginCard .educantayLoginBrand img{width:76px!important;height:76px!important}
+.loginCard .educantayLoginBrand b{font-size:2rem!important;line-height:1!important;font-weight:900!important;letter-spacing:.055em!important}
+.loginCard .educantayLoginBrand span{font-size:1rem!important;line-height:1.25!important;font-weight:700!important;margin-top:7px!important}
+@media(max-width:520px){.loginCard .educantayLoginBrand{gap:12px!important}.loginCard .educantayLoginBrand img{width:60px!important;height:60px!important}.loginCard .educantayLoginBrand b{font-size:1.55rem!important}.loginCard .educantayLoginBrand span{font-size:.82rem!important}}
