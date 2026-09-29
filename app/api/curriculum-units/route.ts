@@ -18,3 +18,5 @@ export async function GET(req:Request){
  });
  return NextResponse.json({units:units.map((u:any)=>({...u,objectives:u.objectives.map((x:any)=>x.objective)}))});
 }
+
+// Deployment refresh: curriculum unit bank
