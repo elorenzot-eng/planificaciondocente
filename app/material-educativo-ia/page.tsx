@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import SeoLanding from "../seo-landing";
+
+export const metadata: Metadata={title:"Material educativo con IA",description:"Genera recursos pedagógicos a partir de tus objetivos y planificaciones: guías de aprendizaje, presentaciones, mapas conceptuales, mapas mentales, afiches, trípticos, dípticos y otros materiales.",alternates:{canonical:"/material-educativo-ia"},openGraph:{title:"Crea material educativo con IA para tus clases",description:"Genera recursos pedagógicos a partir de tus objetivos y planificaciones: guías de aprendizaje, presentaciones, mapas conceptuales, mapas mentales, afiches, trípticos, dípticos y otros materiales.",url:"https://educantay.cl/material-educativo-ia",type:"website"}};
+
+export default function Page(){return <SeoLanding eyebrow="MATERIAL EDUCATIVO CON IA" title="Crea material educativo con IA para tus clases" description="Genera recursos pedagógicos a partir de tus objetivos y planificaciones: guías de aprendizaje, presentaciones, mapas conceptuales, mapas mentales, afiches, trípticos, dípticos y otros materiales." features={["Guías de aprendizaje","Presentaciones","Mapas conceptuales y mentales","Afiches, trípticos y dípticos"]}/>}
