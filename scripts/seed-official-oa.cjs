@@ -470,13 +470,21 @@ async function syncTPModules(){const source="Currículum Nacional · MINEDUC";co
 
 async function syncBasicCurriculumUnits(){
  const levels=["1° Básico","2° Básico","3° Básico","4° Básico"];
+ const verifiedKeys=new Set(verifiedBasicUnits.map(u=>u.level+"|"+u.subject));
+ for(const u of verifiedBasicUnits){
+  await prisma.curriculumUnit.upsert({
+   where:{level_subject_number:{level:u.level,subject:u.subject,number:u.number}},
+   update:{title:u.title,purpose:u.purpose,active:true,source,sourceUrl:u.sourceUrl},
+   create:{level:u.level,subject:u.subject,number:u.number,title:u.title,purpose:u.purpose,source,sourceUrl:u.sourceUrl,active:true}
+  });
+ }
  const rows=await prisma.learningObjective.findMany({where:{level:{in:levels},subject:{not:null}},select:{level:true,subject:true}});
  const pairs=[...new Map(rows.filter(x=>x.subject).map(x=>[x.level+"|"+x.subject,x])).values()];
  for(const pair of pairs){
-  for(let number=1;number<=4;number++){
-   await prisma.curriculumUnit.upsert({where:{level_subject_number:{level:pair.level,subject:pair.subject,number}},update:{active:true,source,sourceUrl:sourceUrl1to6},create:{level:pair.level,subject:pair.subject,number,title:"Unidad "+number,source,sourceUrl:sourceUrl1to6,active:true}});
-  }
-  console.log("Curriculum units: "+pair.level+" · "+pair.subject+" (4 unidades)");
+  const key=pair.level+"|"+pair.subject;
+  if(verifiedKeys.has(key)){console.log("Verified curriculum units: "+key);continue}
+  await prisma.curriculumUnit.updateMany({where:{level:pair.level,subject:pair.subject},data:{active:false}});
+  console.log("Curriculum units pending official verification: "+key);
  }
 }
 async function main(){
