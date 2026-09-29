@@ -467,6 +467,18 @@ const blocks=[
 ];
 async function syncTP(){const source="Currículum Nacional · MINEDUC";const sourceUrl="https://www.curriculumnacional.cl/curriculum/3o-4o-medio-tecnico-profesional";for(const block of tpPriority){const module=await prisma.curriculumModule.upsert({where:{specialty_level_name:{specialty:block.specialty,level:block.level,name:"Objetivos de Aprendizaje de la Especialidad"}},update:{active:true,source,sourceUrl},create:{code:"OA-ESPECIALIDAD",name:"Objetivos de Aprendizaje de la Especialidad",specialty:block.specialty,level:block.level,source,sourceUrl,active:true}});for(const [code,text] of block.objectives){let oa=await prisma.learningObjective.findFirst({where:{code,level:block.level,specialty:block.specialty}});if(oa)oa=await prisma.learningObjective.update({where:{id:oa.id},data:{text,source,sourceUrl,module:module.name}});else oa=await prisma.learningObjective.create({data:{code,text,level:block.level,specialty:block.specialty,module:module.name,source,sourceUrl}});await prisma.curriculumModuleObjective.upsert({where:{moduleId_objectiveId:{moduleId:module.id,objectiveId:oa.id}},update:{},create:{moduleId:module.id,objectiveId:oa.id}})}console.log(`TP OA seed: ${block.specialty} ${block.level} total=${block.objectives.length}`)}}
 async function syncTPModules(){const source="Currículum Nacional · MINEDUC";const sourceUrl="https://www.curriculumnacional.cl/curriculum/3o-4o-medio-tecnico-profesional";for(const spec of tpModules.modules){const module=await prisma.curriculumModule.upsert({where:{specialty_level_name:{specialty:spec.specialty,level:spec.level,name:spec.name}},update:{code:spec.code,active:true,source,sourceUrl},create:{code:spec.code,name:spec.name,specialty:spec.specialty,level:spec.level,source,sourceUrl,active:true}});let objectives=[];if(spec.generic){for(const [code,text] of tpModules.oag){let oa=await prisma.learningObjective.findFirst({where:{code,level:spec.level,specialty:spec.specialty}});if(!oa)oa=await prisma.learningObjective.create({data:{code,text,level:spec.level,specialty:spec.specialty,module:spec.name,source,sourceUrl}});else oa=await prisma.learningObjective.update({where:{id:oa.id},data:{text,source,sourceUrl}});objectives.push(oa)}}else{for(const code of spec.oa||[]){const oa=await prisma.learningObjective.findFirst({where:{code,level:spec.level,specialty:spec.specialty}});if(!oa)throw new Error("TP module "+spec.code+" references missing objective "+code+" for "+spec.specialty+" "+spec.level);objectives.push(oa)}}for(const oa of objectives)await prisma.curriculumModuleObjective.upsert({where:{moduleId_objectiveId:{moduleId:module.id,objectiveId:oa.id}},update:{},create:{moduleId:module.id,objectiveId:oa.id}});console.log(`TP module seed: ${spec.code} ${spec.name} objectives=${objectives.length}`)}}
+
+async function syncBasicCurriculumUnits(){
+ const levels=["1° Básico","2° Básico","3° Básico","4° Básico"];
+ const rows=await prisma.learningObjective.findMany({where:{level:{in:levels},subject:{not:null}},select:{level:true,subject:true}});
+ const pairs=[...new Map(rows.filter(x=>x.subject).map(x=>[x.level+"|"+x.subject,x])).values()];
+ for(const pair of pairs){
+  for(let number=1;number<=4;number++){
+   await prisma.curriculumUnit.upsert({where:{level_subject_number:{level:pair.level,subject:pair.subject,number}},update:{active:true,source,sourceUrl:sourceUrl1to6},create:{level:pair.level,subject:pair.subject,number,title:"Unidad "+number,source,sourceUrl:sourceUrl1to6,active:true}});
+  }
+  console.log("Curriculum units: "+pair.level+" · "+pair.subject+" (4 unidades)");
+ }
+}
 async function main(){
  // Retira aliases antiguos de menciones para que el selector muestre Especialidad → Mención/Módulo sin duplicados.
  await prisma.curriculumModule.updateMany({where:{specialty:{in:["Administración - Mención Logística","Administración - Mención Recursos Humanos","Mecánica Industrial - Mención Mantenimiento Electromecánico","Mecánica Industrial - Mención Máquinas-Herramientas"]}},data:{active:false}});
@@ -474,6 +486,7 @@ async function main(){
   const result=await syncBlock(block);
   console.log(`Official OA seed: ${block.subject} ${block.level} created=${result.created} updated=${result.updated} total=${block.objectives.length}`);
  }
+ await syncBasicCurriculumUnits();
  await syncTP();
  await syncTPModules();
 }
