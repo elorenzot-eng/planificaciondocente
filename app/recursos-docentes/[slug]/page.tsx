@@ -1,0 +1,4 @@
+import type {Metadata} from "next";import {notFound} from "next/navigation";import {ResourceLayout,resources} from "../resources";
+export function generateStaticParams(){return resources.map(x=>({slug:x.slug}))}
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;const item=resources.find(x=>x.slug===slug);if(!item)return {};return {title:item.title,description:item.description,alternates:{canonical:"/recursos-docentes/"+item.slug},openGraph:{title:item.title,description:item.description,url:"https://educantay.cl/recursos-docentes/"+item.slug,type:"article"}}}
+export default async function Page({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const item=resources.find(x=>x.slug===slug);if(!item)notFound();return <ResourceLayout item={item}/>}
