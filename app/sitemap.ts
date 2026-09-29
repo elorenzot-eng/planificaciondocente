@@ -8,6 +8,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/material-educativo-ia",
     "/planificaciones-mineduc",
     "/objetivos-aprendizaje-mineduc",
+    "/recursos-docentes",
+    "/recursos-docentes/planificacion-docente",
+    "/recursos-docentes/dua-planificacion-docente",
+    "/recursos-docentes/evaluacion-formativa",
+    "/recursos-docentes/rubricas-evaluacion",
+    "/recursos-docentes/objetivos-de-aprendizaje-planificacion",
   ];
   return routes.map((route,index)=>({
     url: `https://educantay.cl${route}`,
