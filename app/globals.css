@@ -569,3 +569,29 @@ html body .publicLanding nav.landingNav{min-height:112px!important}
 .publicLanding nav.landingNav .landingBrand{width:270px!important;min-width:270px!important;height:134px!important;overflow:visible!important;align-items:center!important}
 .publicLanding nav.landingNav .landingBrand img{width:250px!important;height:134px!important;max-width:250px!important;object-fit:contain!important;object-position:left center!important;transform:none!important}
 }
+
+
+/* EducAntay — logo principal de portada */
+html body .publicLanding nav.landingNav{
+  height:164px!important;
+  min-height:164px!important;
+}
+html body .publicLanding nav.landingNav .landingBrand{
+  width:330px!important;
+  min-width:330px!important;
+  height:148px!important;
+  overflow:visible!important;
+}
+html body .publicLanding nav.landingNav .landingBrand img{
+  width:320px!important;
+  height:148px!important;
+  max-width:320px!important;
+  object-fit:contain!important;
+  object-position:left center!important;
+  display:block!important;
+}
+@media(max-width:600px){
+  html body .publicLanding nav.landingNav{height:112px!important;min-height:112px!important}
+  html body .publicLanding nav.landingNav .landingBrand{width:190px!important;min-width:190px!important;height:98px!important}
+  html body .publicLanding nav.landingNav .landingBrand img{width:185px!important;height:98px!important;max-width:185px!important}
+}
