@@ -14,6 +14,7 @@ const oa34mHCPhilosophyExtra=require("./catalogs/oa-3-4-medio-hc-filosofia-extra
 const oa34mHCGeneralElectives=require("./catalogs/oa-3-4-medio-hc-general-electives.cjs");
 const tpPriority=require("./catalogs/tp-priority.cjs");
 const tpModules=require("./catalogs/tp-modules-priority.cjs");
+const verifiedBasicUnits=require("./catalogs/units-1-4-basico-verified.cjs");
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
