@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import SeoLanding from "../seo-landing";
+
+export const metadata: Metadata={title:"Objetivos de Aprendizaje Currículum Nacional",description:"Selecciona curso y asignatura para utilizar Objetivos de Aprendizaje como punto de partida de planificaciones, evaluaciones y materiales. Revisa siempre el resultado y adáptalo a tu contexto educativo.",alternates:{canonical:"/objetivos-aprendizaje-mineduc"},openGraph:{title:"Trabaja con Objetivos de Aprendizaje en Educantay",description:"Selecciona curso y asignatura para utilizar Objetivos de Aprendizaje como punto de partida de planificaciones, evaluaciones y materiales. Revisa siempre el resultado y adáptalo a tu contexto educativo.",url:"https://educantay.cl/objetivos-aprendizaje-mineduc",type:"website"}};
+
+export default function Page(){return <SeoLanding eyebrow="OBJETIVOS DE APRENDIZAJE" title="Trabaja con Objetivos de Aprendizaje en Educantay" description="Selecciona curso y asignatura para utilizar Objetivos de Aprendizaje como punto de partida de planificaciones, evaluaciones y materiales. Revisa siempre el resultado y adáptalo a tu contexto educativo." features={["Selección por nivel","Selección por asignatura","Planificación desde OA","Recursos conectados"]}/>}
