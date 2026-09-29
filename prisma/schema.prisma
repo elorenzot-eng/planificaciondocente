@@ -260,6 +260,7 @@ model CurriculumUnit {
   subject String
   number Int
   title String
+  purpose String?
   source String
   sourceUrl String?
   active Boolean @default(true)
