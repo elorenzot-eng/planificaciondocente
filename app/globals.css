@@ -562,3 +562,10 @@ html body .publicLanding nav.landingNav{min-height:112px!important}
 .publicLanding .landingNav .landingBrand{min-width:190px!important;overflow:visible!important}
 .publicLanding .landingNav .landingBrand img{width:180px!important;height:112px!important;max-width:none!important;object-fit:contain!important;object-position:left center!important;display:block!important}
 .educantayBrand .pdLogo{width:86px!important;height:64px!important;object-fit:contain!important}
+
+/* Final desktop logo override */
+@media (min-width:769px){
+.publicLanding nav.landingNav{height:150px!important;min-height:150px!important;overflow:visible!important;padding-top:8px!important;padding-bottom:8px!important}
+.publicLanding nav.landingNav .landingBrand{width:270px!important;min-width:270px!important;height:134px!important;overflow:visible!important;align-items:center!important}
+.publicLanding nav.landingNav .landingBrand img{width:250px!important;height:134px!important;max-width:250px!important;object-fit:contain!important;object-position:left center!important;transform:none!important}
+}
