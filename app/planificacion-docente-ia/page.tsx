@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import SeoLanding from "../seo-landing";
+
+export const metadata: Metadata={title:"Planificación docente con IA en Chile",description:"Crea planificaciones docentes con apoyo de inteligencia artificial a partir del nivel, asignatura y Objetivos de Aprendizaje. Educantay conecta planificación, evaluación y material pedagógico en un mismo espacio.",alternates:{canonical:"/planificacion-docente-ia"},openGraph:{title:"Planificación docente con IA alineada al Currículum Nacional de Chile",description:"Crea planificaciones docentes con apoyo de inteligencia artificial a partir del nivel, asignatura y Objetivos de Aprendizaje. Educantay conecta planificación, evaluación y material pedagógico en un mismo espacio.",url:"https://educantay.cl/planificacion-docente-ia",type:"website"}};
+
+export default function Page(){return <SeoLanding eyebrow="PLANIFICACIÓN DOCENTE CON IA" title="Planificación docente con IA alineada al Currículum Nacional de Chile" description="Crea planificaciones docentes con apoyo de inteligencia artificial a partir del nivel, asignatura y Objetivos de Aprendizaje. Educantay conecta planificación, evaluación y material pedagógico en un mismo espacio." features={["Objetivos de Aprendizaje integrados","Planificaciones editables","DUA y apoyos pedagógicos","Evaluación formativa"]}/>}
