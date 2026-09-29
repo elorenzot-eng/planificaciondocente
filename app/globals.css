@@ -557,3 +557,8 @@ html body .publicLanding nav.landingNav{min-height:112px!important}
 
 /* Centro de soporte: tipo de solicitud claramente ampliado */
 .supportRequestFields{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px}.supportRequestFields label{width:100%;min-width:0}.supportRequestFields .supportTypeSelect{display:block;width:100%!important;max-width:none!important;min-height:58px!important;padding:0 18px!important;font-size:16px!important}.supportRequestFields input{width:100%;min-height:50px}
+
+/* EducAntay logo sizing */
+.publicLanding .landingNav .landingBrand{min-width:190px!important;overflow:visible!important}
+.publicLanding .landingNav .landingBrand img{width:180px!important;height:112px!important;max-width:none!important;object-fit:contain!important;object-position:left center!important;display:block!important}
+.educantayBrand .pdLogo{width:86px!important;height:64px!important;object-fit:contain!important}
