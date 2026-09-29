@@ -14,6 +14,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/recursos-docentes/evaluacion-formativa",
     "/recursos-docentes/rubricas-evaluacion",
     "/recursos-docentes/objetivos-de-aprendizaje-planificacion",
+    "/recursos-docentes/planificacion-docente-educacion-basica",
+    "/recursos-docentes/planificacion-docente-ensenanza-media",
+    "/recursos-docentes/lista-de-cotejo",
+    "/recursos-docentes/guia-de-aprendizaje",
+    "/recursos-docentes/instrumentos-de-evaluacion",
   ];
   return routes.map((route,index)=>({
     url: `https://educantay.cl${route}`,
