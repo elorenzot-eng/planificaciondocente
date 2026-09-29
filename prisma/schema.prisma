@@ -142,6 +142,7 @@ model LearningObjective {
   planningLinks PlanningObjective[]
   assessmentLinks AssessmentObjective[]
   moduleLinks CurriculumModuleObjective[]
+  unitLinks CurriculumUnitObjective[]
   @@index([level,subject])
   @@index([specialty,module])
 }
@@ -252,6 +253,28 @@ model HCTeachingAssignment {
   @@index([teacherId])
 }
 
+
+model CurriculumUnit {
+  id String @id @default(cuid())
+  level String
+  subject String
+  number Int
+  title String
+  source String
+  sourceUrl String?
+  active Boolean @default(true)
+  objectives CurriculumUnitObjective[]
+  @@unique([level,subject,number])
+  @@index([level,subject,active])
+}
+model CurriculumUnitObjective {
+  unitId String
+  objectiveId String
+  unit CurriculumUnit @relation(fields:[unitId],references:[id],onDelete:Cascade)
+  objective LearningObjective @relation(fields:[objectiveId],references:[id],onDelete:Cascade)
+  @@id([unitId,objectiveId])
+  @@index([objectiveId])
+}
 
 model CurriculumModule {
   id String @id @default(cuid())
