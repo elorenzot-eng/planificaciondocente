@@ -24,3 +24,8 @@
 .loginCard .educantayLoginBrand b{font-size:2rem!important;line-height:1!important;font-weight:900!important;letter-spacing:.055em!important}
 .loginCard .educantayLoginBrand span{font-size:1rem!important;line-height:1.25!important;font-weight:700!important;margin-top:7px!important}
 @media(max-width:520px){.loginCard .educantayLoginBrand{gap:12px!important}.loginCard .educantayLoginBrand img{width:60px!important;height:60px!important}.loginCard .educantayLoginBrand b{font-size:1.55rem!important}.loginCard .educantayLoginBrand span{font-size:.82rem!important}}
+
+/* EducAntay full logo on access screens */
+.loginCard .educantayLoginBrand{display:block!important;margin-bottom:28px!important}
+.loginCard .educantayLoginBrand img{width:210px!important;height:132px!important;max-width:100%!important;object-fit:contain!important;object-position:left center!important;display:block!important}
+.loginCard .educantayLoginBrand>div{display:none!important}
