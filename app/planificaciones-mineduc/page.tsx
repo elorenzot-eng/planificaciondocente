@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import SeoLanding from "../seo-landing";
+
+export const metadata: Metadata={title:"Planificaciones Currículum Nacional Chile",description:"Trabaja con nivel, asignatura y Objetivos de Aprendizaje como base para crear planificaciones y recursos pedagógicos. Educantay organiza el flujo para reducir tareas repetitivas y mantener coherencia curricular.",alternates:{canonical:"/planificaciones-mineduc"},openGraph:{title:"Planificaciones alineadas al Currículum Nacional de Chile",description:"Trabaja con nivel, asignatura y Objetivos de Aprendizaje como base para crear planificaciones y recursos pedagógicos. Educantay organiza el flujo para reducir tareas repetitivas y mantener coherencia curricular.",url:"https://educantay.cl/planificaciones-mineduc",type:"website"}};
+
+export default function Page(){return <SeoLanding eyebrow="CURRÍCULUM NACIONAL DE CHILE" title="Planificaciones alineadas al Currículum Nacional de Chile" description="Trabaja con nivel, asignatura y Objetivos de Aprendizaje como base para crear planificaciones y recursos pedagógicos. Educantay organiza el flujo para reducir tareas repetitivas y mantener coherencia curricular." features={["Educación Básica","Enseñanza Media HC","Enseñanza Media TP","OA como base de planificación"]}/>}
