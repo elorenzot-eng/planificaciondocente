@@ -1,5 +1,35 @@
 import "./globals.css";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://educantay.cl/#website",
+      url: "https://educantay.cl/",
+      name: "Educantay",
+      inLanguage: "es-CL",
+      description: "Espacio de trabajo docente para planificar, evaluar y crear materiales educativos con IA, alineados al Currículum Nacional de Chile."
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://educantay.cl/#software",
+      name: "Educantay",
+      url: "https://educantay.cl/",
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web",
+      inLanguage: "es-CL",
+      description: "Plataforma para docentes de Chile con planificación, evaluaciones, rúbricas y material educativo asistido por inteligencia artificial.",
+      offers: {
+        "@type": "Offer",
+        price: "20000",
+        priceCurrency: "CLP",
+        category: "subscription"
+      }
+    }
+  ]
+};
+
 export const metadata = {
   metadataBase: new URL("https://educantay.cl"),
   title: {
@@ -21,5 +51,5 @@ export const metadata = {
 };
 
 export default function RootLayout({children}:{children:React.ReactNode}){
-  return <html lang="es-CL"><body>{children}</body></html>
+  return <html lang="es-CL"><body><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}} />{children}</body></html>
 }
