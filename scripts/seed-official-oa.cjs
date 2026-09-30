@@ -14,7 +14,7 @@ const oa34mHCPhilosophyExtra=require("./catalogs/oa-3-4-medio-hc-filosofia-extra
 const oa34mHCGeneralElectives=require("./catalogs/oa-3-4-medio-hc-general-electives.cjs");
 const tpPriority=require("./catalogs/tp-priority.cjs");
 const tpModules=require("./catalogs/tp-modules-priority.cjs");
-const verifiedBasicUnits=require("./catalogs/units-1-4-basico-verified.cjs");
+const verifiedBasicUnits=[...require("./catalogs/units-1-4-basico-verified.cjs"),...require("./catalogs/units-5-6-basico-verified.cjs")];
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
 const sourceUrl7to2m="https://www.curriculumnacional.cl/curriculum/7o-basico-2-medio";
@@ -509,7 +509,7 @@ function unitLinksFromProgram(html,base){
 }
 const norm=(v)=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"").replace(/OA0+(\d+)/,"OA$1");
 async function syncMineducUnitObjectiveLinks(){
- const units=await prisma.curriculumUnit.findMany({where:{active:true,level:{in:["1° Básico","2° Básico","3° Básico","4° Básico"]}},orderBy:[{level:"asc"},{subject:"asc"},{number:"asc"}]});
+ const units=await prisma.curriculumUnit.findMany({where:{active:true,level:{in:["1° Básico","2° Básico","3° Básico","4° Básico","5° Básico","6° Básico"]}},orderBy:[{level:"asc"},{subject:"asc"},{number:"asc"}]});
  const groups=[...new Map(units.map(u=>[u.level+"|"+u.subject,{level:u.level,subject:u.subject,sourceUrl:u.sourceUrl,units:[]}])).values()];
  for(const g of groups)g.units=units.filter(u=>u.level===g.level&&u.subject===g.subject);
  let linked=0,pending=0;
