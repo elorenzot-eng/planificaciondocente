@@ -632,3 +632,20 @@ html body .publicLanding nav.landingNav .landingBrand img{
 .curriculumContextUnit{min-height:118px!important;background:#f2fbf6}
 .curriculumContextItem strong{font-size:17px!important;line-height:1.35!important;overflow-wrap:normal!important;word-break:normal!important;hyphens:none}
 @media(max-width:760px){.curriculumContextGrid{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"level" "subject" "unit"!important}.curriculumContextItem,.curriculumContextUnit{min-height:auto!important}.curriculumContextItem strong{font-size:16px!important}}
+
+
+/* Individual account management */
+.accountManagement{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:22px}
+.accountManagement>div{border:1px solid #e2e8f0;border-radius:18px;padding:20px;background:#fff}
+.accountManagement small,.trialTerms b{letter-spacing:.08em}
+.accountManagement label{display:grid;gap:6px;margin:12px 0}
+.accountManagement input{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}
+.accountManagement input:disabled{background:#f8fafc}
+.passwordGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.paymentHistory{display:grid;gap:9px;margin-top:14px;max-height:310px;overflow:auto}
+.paymentHistoryRow{border:1px solid #e2e8f0;border-radius:12px;padding:11px 13px}
+.paymentHistoryRow>div{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.paymentHistoryRow span,.paymentHistoryRow small{color:#64748b}
+.emptyPaymentHistory{padding:18px;border:1px dashed #cbd5e1;border-radius:12px;color:#64748b;text-align:center}
+.trialTerms{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:center;margin-top:18px;padding:16px 18px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0}
+@media(max-width:800px){.accountManagement{grid-template-columns:1fr}.passwordGrid{grid-template-columns:1fr}.trialTerms{grid-template-columns:1fr}}
