@@ -55,5 +55,17 @@ module.exports=[
 {title:"My Reflections on Global Issues",oa:null},
 {title:"The importance of the evolution of languages",oa:null},
 {title:"English as a means to understand new trends",oa:null}
+]),
+...page("3° Medio HC","Ciencias para la Ciudadanía","https://www.curriculumnacional.cl/614/articles-140116_programa.pdf",[
+{title:"Bienestar y Salud",oa:["FG-CIBS-3y4-OAC-01","FG-CIBS-3y4-OAC-02","FG-CIBS-3y4-OAC-03"]},
+{title:"Seguridad, Prevención y Autocuidado",oa:["FG-CISA-3y4-OAC-01","FG-CISA-3y4-OAC-02","FG-CISA-3y4-OAC-03"]},
+{title:"Ambiente y Sostenibilidad",oa:["FG-CIAS-3y4-OAC-01","FG-CIAS-3y4-OAC-02","FG-CIAS-3y4-OAC-03"]},
+{title:"Tecnología y Sociedad",oa:["FG-CITS-3y4-OAC-01","FG-CITS-3y4-OAC-02","FG-CITS-3y4-OAC-03"]}
+]),
+...page("4° Medio HC","Ciencias para la Ciudadanía","https://www.curriculumnacional.cl/614/articles-140116_programa.pdf",[
+{title:"Bienestar y Salud",oa:["FG-CIBS-3y4-OAC-01","FG-CIBS-3y4-OAC-02","FG-CIBS-3y4-OAC-03"]},
+{title:"Seguridad, Prevención y Autocuidado",oa:["FG-CISA-3y4-OAC-01","FG-CISA-3y4-OAC-02","FG-CISA-3y4-OAC-03"]},
+{title:"Ambiente y Sostenibilidad",oa:["FG-CIAS-3y4-OAC-01","FG-CIAS-3y4-OAC-02","FG-CIAS-3y4-OAC-03"]},
+{title:"Tecnología y Sociedad",oa:["FG-CITS-3y4-OAC-01","FG-CITS-3y4-OAC-02","FG-CITS-3y4-OAC-03"]}
 ])
 ];
