@@ -551,7 +551,7 @@ async function main(){
   console.log(`Official OA seed: ${block.subject} ${block.level} created=${result.created} updated=${result.updated} total=${block.objectives.length}`);
  }
  await syncBasicCurriculumUnits();
- await syncMineducUnitObjectiveLinks();
+ // Las asociaciones OA-unidad se sincronizan desde catálogos verificados locales.\n // No consultar Currículum Nacional durante el deploy: si una asociación no está verificada, la UI permite selección docente.
  await syncTP();
  await syncTPModules();
 }
