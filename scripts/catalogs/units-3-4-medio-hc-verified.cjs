@@ -37,5 +37,23 @@ module.exports=[
 {title:"Problemas contemporáneos de la ética",oa:null},
 {title:"Problemas contemporáneos de la política",oa:null},
 {title:"El impacto de la filosofía en la vida cotidiana",oa:null}
+]),
+...page("3° Medio HC","Lengua y Literatura","https://www.curriculumnacional.cl/recursos/programa-fg-lengua-literatura-3-medio",[
+{title:"Diálogo: literatura y efecto estético",oa:null},
+{title:"Elaborar y comunicar interpretaciones literarias",oa:null},
+{title:"Análisis crítico de géneros discursivos en comunidades digitales",oa:null},
+{title:"Evaluar y producir géneros discursivos",oa:null}
+]),
+...page("4° Medio HC","Lengua y Literatura","https://www.curriculumnacional.cl/recursos/programa-fg-lengua-literatura-4-medio-0",[
+{title:"Comparando lecturas literarias",oa:null},
+{title:"Construyendo interpretaciones literarias colaborativas",oa:null},
+{title:"Desafíos en el análisis crítico de los discursos",oa:null},
+{title:"La escritura como forma de participación social",oa:null}
+]),
+...page("3° Medio HC","Idioma Extranjero: Inglés","https://www.curriculumnacional.cl/recursos/programa-fg-ingles-3-medio",[
+{title:"My skills and achievements contribute to the society itself",oa:null},
+{title:"My Reflections on Global Issues",oa:null},
+{title:"The importance of the evolution of languages",oa:null},
+{title:"English as a means to understand new trends",oa:null}
 ])
 ];
