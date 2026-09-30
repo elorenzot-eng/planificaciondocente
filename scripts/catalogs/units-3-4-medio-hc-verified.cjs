@@ -67,5 +67,11 @@ module.exports=[
 {title:"Seguridad, Prevención y Autocuidado",oa:["FG-CISA-3y4-OAC-01","FG-CISA-3y4-OAC-02","FG-CISA-3y4-OAC-03"]},
 {title:"Ambiente y Sostenibilidad",oa:["FG-CIAS-3y4-OAC-01","FG-CIAS-3y4-OAC-02","FG-CIAS-3y4-OAC-03"]},
 {title:"Tecnología y Sociedad",oa:["FG-CITS-3y4-OAC-01","FG-CITS-3y4-OAC-02","FG-CITS-3y4-OAC-03"]}
+]),
+...page("4° Medio HC","Idioma Extranjero: Inglés","https://www.curriculumnacional.cl/recursos/programa-fg-ingles-4-medio",[
+{title:"The media and the message in today's globalized world",oa:null},
+{title:"Communicating ideas through Science and Technology",oa:null},
+{title:"It´s business time",oa:null},
+{title:"Learning about sustainability and contributing with solutions",oa:null}
 ])
 ];
