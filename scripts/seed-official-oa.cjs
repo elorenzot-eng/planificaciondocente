@@ -481,8 +481,9 @@ async function syncBasicCurriculumUnits(){
   if(Array.isArray(u.objectiveCodes)){
    await prisma.curriculumUnitObjective.deleteMany({where:{unitId:unit.id}});
    for(const code of u.objectiveCodes){
-    const variants=[...new Set([code,code.replace(/ OA\s*0?(\d+)/," OA $1"),code.replace(/ OA\s*0?(\d+)/," OA$1"),code.replace(/ OA\s*(\d+)/," OA0$1")])];
-    const oa=await prisma.learningObjective.findFirst({where:{level:u.level,subject:u.subject,code:{in:variants}}});
+    const normalizeCode=(value)=>String(value||"").toUpperCase().replace(/\s+/g,"").replace(/OA0+(\d+)/,"OA$1");
+    const candidates=await prisma.learningObjective.findMany({where:{level:u.level,subject:u.subject}});
+    const oa=candidates.find(x=>normalizeCode(x.code)===normalizeCode(code));
     if(!oa)throw new Error("Curriculum unit "+u.level+" · "+u.subject+" · "+u.number+" references missing OA "+code);
     await prisma.curriculumUnitObjective.create({data:{unitId:unit.id,objectiveId:oa.id}});
    }
