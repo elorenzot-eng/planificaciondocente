@@ -143,6 +143,7 @@ model LearningObjective {
   assessmentLinks AssessmentObjective[]
   moduleLinks CurriculumModuleObjective[]
   unitLinks CurriculumUnitObjective[]
+  moduleUnitLinks CurriculumModuleUnitObjective[]
   @@index([level,subject])
   @@index([specialty,module])
 }
@@ -287,6 +288,7 @@ model CurriculumModule {
   sourceUrl String?
   active Boolean @default(true)
   objectives CurriculumModuleObjective[]
+  units CurriculumModuleUnit[]
   @@unique([specialty,level,name])
   @@index([specialty,level])
 }
@@ -297,6 +299,28 @@ model CurriculumModuleObjective {
   module CurriculumModule @relation(fields:[moduleId],references:[id],onDelete:Cascade)
   objective LearningObjective @relation(fields:[objectiveId],references:[id],onDelete:Cascade)
   @@id([moduleId,objectiveId])
+  @@index([objectiveId])
+}
+
+model CurriculumModuleUnit {
+  id String @id @default(cuid())
+  moduleId String
+  number Int
+  title String
+  source String
+  sourceUrl String?
+  active Boolean @default(true)
+  module CurriculumModule @relation(fields:[moduleId],references:[id],onDelete:Cascade)
+  objectives CurriculumModuleUnitObjective[]
+  @@unique([moduleId,number])
+  @@index([moduleId,active])
+}
+model CurriculumModuleUnitObjective {
+  unitId String
+  objectiveId String
+  unit CurriculumModuleUnit @relation(fields:[unitId],references:[id],onDelete:Cascade)
+  objective LearningObjective @relation(fields:[objectiveId],references:[id],onDelete:Cascade)
+  @@id([unitId,objectiveId])
   @@index([objectiveId])
 }
 
