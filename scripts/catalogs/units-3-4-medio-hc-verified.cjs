@@ -73,7 +73,7 @@ module.exports=[
 {title:"Communicating ideas through Science and Technology",oa:null},
 {title:"It´s business time",oa:null},
 {title:"Learning about sustainability and contributing with solutions",oa:null}
-])
+]),
 ...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Biología Celular y Molecular","https://www.curriculumnacional.cl/estudiante/621/w3-article-140138.html",[
 {title:"Comprendiendo la estructura y función de la célula",oa:null},
 {title:"Estudiando la versatilidad de las proteínas",oa:null},
