@@ -473,11 +473,20 @@ async function syncBasicCurriculumUnits(){
  const levels=["1° Básico","2° Básico","3° Básico","4° Básico"];
  const verifiedKeys=new Set(verifiedBasicUnits.map(u=>u.level+"|"+u.subject));
  for(const u of verifiedBasicUnits){
-  await prisma.curriculumUnit.upsert({
+  const unit=await prisma.curriculumUnit.upsert({
    where:{level_subject_number:{level:u.level,subject:u.subject,number:u.number}},
    update:{title:u.title,purpose:u.purpose,active:true,source,sourceUrl:u.sourceUrl},
    create:{level:u.level,subject:u.subject,number:u.number,title:u.title,purpose:u.purpose,source,sourceUrl:u.sourceUrl,active:true}
   });
+  if(Array.isArray(u.objectiveCodes)){
+   await prisma.curriculumUnitObjective.deleteMany({where:{unitId:unit.id}});
+   for(const code of u.objectiveCodes){
+    const variants=[code,code.replace(" OA0"," OA 0"),code.replace(" OA "," OA")];
+    const oa=await prisma.learningObjective.findFirst({where:{level:u.level,subject:u.subject,code:{in:variants}}});
+    if(!oa)throw new Error("Curriculum unit "+u.level+" · "+u.subject+" · "+u.number+" references missing OA "+code);
+    await prisma.curriculumUnitObjective.create({data:{unitId:unit.id,objectiveId:oa.id}});
+   }
+  }
  }
  const rows=await prisma.learningObjective.findMany({where:{level:{in:levels},subject:{not:null}},select:{level:true,subject:true}});
  const pairs=[...new Map(rows.filter(x=>x.subject).map(x=>[x.level+"|"+x.subject,x])).values()];
