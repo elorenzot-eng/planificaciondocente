@@ -44,5 +44,7 @@ module.exports=[
 ]),
 ...page("1° Medio","Idioma Extranjero: Inglés","https://www.curriculumnacional.cl/docente/629/w3-article-34428.html",["Jobs","Education and lifelong learning","The arts","Traditions and festivities"]),
 ...page("2° Medio","Idioma Extranjero: Inglés","https://www.curriculumnacional.cl/estudiante/621/w3-article-34429.html",["Globalization and communication","Technology and its effects","Outstanding persons","Sustainable development"]),
-...page("2° Medio","Música","https://www.curriculumnacional.cl/estudiante/621/w3-article-34433.html",["Música y tradición","Música y cultura","Música y otras artes","Compartiendo nuestras músicas"])
+...page("2° Medio","Música","https://www.curriculumnacional.cl/estudiante/621/w3-article-34433.html",["Música y tradición","Música y cultura","Música y otras artes","Compartiendo nuestras músicas"]),
+...page("1° Medio","Tecnología","https://www.curriculumnacional.cl/estudiantes/Educacion-General/Tecnologia/Tecnologia-1-medio/34449%3APrograma-de-Estudio-Educacion-Tecnologica-1-Medio",["Desarrollo e Implementación de un Servicio","Evaluación e Impacto de una Solución"]),
+...page("2° Medio","Educación Física y Salud","https://www.curriculumnacional.cl/portal/Documentos-Curriculares/Programas/34437%3APrograma-de-Estudio-Educacion-Fisica-2-Medio",["Ejercicio físico y salud","Deportes de colaboración y oposición","Deportes y actividades individuales de autosuperación","Actividad física y motora al aire libre"])
 ];
