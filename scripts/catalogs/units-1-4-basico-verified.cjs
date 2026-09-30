@@ -43,3 +43,5 @@ module.exports=[
 ...page("4° Básico","Ciencias Naturales","https://www.curriculumnacional.cl/curriculum/1o-6o-basico/ciencias-naturales/4-basico",["Propiedades de la materia","Los fenómenos sísmicos","El cuerpo humano y sus funciones básicas","Ecosistemas chilenos"]),
 ...page("4° Básico","Artes Visuales","https://www.curriculumnacional.cl/docentes/Educacion-General/Artes-visuales/Artes-Visuales-4-basico/20749%3APrograma-de-Estudio-Artes-Visuales-4B",["Entorno natural y paisaje americano","Culturas precolombinas y artesanías americanas","Pintura y escultura de culturas precolombinas y americanas","Movimientos artísticos de Chile y el mundo"])
 ];
+
+// Catálogo oficial verificado: publicación sincronizada.
