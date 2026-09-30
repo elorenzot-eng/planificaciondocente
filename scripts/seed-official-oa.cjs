@@ -537,6 +537,8 @@ async function syncMineducUnitObjectiveLinks(){
  for(const g of groups)g.units=units.filter(u=>u.level===g.level&&u.subject===g.subject);
  let linked=0,pending=0;
  for(const g of groups){
+  const localVerified=verifiedBasicUnits.filter(x=>x.level===g.level&&x.subject===g.subject&&Array.isArray(x.objectiveCodes));
+  if(localVerified.length===g.units.length){console.log("MINEDUC unit links locally verified: "+g.level+" · "+g.subject+" units="+localVerified.length);continue}
   if(!g.sourceUrl){pending++;continue}
   try{
    const programHtml=await fetchText(g.sourceUrl);
