@@ -57,16 +57,16 @@ module.exports=[
 {title:"English as a means to understand new trends",oa:null}
 ]),
 ...page("3° Medio HC","Ciencias para la Ciudadanía","https://www.curriculumnacional.cl/614/articles-140116_programa.pdf",[
-{title:"Bienestar y Salud",oa:["FG-CIBS-3y4-OAC-01","FG-CIBS-3y4-OAC-02","FG-CIBS-3y4-OAC-03"]},
-{title:"Seguridad, Prevención y Autocuidado",oa:["FG-CISA-3y4-OAC-01","FG-CISA-3y4-OAC-02","FG-CISA-3y4-OAC-03"]},
-{title:"Ambiente y Sostenibilidad",oa:["FG-CIAS-3y4-OAC-01","FG-CIAS-3y4-OAC-02","FG-CIAS-3y4-OAC-03"]},
-{title:"Tecnología y Sociedad",oa:["FG-CITS-3y4-OAC-01","FG-CITS-3y4-OAC-02","FG-CITS-3y4-OAC-03"]}
+{title:"Bienestar y Salud",oa:null},
+{title:"Seguridad, Prevención y Autocuidado",oa:null},
+{title:"Ambiente y Sostenibilidad",oa:null},
+{title:"Tecnología y Sociedad",oa:null}
 ]),
 ...page("4° Medio HC","Ciencias para la Ciudadanía","https://www.curriculumnacional.cl/614/articles-140116_programa.pdf",[
-{title:"Bienestar y Salud",oa:["FG-CIBS-3y4-OAC-01","FG-CIBS-3y4-OAC-02","FG-CIBS-3y4-OAC-03"]},
-{title:"Seguridad, Prevención y Autocuidado",oa:["FG-CISA-3y4-OAC-01","FG-CISA-3y4-OAC-02","FG-CISA-3y4-OAC-03"]},
-{title:"Ambiente y Sostenibilidad",oa:["FG-CIAS-3y4-OAC-01","FG-CIAS-3y4-OAC-02","FG-CIAS-3y4-OAC-03"]},
-{title:"Tecnología y Sociedad",oa:["FG-CITS-3y4-OAC-01","FG-CITS-3y4-OAC-02","FG-CITS-3y4-OAC-03"]}
+{title:"Bienestar y Salud",oa:null},
+{title:"Seguridad, Prevención y Autocuidado",oa:null},
+{title:"Ambiente y Sostenibilidad",oa:null},
+{title:"Tecnología y Sociedad",oa:null}
 ]),
 ...page("4° Medio HC","Idioma Extranjero: Inglés","https://www.curriculumnacional.cl/recursos/programa-fg-ingles-4-medio",[
 {title:"The media and the message in today's globalized world",oa:null},
