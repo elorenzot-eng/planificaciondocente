@@ -494,10 +494,10 @@ async function syncBasicCurriculumUnits(){
  for(const pair of pairs){
   const key=pair.level+"|"+pair.subject;
   if(verifiedKeys.has(key)){console.log("Verified curriculum units: "+key);continue}
-  if(["7° Básico","8° Básico","1° Medio","2° Medio"].includes(pair.level)){
+  if(["7° Básico","8° Básico","1° Medio","2° Medio","3° Medio HC","4° Medio HC"].includes(pair.level)){
    // Si MINEDUC no tiene una asociación OA→Unidad verificada en el catálogo local,
    // mantener una estructura seleccionable en vez de inventar vínculos curriculares.
-   // Un catálogo oficial posterior reemplaza estas unidades por título/cantidad y OA exactos.
+   // Un catálogo oficial posterior reemplaza estas unidades por título/cantidad y OA exactos. En 3°-4° HC esto aplica también a Formación General y Formación Diferenciada.
    for(let number=1;number<=4;number++){
     await prisma.curriculumUnit.upsert({where:{level_subject_number:{level:pair.level,subject:pair.subject,number}},update:{title:"Unidad "+number,purpose:null,active:true,source:"Educantay · selección docente (asociación MINEDUC pendiente)",sourceUrl:sourceUrl7to2m},create:{level:pair.level,subject:pair.subject,number,title:"Unidad "+number,purpose:null,source:"Educantay · selección docente (asociación MINEDUC pendiente)",sourceUrl:sourceUrl7to2m,active:true}});
    }
