@@ -91,5 +91,17 @@ module.exports=[
 {title:"Analizando la relación entre los servicios ecosistémicos y la sociedad",oa:null},
 {title:"Investigando evidencias del cambio climático para generar conciencia ambiental",oa:null},
 {title:"Integrando la biología con otras ciencias para dar solución a problemas",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Física","https://www.curriculumnacional.cl/docente/629/w3-article-140140.html",[
+{title:"Cosmos: ¿en qué momento y lugar del universo nos encontramos?",oa:["CN-FISI-3y4-OAC-02"]},
+{title:"Fuerzas centrales: ¿de qué tratan y cómo se manifiestan en mi vida?",oa:["CN-FISI-3y4-OAC-03"]},
+{title:"Cambio climático: del saber a la acción sostenible",oa:["CN-FISI-3y4-OAC-01","CN-FISI-3y4-OAC-05","CN-FISI-3y4-OAC-06"]},
+{title:"Física moderna: ¿qué sabemos de lo más pequeño y lo más grande de la naturaleza?",oa:["CN-FISI-3y4-OAC-04"]}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Química","https://www.curriculumnacional.cl/docente/629/w3-article-140141.html",[
+{title:"Fenómenos químicos del entorno y sus efectos",oa:null},
+{title:"Química y tecnología: Aplicaciones para la vida",oa:["CN-QUIM-3y4-OAC-01"]},
+{title:"Reacciones químicas: espontaneidad y cinética",oa:["CN-QUIM-3y4-OAC-03"]},
+{title:"Química para la sustentabilidad",oa:["CN-QUIM-3y4-OAC-04","CN-QUIM-3y4-OAC-05","CN-QUIM-3y4-OAC-06","CN-QUIM-3y4-OAC-07"]}
 ]))
 ];
