@@ -74,4 +74,22 @@ module.exports=[
 {title:"It´s business time",oa:null},
 {title:"Learning about sustainability and contributing with solutions",oa:null}
 ])
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Biología Celular y Molecular","https://www.curriculumnacional.cl/estudiante/621/w3-article-140138.html",[
+{title:"Comprendiendo la estructura y función de la célula",oa:null},
+{title:"Estudiando la versatilidad de las proteínas",oa:null},
+{title:"Analizando la relación entre expresión y regulación génica",oa:null},
+{title:"Analizando aplicaciones en biología celular y molecular",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Ciencias de la Salud","https://www.curriculumnacional.cl/estudiantes/Diferenciado-Humanista-Cientifico/Ciencias/Ciencias-de-la-salud/140139%3APrograma-HC-Ciencias-de-la-salud",[
+{title:"Salud, sociedad y estilos de vida",oa:null},
+{title:"Problemas en Salud Pública",oa:null},
+{title:"Genética y salud",oa:null},
+{title:"Ciencia y tecnología al servicio de la salud",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Biología de los Ecosistemas","https://www.curriculumnacional.cl/docente/629/w3-article-140136.html",[
+{title:"Analizando el estado actual de la biodiversidad",oa:["CN-BECO-3y4-OAC-01"]},
+{title:"Analizando la relación entre los servicios ecosistémicos y la sociedad",oa:null},
+{title:"Investigando evidencias del cambio climático para generar conciencia ambiental",oa:null},
+{title:"Integrando la biología con otras ciencias para dar solución a problemas",oa:null}
+]))
 ];
