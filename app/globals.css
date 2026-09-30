@@ -622,3 +622,13 @@ html body .publicLanding nav.landingNav .landingBrand img{
 .curriculumContextUnit{min-width:0!important;max-width:100%;overflow:hidden}
 @media(max-width:900px) and (min-width:761px){.curriculumContextGrid{grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1.35fr)!important;gap:10px;padding:14px}.curriculumContextItem{padding:14px 12px}.curriculumContextItem strong{font-size:15px}.curriculumContextItem small{font-size:10px}}
 @media(max-width:760px){.curriculumContextGrid{grid-template-columns:minmax(0,1fr)!important;gap:10px;padding:14px}.curriculumContextItem{padding:14px 16px}}
+
+/* Curriculum context: two-level hierarchy */
+.curriculumContextGrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:"level subject" "unit unit"!important;gap:14px!important}
+.curriculumContextGrid>.curriculumContextItem:nth-child(1){grid-area:level}
+.curriculumContextGrid>.curriculumContextItem:nth-child(2){grid-area:subject}
+.curriculumContextGrid>.curriculumContextItem:nth-child(3){grid-area:unit}
+.curriculumContextItem{min-height:108px!important}
+.curriculumContextUnit{min-height:118px!important;background:#f2fbf6}
+.curriculumContextItem strong{font-size:17px!important;line-height:1.35!important;overflow-wrap:normal!important;word-break:normal!important;hyphens:none}
+@media(max-width:760px){.curriculumContextGrid{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"level" "subject" "unit"!important}.curriculumContextItem,.curriculumContextUnit{min-height:auto!important}.curriculumContextItem strong{font-size:16px!important}}
