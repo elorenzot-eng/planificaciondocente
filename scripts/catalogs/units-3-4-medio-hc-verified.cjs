@@ -127,5 +127,48 @@ module.exports=[
 {title:"Comprender la media muestral, las medidas de dispersión y la correlación",oa:null},
 {title:"Modelaje de fenómenos mediante las probabilidades las distribuciones binomial o normal",oa:null},
 {title:"Hacer inferencia estadística",oa:null}
+])),
+// Formación General Electiva 3°-4° Medio: programas compartidos por ambos niveles.
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Artes Visuales","https://www.curriculumnacional.cl/docente/629/w3-article-140144.html",[
+{title:"Experimentando y decidiendo para crear",oa:null},
+{title:"Referentes para crear",oa:null},
+{title:"Desafíos artísticos interdisciplinarios",oa:null},
+{title:"Compartiendo y difundiendo",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Música","https://www.curriculumnacional.cl/docente/629/w3-article-140151.html",[
+{title:"Descubriendo la Música en la vida",oa:null},
+{title:"Música y tecnologías",oa:null},
+{title:"Haciendo música",oa:null},
+{title:"Compartiendo nuestra música",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Teatro","https://www.curriculumnacional.cl/estudiante/621/w3-article-140153.html",[
+{title:"Descubriendo nuestra expresividad",oa:null},
+{title:"Dramatizando",oa:null},
+{title:"Interpretando obras teatrales",oa:null},
+{title:"Difundiendo nuestras obras a otros",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Educación Física y Salud 1","https://www.curriculumnacional.cl/docente/629/w3-article-140154.html",[
+{title:"Habilidades motrices especializadas, sus estrategias y tácticas",oa:null},
+{title:"Planes de entrenamiento para la condición física",oa:null},
+{title:"Programas y proyectos deportivos, recreativos y socioculturales",oa:null},
+{title:"Comunidades activas",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Educación Física y Salud 2","https://www.curriculumnacional.cl/docente/629/w3-article-140157.html",[
+{title:"Habilidades motrices, estrategias y tácticas",oa:null},
+{title:"Planes de entrenamiento",oa:null},
+{title:"Programas y proyectos recreativos, deportivos y socioculturales",oa:null},
+{title:"Comunidades activas",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Chile y la Región Latinoamericana","https://www.curriculumnacional.cl/docente/629/w3-article-140161.html",[
+{title:"Evaluación crítica de los procesos políticos de la historia reciente latinoamericana",oa:null},
+{title:"¿Cómo enfrentar los desafíos medioambientales en América Latina?",oa:null},
+{title:"Diagnosticando el presente de los pueblos indígenas en Chile y América Latina",oa:null},
+{title:"¿Cómo enfrentar los desafíos de los Estados de América Latina?",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Mundo Global","https://www.curriculumnacional.cl/docente/629/w3-article-140160.html",[
+{title:"Los procesos migratorios presentan desafíos al Estado-Nación e inciden en su transformación",oa:null},
+{title:"Los conflictos internacionales impactan la economía en múltiples escalas",oa:null},
+{title:"Las decisiones económicas y las acciones de distintos actores provocan el cambio climático",oa:null},
+{title:"Cambio climático y desastres socionaturales, la necesidad de replantear la relación entre ser humano y medio",oa:null}
 ]))
 ];
