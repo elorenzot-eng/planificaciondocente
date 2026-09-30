@@ -41,5 +41,8 @@ module.exports=[
 ]),
 ...page("1° Medio","Música","https://www.curriculumnacional.cl/docente/629/w3-article-34426.html",[
 "Lo que la música nos muestra","Lo que la música nos cuenta","La música nos identifica","Compartiendo nuestras músicas"
-])
+]),
+...page("1° Medio","Idioma Extranjero: Inglés","https://www.curriculumnacional.cl/docente/629/w3-article-34428.html",["Jobs","Education and lifelong learning","The arts","Traditions and festivities"]),
+...page("2° Medio","Idioma Extranjero: Inglés","https://www.curriculumnacional.cl/estudiante/621/w3-article-34429.html",["Globalization and communication","Technology and its effects","Outstanding persons","Sustainable development"]),
+...page("2° Medio","Música","https://www.curriculumnacional.cl/estudiante/621/w3-article-34433.html",["Música y tradición","Música y cultura","Música y otras artes","Compartiendo nuestras músicas"])
 ];
