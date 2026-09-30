@@ -494,6 +494,13 @@ async function syncBasicCurriculumUnits(){
  for(const pair of pairs){
   const key=pair.level+"|"+pair.subject;
   if(verifiedKeys.has(key)){console.log("Verified curriculum units: "+key);continue}
+  if(["7° Básico","8° Básico"].includes(pair.level)){
+   for(let number=1;number<=4;number++){
+    await prisma.curriculumUnit.upsert({where:{level_subject_number:{level:pair.level,subject:pair.subject,number}},update:{title:"Unidad "+number,purpose:null,active:true,source:"Educantay · estructura curricular",sourceUrl:sourceUrl7to2m},create:{level:pair.level,subject:pair.subject,number,title:"Unidad "+number,purpose:null,source:"Educantay · estructura curricular",sourceUrl:sourceUrl7to2m,active:true}});
+   }
+   console.log("Curriculum unit structure: "+key+" (4 unidades; OA seleccionables por docente)");
+   continue;
+  }
   await prisma.curriculumUnit.updateMany({where:{level:pair.level,subject:pair.subject},data:{active:false}});
   console.log("Curriculum units pending official verification: "+key);
  }
