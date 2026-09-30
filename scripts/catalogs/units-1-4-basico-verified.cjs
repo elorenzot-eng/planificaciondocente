@@ -1,3 +1,4 @@
+// Catálogo verificado contra Programas de Estudio de Currículum Nacional · MINEDUC.
 const page=(level,subject,url,titles)=>titles.map((title,i)=>({level,subject,number:i+1,title,purpose:null,sourceUrl:url}));
 module.exports=[
 ...page("1° Básico","Lenguaje y Comunicación","https://www.curriculumnacional.cl/docente/629/w3-article-18871.html",["Comenzando a leer y escribir","Leer y comprender","Ejercitar lectura, escritura y expresión oral","Consolidar lectura y escritura"]),
