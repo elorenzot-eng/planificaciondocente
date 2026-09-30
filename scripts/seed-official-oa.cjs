@@ -498,6 +498,44 @@ async function syncBasicCurriculumUnits(){
   console.log("Curriculum units pending official verification: "+key);
  }
 }
+
+const decodeHtml=(s)=>String(s||"").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&nbsp;/g," ").replace(/&aacute;/g,"á").replace(/&eacute;/g,"é").replace(/&iacute;/g,"í").replace(/&oacute;/g,"ó").replace(/&uacute;/g,"ú").replace(/&deg;/g,"°");
+const absoluteUrl=(base,href)=>{try{return new URL(href,base).toString()}catch{return ""}};
+async function fetchText(url){const r=await fetch(url,{headers:{"user-agent":"Educantay Curriculum Sync/1.0"}});if(!r.ok)throw new Error("HTTP "+r.status+" "+url);return await r.text()}
+function unitLinksFromProgram(html,base){
+ const links=[];const re=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;
+ while((m=re.exec(html))){const label=decodeHtml(m[2].replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim());const um=label.match(/Unidad\s*([1-9])/i);if(!um)continue;const n=Number(um[1]);const url=absoluteUrl(base,decodeHtml(m[1]));if(url&&url.includes("curriculumnacional.cl")&&!links.some(x=>x.number===n))links.push({number:n,url})}
+ return links;
+}
+const norm=(v)=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"").replace(/OA0+(\d+)/,"OA$1");
+async function syncMineducUnitObjectiveLinks(){
+ const units=await prisma.curriculumUnit.findMany({where:{active:true,level:{in:["1° Básico","2° Básico","3° Básico","4° Básico"]}},orderBy:[{level:"asc"},{subject:"asc"},{number:"asc"}]});
+ const groups=[...new Map(units.map(u=>[u.level+"|"+u.subject,{level:u.level,subject:u.subject,sourceUrl:u.sourceUrl,units:[]}])).values()];
+ for(const g of groups)g.units=units.filter(u=>u.level===g.level&&u.subject===g.subject);
+ let linked=0,pending=0;
+ for(const g of groups){
+  if(!g.sourceUrl){pending++;continue}
+  try{
+   const programHtml=await fetchText(g.sourceUrl);
+   const discovered=unitLinksFromProgram(programHtml,g.sourceUrl);
+   const objectives=await prisma.learningObjective.findMany({where:{level:g.level,subject:g.subject}});
+   if(!discovered.length){console.warn("MINEDUC unit links not discovered: "+g.level+" · "+g.subject);pending++;continue}
+   for(const u of g.units){
+    const d=discovered.find(x=>x.number===u.number);if(!d)continue;
+    const html=await fetchText(d.url);const plain=decodeHtml(html.replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," "));
+    const compact=norm(plain);const matched=objectives.filter(o=>compact.includes(norm(o.code)));
+    if(!matched.length){console.warn("MINEDUC OA links empty: "+g.level+" · "+g.subject+" · Unidad "+u.number);continue}
+    await prisma.curriculumUnitObjective.deleteMany({where:{unitId:u.id}});
+    for(const oa of matched)await prisma.curriculumUnitObjective.create({data:{unitId:u.id,objectiveId:oa.id}});
+    await prisma.curriculumUnit.update({where:{id:u.id},data:{sourceUrl:d.url}});
+    linked+=matched.length;
+    console.log("MINEDUC linked: "+g.level+" · "+g.subject+" · Unidad "+u.number+" objectives="+matched.length);
+   }
+  }catch(e){pending++;console.warn("MINEDUC link sync pending: "+g.level+" · "+g.subject+" · "+String(e?.message||e))}
+ }
+ console.log("MINEDUC unit-objective sync complete: links="+linked+" pendingGroups="+pending);
+}
+
 async function main(){
  // Retira aliases antiguos de menciones para que el selector muestre Especialidad → Mención/Módulo sin duplicados.
  await prisma.curriculumModule.updateMany({where:{specialty:{in:["Administración - Mención Logística","Administración - Mención Recursos Humanos","Mecánica Industrial - Mención Mantenimiento Electromecánico","Mecánica Industrial - Mención Máquinas-Herramientas"]}},data:{active:false}});
@@ -506,6 +544,7 @@ async function main(){
   console.log(`Official OA seed: ${block.subject} ${block.level} created=${result.created} updated=${result.updated} total=${block.objectives.length}`);
  }
  await syncBasicCurriculumUnits();
+ await syncMineducUnitObjectiveLinks();
  await syncTP();
  await syncTPModules();
 }
