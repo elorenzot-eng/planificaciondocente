@@ -87,31 +87,31 @@ module.exports=[
 {title:"Ciencia y tecnología al servicio de la salud",oa:null}
 ])),
 ...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Biología de los Ecosistemas","https://www.curriculumnacional.cl/docente/629/w3-article-140136.html",[
-{title:"Analizando el estado actual de la biodiversidad",oa:["CN-BECO-3y4-OAC-01"]},
+{title:"Analizando el estado actual de la biodiversidad",oa:null},
 {title:"Analizando la relación entre los servicios ecosistémicos y la sociedad",oa:null},
 {title:"Investigando evidencias del cambio climático para generar conciencia ambiental",oa:null},
 {title:"Integrando la biología con otras ciencias para dar solución a problemas",oa:null}
 ])),
 ...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Física","https://www.curriculumnacional.cl/docente/629/w3-article-140140.html",[
-{title:"Cosmos: ¿en qué momento y lugar del universo nos encontramos?",oa:["CN-FISI-3y4-OAC-02"]},
-{title:"Fuerzas centrales: ¿de qué tratan y cómo se manifiestan en mi vida?",oa:["CN-FISI-3y4-OAC-03"]},
-{title:"Cambio climático: del saber a la acción sostenible",oa:["CN-FISI-3y4-OAC-01","CN-FISI-3y4-OAC-05","CN-FISI-3y4-OAC-06"]},
-{title:"Física moderna: ¿qué sabemos de lo más pequeño y lo más grande de la naturaleza?",oa:["CN-FISI-3y4-OAC-04"]}
+{title:"Cosmos: ¿en qué momento y lugar del universo nos encontramos?",oa:null},
+{title:"Fuerzas centrales: ¿de qué tratan y cómo se manifiestan en mi vida?",oa:null},
+{title:"Cambio climático: del saber a la acción sostenible",oa:null},
+{title:"Física moderna: ¿qué sabemos de lo más pequeño y lo más grande de la naturaleza?",oa:null}
 ])),
 ...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Química","https://www.curriculumnacional.cl/docente/629/w3-article-140141.html",[
 {title:"Fenómenos químicos del entorno y sus efectos",oa:null},
-{title:"Química y tecnología: Aplicaciones para la vida",oa:["CN-QUIM-3y4-OAC-01"]},
-{title:"Reacciones químicas: espontaneidad y cinética",oa:["CN-QUIM-3y4-OAC-03"]},
-{title:"Química para la sustentabilidad",oa:["CN-QUIM-3y4-OAC-04","CN-QUIM-3y4-OAC-05","CN-QUIM-3y4-OAC-06","CN-QUIM-3y4-OAC-07"]}
+{title:"Química y tecnología: Aplicaciones para la vida",oa:null},
+{title:"Reacciones químicas: espontaneidad y cinética",oa:null},
+{title:"Química para la sustentabilidad",oa:null}
 ])),
 ...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Geometría 3D","https://www.curriculumnacional.cl/estudiante/621/w3-article-140147.html",[
-{title:"Representación vectorial de situaciones y fenómenos",oa:["MA-GE3D-3y4-OAC-01"]},
+{title:"Representación vectorial de situaciones y fenómenos",oa:null},
 {title:"Rectas y planos en el espacio",oa:null},
 {title:"Generación de cuerpos utilizando patrones geométricos",oa:null},
 {title:"Los objetos con sus caras y perspectivas",oa:null}
 ])),
 ...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Límites, Derivadas e Integrales","https://www.curriculumnacional.cl/estudiante/621/w3-article-140143.html",[
-{title:"Representar y modelar situaciones de cambio por medio de funciones",oa:["MA-LIDI-3y4-OAC-01"]},
+{title:"Representar y modelar situaciones de cambio por medio de funciones",oa:null},
 {title:"Reconociendo un patrón infinito y la noción de límite",oa:null},
 {title:"Modelar situaciones de cambio con derivadas",oa:null},
 {title:"Comprendiendo la Integral como proceso de reversibilidad y cálculo de áreas",oa:null}
@@ -123,7 +123,7 @@ module.exports=[
 {title:"Elaboración de Apps para dispositivos electrónicos móviles",oa:null}
 ])),
 ...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Probabilidades y Estadística Descriptiva e Inferencial","https://www.curriculumnacional.cl/estudiante/621/w3-article-140145.html",[
-{title:"¿Qué dicen los gráficos? Análisis crítico de la información",oa:["MA-PEDI-3y4-OAC-01"]},
+{title:"¿Qué dicen los gráficos? Análisis crítico de la información",oa:null},
 {title:"Comprender la media muestral, las medidas de dispersión y la correlación",oa:null},
 {title:"Modelaje de fenómenos mediante las probabilidades las distribuciones binomial o normal",oa:null},
 {title:"Hacer inferencia estadística",oa:null}
