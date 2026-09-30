@@ -14,6 +14,7 @@ const oa34mHCPhilosophyExtra=require("./catalogs/oa-3-4-medio-hc-filosofia-extra
 const oa34mHCGeneralElectives=require("./catalogs/oa-3-4-medio-hc-general-electives.cjs");
 const tpPriority=require("./catalogs/tp-priority.cjs");
 const tpModules=require("./catalogs/tp-modules-priority.cjs");
+const tpModuleUnits=require("./catalogs/tp-module-units.cjs");
 const verifiedBasicUnits=[...require("./catalogs/units-1-4-basico-verified.cjs"),...require("./catalogs/units-5-6-basico-verified.cjs"),...require("./catalogs/units-7-8-basico-verified.cjs"),...require("./catalogs/units-1-2-medio-verified.cjs"),...require("./catalogs/units-3-4-medio-hc-verified.cjs")];
 const source="Currículum Nacional · MINEDUC";
 const sourceUrl1to6="https://www.curriculumnacional.cl/curriculum/1o-6o-basico";
@@ -469,6 +470,18 @@ const blocks=[
 async function syncTP(){const source="Currículum Nacional · MINEDUC";const sourceUrl="https://www.curriculumnacional.cl/curriculum/3o-4o-medio-tecnico-profesional";for(const block of tpPriority){const module=await prisma.curriculumModule.upsert({where:{specialty_level_name:{specialty:block.specialty,level:block.level,name:"Objetivos de Aprendizaje de la Especialidad"}},update:{active:true,source,sourceUrl},create:{code:"OA-ESPECIALIDAD",name:"Objetivos de Aprendizaje de la Especialidad",specialty:block.specialty,level:block.level,source,sourceUrl,active:true}});for(const [code,text] of block.objectives){let oa=await prisma.learningObjective.findFirst({where:{code,level:block.level,specialty:block.specialty}});if(oa)oa=await prisma.learningObjective.update({where:{id:oa.id},data:{text,source,sourceUrl,module:module.name}});else oa=await prisma.learningObjective.create({data:{code,text,level:block.level,specialty:block.specialty,module:module.name,source,sourceUrl}});await prisma.curriculumModuleObjective.upsert({where:{moduleId_objectiveId:{moduleId:module.id,objectiveId:oa.id}},update:{},create:{moduleId:module.id,objectiveId:oa.id}})}console.log(`TP OA seed: ${block.specialty} ${block.level} total=${block.objectives.length}`)}}
 async function syncTPModules(){const source="Currículum Nacional · MINEDUC";const sourceUrl="https://www.curriculumnacional.cl/curriculum/3o-4o-medio-tecnico-profesional";for(const spec of tpModules.modules){const module=await prisma.curriculumModule.upsert({where:{specialty_level_name:{specialty:spec.specialty,level:spec.level,name:spec.name}},update:{code:spec.code,active:true,source,sourceUrl},create:{code:spec.code,name:spec.name,specialty:spec.specialty,level:spec.level,source,sourceUrl,active:true}});let objectives=[];if(spec.generic){for(const [code,text] of tpModules.oag){let oa=await prisma.learningObjective.findFirst({where:{code,level:spec.level,specialty:spec.specialty}});if(!oa)oa=await prisma.learningObjective.create({data:{code,text,level:spec.level,specialty:spec.specialty,module:spec.name,source,sourceUrl}});else oa=await prisma.learningObjective.update({where:{id:oa.id},data:{text,source,sourceUrl}});objectives.push(oa)}}else{for(const code of spec.oa||[]){const oa=await prisma.learningObjective.findFirst({where:{code,level:spec.level,specialty:spec.specialty}});if(!oa)throw new Error("TP module "+spec.code+" references missing objective "+code+" for "+spec.specialty+" "+spec.level);objectives.push(oa)}}for(const oa of objectives)await prisma.curriculumModuleObjective.upsert({where:{moduleId_objectiveId:{moduleId:module.id,objectiveId:oa.id}},update:{},create:{moduleId:module.id,objectiveId:oa.id}});console.log(`TP module seed: ${spec.code} ${spec.name} objectives=${objectives.length}`)}}
 
+async function syncTPModuleUnits(){
+ const modules=await prisma.curriculumModule.findMany({where:{active:true},include:{objectives:true}});
+ for(const module of modules){
+  const spec=tpModuleUnits.find(x=>x.code===module.code);if(!spec)continue;
+  await prisma.curriculumModuleUnit.updateMany({where:{moduleId:module.id},data:{active:false}});
+  for(let i=0;i<spec.titles.length;i++){
+   const unit=await prisma.curriculumModuleUnit.upsert({where:{moduleId_number:{moduleId:module.id,number:i+1}},update:{title:spec.titles[i],source,sourceUrl:spec.url,active:true},create:{moduleId:module.id,number:i+1,title:spec.titles[i],source,sourceUrl:spec.url,active:true}});
+   await prisma.curriculumModuleUnitObjective.deleteMany({where:{unitId:unit.id}});
+   for(const link of module.objectives)await prisma.curriculumModuleUnitObjective.create({data:{unitId:unit.id,objectiveId:link.objectiveId}});
+  }
+ }
+}
 async function syncBasicCurriculumUnits(){
  const levels=["1° Básico","2° Básico","3° Básico","4° Básico","5° Básico","6° Básico","7° Básico","8° Básico","1° Medio","2° Medio","3° Medio HC","4° Medio HC"];
  const verifiedKeys=new Set(verifiedBasicUnits.map(u=>u.level+"|"+u.subject));
@@ -559,5 +572,6 @@ async function main(){
  await syncMineducUnitObjectiveLinks();
  await syncTP();
  await syncTPModules();
+ await syncTPModuleUnits();
 }
 main().catch(e=>{console.error(e);process.exit(1)}).finally(()=>prisma.$disconnect());
