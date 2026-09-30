@@ -1,20 +1,20 @@
 // Unidades de 1° y 2° Medio verificadas contra fichas de Programa de Estudio de Currículum Nacional · MINEDUC.
 // Los OA no se vinculan aquí salvo que la asociación OA→Unidad esté comprobada.
 // Sin objectiveCodes, la plataforma conserva los OA del nivel disponibles para selección docente.
-const page=(level,subject,url,titles)=>titles.map((title,i)=>({level,subject,number:i+1,title,purpose:null,sourceUrl:url,source:"Currículum Nacional · MINEDUC"}));
+const page=(level,subject,url,titles,objectiveCodes=[])=>titles.map((title,i)=>({level,subject,number:i+1,title,purpose:null,sourceUrl:url,source:"Currículum Nacional · MINEDUC",...(Array.isArray(objectiveCodes[i])?{objectiveCodes:objectiveCodes[i]}:{})}));
 module.exports=[
 ...page("1° Medio","Matemática","https://www.curriculumnacional.cl/docente/629/w3-article-34359.html",[
 "Productos notables. Potencias con exponente entero. El cono.",
 "Sistemas de ecuaciones lineales. Área y perímetros de sectores y segmentos circulares.",
 "Homotecia y sus aplicaciones",
 "Nube de punto y gráficos xy. Regla aditiva y multiplicativa de probabilidades."
-]),
+],[["MA1M OA 01","MA1M OA 02","MA1M OA 03","MA1M OA 07"],["MA1M OA 04","MA1M OA 05","MA1M OA 06"],["MA1M OA 08","MA1M OA 09","MA1M OA 10","MA1M OA 11"],["MA1M OA 12","MA1M OA 13","MA1M OA 14","MA1M OA 15"]]),
 ...page("2° Medio","Matemática","https://www.curriculumnacional.cl/docentes/Educacion-General/Matematica/Matematica-2-medio/34360%3APrograma-de-Estudio-Matematica-2-Medio",[
 "Aplicación de raíces, potencias y logaritmos. Área y superficie de la esfera",
 "Funciones cuadráticas, ecuaciones cuadráticas y la inversa de una función",
 "El cambio porcentual constante y razones trigonométricas",
 "Variable aleatoria finita"
-]),
+],[["MA2M OA 01","MA2M OA 02","MA2M OA 07"],["MA2M OA 03","MA2M OA 04","MA2M OA 05"],["MA2M OA 06","MA2M OA 08","MA2M OA 09"],["MA2M OA 10","MA2M OA 11","MA2M OA 12"]]),
 ...page("1° Medio","Lengua y Literatura","https://www.curriculumnacional.cl/docente/629/w3-article-34377.html",[
 "La libertad como tema literario (narrativa y lírica)",
 "Ciudadanos y opinión (texto argumentativo)",
