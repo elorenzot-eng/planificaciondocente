@@ -25,5 +25,17 @@ module.exports=[
 {title:"Medios de comunicación masivos, ciudadanía responsable y ética para una sociedad democrática",oa:null},
 {title:"Principios éticos, valores democráticos y convivencia social",oa:null},
 {title:"Modelos de desarrollo, sustentabilidad y democracia",oa:null}
+]),
+...page("3° Medio HC","Filosofía","https://www.curriculumnacional.cl/614/articles-140127_programa.pdf",[
+{title:"La filosofía permite cuestionar el conocimiento y las acciones del ser humano",oa:null},
+{title:"La realidad, el conocimiento y la existencia humana",oa:null},
+{title:"El conocimiento, la ciencia y la verdad",oa:null},
+{title:"Diálogo y argumentación filosófica",oa:null}
+]),
+...page("4° Medio HC","Filosofía","https://www.curriculumnacional.cl/614/articles-140125_programa.pdf",[
+{title:"La filosofía como actividad humana",oa:null},
+{title:"Problemas contemporáneos de la ética",oa:null},
+{title:"Problemas contemporáneos de la política",oa:null},
+{title:"El impacto de la filosofía en la vida cotidiana",oa:null}
 ])
 ];
