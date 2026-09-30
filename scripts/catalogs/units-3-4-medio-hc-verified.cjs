@@ -103,5 +103,29 @@ module.exports=[
 {title:"Química y tecnología: Aplicaciones para la vida",oa:["CN-QUIM-3y4-OAC-01"]},
 {title:"Reacciones químicas: espontaneidad y cinética",oa:["CN-QUIM-3y4-OAC-03"]},
 {title:"Química para la sustentabilidad",oa:["CN-QUIM-3y4-OAC-04","CN-QUIM-3y4-OAC-05","CN-QUIM-3y4-OAC-06","CN-QUIM-3y4-OAC-07"]}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Geometría 3D","https://www.curriculumnacional.cl/estudiante/621/w3-article-140147.html",[
+{title:"Representación vectorial de situaciones y fenómenos",oa:["MA-GE3D-3y4-OAC-01"]},
+{title:"Rectas y planos en el espacio",oa:null},
+{title:"Generación de cuerpos utilizando patrones geométricos",oa:null},
+{title:"Los objetos con sus caras y perspectivas",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Límites, Derivadas e Integrales","https://www.curriculumnacional.cl/estudiante/621/w3-article-140143.html",[
+{title:"Representar y modelar situaciones de cambio por medio de funciones",oa:["MA-LIDI-3y4-OAC-01"]},
+{title:"Reconociendo un patrón infinito y la noción de límite",oa:null},
+{title:"Modelar situaciones de cambio con derivadas",oa:null},
+{title:"Comprendiendo la Integral como proceso de reversibilidad y cálculo de áreas",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Pensamiento Computacional y Programación","https://www.curriculumnacional.cl/estudiante/621/w3-article-140146.html",[
+{title:"La escritura como medio para comunicar y almacenar la información",oa:null},
+{title:"La resolución de problemas y las máquinas",oa:null},
+{title:"Ayuda de la computadora en problemas geométricos y estadísticos",oa:null},
+{title:"Elaboración de Apps para dispositivos electrónicos móviles",oa:null}
+])),
+...["3° Medio HC","4° Medio HC"].flatMap(level=>page(level,"Probabilidades y Estadística Descriptiva e Inferencial","https://www.curriculumnacional.cl/estudiante/621/w3-article-140145.html",[
+{title:"¿Qué dicen los gráficos? Análisis crítico de la información",oa:["MA-PEDI-3y4-OAC-01"]},
+{title:"Comprender la media muestral, las medidas de dispersión y la correlación",oa:null},
+{title:"Modelaje de fenómenos mediante las probabilidades las distribuciones binomial o normal",oa:null},
+{title:"Hacer inferencia estadística",oa:null}
 ]))
 ];
