@@ -44,4 +44,4 @@ module.exports=[
 ...page("4° Básico","Artes Visuales","https://www.curriculumnacional.cl/docentes/Educacion-General/Artes-visuales/Artes-Visuales-4-basico/20749%3APrograma-de-Estudio-Artes-Visuales-4B",["Entorno natural y paisaje americano","Culturas precolombinas y artesanías americanas","Pintura y escultura de culturas precolombinas y americanas","Movimientos artísticos de Chile y el mundo"])
 ];
 
-// Catálogo oficial verificado: publicación sincronizada.
+// Catálogo oficial verificado: unidades 1° a 4° Básico sincronizadas con Currículum Nacional.
