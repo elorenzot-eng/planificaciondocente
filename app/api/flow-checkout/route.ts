@@ -10,8 +10,8 @@ export async function POST(){
  if(!process.env.FLOW_API_KEY||!process.env.FLOW_SECRET_KEY)return NextResponse.json({error:"Flow no configurado"},{status:503});
  const base=process.env.APP_URL||"https://educantay.cl";
  const commerceOrder="EDU-"+u.id+"-"+Date.now();
- await prisma.subscriptionPayment.create({data:{commerceOrder,userId:u.id,amount:20000}});
- const p:Record<string,string>={apiKey:process.env.FLOW_API_KEY,commerceOrder,subject:"Plan Individual Educantay",currency:"CLP",amount:"20000",email:u.email,paymentMethod:"9",urlConfirmation:base+"/api/flow-confirmation",urlReturn:base+"/api/flow-return",optional:JSON.stringify({userId:u.id})};
+ await prisma.subscriptionPayment.create({data:{commerceOrder,userId:u.id,amount:25000}});
+ const p:Record<string,string>={apiKey:process.env.FLOW_API_KEY,commerceOrder,subject:"Plan Individual Educantay",currency:"CLP",amount:"25000",email:u.email,paymentMethod:"9",urlConfirmation:base+"/api/flow-confirmation",urlReturn:base+"/api/flow-return",optional:JSON.stringify({userId:u.id})};
  try{
   const body=new URLSearchParams({...p,s:sign(p)});
   const r=await fetch(API+"/payment/create",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
