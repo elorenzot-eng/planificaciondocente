@@ -1,0 +1,36 @@
+name: EducAntay Android Compatibility
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/educantay-android]
+    paths:
+      - "native-android-compat/**"
+      - ".github/workflows/android-compat.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: native-android-compat
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - name: Build compatibility APK
+        run: gradle assembleDebug
+      - name: Validate APK
+        run: |
+          test -f app/build/outputs/apk/debug/app-debug.apk
+          unzip -t app/build/outputs/apk/debug/app-debug.apk >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: educantay-compat-apk
+          path: native-android-compat/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
