@@ -670,3 +670,5 @@ html body .publicLanding nav.landingNav .landingBrand img{
 
 
 .assessmentFriendlyEditor{margin-top:14px}.editorNotice{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;padding:14px 16px;border:1px solid #d7e6f5;border-radius:12px;background:#f7fbff;color:#36546f}.editorNotice b{color:#123e70;font-size:14px}.editorNotice span{font-size:13px}.editorActions{display:flex;justify-content:flex-end;margin-top:16px}
+
+.aiLoadingNotice{display:flex;align-items:center;gap:12px;margin-top:12px;padding:13px 15px;border:1px solid #cfe4f5;border-radius:12px;background:#f5fbff;color:#173f68}.aiLoadingNotice div{display:flex;flex-direction:column;gap:2px}.aiLoadingNotice b{font-size:14px}.aiLoadingNotice span{font-size:13px;color:#58728b}.aiClock{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#e2f3ff;font-style:normal;font-size:23px;animation:aiClockPulse 1.1s ease-in-out infinite}.aiLoadingNotice .aiClock{flex:0 0 34px}@keyframes aiClockPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.1);opacity:1}}@media(prefers-reduced-motion:reduce){.aiClock{animation:none}}
