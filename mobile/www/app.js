@@ -4,6 +4,8 @@ const homeView=document.querySelector('#homeView');
 const message=document.querySelector('#loginMessage');
 const planningView=document.querySelector('#planningView');
 let planningData=null;
+const assessmentView=document.querySelector('#assessmentView');
+let assessmentData=null;
 const showHome=(user)=>{loginView.classList.add('hidden');homeView.classList.remove('hidden');document.querySelector('#userName').textContent=user?.name||'Docente';document.querySelector('#accountType').textContent=user?.accountType||'Cuenta EducAntay'};
 const showLogin=()=>{homeView.classList.add('hidden');loginView.classList.remove('hidden')};
 
@@ -69,5 +71,30 @@ document.querySelector('#planningForm').addEventListener('submit',async e=>{
     result.innerHTML=`<h2>${esc(p.titulo||data.planning?.title||'Planificación')}</h2><p><strong>Objetivo de clase:</strong> ${esc(p.objetivoClase)}</p>${moment('inicio')}${moment('desarrollo')}${moment('cierre')}<p><strong>Evaluación formativa:</strong> ${esc(p.evaluacionFormativa)}</p><p class="muted">Guardada automáticamente en EducAntay.</p>`;result.classList.remove('hidden');
   }catch(err){msg.textContent=err.message||'Error al generar';}finally{loader.classList.add('hidden');button.disabled=false}
 });
-document.querySelectorAll('[data-route]').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.route==='/planificacion-docente-ia')openPlanning();else location.href=API+button.dataset.route}));
+
+async function openAssessment(){
+ homeView.classList.add('hidden');assessmentView.classList.remove('hidden');const msg=document.querySelector('#assessmentMessage');msg.textContent='Cargando currículum…';
+ try{const res=await fetch(API+'/api/ai-assessment',{credentials:'include'});const data=await res.json();if(!res.ok)throw new Error(data.error||'No se pudo cargar Evaluaciones IA');assessmentData=data;
+ const s=document.querySelector('#assessmentCourse');s.innerHTML='<option value="">Selecciona un curso</option>'+data.courses.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');msg.textContent='';
+ }catch(e){msg.textContent=e.message}
+}
+function assessmentOAs(){
+ const c=assessmentData?.courses.find(x=>x.id===document.querySelector('#assessmentCourse').value),subject=document.querySelector('#assessmentSubject').value;
+ const os=(assessmentData?.objectives||[]).filter(o=>c&&o.level===c.level&&o.subject===subject);
+ document.querySelector('#assessmentObjectives').innerHTML=os.length?os.map(o=>`<label class="oa-item"><input type="checkbox" name="assessmentOA" value="${esc(o.id)}"><span><strong>${esc(o.code)}</strong> · ${esc(o.text)}</span></label>`).join(''):'<span class="muted">Selecciona curso y asignatura.</span>';
+}
+document.querySelector('#assessmentCourse').addEventListener('change',e=>{const c=assessmentData.courses.find(x=>x.id===e.target.value);let ss=[...new Set((c?.teachingAssignments||[]).map(x=>x.subject).filter(Boolean))];if(!ss.length&&c)ss=[...new Set(assessmentData.objectives.filter(o=>o.level===c.level).map(o=>o.subject))];document.querySelector('#assessmentSubject').innerHTML='<option value="">Selecciona asignatura</option>'+ss.sort().map(s=>`<option>${esc(s)}</option>`).join('');assessmentOAs()});
+document.querySelector('#assessmentSubject').addEventListener('change',assessmentOAs);
+document.querySelector('#assessmentBack').addEventListener('click',()=>{assessmentView.classList.add('hidden');homeView.classList.remove('hidden')});
+document.querySelector('#assessmentForm').addEventListener('submit',async e=>{
+ e.preventDefault();const ids=[...document.querySelectorAll('input[name="assessmentOA"]:checked')].map(x=>x.value),msg=document.querySelector('#assessmentMessage');if(!ids.length){msg.textContent='Selecciona al menos un Objetivo de Aprendizaje.';return}
+ const loader=document.querySelector('#assessmentLoader'),button=document.querySelector('#assessmentGenerate'),result=document.querySelector('#assessmentResult');loader.classList.remove('hidden');result.classList.add('hidden');button.disabled=true;msg.textContent='';
+ try{const questions=Math.max(1,Math.min(60,Number(document.querySelector('#assessmentQuestions').value)||10));const type=document.querySelector('#assessmentType').value;
+ const res=await fetch(API+'/api/ai-assessment',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({courseId:document.querySelector('#assessmentCourse').value,subject:document.querySelector('#assessmentSubject').value,objectiveIds:ids,type,instrument:document.querySelector('#assessmentInstrument').value,questions,duration:document.querySelector('#assessmentDuration').value,instructions:document.querySelector('#assessmentInstructions').value,totalScore:type==='SUMMATIVE'?questions:undefined,difficulty:type==='SUMMATIVE'?60:undefined,includeImages:false})});const data=await res.json();if(!res.ok)throw new Error(data.error||'No se pudo generar la evaluación');
+ const a=data.assessment?.content||{},items=Array.isArray(a.items)?a.items:[];const itemHtml=items.map(i=>`<div class="moment"><h3>${esc(i.numero)}. ${esc(i.tipo||'Ítem')}</h3><p>${esc(i.enunciado)}</p>${Array.isArray(i.alternativas)&&i.alternativas.length?'<ol type="A">'+i.alternativas.map(x=>`<li>${esc(x)}</li>`).join('')+'</ol>':''}<small>OA: ${esc(i.oa||'')}</small></div>`).join('');
+ const answers=items.map(i=>`<tr><td>${esc(i.numero)}</td><td>${esc(i.respuestaCorrecta||'Revisar pauta')}</td><td>${esc(i.puntaje||'')}</td></tr>`).join('');
+ result.innerHTML=`<h2>${esc(a.titulo||data.assessment?.title||'Evaluación')}</h2><p>${esc(a.instrucciones||'')}</p>${itemHtml}<details><summary><strong>Hoja de respuestas correctas</strong></summary><div class="table-wrap"><table><thead><tr><th>Ítem</th><th>Respuesta correcta</th><th>Puntaje</th></tr></thead><tbody>${answers}</tbody></table></div></details><p class="muted">Evaluación guardada automáticamente en EducAntay.</p>`;result.classList.remove('hidden');
+ }catch(err){msg.textContent=err.message||'Error al generar';}finally{loader.classList.add('hidden');button.disabled=false}
+});
+document.querySelectorAll('[data-route]').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.route==='/planificacion-docente-ia')openPlanning();else if(button.dataset.route==='/evaluaciones-con-ia')openAssessment();else location.href=API+button.dataset.route}));
 session();
