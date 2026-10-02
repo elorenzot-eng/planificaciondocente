@@ -60,6 +60,24 @@
       <p id="planningMessage" class="message" aria-live="polite"></p>
       <article id="planningResult" class="result hidden"></article>
     </section>
+    <section id="assessmentView" class="home hidden">
+      <header><button id="assessmentBack" class="ghost">← Inicio</button><strong>Evaluaciones IA</strong></header>
+      <div class="welcome"><h1>Nueva evaluación</h1><p class="muted">Alineada a OA oficiales</p></div>
+      <form id="assessmentForm" class="planner-form">
+        <label>Curso<select id="assessmentCourse" required></select></label>
+        <label>Asignatura<select id="assessmentSubject" required></select></label>
+        <fieldset><legend>Objetivos de Aprendizaje</legend><div id="assessmentObjectives" class="oa-list"></div></fieldset>
+        <label>Tipo<select id="assessmentType"><option value="DIAGNOSTIC">Diagnóstica</option><option value="FORMATIVE">Formativa</option><option value="SUMMATIVE" selected>Sumativa</option></select></label>
+        <label>Instrumento<select id="assessmentInstrument"><option>Prueba mixta</option><option>Prueba objetiva</option><option>Prueba de respuesta abierta</option><option>Rúbrica</option><option>Lista de cotejo</option><option>Escala de valoración</option><option>Registro anecdótico</option><option>Pauta de observación</option><option>Portafolio</option><option>Cuaderno del estudiante</option><option>Mapa conceptual o mental</option><option>Autoevaluación</option><option>Coevaluación</option><option>Ticket de salida</option></select></label>
+        <label>Cantidad de ítems<input id="assessmentQuestions" type="number" min="1" max="60" value="10"/></label>
+        <label>Duración<input id="assessmentDuration" value="60 minutos"/></label>
+        <label>Indicaciones<textarea id="assessmentInstructions" rows="3"></textarea></label>
+        <button id="assessmentGenerate" type="submit">Generar evaluación con IA</button>
+      </form>
+      <div id="assessmentLoader" class="loader-box hidden"><div class="spinner"></div><strong>Generando evaluación…</strong><span>La IA está construyendo el instrumento y su pauta.</span></div>
+      <p id="assessmentMessage" class="message" aria-live="polite"></p>
+      <article id="assessmentResult" class="result hidden"></article>
+    </section>
   </main>
   <script type="module" src="./app.js"></script>
 </body>
