@@ -1,4 +1,4 @@
-name: EducAntay Android
+name: EducAntay Android Clean Boot
 
 on:
   workflow_dispatch:
@@ -29,10 +29,6 @@ jobs:
         run: node --check www/app.js
       - name: Create Android project
         run: npx cap add android
-      - name: Install SVG renderer
-        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
-      - name: Apply EducAntay Android branding
-        run: bash scripts/apply-android-branding.sh
       - name: Sync web assets
         run: npx cap sync android
       - name: Build debug APK
