@@ -78,6 +78,26 @@
       <p id="assessmentMessage" class="message" aria-live="polite"></p>
       <article id="assessmentResult" class="result hidden"></article>
     </section>
+    <section id="materialView" class="home hidden">
+      <header><button id="materialBack" class="ghost">← Inicio</button><strong>Material IA</strong></header>
+      <div class="welcome"><h1>Crear material</h1><p class="muted">Recursos educativos con IA</p></div>
+      <form id="materialForm" class="planner-form">
+        <label>Curso<select id="materialCourse" required></select></label>
+        <label>Asignatura<select id="materialSubject" required></select></label>
+        <label>Tipo de material<select id="materialType"><option>Presentación</option><option>Guía de apoyo</option><option>Mapa conceptual</option><option>Mapa mental</option><option>Guía de aprendizaje</option><option>Afiche</option><option>Tríptico</option><option>Díptico</option><option>Otro material educativo</option></select></label>
+        <label>Tema<input id="materialTopic" required placeholder="Tema o contenido"/></label>
+        <label>OA asociado<select id="materialObjective"><option value="">Sin OA específico</option></select></label>
+        <button id="materialGenerate" type="submit">Generar material con IA</button>
+      </form>
+      <div id="materialLoader" class="loader-box hidden"><div class="spinner"></div><strong>Generando material…</strong><span>Preparando contenido y apoyos pedagógicos.</span></div>
+      <p id="materialMessage" class="message"></p><article id="materialResult" class="result hidden"></article>
+    </section>
+    <section id="folderView" class="home hidden">
+      <header><button id="folderBack" class="ghost">← Inicio</button><strong>Mi Carpeta</strong></header>
+      <div class="welcome"><h1>Mi Carpeta</h1><p class="muted">Todo tu trabajo en EducAntay</p></div>
+      <div class="folder-tabs"><button data-folder="plannings">Planificaciones</button><button data-folder="assessments">Evaluaciones</button><button data-folder="supportMaterials">Materiales</button></div>
+      <p id="folderMessage" class="message"></p><div id="folderList" class="folder-list"></div>
+    </section>
   </main>
   <script type="module" src="./app.js"></script>
 </body>
