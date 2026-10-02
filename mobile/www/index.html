@@ -4,12 +4,46 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B2D4A" />
+  <link rel="stylesheet" href="./styles.css" />
   <title>EducAntay</title>
 </head>
 <body>
-  <main>
-    <h1>EducAntay</h1>
-    <p>Aplicación móvil en preparación.</p>
+  <main id="app" class="shell">
+    <section id="loginView" class="auth-card">
+      <div class="brand">
+        <span class="brand-mark">EA</span>
+        <div><strong>EducAntay</strong><small>Tu asistente docente con IA</small></div>
+      </div>
+      <h1>Bienvenido</h1>
+      <p class="muted">Ingresa con la misma cuenta que utilizas en educantay.cl.</p>
+      <form id="loginForm">
+        <label>Correo electrónico<input id="email" type="email" autocomplete="email" required /></label>
+        <label>Contraseña<input id="password" type="password" autocomplete="current-password" required /></label>
+        <button id="loginButton" type="submit">Ingresar</button>
+      </form>
+      <button id="forgotButton" class="link-button" type="button">Olvidé mi contraseña</button>
+      <p id="loginMessage" class="message" aria-live="polite"></p>
+    </section>
+
+    <section id="homeView" class="home hidden">
+      <header>
+        <div class="brand"><span class="brand-mark">EA</span><strong>EducAntay</strong></div>
+        <button id="logoutButton" class="ghost">Salir</button>
+      </header>
+      <div class="welcome">
+        <p>Hola,</p><h1 id="userName">Docente</h1>
+        <span id="accountType" class="pill"></span>
+      </div>
+      <div class="grid">
+        <button data-route="/planificacion-docente-ia">📝<strong>Planificación IA</strong><span>Planifica tus clases</span></button>
+        <button data-route="/evaluaciones-con-ia">✓<strong>Evaluaciones IA</strong><span>Crea instrumentos</span></button>
+        <button data-route="/material-educativo-ia">✨<strong>Material IA</strong><span>Genera recursos</span></button>
+        <button data-route="/?panel=mi-carpeta">📁<strong>Mi Carpeta</strong><span>Revisa tus archivos</span></button>
+        <button data-route="/?panel=suscripcion">💳<strong>Mi Suscripción</strong><span>Plan y generaciones</span></button>
+        <button data-route="/?panel=soporte">💬<strong>Soporte</strong><span>Ayuda y tickets</span></button>
+      </div>
+    </section>
   </main>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
