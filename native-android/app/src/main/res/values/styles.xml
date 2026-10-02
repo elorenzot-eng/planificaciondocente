@@ -1,0 +1,8 @@
+<resources>
+  <style name="Theme.EducAntay" parent="android:style/Theme.Material.Light.NoActionBar">
+    <item name="android:fontFamily">sans</item>
+    <item name="android:colorAccent">#079DDD</item>
+    <item name="android:navigationBarColor">#F4F6F8</item>
+    <item name="android:statusBarColor">#082F6D</item>
+  </style>
+</resources>
