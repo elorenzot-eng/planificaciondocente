@@ -716,3 +716,41 @@ html body .publicLanding nav.landingNav .landingBrand img{
 .dashboardLinkButton,.upcomingDashboard .dashboardAction,.dailyWorkspace .panelHead button{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;min-height:40px!important;padding:9px 14px!important;border:1px solid #cfe1e9!important;border-radius:11px!important;background:#f5fbfc!important;color:#167f91!important;font-family:inherit!important;font-size:13px!important;font-weight:800!important;line-height:1.2!important;box-shadow:none!important;cursor:pointer!important;transition:background .16s ease,border-color .16s ease,transform .16s ease!important}
 .dashboardLinkButton:hover,.upcomingDashboard .dashboardAction:hover,.dailyWorkspace .panelHead button:hover{background:#eaf7f8!important;border-color:#9fd0d6!important;color:#116d7d!important;transform:translateY(-1px)}
 .dashboardLinkButton:focus-visible,.upcomingDashboard .dashboardAction:focus-visible,.dailyWorkspace .panelHead button:focus-visible{outline:3px solid rgba(0,166,166,.16)!important;outline-offset:2px!important}
+
+/* Normalización global de acciones antiguas dentro del área autenticada */
+.workspace .panelHead>button:not(.primary),
+.workspace .quickActions>button,
+.workspace .activityActions>button,
+.workspace .dashboardEmpty>button:not(.primary),
+.workspace .latestUnit~* .panelHead>button:not(.primary),
+.workspace .folderHead>button:not(.primary),
+.workspace .folderToolbar>button:not(.primary),
+.workspace .unitActions>button:not(:first-child),
+.workspace .documentTopActions>button:not(.primary),
+.workspace .sourceContext>button,
+.workspace .trialStatus>button,
+.workspace .backBtn,
+.workspace button.dashboardLinkButton,
+.workspace button.dashboardAction{
+appearance:none!important;-webkit-appearance:none!important;
+border:1px solid #b9dce1!important;background:#f2fafb!important;color:#147b89!important;
+border-radius:11px!important;min-height:40px!important;padding:9px 14px!important;
+font-family:inherit!important;font-size:13px!important;font-weight:800!important;line-height:1.2!important;
+box-shadow:0 2px 8px rgba(18,63,109,.035)!important;cursor:pointer!important;
+transition:background .16s ease,border-color .16s ease,transform .16s ease!important
+}
+.workspace .panelHead>button:not(.primary):hover,
+.workspace .quickActions>button:hover,
+.workspace .activityActions>button:hover,
+.workspace .dashboardEmpty>button:not(.primary):hover,
+.workspace .folderHead>button:not(.primary):hover,
+.workspace .folderToolbar>button:not(.primary):hover,
+.workspace .unitActions>button:not(:first-child):hover,
+.workspace .documentTopActions>button:not(.primary):hover,
+.workspace .sourceContext>button:hover,
+.workspace .trialStatus>button:hover,
+.workspace .backBtn:hover,
+.workspace button.dashboardLinkButton:hover,
+.workspace button.dashboardAction:hover{
+background:#e5f6f7!important;border-color:#82c5cc!important;color:#0d6875!important;transform:translateY(-1px)
+}
