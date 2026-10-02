@@ -98,6 +98,25 @@
       <div class="folder-tabs"><button data-folder="plannings">Planificaciones</button><button data-folder="assessments">Evaluaciones</button><button data-folder="supportMaterials">Materiales</button></div>
       <p id="folderMessage" class="message"></p><div id="folderList" class="folder-list"></div>
     </section>
+    <section id="subscriptionView" class="home hidden">
+      <header><button id="subscriptionBack" class="ghost">← Inicio</button><strong>Mi Suscripción</strong></header>
+      <div class="welcome"><h1>Plan Individual</h1><p class="muted">Estado y uso de tu cuenta</p></div>
+      <div id="subscriptionCard" class="subscription-card">Cargando…</div>
+      <button id="manageSubscription" class="primary-action">Gestionar / renovar suscripción</button>
+      <p class="muted center">La gestión de pago se realiza de forma segura en EducAntay.</p>
+    </section>
+    <section id="supportView" class="home hidden">
+      <header><button id="supportBack" class="ghost">← Inicio</button><strong>Centro de Soporte</strong></header>
+      <div class="welcome"><h1>¿Necesitas ayuda?</h1><p class="muted">Crea y revisa tus solicitudes.</p></div>
+      <form id="supportForm" class="planner-form">
+        <label>Categoría<select id="supportCategory"><option>Duda de uso</option><option>Problema técnico</option><option>Planificación IA</option><option>Evaluaciones IA</option><option>Material IA</option><option>Suscripción y pagos</option><option>Otro</option></select></label>
+        <label>Asunto<input id="supportSubject" maxlength="160" required/></label>
+        <label>Descripción<textarea id="supportDetail" rows="5" minlength="10" required></textarea></label>
+        <button id="supportSubmit" type="submit">Crear ticket</button>
+      </form>
+      <p id="supportMessage" class="message"></p>
+      <h2 class="section-title">Mis solicitudes</h2><div id="ticketList" class="folder-list"></div>
+    </section>
   </main>
   <script type="module" src="./app.js"></script>
 </body>
