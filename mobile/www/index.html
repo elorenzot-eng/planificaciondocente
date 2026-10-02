@@ -1,123 +1,23 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0B2D4A" />
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#082f6d">
   <title>EducAntay</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#f4f6f8;color:#082f6d;min-height:100vh;display:grid;place-items:center;padding:24px}
+    main{width:min(100%,430px);background:white;border-radius:24px;padding:36px 24px;text-align:center;box-shadow:0 14px 45px rgba(8,47,109,.12)}
+    .mark{width:88px;height:88px;margin:auto;border-radius:24px;background:#082f6d;color:white;display:grid;place-items:center;font-size:30px;font-weight:800}
+    h1{font-size:34px;margin:20px 0 8px}.accent{color:#079ddd}p{color:#617087;line-height:1.5}.ok{margin-top:28px;padding:16px;border-radius:14px;background:#eef8f2;color:#24713c;font-weight:700}
+  </style>
 </head>
 <body>
-  <main id="app" class="shell">
-    <section id="loginView" class="auth-card">
-      <div class="brand">
-        <span class="brand-mark">EA</span>
-        <div><strong>EducAntay</strong><small>Tu asistente docente con IA</small></div>
-      </div>
-      <h1>Bienvenido</h1>
-      <p class="muted">Ingresa con la misma cuenta que utilizas en educantay.cl.</p>
-      <form id="loginForm">
-        <label>Correo electrónico<input id="email" type="email" autocomplete="email" required /></label>
-        <label>Contraseña<input id="password" type="password" autocomplete="current-password" required /></label>
-        <button id="loginButton" type="submit">Ingresar</button>
-      </form>
-      <button id="forgotButton" class="link-button" type="button">Olvidé mi contraseña</button>
-      <p id="loginMessage" class="message" aria-live="polite"></p>
-    </section>
-
-    <section id="homeView" class="home hidden">
-      <header>
-        <div class="brand"><span class="brand-mark">EA</span><strong>EducAntay</strong></div>
-        <button id="logoutButton" class="ghost">Salir</button>
-      </header>
-      <div class="welcome">
-        <p>Hola,</p><h1 id="userName">Docente</h1>
-        <span id="accountType" class="pill"></span>
-      </div>
-      <div class="grid">
-        <button data-route="/planificacion-docente-ia">📝<strong>Planificación IA</strong><span>Planifica tus clases</span></button>
-        <button data-route="/evaluaciones-con-ia">✓<strong>Evaluaciones IA</strong><span>Crea instrumentos</span></button>
-        <button data-route="/material-educativo-ia">✨<strong>Material IA</strong><span>Genera recursos</span></button>
-        <button data-route="/?panel=mi-carpeta">📁<strong>Mi Carpeta</strong><span>Revisa tus archivos</span></button>
-        <button data-route="/?panel=suscripcion">💳<strong>Mi Suscripción</strong><span>Plan y generaciones</span></button>
-        <button data-route="/?panel=soporte">💬<strong>Soporte</strong><span>Ayuda y tickets</span></button>
-      </div>
-    </section>
-    <section id="planningView" class="home hidden">
-      <header><button id="planningBack" class="ghost">← Inicio</button><strong>Planificación IA</strong></header>
-      <div class="welcome"><h1>Nueva planificación</h1><p class="muted">Currículum EducAntay · Clase a clase</p></div>
-      <form id="planningForm" class="planner-form">
-        <label>Curso<select id="courseSelect" required></select></label>
-        <label>Asignatura<select id="subjectSelect" required></select></label>
-        <label>Unidad<select id="unitSelect"><option value="">Sin unidad seleccionada</option></select></label>
-        <fieldset><legend>Objetivos de Aprendizaje</legend><div id="objectivesList" class="oa-list"></div></fieldset>
-        <label>Duración<select id="durationSelect"><option>45 minutos</option><option selected>90 minutos</option><option>135 minutos</option><option>180 minutos</option></select></label>
-        <label>Indicaciones adicionales<textarea id="instructions" rows="4" placeholder="Ej.: incorporar trabajo colaborativo..."></textarea></label>
-        <label class="check"><input id="adaptations" type="checkbox"/> Incluir adecuaciones curriculares</label>
-        <button id="generateButton" type="submit">Generar planificación con IA</button>
-      </form>
-      <div id="planningLoader" class="loader-box hidden"><div class="spinner"></div><strong>Generando con IA…</strong><span>Estamos preparando tu planificación.</span></div>
-      <p id="planningMessage" class="message" aria-live="polite"></p>
-      <article id="planningResult" class="result hidden"></article>
-    </section>
-    <section id="assessmentView" class="home hidden">
-      <header><button id="assessmentBack" class="ghost">← Inicio</button><strong>Evaluaciones IA</strong></header>
-      <div class="welcome"><h1>Nueva evaluación</h1><p class="muted">Alineada a OA oficiales</p></div>
-      <form id="assessmentForm" class="planner-form">
-        <label>Curso<select id="assessmentCourse" required></select></label>
-        <label>Asignatura<select id="assessmentSubject" required></select></label>
-        <fieldset><legend>Objetivos de Aprendizaje</legend><div id="assessmentObjectives" class="oa-list"></div></fieldset>
-        <label>Tipo<select id="assessmentType"><option value="DIAGNOSTIC">Diagnóstica</option><option value="FORMATIVE">Formativa</option><option value="SUMMATIVE" selected>Sumativa</option></select></label>
-        <label>Instrumento<select id="assessmentInstrument"><option>Prueba mixta</option><option>Prueba objetiva</option><option>Prueba de respuesta abierta</option><option>Rúbrica</option><option>Lista de cotejo</option><option>Escala de valoración</option><option>Registro anecdótico</option><option>Pauta de observación</option><option>Portafolio</option><option>Cuaderno del estudiante</option><option>Mapa conceptual o mental</option><option>Autoevaluación</option><option>Coevaluación</option><option>Ticket de salida</option></select></label>
-        <label>Cantidad de ítems<input id="assessmentQuestions" type="number" min="1" max="60" value="10"/></label>
-        <label>Duración<input id="assessmentDuration" value="60 minutos"/></label>
-        <label>Indicaciones<textarea id="assessmentInstructions" rows="3"></textarea></label>
-        <button id="assessmentGenerate" type="submit">Generar evaluación con IA</button>
-      </form>
-      <div id="assessmentLoader" class="loader-box hidden"><div class="spinner"></div><strong>Generando evaluación…</strong><span>La IA está construyendo el instrumento y su pauta.</span></div>
-      <p id="assessmentMessage" class="message" aria-live="polite"></p>
-      <article id="assessmentResult" class="result hidden"></article>
-    </section>
-    <section id="materialView" class="home hidden">
-      <header><button id="materialBack" class="ghost">← Inicio</button><strong>Material IA</strong></header>
-      <div class="welcome"><h1>Crear material</h1><p class="muted">Recursos educativos con IA</p></div>
-      <form id="materialForm" class="planner-form">
-        <label>Curso<select id="materialCourse" required></select></label>
-        <label>Asignatura<select id="materialSubject" required></select></label>
-        <label>Tipo de material<select id="materialType"><option>Presentación</option><option>Guía de apoyo</option><option>Mapa conceptual</option><option>Mapa mental</option><option>Guía de aprendizaje</option><option>Afiche</option><option>Tríptico</option><option>Díptico</option><option>Otro material educativo</option></select></label>
-        <label>Tema<input id="materialTopic" required placeholder="Tema o contenido"/></label>
-        <label>OA asociado<select id="materialObjective"><option value="">Sin OA específico</option></select></label>
-        <button id="materialGenerate" type="submit">Generar material con IA</button>
-      </form>
-      <div id="materialLoader" class="loader-box hidden"><div class="spinner"></div><strong>Generando material…</strong><span>Preparando contenido y apoyos pedagógicos.</span></div>
-      <p id="materialMessage" class="message"></p><article id="materialResult" class="result hidden"></article>
-    </section>
-    <section id="folderView" class="home hidden">
-      <header><button id="folderBack" class="ghost">← Inicio</button><strong>Mi Carpeta</strong></header>
-      <div class="welcome"><h1>Mi Carpeta</h1><p class="muted">Todo tu trabajo en EducAntay</p></div>
-      <div class="folder-tabs"><button data-folder="plannings">Planificaciones</button><button data-folder="assessments">Evaluaciones</button><button data-folder="supportMaterials">Materiales</button></div>
-      <p id="folderMessage" class="message"></p><div id="folderList" class="folder-list"></div>
-    </section>
-    <section id="subscriptionView" class="home hidden">
-      <header><button id="subscriptionBack" class="ghost">← Inicio</button><strong>Mi Suscripción</strong></header>
-      <div class="welcome"><h1>Plan Individual</h1><p class="muted">Estado y uso de tu cuenta</p></div>
-      <div id="subscriptionCard" class="subscription-card">Cargando…</div>
-      <button id="manageSubscription" class="primary-action">Gestionar / renovar suscripción</button>
-      <p class="muted center">La gestión de pago se realiza de forma segura en EducAntay.</p>
-    </section>
-    <section id="supportView" class="home hidden">
-      <header><button id="supportBack" class="ghost">← Inicio</button><strong>Centro de Soporte</strong></header>
-      <div class="welcome"><h1>¿Necesitas ayuda?</h1><p class="muted">Crea y revisa tus solicitudes.</p></div>
-      <form id="supportForm" class="planner-form">
-        <label>Categoría<select id="supportCategory"><option>Duda de uso</option><option>Problema técnico</option><option>Planificación IA</option><option>Evaluaciones IA</option><option>Material IA</option><option>Suscripción y pagos</option><option>Otro</option></select></label>
-        <label>Asunto<input id="supportSubject" maxlength="160" required/></label>
-        <label>Descripción<textarea id="supportDetail" rows="5" minlength="10" required></textarea></label>
-        <button id="supportSubmit" type="submit">Crear ticket</button>
-      </form>
-      <p id="supportMessage" class="message"></p>
-      <h2 class="section-title">Mis solicitudes</h2><div id="ticketList" class="folder-list"></div>
-    </section>
-  </main>
-  <script type="module" src="./app.js"></script>
+<main>
+  <div class="mark">EA</div>
+  <h1>Educ<span class="accent">Antay</span></h1>
+  <p>Aplicación móvil</p>
+  <div class="ok">✓ EducAntay inició correctamente</div>
+</main>
 </body>
 </html>
