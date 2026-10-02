@@ -4,10 +4,7 @@ const config: CapacitorConfig = {
   appId: 'cl.educantay.app',
   appName: 'EducAntay',
   webDir: 'www',
-  backgroundColor: '#F4F6F8',
-  android: {
-    allowMixedContent: false
-  }
+  backgroundColor: '#F4F6F8'
 };
 
 export default config;
