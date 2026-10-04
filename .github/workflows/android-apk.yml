@@ -8,6 +8,7 @@ on:
       - "capacitor.config.ts"
       - "package.json"
       - "package-lock.json"
+      - "ANDROID_RELEASE_TRIGGER"
       - ".github/workflows/android-apk.yml"
 
 jobs:
