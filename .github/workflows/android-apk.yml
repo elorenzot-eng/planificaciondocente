@@ -1,4 +1,4 @@
-# Build trigger: Capacitor 8 / Node 22
+# Build trigger: Capacitor 8 / Node 22 · Play-ready consumption build
 name: Build EducAntay Android
 
 on:
