@@ -1,6 +1,6 @@
 name: Build EducAntay Android
 
-on:
+'on':
   workflow_dispatch:
   push:
     branches: [main]
