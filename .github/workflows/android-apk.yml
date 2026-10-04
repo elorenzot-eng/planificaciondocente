@@ -3,17 +3,22 @@ name: Build EducAntay Android
 'on':
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "capacitor.config.ts"
       - "package.json"
-      - "package-lock.json"
-      - "ANDROID_RELEASE_TRIGGER"
       - ".github/workflows/android-apk.yml"
 
 jobs:
-  build-apk:
+  build-android:
     runs-on: ubuntu-latest
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,7 +43,7 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Configure EducAntay v1.0 Android identity
+      - name: Configure EducAntay v1.0
         run: |
           sed -i 's/versionName "1.0"/versionName "1.0.0"/' android/app/build.gradle
           if [ -f android/app/src/main/res/values/strings.xml ]; then
@@ -46,28 +51,19 @@ jobs:
           fi
 
       - name: Restore production keystore
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/educantay-release.jks
-          fi
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/educantay-release.jks
+          test -s android/app/educantay-release.jks
 
-      - name: Configure release signing
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      - name: Configure production signing
         run: |
           python3 - <<'PY'
-          import os
           from pathlib import Path
           p = Path("android/app/build.gradle")
           s = p.read_text()
-          prod = Path("android/app/educantay-release.jks").exists()
-          if prod:
-              marker = "buildTypes {"
-              signing = """signingConfigs {
+          marker = "buildTypes {"
+          signing = """signingConfigs {
         release {
             storeFile file("educantay-release.jks")
             storePassword System.getenv("KEYSTORE_PASSWORD")
@@ -76,28 +72,33 @@ jobs:
         }
     }
     """
-              s = s.replace(marker, signing + marker, 1)
-              s = s.replace("release {\n            minifyEnabled", "release {\n            signingConfig signingConfigs.release\n            minifyEnabled", 1)
-          else:
-              s = s.replace("release {\n            minifyEnabled", "release {\n            signingConfig signingConfigs.debug\n            minifyEnabled", 1)
+          if marker not in s:
+              raise SystemExit("buildTypes block not found")
+          s = s.replace(marker, signing + marker, 1)
+          needle = "release {\n            minifyEnabled"
+          if needle not in s:
+              raise SystemExit("release block not found")
+          s = s.replace(needle, "release {\n            signingConfig signingConfigs.release\n            minifyEnabled", 1)
           p.write_text(s)
-          print("Production signing enabled" if prod else "Production secrets absent: test signing enabled")
           PY
 
-      - name: Build release APK and AAB
+      - name: Verify keystore
+        run: keytool -list -keystore android/app/educantay-release.jks -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null
+
+      - name: Build production APK and AAB
         working-directory: android
         run: ./gradlew assembleRelease bundleRelease
 
-      - name: Upload release APK
+      - name: Upload production APK
         uses: actions/upload-artifact@v4
         with:
-          name: EducAntay-release-apk
+          name: EducAntay-v1.0-production-apk
           path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
-      - name: Upload release AAB
+      - name: Upload production AAB
         uses: actions/upload-artifact@v4
         with:
-          name: EducAntay-release-aab
+          name: EducAntay-v1.0-production-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
