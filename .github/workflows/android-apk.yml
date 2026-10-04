@@ -78,7 +78,22 @@ jobs:
 
       - name: Configure release signing
         run: |
-          python3 -c 'from pathlib import Path; p=Path("android/app/build.gradle"); s=p.read_text(); marker="buildTypes {"; signing="signingConfigs {\\n        release {\\n            storeFile file(\\\"educantay-release.jks\\\")\\n            storePassword System.getenv(\\\"KEYSTORE_PASSWORD\\\")\\n            keyAlias System.getenv(\\\"KEY_ALIAS\\\")\\n            keyPassword System.getenv(\\\"KEY_PASSWORD\\\")\\n        }\\n    }\\n    "; assert marker in s; s=s.replace(marker, signing+marker, 1); needle="release {\\n            minifyEnabled"; assert needle in s; s=s.replace(needle, "release {\\n            signingConfig signingConfigs.release\\n            minifyEnabled", 1); p.write_text(s)'
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path("android/app/build.gradle")
+          s = p.read_text()
+          marker = "buildTypes {"
+          if marker not in s:
+              raise SystemExit("buildTypes block not found")
+          signing = "signingConfigs {\n        release {\n            storeFile file(\\"educantay-release.jks\\")\n            storePassword System.getenv(\\"KEYSTORE_PASSWORD\\")\n            keyAlias System.getenv(\\"KEY_ALIAS\\")\n            keyPassword System.getenv(\\"KEY_PASSWORD\\")\n        }\n    }\n    "
+          s = s.replace(marker, signing + marker, 1)
+          s, count = re.subn(r"(release\\s*\\{)", r"\\1\n            signingConfig signingConfigs.release", s, count=1)
+          if count != 1:
+              raise SystemExit("release block not found")
+          p.write_text(s)
+          print("Production signing configured")
+          PY
 
       - name: Build signed release
         working-directory: android
