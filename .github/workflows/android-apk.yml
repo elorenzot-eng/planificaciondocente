@@ -12,6 +12,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,20 +49,40 @@ jobs:
             sed -i 's/>planificaciondocente</>EducAntay</g' android/app/src/main/res/values/strings.xml
           fi
 
-      - name: Build unsigned release
+      - name: Restore production keystore
+        run: |
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/educantay-release.jks
+          test -s android/app/educantay-release.jks
+
+      - name: Verify production keystore
+        run: |
+          test -n "$KEYSTORE_PASSWORD"
+          test -n "$KEY_ALIAS"
+          test -n "$KEY_PASSWORD"
+          keytool -list -keystore android/app/educantay-release.jks -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null
+
+      - name: Configure release signing
+        run: |
+          python3 -c 'from pathlib import Path; p=Path("android/app/build.gradle"); s=p.read_text(); marker="buildTypes {"; signing="signingConfigs {\\n        release {\\n            storeFile file(\\\"educantay-release.jks\\\")\\n            storePassword System.getenv(\\\"KEYSTORE_PASSWORD\\\")\\n            keyAlias System.getenv(\\\"KEY_ALIAS\\\")\\n            keyPassword System.getenv(\\\"KEY_PASSWORD\\\")\\n        }\\n    }\\n    "; assert marker in s; s=s.replace(marker, signing+marker, 1); needle="release {\\n            minifyEnabled"; assert needle in s; s=s.replace(needle, "release {\\n            signingConfig signingConfigs.release\\n            minifyEnabled", 1); p.write_text(s)'
+
+      - name: Build signed release
         working-directory: android
         run: ./gradlew assembleRelease bundleRelease
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: EducAntay-v1.0-stage-apk
-          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
-          if-no-files-found: warn
+      - name: Verify signed AAB
+        run: jarsigner -verify android/app/build/outputs/bundle/release/app-release.aab
 
-      - name: Upload AAB
+      - name: Upload production APK
         uses: actions/upload-artifact@v4
         with:
-          name: EducAntay-v1.0-stage-aab
+          name: EducAntay-v1.0-production-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+
+      - name: Upload production AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: EducAntay-v1.0-production-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
