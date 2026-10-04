@@ -101,15 +101,20 @@ jobs:
               raise SystemExit("buildTypes block not found")
 
           text = text.replace("buildTypes {", signing + "buildTypes {", 1)
-          text, count = re.subn(
+          build_index = text.index("buildTypes {")
+          before = text[:build_index]
+          build = text[build_index:]
+          build, count = re.subn(
               r"release\s*\{",
               "release {\n            signingConfig signingConfigs.release",
-              text,
+              build,
               count=1,
           )
 
           if count != 1:
-              raise SystemExit("release block not found")
+              raise SystemExit("buildTypes release block not found")
+
+          text = before + build
 
           path.write_text(text)
           print("Production signing configured")
