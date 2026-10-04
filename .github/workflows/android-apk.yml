@@ -81,17 +81,37 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
-          p = Path("android/app/build.gradle")
-          s = p.read_text()
-          marker = "buildTypes {"
-          if marker not in s:
+
+          path = Path("android/app/build.gradle")
+          text = path.read_text()
+
+          signing = (
+              "signingConfigs {\n"
+              "        release {\n"
+              "            storeFile file('educantay-release.jks')\n"
+              "            storePassword System.getenv('KEYSTORE_PASSWORD')\n"
+              "            keyAlias System.getenv('KEY_ALIAS')\n"
+              "            keyPassword System.getenv('KEY_PASSWORD')\n"
+              "        }\n"
+              "    }\n"
+              "    "
+          )
+
+          if "buildTypes {" not in text:
               raise SystemExit("buildTypes block not found")
-          signing = "signingConfigs {\n        release {\n            storeFile file(\\"educantay-release.jks\\")\n            storePassword System.getenv(\\"KEYSTORE_PASSWORD\\")\n            keyAlias System.getenv(\\"KEY_ALIAS\\")\n            keyPassword System.getenv(\\"KEY_PASSWORD\\")\n        }\n    }\n    "
-          s = s.replace(marker, signing + marker, 1)
-          s, count = re.subn(r"(release\\s*\\{)", r"\\1\n            signingConfig signingConfigs.release", s, count=1)
+
+          text = text.replace("buildTypes {", signing + "buildTypes {", 1)
+          text, count = re.subn(
+              r"release\s*\{",
+              "release {\n            signingConfig signingConfigs.release",
+              text,
+              count=1,
+          )
+
           if count != 1:
               raise SystemExit("release block not found")
-          p.write_text(s)
+
+          path.write_text(text)
           print("Production signing configured")
           PY
 
