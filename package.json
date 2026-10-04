@@ -24,11 +24,11 @@
     "@prisma/client": "^6.16.2",
     "bcryptjs": "^3.0.2",
     "jose": "^6.1.0",
-    "@capacitor/core": "^7.4.3"
+    "@capacitor/core": "^8.0.0"
   },
   "devDependencies": {
     "prisma": "^6.16.2",
-    "@capacitor/cli": "^7.4.3",
-    "@capacitor/android": "^7.4.3"
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/android": "^8.0.0"
   }
 }
