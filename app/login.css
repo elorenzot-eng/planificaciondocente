@@ -29,3 +29,43 @@
 .loginCard .educantayLoginBrand{display:block!important;margin-bottom:28px!important}
 .loginCard .educantayLoginBrand img{width:210px!important;height:132px!important;max-width:100%!important;object-fit:contain!important;object-position:left center!important;display:block!important}
 .loginCard .educantayLoginBrand>div{display:none!important}
+
+
+/* iPhone / narrow mobile access layout */
+@media(max-width:520px){
+  .loginPage{
+    min-height:100dvh;
+    place-items:start center;
+    padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+    overflow-x:hidden;
+  }
+  .loginCard{
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+    padding:30px 23px;
+    overflow:hidden;
+  }
+  .loginCard form,
+  .loginCard label,
+  .loginCard input,
+  .loginCard button{
+    min-width:0;
+    max-width:100%;
+    box-sizing:border-box;
+  }
+  .forgotPasswordLink{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    text-align:right!important;
+    padding:4px 0 10px!important;
+  }
+  .loginCard form>button,
+  .loginCard>button{
+    width:100%;
+    max-width:100%;
+  }
+}
