@@ -8,7 +8,10 @@
     "start": "prisma db push && next start",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android"
   },
   "dependencies": {
     "@types/node": "^22.0.0",
@@ -20,9 +23,12 @@
     "typescript": "^5.7.0",
     "@prisma/client": "^6.16.2",
     "bcryptjs": "^3.0.2",
-    "jose": "^6.1.0"
+    "jose": "^6.1.0",
+    "@capacitor/core": "^7.4.3"
   },
   "devDependencies": {
-    "prisma": "^6.16.2"
+    "prisma": "^6.16.2",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/android": "^7.4.3"
   }
 }
