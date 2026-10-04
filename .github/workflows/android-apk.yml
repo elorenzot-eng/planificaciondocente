@@ -37,6 +37,13 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Configure EducAntay v1.0 Android identity
+        run: |
+          sed -i 's/versionName "1.0"/versionName "1.0.0"/' android/app/build.gradle
+          if [ -f android/app/src/main/res/values/strings.xml ]; then
+            sed -i 's/>planificaciondocente</>EducAntay</g' android/app/src/main/res/values/strings.xml
+          fi
+
       - name: Configure signed release
         run: |
           python3 - <<'PY'
