@@ -1,6 +1,5 @@
-import type { CapacitorConfig } from '@capacitor/cli';
-
-const config: CapacitorConfig = {
+// Shared Capacitor configuration; Android tooling can read this without importing its CLI types.
+const config = {
   appId: 'cl.educantay.app',
   appName: 'EducAntay',
   webDir: 'public',
