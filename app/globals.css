@@ -765,3 +765,18 @@ background:#e5f6f7!important;border-color:#82c5cc!important;color:#0d6875!import
 
 /* Corrección de superposición en resumen de Mi carpeta */
 .folderStats{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:16px!important;align-items:stretch}.folderStats .folderStat{width:auto!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important;margin:0!important;overflow:hidden!important}.folderStats .folderStat>div{min-width:0!important;overflow:hidden}.folderStats .folderStat span:not(.folderStatIcon),.folderStats .folderStat small{white-space:normal!important;overflow-wrap:anywhere}.folderStat.favorite{position:relative!important;inset:auto!important;transform:none!important}@media(max-width:1250px){.folderStats{grid-template-columns:repeat(3,minmax(0,1fr))!important}}@media(max-width:850px){.folderStats{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:560px){.folderStats{grid-template-columns:1fr!important}}
+
+/* EducAntay: cada opción del menú responde al color de su icono */
+.educantayNav button{--nav-accent:#0ea5e9;--nav-tint:rgba(14,165,233,.17);transition:background-color .2s ease,color .2s ease,transform .2s ease,border-color .2s ease!important}
+.educantayNav button:nth-child(2){--nav-accent:#8955dc;--nav-tint:rgba(137,85,220,.23)}
+.educantayNav button:nth-child(3){--nav-accent:#14b88a;--nav-tint:rgba(20,184,138,.22)}
+.educantayNav button:nth-child(4){--nav-accent:#f2a51d;--nav-tint:rgba(242,165,29,.24)}
+.educantayNav button:nth-child(5){--nav-accent:#e54884;--nav-tint:rgba(229,72,132,.22)}
+.educantayNav button:nth-child(6){--nav-accent:#159fd3;--nav-tint:rgba(21,159,211,.22)}
+.educantayNav button:nth-child(7){--nav-accent:#d54a75;--nav-tint:rgba(213,74,117,.22)}
+.educantayNav button i{color:var(--nav-accent)!important;background:var(--nav-tint)!important;opacity:1!important}
+.educantayNav button:not(.active):hover{background:var(--nav-tint)!important;color:#fff!important;transform:translateX(3px);box-shadow:inset 3px 0 0 var(--nav-accent)}
+.educantayNav button:not(.active):hover i{background:var(--nav-accent)!important;color:#fff!important}
+.educantayNav button.active::before{background:var(--nav-accent)!important}
+.educantayNav button.active i{color:var(--nav-accent)!important;background:var(--nav-tint)!important}
+@media(prefers-reduced-motion:reduce){.educantayNav button{transition:none!important}.educantayNav button:hover{transform:none!important}}
