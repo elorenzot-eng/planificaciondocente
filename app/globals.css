@@ -780,3 +780,15 @@ background:#e5f6f7!important;border-color:#82c5cc!important;color:#0d6875!import
 .educantayNav button.active::before{background:var(--nav-accent)!important}
 .educantayNav button.active i{color:var(--nav-accent)!important;background:var(--nav-tint)!important}
 @media(prefers-reduced-motion:reduce){.educantayNav button{transition:none!important}.educantayNav button:hover{transform:none!important}}
+
+/* EducAntay: columna lateral celeste suave y texto de alto contraste */
+main>aside{background:#eaf7ff!important;color:#173d61!important;border-right:1px solid #cbe7f6}
+main>aside .brand,main>aside .educantayBrand b{color:#123f6d!important}
+main>aside .educantayBrand small{color:#567a95!important}
+main>aside .educantayNav button{color:#244c70!important}
+main>aside .educantayNav button:not(.active):hover{color:#123f6d!important}
+main>aside .educantayNav button.active{background:#fff!important;color:#123f6d!important;box-shadow:0 5px 18px rgba(29,89,128,.09)!important}
+main>aside .role{border-top-color:#c5dfef!important;color:#173d61!important}
+main>aside .role small{color:#557d99!important}
+main>aside .role .logout{color:#123f6d!important;border-color:#9cc9e2!important;background:#f8fcff!important}
+main>aside .role .logout:hover{background:#d6eefb!important}
