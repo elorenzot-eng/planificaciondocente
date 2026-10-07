@@ -33,17 +33,17 @@ const structuredData = {
 export const metadata = {
   metadataBase: new URL("https://educantay.cl"),
   title: {
-    default: "Educantay | Tu espacio de trabajo docente",
-    template: "%s | Educantay",
+    default: "Planificación Docente con IA en Chile | EducAntay",
+    template: "%s | EducAntay",
   },
-  description: "Planifica, evalúa y crea materiales educativos con IA, alineados al Currículum Nacional de Chile. Planificaciones, evaluaciones, rúbricas, guías y recursos en un solo lugar.",
+  description: "Crea planificaciones docentes, evaluaciones, rúbricas y material educativo con IA, alineados al Currículum Nacional de Chile. Prueba gratis EducAntay.",
   keywords: ["planificación docente","planificaciones docentes Chile","IA para docentes","evaluaciones docentes","material educativo","currículum nacional Chile","objetivos de aprendizaje","Educantay"],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Educantay | Tu espacio de trabajo docente",
+    title: "Planificación Docente con IA en Chile | EducAntay",
     description: "Planifica, evalúa y crea materiales educativos en minutos, alineados al Currículum Nacional de Chile.",
     url: "https://educantay.cl",
-    siteName: "Educantay",
+    siteName: "EducAntay",
     locale: "es_CL",
     type: "website",
   },
