@@ -22,8 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
   return routes.map((route,index)=>({
     url: `https://educantay.cl${route}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: index===0 ? 1 : 0.9,
+    changeFrequency: "monthly" as const,
+    priority: index===0 ? 1 : index<=6 ? 0.8 : 0.6,
   }));
 }
