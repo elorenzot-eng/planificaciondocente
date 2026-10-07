@@ -20,7 +20,7 @@ export async function reserveAiUse(userId:string){
  const validPeriod=u.subscriptionStatus==="TRIAL"?!!u.trialEndsAt&&u.trialEndsAt>now:u.subscriptionStatus==="ACTIVE"?!!u.subscriptionEndsAt&&u.subscriptionEndsAt>now:false;
  if(!validPeriod)return{ok:false,error:u.subscriptionStatus==="TRIAL"?"Tu período de prueba de 3 días finalizó. Activa tu Plan Individual para continuar creando con IA.":"Tu suscripción no está activa.",reserved:false};
  const limit=u.subscriptionStatus==="TRIAL"?Math.min(5,u.monthlyAiLimit||5):(u.monthlyAiLimit||0);
- const claimed=await prisma.user.updateMany({where:{id:userId,monthlyAiUsed:{lt:limit}},data:{monthlyAiUsed:{increment:1}}});
+ const claimed=await prisma.user.updateMany({where:{id:userId,accountType:"INDIVIDUAL",subscriptionStatus:u.subscriptionStatus,monthlyAiUsed:{lt:limit},...(u.subscriptionStatus==="TRIAL"?{trialEndsAt:{gt:now}}:{subscriptionEndsAt:{gt:now}})},data:{monthlyAiUsed:{increment:1}}});
  if(claimed.count!==1)return{ok:false,error:"Alcanzaste el límite de generaciones IA de tu plan.",reserved:false};
  return{ok:true,individual:true,reserved:true};
 }
