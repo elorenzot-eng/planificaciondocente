@@ -1,13 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const groups = ["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional","Pueblos Originarios"];
 type Review = {fortalezas:string[];mejoras:string[];evidencias:string[];preguntas:string[]};
+type ReviewRecord={id:string;date:string;group:string;module:number;section:number;review:Review};
 export default function PortfolioEvidencePage(){
  const [group,setGroup]=useState(groups[0]),[module,setModule]=useState(1),[section,setSection]=useState(0);
  const [evidence,setEvidence]=useState(""),[review,setReview]=useState<Review|null>(null);
  const [busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState("");
  const [recovering,setRecovering]=useState(false),[matchInfo,setMatchInfo]=useState(false);
+ const [history,setHistory]=useState<ReviewRecord[]>([]);
+ useEffect(()=>{try{const raw=localStorage.getItem("educantay-portfolio-feedback-history-v1");if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed))setHistory(parsed.slice(0,20));}}catch{}},[]);
+ function rememberFeedback(next:Review){
+  const record:ReviewRecord={id:Date.now().toString(),date:new Date().toISOString(),group,module,section,review:next};
+  setHistory(previous=>{const updated=[record,...previous].slice(0,20);try{localStorage.setItem("educantay-portfolio-feedback-history-v1",JSON.stringify(updated));}catch{}return updated;});
+ }
  async function recover(){
   if(evidence.trim()&&!window.confirm("Se reemplazará el texto actual con el borrador guardado. ¿Continuar?"))return;
   setError("");setNotice("");setRecovering(true);
@@ -25,7 +32,7 @@ export default function PortfolioEvidencePage(){
   try{
    const r=await fetch("/api/portfolio-review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({group,module,notes:evidence})});
    const x=await r.json();if(!r.ok)throw Error(x.error||"No se pudo analizar");
-   setReview(x.review);
+   setReview(x.review);rememberFeedback(x.review);
   }catch(e){setError(e instanceof Error?e.message:"Error al analizar");}finally{setBusy(false);}
  }
  async function save(){
@@ -82,7 +89,11 @@ export default function PortfolioEvidencePage(){
       <button type="button" onClick={recover} disabled={recovering||busy||saving}>{recovering?"Recuperando...":"Recuperar borrador"}</button>
       <button type="button" onClick={()=>setMatchInfo(v=>!v)} aria-expanded={matchInfo}>Match con rúbrica 2026</button>
      </div>
-     {matchInfo&&<div role="status" style={{marginTop:14,padding:14,borderRadius:10,background:"#edf7ff",border:"1px solid #cfe4fa"}}><strong>Match con rúbrica oficial 2026 — pendiente de validación</strong><p style={{margin:"6px 0 0"}}>Este botón estará disponible para comparar evidencias con indicadores oficiales una vez verificados los descriptores de la agrupación. Por ahora no calcula porcentajes, niveles ni puntajes. Puedes utilizar la retroalimentación formativa con IA mientras se completa la validación.</p></div>}
+     {matchInfo&&<div role="status" style={{marginTop:14,padding:14,borderRadius:10,background:"#edf7ff",border:"1px solid #cfe4fa"}}>
+      <strong>Match formativo de evidencias — sin puntaje oficial</strong>
+      {review?<><p>Aspectos respaldados por el texto presentado:</p><ul>{review.fortalezas.map((v,i)=><li key={i}>{v}</li>)}</ul><p>Aspectos que requieren evidencia adicional:</p><ul>{review.evidencias.map((v,i)=><li key={i}>{v}</li>)}</ul></>:<p>Primero selecciona «Analizar con IA». El Match formativo mostrará los aspectos identificados y las evidencias que conviene reforzar.</p>}
+      <p style={{margin:"6px 0 0"}}>La comparación con indicadores, niveles y porcentajes de rúbricas oficiales DocenteMás 2026 permanece deshabilitada hasta completar su validación.</p>
+     </div>}
      <p className="portfolio-note">Guardar reemplaza el contenido anterior de la sección elegida, previa confirmación. El análisis IA no se guarda automáticamente.</p>
      {error&&<p role="alert" style={{color:"#a32626"}}>{error}</p>}{notice&&<p role="status" style={{color:"#11634b"}}>{notice}</p>}
     </section>
@@ -90,6 +101,7 @@ export default function PortfolioEvidencePage(){
    <section className="portfolio-results" aria-live="polite"><div className="portfolio-card"><h2>3. Retroalimentación formativa</h2><p className="portfolio-note">La IA ofrece orientación pedagógica, no una calificación oficial.</p></div>
     {review?([[ "Fortalezas observadas",review.fortalezas,"feedback-green"],["Aspectos por mejorar",review.mejoras,"feedback-amber"],["Evidencias que conviene reforzar",review.evidencias,"feedback-purple"],["Preguntas para tu reflexión",review.preguntas,"feedback-blue"]] as [string,string[],string][]).map(([heading,items,kind])=><div key={heading} className={"portfolio-card "+kind}><h3>{heading}</h3><ul>{items.map((item,i)=><li key={i}>{item}</li>)}</ul></div>):<div className="portfolio-card"><p>Ingresa tu evidencia y selecciona <strong>Analizar con IA</strong> para visualizar aquí las fortalezas, oportunidades de mejora y orientaciones.</p></div>}
     {review&&<p className="portfolio-note">Análisis orientativo basado en tu texto. No constituye evaluación oficial de DocenteMás ni certifica niveles de rúbrica.</p>}
+    {history.length>0&&<div className="portfolio-card"><h3>Historial de revisiones en este dispositivo</h3><p className="portfolio-note">Se conservan hasta 20 retroalimentaciones en este navegador; no se sincronizan con tu cuenta ni incluyen una copia del texto original.</p><ul>{history.filter(h=>h.group===group&&h.module===module&&h.section===section).map(h=><li key={h.id}><button type="button" onClick={()=>{setReview(h.review);setMatchInfo(true)}} style={{cursor:"pointer",padding:7}}>{new Date(h.date).toLocaleString("es-CL")} · Ver revisión</button></li>)}</ul></div>}
    </section>
   </div>
  </main>;
