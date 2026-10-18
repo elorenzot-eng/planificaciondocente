@@ -22,9 +22,9 @@ export function validatedOfficialIndicators(group:string){
    indicator.name.trim().length>0 &&
    Number.isInteger(indicator.sourcePage) && indicator.sourcePage>0 &&
    indicator.sourceUrl===source.rubric &&
-   indicator.descriptors.length>=2 &&
+   indicator.descriptors.length===4 &&
    indicator.descriptors.every(d=>d.level.trim().length>0&&d.text.trim().length>0) &&
-   new Set(indicator.descriptors.map(d=>d.level.trim().toLowerCase())).size===indicator.descriptors.length
+   ["insatisfactorio","básico","competente","destacado"].every(level=>indicator.descriptors.some(d=>d.level.trim().toLocaleLowerCase("es-CL")===level))
  );
 }
 
