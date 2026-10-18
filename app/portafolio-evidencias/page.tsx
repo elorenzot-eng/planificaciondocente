@@ -42,7 +42,7 @@ export default function PortfolioEvidencePage(){
   if(!window.confirm("Se reemplazará el borrador guardado de esta agrupación, módulo y sección. ¿Continuar?"))return;
   setError("");setNotice("");setSaving(true);
   try{
-   const r=await fetch("/api/portfolio-drafts",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({grouping:group,module:module-1,section,content:evidence,rubric:"",reviewed:false})});
+   const r=await fetch("/api/portfolio-drafts",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({grouping:group,module:module-1,section,content:evidence})});
    const x=await r.json();if(!r.ok)throw Error(x.error||"No se pudo guardar");
    setNotice("Evidencia guardada en tu cuenta. Puedes recuperarla en Portafolio Docente IA.");
   }catch(e){setError(e instanceof Error?e.message:"Error al guardar");}finally{setSaving(false);}
