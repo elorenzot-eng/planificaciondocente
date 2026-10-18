@@ -5,6 +5,7 @@ import { indicatorNames2026, PORTFOLIO_INDICATOR_NAMES_2026 } from "../../lib/po
 
 const groups = Object.keys(PORTFOLIO_INDICATOR_NAMES_2026);
 type Review = {fortalezas:string[];mejoras:string[];evidencias:string[];preguntas:string[]};
+type IndicatorEvaluation={indicator:string;level:string;reason:string;gap:string;nextStep:string;sourceUrl:string;sourcePage:number;official:false};
 type Score={claridad:number;evidencia:number;reflexion:number;coherencia:number;total:number;max:number;official:false};
 type ReviewRecord={id:string;date:string;group:string;module:number;section:number;review:Review;score?:Score;stage?:"initial"|"final"};
 export default function PortfolioEvidencePage(){
@@ -18,6 +19,7 @@ export default function PortfolioEvidencePage(){
  const [showComparison,setShowComparison]=useState(false);
  const [stage,setStage]=useState<"initial"|"final">("initial");
  const [currentScore,setCurrentScore]=useState<Score|null>(null);
+ const [indicatorEvaluation,setIndicatorEvaluation]=useState<IndicatorEvaluation|null>(null);
  const [scoredStage,setScoredStage]=useState<"initial"|"final"|null>(null);
  const rubricSource=OFFICIAL_PORTFOLIO_2026.find(item=>item.group===group);
  const selectedHistory=history.filter(h=>h.group===group&&h.module===module&&h.section===section);
@@ -42,11 +44,11 @@ export default function PortfolioEvidencePage(){
  }
  const card:React.CSSProperties={padding:18,border:"1px solid #d9e4ea",borderRadius:14,background:"#fff",marginTop:14};
  async function analyze(){
-  setError("");setNotice("");setReview(null);setCurrentScore(null);setScoredStage(null);setBusy(true);
+  setError("");setNotice("");setReview(null);setCurrentScore(null);setIndicatorEvaluation(null);setScoredStage(null);setBusy(true);
   try{
    const r=await fetch("/api/portfolio-review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({group,module,notes:evidence,rubric})});
    const x=await r.json();if(!r.ok)throw Error(x.error||"No se pudo analizar");
-   setReview(x.review);setCurrentScore(x.formativeScore||null);setScoredStage(stage);rememberFeedback(x.review,x.formativeScore);
+   setReview(x.review);setCurrentScore(x.formativeScore||null);setIndicatorEvaluation(x.indicatorEvaluation||null);setScoredStage(stage);rememberFeedback(x.review,x.formativeScore);
   }catch(e){setError(e instanceof Error?e.message:"Error al analizar");}finally{setBusy(false);}
  }
  async function save(){
@@ -116,6 +118,7 @@ export default function PortfolioEvidencePage(){
     </section>
    </div>
    <section className="portfolio-results" aria-live="polite"><div style={{margin:"0 0 12px"}}><h2 style={{margin:"0 0 5px"}}>3. Retroalimentación formativa</h2><p className="portfolio-note" style={{margin:0}}>La IA ofrece orientación pedagógica, no una calificación oficial.</p></div>
+    {indicatorEvaluation&&<div className="portfolio-card" style={{borderColor:"#00a6a6",background:"#f0fbfa"}}><h3>Match del indicador · evaluación formativa</h3><p><strong>{indicatorEvaluation.indicator}</strong></p><p><strong>Nivel estimado:</strong> {indicatorEvaluation.level}</p><p><strong>Fundamento:</strong> {indicatorEvaluation.reason}</p><p><strong>Brecha:</strong> {indicatorEvaluation.gap}</p><p><strong>Siguiente paso:</strong> {indicatorEvaluation.nextStep}</p><p className="portfolio-note"><a href={indicatorEvaluation.sourceUrl} target="_blank" rel="noopener noreferrer">Consultar rúbrica 2026, página {indicatorEvaluation.sourcePage} ↗</a>. Estimación IA no oficial, basada únicamente en la evidencia proporcionada.</p></div>}
     {currentScore&&<div className="portfolio-card"><h3>Calificación formativa: {scoredStage==="initial"?"inicial":"final"}</h3><p style={{fontSize:28,fontWeight:700}}>{currentScore.total}/100</p><p>Claridad {currentScore.claridad}/25 · Evidencia {currentScore.evidencia}/25 · Reflexión {currentScore.reflexion}/25 · Coherencia {currentScore.coherencia}/25</p><p className="portfolio-note">Estimación IA de EducAntay. No corresponde a una calificación oficial DocenteMás.</p></div>}
     {review?([[ "1. Evidencias y fortalezas identificadas",review.fortalezas,"feedback-green","Fragmentos y prácticas sustentados en tu borrador."],["2. Brechas y acciones de mejora",review.mejoras,"feedback-amber","Recomendaciones concretas para fortalecer tu evidencia."],["3. Evidencias presentes y pendientes",review.evidencias,"feedback-purple","Distingue lo documentado de aquello que necesitas incorporar."],["4. Preguntas para profundizar",review.preguntas,"feedback-blue","Reflexiona a partir de experiencias auténticas."]] as [string,string[],string,string][]).map(([heading,items,kind,description])=><div key={heading} className={"portfolio-card "+kind}><h3>{heading}</h3><p className="portfolio-note" style={{marginTop:-4}}>{description}</p><ul>{items.map((item,i)=><li key={i}>{item}</li>)}</ul></div>):<div className="portfolio-card"><p>Ingresa tu evidencia y selecciona <strong>Analizar con IA</strong> para visualizar aquí las fortalezas, oportunidades de mejora y orientaciones.</p></div>}
     {review&&<p className="portfolio-note"><strong>Indicador analizado:</strong> {rubric||"No seleccionado"}. La IA utiliza el nombre indicado como referencia, no sus niveles oficiales.</p>}{review&&<p className="portfolio-note">Análisis orientativo basado en tu texto. No constituye evaluación oficial de DocenteMás ni certifica niveles de rúbrica.</p>}
