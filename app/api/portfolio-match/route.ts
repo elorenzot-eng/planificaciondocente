@@ -17,5 +17,5 @@ export async function POST(req:Request){
  if(!official||verified.length===0)return NextResponse.json({error:"Aún no se han incorporado y verificado los indicadores oficiales 2026 para esta agrupación.",status:"PENDING_OFFICIAL_RUBRIC",source:official?.rubric},{status:422});
  // Never publish a numeric match until each official 2026 rubric indicator has been verified and mapped server-side.
  return NextResponse.json({error:"El porcentaje de match está temporalmente deshabilitado. Se habilitará cuando los indicadores y descriptores de la rúbrica oficial 2026 estén verificados y asociados a esta agrupación. No se permite calcular un porcentaje oficial a partir de texto pegado manualmente.",status:"PENDING_OFFICIAL_RUBRIC"},{status:422});
- return NextResponse.json({error:"El cálculo permanece deshabilitado hasta verificar todos los indicadores y reglas oficiales 2026.",status:"PENDING_OFFICIAL_RUBRIC",source:official.rubric},{status:422});
+ return NextResponse.json({error:"El cálculo permanece deshabilitado hasta verificar todos los indicadores y reglas oficiales 2026.",status:"PENDING_OFFICIAL_RUBRIC",source:official?.rubric||"https://www.docentemas.cl/documentos-descargables/rubricas/"},{status:422});
 }
