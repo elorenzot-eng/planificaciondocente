@@ -7,7 +7,16 @@ export const OFFICIAL_PORTFOLIO_2026 = [
 ] as const;
 export type OfficialRubricIndicator={id:string;group:string;year:2026;module:number;name:string;descriptors:{level:string;text:string}[];sourceUrl:string;sourcePage:number;verified:boolean};
 // Populate only after reviewing the original 2026 PDF, including its exact descriptors and page numbers.
-export const VERIFIED_INDICATORS_2026:OfficialRubricIndicator[]=[];
+export const VERIFIED_INDICATORS_2026:OfficialRubricIndicator[]=[
+ {id:"basica-1-6-m1-formulacion-objetivos",group:"Básica 1° a 6°",year:2026,module:1,name:"Formulación de objetivos de aprendizaje",sourceUrl:"https://www.docentemas.cl/download/rubricas-educacion-basica-1-a-6-basico-2026/",sourcePage:6,verified:true,descriptors:[
+ {level:"Insatisfactorio",text:"No cumple con la condición del nivel Básico."},
+ {level:"Básico",text:"La mayoría de los objetivos propuestos para las experiencias dan cuenta de las habilidades y conocimientos que el/la docente se propuso alcanzar con sus estudiantes.¹"},
+ {level:"Competente",text:"Todos los objetivos propuestos para las experiencias dan cuenta de las habilidades y conocimientos que el/la docente se propuso alcanzar con sus estudiantes.¹"},
+ {level:"Destacado",text:"Cumple con el nivel Competente y, además: Logra integrar conocimientos, habilidades y actitudes en los objetivos propuestos para sus experiencias."}
+ ]}
+];
+// ¹ El PDF oficial incluye una nota aclaratoria extensa en la página 6; consultarla antes de cualquier juicio evaluativo.
+
 
 /** A verified flag alone cannot authorize scoring. Every criterion must be traceable to the corresponding official source. */
 export function validatedOfficialIndicators(group:string){
