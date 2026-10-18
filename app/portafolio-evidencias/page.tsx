@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { OFFICIAL_PORTFOLIO_2026 } from "../../lib/portfolio-official-2026";
+import { OFFICIAL_PORTFOLIO_2026, indicatorCoverage2026, PORTFOLIO_INDICATOR_COVERAGE_2026 } from "../../lib/portfolio-official-2026";
 import { indicatorNames2026, PORTFOLIO_INDICATOR_NAMES_2026 } from "../../lib/portfolio-indicator-names-2026";
 
 const groups = Object.keys(PORTFOLIO_INDICATOR_NAMES_2026);
@@ -22,6 +22,9 @@ export default function PortfolioEvidencePage(){
  const [indicatorEvaluation,setIndicatorEvaluation]=useState<IndicatorEvaluation|null>(null);
  const [scoredStage,setScoredStage]=useState<"initial"|"final"|null>(null);
  const rubricSource=OFFICIAL_PORTFOLIO_2026.find(item=>item.group===group);
+ const indicatorCoverage=indicatorCoverage2026(group,module,rubric);
+ const groupCoverage=PORTFOLIO_INDICATOR_COVERAGE_2026.filter(x=>x.group===group);
+ const groupReady=groupCoverage.filter(x=>x.canEstimateLevel).length;
  const selectedHistory=history.filter(h=>h.group===group&&h.module===module&&h.section===section);
  const newest=selectedHistory[0],oldest=selectedHistory[selectedHistory.length-1];
  useEffect(()=>{let alive=true;(async()=>{try{const r=await fetch("/api/portfolio-drafts",{cache:"no-store"});if(!r.ok)return;const x=await r.json();if(alive){setSavedDrafts(Array.isArray(x.drafts)?x.drafts:[]);setDraftsLoaded(true);}}catch{} })();return()=>{alive=false}},[]);
@@ -96,7 +99,7 @@ export default function PortfolioEvidencePage(){
       <div><label htmlFor="section">Sección del borrador</label><select id="section" value={section} onChange={e=>{setRubric("");setSection(Number(e.target.value));setReview(null);setCurrentScore(null);setScoredStage(null)}}>{[0,1,2].map(n=><option key={n} value={n}>Sección {n+1}</option>)}</select></div>
      </div>
     </section>
-    <section className="portfolio-card"><h2>2. Evidencia pedagógica</h2><label htmlFor="rubric-indicator">Indicador de evaluación docente 2026</label><select id="rubric-indicator" value={indicatorNames2026(group,module).includes(rubric)?rubric:""} onChange={e=>{setRubric(e.target.value);setReview(null);setCurrentScore(null);setScoredStage(null)}} style={{width:"100%",padding:11,border:"1px solid #cad8e5",borderRadius:10,background:"#fff",margin:"7px 0 12px"}}><option value="">Seleccionar indicador del módulo {module}</option>{indicatorNames2026(group,module).map((name,i)=><option key={i} value={name}>{name}</option>)}</select>{rubric&&<p className="portfolio-note" style={{padding:"10px 12px",borderRadius:9,background:"#f0f7fc"}}><strong>Seleccionado:</strong> {rubric}</p>}<p className="portfolio-note">Catálogo de nombres de rúbricas 2026. Los descriptores y niveles oficiales siguen en validación; la retroalimentación es orientativa.</p>
+    <section className="portfolio-card"><h2>2. Evidencia pedagógica</h2><label htmlFor="rubric-indicator">Indicador de evaluación docente 2026</label><select id="rubric-indicator" value={indicatorNames2026(group,module).includes(rubric)?rubric:""} onChange={e=>{setRubric(e.target.value);setReview(null);setCurrentScore(null);setScoredStage(null)}} style={{width:"100%",padding:11,border:"1px solid #cad8e5",borderRadius:10,background:"#fff",margin:"7px 0 12px"}}><option value="">Seleccionar indicador del módulo {module}</option>{indicatorNames2026(group,module).map((name,i)=><option key={i} value={name}>{name}</option>)}</select>{rubric&&<p className="portfolio-note" style={{padding:"10px 12px",borderRadius:9,background:"#f0f7fc"}}><strong>Seleccionado:</strong> {rubric}</p>}<p className="portfolio-note">Cobertura {group}: {groupCoverage.length} indicadores identificados · {groupReady} con criterios revisados para estimación IA.</p>{indicatorCoverage&&<p className="portfolio-note" style={{padding:"9px 12px",borderRadius:9,background:indicatorCoverage.canEstimateLevel?"#e7f6ef":"#fff7e6"}}><strong>{indicatorCoverage.canEstimateLevel?"Match por niveles habilitado":"Match de orientación sin nivel estimado"}.</strong> {indicatorCoverage.canEstimateLevel?"Se contrastarán los descriptores registrados con la evidencia.":"Los descriptores de este indicador requieren validación; se analizarán fortalezas, brechas y mejoras sin inventar niveles."} <a href={indicatorCoverage.sourceUrl} target="_blank" rel="noopener noreferrer">Consultar rúbrica ↗</a></p>
      <label htmlFor="evidence">Ingresa una evidencia auténtica de tu práctica docente</label>
      <textarea className="portfolio-editor" id="evidence" maxLength={16000} value={evidence} onChange={e=>{setEvidence(e.target.value);setReview(null);setCurrentScore(null);setScoredStage(null)}} placeholder="Describe lo que hiciste, cómo lo implementaste y qué evidencia observaste..." />
      <p className="portfolio-note">{evidence.length.toLocaleString("es-CL")} / 16.000 caracteres. Para análisis IA, mínimo 80. Evita incluir datos personales de estudiantes.</p>
