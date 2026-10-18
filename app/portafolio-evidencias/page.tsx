@@ -12,6 +12,8 @@ export default function PortfolioEvidencePage(){
  const [evidence,setEvidence]=useState(""),[rubric,setRubric]=useState(""),[review,setReview]=useState<Review|null>(null);
  const [busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState("");
  const [recovering,setRecovering]=useState(false),[matchInfo,setMatchInfo]=useState(false);
+ const [savedDrafts,setSavedDrafts]=useState<Array<{grouping:string;module:number;section:number;content?:string;rubric?:string}>>([]);
+ const [draftsLoaded,setDraftsLoaded]=useState(false);
  const [history,setHistory]=useState<ReviewRecord[]>([]);
  const [showComparison,setShowComparison]=useState(false);
  const [stage,setStage]=useState<"initial"|"final">("initial");
@@ -20,6 +22,8 @@ export default function PortfolioEvidencePage(){
  const rubricSource=OFFICIAL_PORTFOLIO_2026.find(item=>item.group===group);
  const selectedHistory=history.filter(h=>h.group===group&&h.module===module&&h.section===section);
  const newest=selectedHistory[0],oldest=selectedHistory[selectedHistory.length-1];
+ useEffect(()=>{let alive=true;(async()=>{try{const r=await fetch("/api/portfolio-drafts",{cache:"no-store"});if(!r.ok)return;const x=await r.json();if(alive){setSavedDrafts(Array.isArray(x.drafts)?x.drafts:[]);setDraftsLoaded(true);}}catch{} })();return()=>{alive=false}},[]);
+ useEffect(()=>{if(!draftsLoaded)return;const draft=savedDrafts.find(d=>d.grouping===group&&d.module===module-1&&d.section===section);setRubric(draft?.rubric||"");},[group,module,section,savedDrafts,draftsLoaded]);
  useEffect(()=>{try{const raw=localStorage.getItem("educantay-portfolio-feedback-history-v1");if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed))setHistory(parsed.slice(0,20));}}catch{}},[]);
  function rememberFeedback(next:Review,score?:Score){
   const record:ReviewRecord={id:Date.now().toString(),date:new Date().toISOString(),group,module,section,review:next,score,stage};
@@ -33,7 +37,7 @@ export default function PortfolioEvidencePage(){
    if(!r.ok)throw Error(x.error||"No se pudieron consultar tus borradores");
    const draft=(x.drafts||[]).find((d:{grouping:string;module:number;section:number})=>d.grouping===group&&d.module===module-1&&d.section===section);
    if(!draft){setNotice("No hay un borrador guardado para esta agrupación, módulo y sección.");return;}
-   setEvidence(draft.content||"");setRubric(draft.rubric||"");setReview(null);setCurrentScore(null);setScoredStage(null);setNotice("Borrador recuperado desde tu cuenta.");
+   setEvidence(draft.content||"");setRubric(draft.rubric||"");setSavedDrafts(previous=>[...previous.filter(d=>!(d.grouping===group&&d.module===module-1&&d.section===section)),draft]);setReview(null);setCurrentScore(null);setScoredStage(null);setNotice("Borrador recuperado desde tu cuenta.");
   }catch(e){setError(e instanceof Error?e.message:"No se pudo recuperar el borrador");}finally{setRecovering(false);}
  }
  const card:React.CSSProperties={padding:18,border:"1px solid #d9e4ea",borderRadius:14,background:"#fff",marginTop:14};
@@ -51,7 +55,8 @@ export default function PortfolioEvidencePage(){
   try{
    const r=await fetch("/api/portfolio-drafts",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({grouping:group,module:module-1,section,content:evidence,rubric})});
    const x=await r.json();if(!r.ok)throw Error(x.error||"No se pudo guardar");
-   setNotice("Evidencia guardada en tu cuenta. Puedes recuperarla en Portafolio Docente IA.");
+   setSavedDrafts(previous=>[...previous.filter(d=>!(d.grouping===group&&d.module===module-1&&d.section===section)),{grouping:group,module:module-1,section,content:evidence,rubric}]);
+   setNotice("Evidencia e indicador guardados en tu cuenta. Puedes recuperarlos en Portafolio Docente IA.");
   }catch(e){setError(e instanceof Error?e.message:"Error al guardar");}finally{setSaving(false);}
  }
  return <main className="portfolio-page">
