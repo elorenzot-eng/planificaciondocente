@@ -126,7 +126,8 @@ export const PORTFOLIO_INDICATOR_NAMES_2026:Record<string,string[][]>={
     ],
     [
       "Ambiente de aula",
-      "Promoción de la participación (clase con solo un/a estudiante)",
+      "Promoción de la participación de sus estudiantes",
+      "Promoción de la participación (clase con solo un/a estudiante*)",
       "Contribución de las actividades al logro de los objetivos",
       "Transmisión de saberes ancestrales",
       "Preguntas y actividades",
