@@ -27,3 +27,21 @@ export function validatedOfficialIndicators(group:string){
    new Set(indicator.descriptors.map(d=>d.level.trim().toLowerCase())).size===indicator.descriptors.length
  );
 }
+
+/** Report factual rubric readiness. A verified subset must never be mistaken for a complete rubric. */
+export function officialRubricCoverage(){
+ return OFFICIAL_PORTFOLIO_2026.map(source=>{
+  const verified=validatedOfficialIndicators(source.group);
+  const all=VERIFIED_INDICATORS_2026.filter(i=>i.group===source.group&&i.year===2026);
+  const uniqueIds=new Set(verified.map(i=>i.id));
+  return {
+   group:source.group,
+   sourceUrl:source.rubric,
+   verifiedIndicators:uniqueIds.size,
+   registeredIndicators:all.length,
+   invalidIndicators:all.length-verified.length,
+   status:"PENDING_COMPLETE_OFFICIAL_VERIFICATION" as const,
+   matchEnabled:false
+  };
+ });
+}
