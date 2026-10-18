@@ -2,7 +2,7 @@ import {OFFICIAL_PORTFOLIO_2026,VERIFIED_INDICATORS_2026} from "../../../lib/por
 import {NextResponse} from "next/server";
 import {getSession} from "../../../lib/auth";
 import {prisma} from "../../../lib/prisma";
-const groups=OFFICIAL_PORTFOLIO_2026.map(item=>item.group);
+const groups: string[]=OFFICIAL_PORTFOLIO_2026.map(item=>item.group);
 function output(x:any){if(typeof x?.output_text==="string")return x.output_text;return(x?.output||[]).flatMap((z:any)=>z.content||[]).filter((z:any)=>z.type==="output_text").map((z:any)=>z.text).join("")}
 export async function POST(req:Request){
  const session=await getSession();if(!session?.id)return NextResponse.json({error:"Inicia sesión"},{status:401});
