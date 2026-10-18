@@ -10,6 +10,9 @@ export default function PortfolioEvidencePage(){
  const [busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState("");
  const [recovering,setRecovering]=useState(false),[matchInfo,setMatchInfo]=useState(false);
  const [history,setHistory]=useState<ReviewRecord[]>([]);
+ const [showComparison,setShowComparison]=useState(false);
+ const selectedHistory=history.filter(h=>h.group===group&&h.module===module&&h.section===section);
+ const newest=selectedHistory[0],oldest=selectedHistory[selectedHistory.length-1];
  useEffect(()=>{try{const raw=localStorage.getItem("educantay-portfolio-feedback-history-v1");if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed))setHistory(parsed.slice(0,20));}}catch{}},[]);
  function rememberFeedback(next:Review){
   const record:ReviewRecord={id:Date.now().toString(),date:new Date().toISOString(),group,module,section,review:next};
@@ -101,6 +104,13 @@ export default function PortfolioEvidencePage(){
    <section className="portfolio-results" aria-live="polite"><div className="portfolio-card"><h2>3. Retroalimentación formativa</h2><p className="portfolio-note">La IA ofrece orientación pedagógica, no una calificación oficial.</p></div>
     {review?([[ "Fortalezas observadas",review.fortalezas,"feedback-green"],["Aspectos por mejorar",review.mejoras,"feedback-amber"],["Evidencias que conviene reforzar",review.evidencias,"feedback-purple"],["Preguntas para tu reflexión",review.preguntas,"feedback-blue"]] as [string,string[],string][]).map(([heading,items,kind])=><div key={heading} className={"portfolio-card "+kind}><h3>{heading}</h3><ul>{items.map((item,i)=><li key={i}>{item}</li>)}</ul></div>):<div className="portfolio-card"><p>Ingresa tu evidencia y selecciona <strong>Analizar con IA</strong> para visualizar aquí las fortalezas, oportunidades de mejora y orientaciones.</p></div>}
     {review&&<p className="portfolio-note">Análisis orientativo basado en tu texto. No constituye evaluación oficial de DocenteMás ni certifica niveles de rúbrica.</p>}
+    {selectedHistory.length>=2&&<div className="portfolio-card"><h3>Comparar revisiones</h3>
+     <button type="button" onClick={()=>setShowComparison(v=>!v)} aria-expanded={showComparison} style={{padding:"10px 14px",borderRadius:9,cursor:"pointer"}}>{showComparison?"Ocultar comparación":"Comparar primera y última revisión"}</button>
+     {showComparison&&<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,220px),1fr))",gap:12,marginTop:12}}>
+      {([["Primera revisión",oldest],["Última revisión",newest]] as [string,ReviewRecord][]).map(([title,item])=><div key={title} style={{padding:14,borderRadius:12,background:"#f3f8ff",minWidth:0}}><strong>{title}</strong><p className="portfolio-note">{new Date(item.date).toLocaleString("es-CL")}</p><b>Fortalezas identificadas</b><ul>{item.review.fortalezas.map((v,i)=><li key={i}>{v}</li>)}</ul><b>Aspectos por mejorar</b><ul>{item.review.mejoras.map((v,i)=><li key={i}>{v}</li>)}</ul></div>)}
+     </div>}
+     <p className="portfolio-note">Comparación descriptiva de dos respuestas de IA. No demuestra por sí sola una mejora ni equivale a una calificación oficial.</p>
+    </div>}
     {history.length>0&&<div className="portfolio-card"><h3>Historial de revisiones en este dispositivo</h3><p className="portfolio-note">Se conservan hasta 20 retroalimentaciones en este navegador; no se sincronizan con tu cuenta ni incluyen una copia del texto original.</p><ul>{history.filter(h=>h.group===group&&h.module===module&&h.section===section).map(h=><li key={h.id}><button type="button" onClick={()=>{setReview(h.review);setMatchInfo(true)}} style={{cursor:"pointer",padding:7}}>{new Date(h.date).toLocaleString("es-CL")} · Ver revisión</button></li>)}</ul></div>}
    </section>
   </div>
