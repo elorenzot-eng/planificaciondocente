@@ -1,4 +1,4 @@
-import {OFFICIAL_PORTFOLIO_2026,VERIFIED_INDICATORS_2026} from "../../../lib/portfolio-official-2026";
+import {OFFICIAL_PORTFOLIO_2026,validatedOfficialIndicators} from "../../../lib/portfolio-official-2026";
 import {NextResponse} from "next/server";
 import {getSession} from "../../../lib/auth";
 import {prisma} from "../../../lib/prisma";
@@ -12,7 +12,7 @@ export async function POST(req:Request){
  const clean=entries.map((e:any)=>({module:Number(e.module),section:Number(e.section),notes:String(e.notes||"").slice(0,4000),rubric:String(e.rubric||"").slice(0,2500)}));
  if(clean.some((e:any)=>![0,1,2].includes(e.module)||![0,1,2].includes(e.section))||new Set(clean.map((e:any)=>e.module+"-"+e.section)).size!==9)return NextResponse.json({error:"Secciones duplicadas o inválidas"},{status:400});
  const official=OFFICIAL_PORTFOLIO_2026.find(v=>v.group===group);
- const verified=VERIFIED_INDICATORS_2026.filter(v=>v.group===group&&v.year===2026&&v.verified&&v.descriptors.length>0&&v.sourcePage>0);
+ const verified=validatedOfficialIndicators(group);
  if(!official||verified.length===0)return NextResponse.json({error:"Aún no se han incorporado y verificado los indicadores oficiales 2026 para esta agrupación.",status:"PENDING_OFFICIAL_RUBRIC",source:official?.rubric},{status:422});
  // Never publish a numeric match until each official 2026 rubric indicator has been verified and mapped server-side.
  return NextResponse.json({error:"El porcentaje de match está temporalmente deshabilitado. Se habilitará cuando los indicadores y descriptores de la rúbrica oficial 2026 estén verificados y asociados a esta agrupación. No se permite calcular un porcentaje oficial a partir de texto pegado manualmente.",status:"PENDING_OFFICIAL_RUBRIC"},{status:422});
