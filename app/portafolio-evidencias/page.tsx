@@ -4,7 +4,8 @@ import { OFFICIAL_PORTFOLIO_2026 } from "../../lib/portfolio-official-2026";
 
 const groups = ["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional","Pueblos Originarios"];
 type Review = {fortalezas:string[];mejoras:string[];evidencias:string[];preguntas:string[]};
-type ReviewRecord={id:string;date:string;group:string;module:number;section:number;review:Review};
+type Score={claridad:number;evidencia:number;reflexion:number;coherencia:number;total:number;max:number;official:false};
+type ReviewRecord={id:string;date:string;group:string;module:number;section:number;review:Review;score?:Score;stage?:"initial"|"final"};
 export default function PortfolioEvidencePage(){
  const [group,setGroup]=useState(groups[0]),[module,setModule]=useState(1),[section,setSection]=useState(0);
  const [evidence,setEvidence]=useState(""),[review,setReview]=useState<Review|null>(null);
@@ -12,12 +13,14 @@ export default function PortfolioEvidencePage(){
  const [recovering,setRecovering]=useState(false),[matchInfo,setMatchInfo]=useState(false);
  const [history,setHistory]=useState<ReviewRecord[]>([]);
  const [showComparison,setShowComparison]=useState(false);
+ const [stage,setStage]=useState<"initial"|"final">("initial");
+ const [currentScore,setCurrentScore]=useState<Score|null>(null);
  const rubricSource=OFFICIAL_PORTFOLIO_2026.find(item=>item.group===group);
  const selectedHistory=history.filter(h=>h.group===group&&h.module===module&&h.section===section);
  const newest=selectedHistory[0],oldest=selectedHistory[selectedHistory.length-1];
  useEffect(()=>{try{const raw=localStorage.getItem("educantay-portfolio-feedback-history-v1");if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed))setHistory(parsed.slice(0,20));}}catch{}},[]);
- function rememberFeedback(next:Review){
-  const record:ReviewRecord={id:Date.now().toString(),date:new Date().toISOString(),group,module,section,review:next};
+ function rememberFeedback(next:Review,score?:Score){
+  const record:ReviewRecord={id:Date.now().toString(),date:new Date().toISOString(),group,module,section,review:next,score,stage};
   setHistory(previous=>{const updated=[record,...previous].slice(0,20);try{localStorage.setItem("educantay-portfolio-feedback-history-v1",JSON.stringify(updated));}catch{}return updated;});
  }
  async function recover(){
@@ -28,7 +31,7 @@ export default function PortfolioEvidencePage(){
    if(!r.ok)throw Error(x.error||"No se pudieron consultar tus borradores");
    const draft=(x.drafts||[]).find((d:{grouping:string;module:number;section:number})=>d.grouping===group&&d.module===module-1&&d.section===section);
    if(!draft){setNotice("No hay un borrador guardado para esta agrupación, módulo y sección.");return;}
-   setEvidence(draft.content||"");setReview(null);setNotice("Borrador recuperado desde tu cuenta.");
+   setEvidence(draft.content||"");setReview(null);setCurrentScore(null);setNotice("Borrador recuperado desde tu cuenta.");
   }catch(e){setError(e instanceof Error?e.message:"No se pudo recuperar el borrador");}finally{setRecovering(false);}
  }
  const card:React.CSSProperties={padding:18,border:"1px solid #d9e4ea",borderRadius:14,background:"#fff",marginTop:14};
@@ -37,7 +40,7 @@ export default function PortfolioEvidencePage(){
   try{
    const r=await fetch("/api/portfolio-review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({group,module,notes:evidence})});
    const x=await r.json();if(!r.ok)throw Error(x.error||"No se pudo analizar");
-   setReview(x.review);rememberFeedback(x.review);
+   setReview(x.review);setCurrentScore(x.formativeScore||null);rememberFeedback(x.review,x.formativeScore);
   }catch(e){setError(e instanceof Error?e.message:"Error al analizar");}finally{setBusy(false);}
  }
  async function save(){
@@ -88,6 +91,7 @@ export default function PortfolioEvidencePage(){
      <label htmlFor="evidence">Ingresa una evidencia auténtica de tu práctica docente</label>
      <textarea className="portfolio-editor" id="evidence" maxLength={16000} value={evidence} onChange={e=>{setEvidence(e.target.value);setReview(null)}} placeholder="Describe lo que hiciste, cómo lo implementaste y qué evidencia observaste..." />
      <p className="portfolio-note">{evidence.length.toLocaleString("es-CL")} / 16.000 caracteres. Para análisis IA, mínimo 80. Evita incluir datos personales de estudiantes.</p>
+     <div style={{display:"flex",gap:12,margin:"12px 0",flexWrap:"wrap"}}><label><input type="radio" name="stage" checked={stage==="initial"} onChange={()=>setStage("initial")}/> Entrega inicial</label><label><input type="radio" name="stage" checked={stage==="final"} onChange={()=>setStage("final")}/> Revisión final</label></div>
      <div className="portfolio-actions">
       <button type="button" onClick={analyze} disabled={busy||saving||evidence.trim().length<80}>{busy?"Analizando evidencia...":"✦ Analizar con IA"}</button>
       <button type="button" onClick={save} disabled={saving||busy||!evidence.trim()}>{saving?"Guardando...":"Guardar en mi portafolio"}</button>
@@ -105,8 +109,10 @@ export default function PortfolioEvidencePage(){
     </section>
    </div>
    <section className="portfolio-results" aria-live="polite"><div className="portfolio-card"><h2>3. Retroalimentación formativa</h2><p className="portfolio-note">La IA ofrece orientación pedagógica, no una calificación oficial.</p></div>
+    {currentScore&&<div className="portfolio-card"><h3>Calificación formativa: {stage==="initial"?"inicial":"final"}</h3><p style={{fontSize:28,fontWeight:700}}>{currentScore.total}/100</p><p>Claridad {currentScore.claridad}/25 · Evidencia {currentScore.evidencia}/25 · Reflexión {currentScore.reflexion}/25 · Coherencia {currentScore.coherencia}/25</p><p className="portfolio-note">Estimación IA de EducAntay. No corresponde a una calificación oficial DocenteMás.</p></div>}
     {review?([[ "Fortalezas observadas",review.fortalezas,"feedback-green"],["Aspectos por mejorar",review.mejoras,"feedback-amber"],["Evidencias que conviene reforzar",review.evidencias,"feedback-purple"],["Preguntas para tu reflexión",review.preguntas,"feedback-blue"]] as [string,string[],string][]).map(([heading,items,kind])=><div key={heading} className={"portfolio-card "+kind}><h3>{heading}</h3><ul>{items.map((item,i)=><li key={i}>{item}</li>)}</ul></div>):<div className="portfolio-card"><p>Ingresa tu evidencia y selecciona <strong>Analizar con IA</strong> para visualizar aquí las fortalezas, oportunidades de mejora y orientaciones.</p></div>}
     {review&&<p className="portfolio-note">Análisis orientativo basado en tu texto. No constituye evaluación oficial de DocenteMás ni certifica niveles de rúbrica.</p>}
+    {selectedHistory.some(h=>h.stage==="initial"&&h.score)&&selectedHistory.some(h=>h.stage==="final"&&h.score)&&<div className="portfolio-card"><h3>Match inicial vs. final</h3><p>Inicial: {selectedHistory.find(h=>h.stage==="initial"&&h.score)?.score?.total}/100 · Final: {selectedHistory.find(h=>h.stage==="final"&&h.score)?.score?.total}/100</p><p className="portfolio-note">Comparación formativa de IA, no calificación oficial. Historial solo en este navegador.</p></div>}
     {selectedHistory.length>=2&&<div className="portfolio-card"><h3>Comparar revisiones</h3>
      <button type="button" onClick={()=>setShowComparison(v=>!v)} aria-expanded={showComparison} style={{padding:"10px 14px",borderRadius:9,cursor:"pointer"}}>{showComparison?"Ocultar comparación":"Comparar primera y última revisión"}</button>
      {showComparison&&<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,220px),1fr))",gap:12,marginTop:12}}>
@@ -114,7 +120,7 @@ export default function PortfolioEvidencePage(){
      </div>}
      <p className="portfolio-note">Comparación descriptiva de dos respuestas de IA. No demuestra por sí sola una mejora ni equivale a una calificación oficial.</p>
     </div>}
-    {history.length>0&&<div className="portfolio-card"><h3>Historial de revisiones en este dispositivo</h3><p className="portfolio-note">Se conservan hasta 20 retroalimentaciones en este navegador; no se sincronizan con tu cuenta ni incluyen una copia del texto original.</p><ul>{history.filter(h=>h.group===group&&h.module===module&&h.section===section).map(h=><li key={h.id}><button type="button" onClick={()=>{setReview(h.review);setMatchInfo(true)}} style={{cursor:"pointer",padding:7}}>{new Date(h.date).toLocaleString("es-CL")} · Ver revisión</button></li>)}</ul></div>}
+    {history.length>0&&<div className="portfolio-card"><h3>Historial de revisiones en este dispositivo</h3><p className="portfolio-note">Se conservan hasta 20 retroalimentaciones en este navegador; no se sincronizan con tu cuenta ni incluyen una copia del texto original.</p><ul>{history.filter(h=>h.group===group&&h.module===module&&h.section===section).map(h=><li key={h.id}><button type="button" onClick={()=>{setReview(h.review);setCurrentScore(h.score||null);setStage(h.stage||"initial");setMatchInfo(true)}} style={{cursor:"pointer",padding:7}}>{new Date(h.date).toLocaleString("es-CL")} · Ver revisión</button></li>)}</ul></div>}
    </section>
   </div>
  </main>;
