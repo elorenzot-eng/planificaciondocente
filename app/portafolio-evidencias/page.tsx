@@ -1,14 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { OFFICIAL_PORTFOLIO_2026 } from "../../lib/portfolio-official-2026";
+import { indicatorNames2026, PORTFOLIO_INDICATOR_NAMES_2026 } from "../../lib/portfolio-indicator-names-2026";
 
-const groups = ["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional"];
+const groups = Object.keys(PORTFOLIO_INDICATOR_NAMES_2026);
 type Review = {fortalezas:string[];mejoras:string[];evidencias:string[];preguntas:string[]};
 type Score={claridad:number;evidencia:number;reflexion:number;coherencia:number;total:number;max:number;official:false};
 type ReviewRecord={id:string;date:string;group:string;module:number;section:number;review:Review;score?:Score;stage?:"initial"|"final"};
 export default function PortfolioEvidencePage(){
  const [group,setGroup]=useState(groups[0]),[module,setModule]=useState(1),[section,setSection]=useState(0);
- const [evidence,setEvidence]=useState(""),[review,setReview]=useState<Review|null>(null);
+ const [evidence,setEvidence]=useState(""),[rubric,setRubric]=useState(""),[review,setReview]=useState<Review|null>(null);
  const [busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState("");
  const [recovering,setRecovering]=useState(false),[matchInfo,setMatchInfo]=useState(false);
  const [history,setHistory]=useState<ReviewRecord[]>([]);
@@ -32,14 +33,14 @@ export default function PortfolioEvidencePage(){
    if(!r.ok)throw Error(x.error||"No se pudieron consultar tus borradores");
    const draft=(x.drafts||[]).find((d:{grouping:string;module:number;section:number})=>d.grouping===group&&d.module===module-1&&d.section===section);
    if(!draft){setNotice("No hay un borrador guardado para esta agrupación, módulo y sección.");return;}
-   setEvidence(draft.content||"");setReview(null);setCurrentScore(null);setScoredStage(null);setNotice("Borrador recuperado desde tu cuenta.");
+   setEvidence(draft.content||"");setRubric(draft.rubric||"");setReview(null);setCurrentScore(null);setScoredStage(null);setNotice("Borrador recuperado desde tu cuenta.");
   }catch(e){setError(e instanceof Error?e.message:"No se pudo recuperar el borrador");}finally{setRecovering(false);}
  }
  const card:React.CSSProperties={padding:18,border:"1px solid #d9e4ea",borderRadius:14,background:"#fff",marginTop:14};
  async function analyze(){
   setError("");setNotice("");setReview(null);setCurrentScore(null);setScoredStage(null);setBusy(true);
   try{
-   const r=await fetch("/api/portfolio-review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({group,module,notes:evidence})});
+   const r=await fetch("/api/portfolio-review",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({group,module,notes:evidence,rubric})});
    const x=await r.json();if(!r.ok)throw Error(x.error||"No se pudo analizar");
    setReview(x.review);setCurrentScore(x.formativeScore||null);setScoredStage(stage);rememberFeedback(x.review,x.formativeScore);
   }catch(e){setError(e instanceof Error?e.message:"Error al analizar");}finally{setBusy(false);}
@@ -48,7 +49,7 @@ export default function PortfolioEvidencePage(){
   if(!window.confirm("Se reemplazará el borrador guardado de esta agrupación, módulo y sección. ¿Continuar?"))return;
   setError("");setNotice("");setSaving(true);
   try{
-   const r=await fetch("/api/portfolio-drafts",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({grouping:group,module:module-1,section,content:evidence})});
+   const r=await fetch("/api/portfolio-drafts",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({grouping:group,module:module-1,section,content:evidence,rubric})});
    const x=await r.json();if(!r.ok)throw Error(x.error||"No se pudo guardar");
    setNotice("Evidencia guardada en tu cuenta. Puedes recuperarla en Portafolio Docente IA.");
   }catch(e){setError(e instanceof Error?e.message:"Error al guardar");}finally{setSaving(false);}
@@ -83,12 +84,12 @@ export default function PortfolioEvidencePage(){
    <div className="portfolio-left">
     <section className="portfolio-card"><h2>1. Contexto de tu portafolio</h2>
      <div className="portfolio-fields">
-      <div><label htmlFor="group">Agrupación docente</label><select id="group" value={group} onChange={e=>{setGroup(e.target.value);setReview(null);setCurrentScore(null);setScoredStage(null)}}>{groups.map(g=><option key={g}>{g}</option>)}</select></div>
-      <div><label htmlFor="module">Módulo</label><select id="module" value={module} onChange={e=>{setModule(Number(e.target.value));setReview(null)}}>{[1,2,3].map(n=><option key={n} value={n}>Módulo {n}</option>)}</select></div>
-      <div><label htmlFor="section">Sección del borrador</label><select id="section" value={section} onChange={e=>{setSection(Number(e.target.value));setReview(null);setCurrentScore(null);setScoredStage(null)}}>{[0,1,2].map(n=><option key={n} value={n}>Sección {n+1}</option>)}</select></div>
+      <div><label htmlFor="group">Agrupación docente</label><select id="group" value={group} onChange={e=>{setRubric("");setGroup(e.target.value);setReview(null);setCurrentScore(null);setScoredStage(null)}}>{groups.map(g=><option key={g}>{g}</option>)}</select></div>
+      <div><label htmlFor="module">Módulo</label><select id="module" value={module} onChange={e=>{setRubric("");setModule(Number(e.target.value));setReview(null)}}>{[1,2,3].map(n=><option key={n} value={n}>Módulo {n}</option>)}</select></div>
+      <div><label htmlFor="section">Sección del borrador</label><select id="section" value={section} onChange={e=>{setRubric("");setSection(Number(e.target.value));setReview(null);setCurrentScore(null);setScoredStage(null)}}>{[0,1,2].map(n=><option key={n} value={n}>Sección {n+1}</option>)}</select></div>
      </div>
     </section>
-    <section className="portfolio-card"><h2>2. Evidencia pedagógica</h2>
+    <section className="portfolio-card"><h2>2. Evidencia pedagógica</h2><label htmlFor="rubric-indicator">Indicador de evaluación docente 2026</label><select id="rubric-indicator" value={indicatorNames2026(group,module).includes(rubric)?rubric:""} onChange={e=>{setRubric(e.target.value);setReview(null);setCurrentScore(null);setScoredStage(null)}} style={{width:"100%",padding:11,border:"1px solid #cad8e5",borderRadius:10,background:"#fff",margin:"7px 0 12px"}}><option value="">Seleccionar indicador del módulo {module}</option>{indicatorNames2026(group,module).map((name,i)=><option key={i} value={name}>{name}</option>)}</select>{rubric&&<p className="portfolio-note" style={{padding:"10px 12px",borderRadius:9,background:"#f0f7fc"}}><strong>Seleccionado:</strong> {rubric}</p>}<p className="portfolio-note">Catálogo de nombres de rúbricas 2026. Los descriptores y niveles oficiales siguen en validación; la retroalimentación es orientativa.</p>
      <label htmlFor="evidence">Ingresa una evidencia auténtica de tu práctica docente</label>
      <textarea className="portfolio-editor" id="evidence" maxLength={16000} value={evidence} onChange={e=>{setEvidence(e.target.value);setReview(null);setCurrentScore(null);setScoredStage(null)}} placeholder="Describe lo que hiciste, cómo lo implementaste y qué evidencia observaste..." />
      <p className="portfolio-note">{evidence.length.toLocaleString("es-CL")} / 16.000 caracteres. Para análisis IA, mínimo 80. Evita incluir datos personales de estudiantes.</p>
