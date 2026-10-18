@@ -1,3 +1,4 @@
+import { EXTRACTED_RUBRIC_CRITERIA_2026 } from "./portfolio-extracted-criteria-2026";
 import { PORTFOLIO_INDICATOR_NAMES_2026 } from "./portfolio-indicator-names-2026";
 export const OFFICIAL_PORTFOLIO_2026 = [
  {group:"Básica 1° a 6°",rubric:"https://www.docentemas.cl/download/rubricas-educacion-basica-1-a-6-basico-2026/",manuals:"https://www.docentemas.cl/documentos-descargables/manuales-de-instrumentos/",status:"pending_transcription"},
@@ -67,6 +68,7 @@ export function officialRubricCoverage(){
 /** Full 2026 indicator inventory. Listing is not the same as validated scoring criteria. */
 export const PORTFOLIO_INDICATOR_COVERAGE_2026=Object.entries(PORTFOLIO_INDICATOR_NAMES_2026).flatMap(([group,modules])=>modules.flatMap((names,moduleIndex)=>names.map((name,index)=>{
  const verified=validatedOfficialIndicators(group).find(item=>item.module===moduleIndex+1&&item.name===name);
- return {id:verified?.id||group+"-m"+(moduleIndex+1)+"-i"+(index+1),group,module:moduleIndex+1,name,sourceUrl:OFFICIAL_PORTFOLIO_2026.find(x=>x.group===group)?.rubric||"",status:verified?"descriptors_reviewed":"descriptors_pending_validation",canEstimateLevel:Boolean(verified)};
+ const extracted=EXTRACTED_RUBRIC_CRITERIA_2026.find(item=>item.group===group&&item.module===moduleIndex+1&&item.name.replace(/\\s+/g," ").trim().toLocaleLowerCase("es-CL")===name.replace(/\\s+/g," ").trim().toLocaleLowerCase("es-CL"));
+ return {id:verified?.id||group+"-m"+(moduleIndex+1)+"-i"+(index+1),group,module:moduleIndex+1,name,sourceUrl:OFFICIAL_PORTFOLIO_2026.find(x=>x.group===group)?.rubric||"",status:verified?"descriptors_reviewed":extracted?"extracted_pending_validation":"descriptors_pending_validation",sourcePage:verified?.sourcePage||extracted?.page||null,canEstimateLevel:Boolean(verified)};
 })));
 export function indicatorCoverage2026(group:string,module:number,name:string){return PORTFOLIO_INDICATOR_COVERAGE_2026.find(x=>x.group===group&&x.module===module&&x.name===name)||null;}
