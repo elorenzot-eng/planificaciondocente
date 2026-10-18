@@ -71,4 +71,13 @@ export const PORTFOLIO_INDICATOR_COVERAGE_2026=Object.entries(PORTFOLIO_INDICATO
  const extracted=EXTRACTED_RUBRIC_CRITERIA_2026.find(item=>item.group===group&&item.module===moduleIndex+1&&item.name.replace(/\s+/g," ").trim().toLocaleLowerCase("es-CL")===name.replace(/\s+/g," ").trim().toLocaleLowerCase("es-CL"));
  return {id:verified?.id||group+"-m"+(moduleIndex+1)+"-i"+(index+1),group,module:moduleIndex+1,name,sourceUrl:OFFICIAL_PORTFOLIO_2026.find(x=>x.group===group)?.rubric||"",status:verified?"descriptors_reviewed":extracted?"extracted_pending_validation":"descriptors_pending_validation",sourcePage:verified?.sourcePage||extracted?.page||null,canEstimateLevel:Boolean(verified)};
 })));
+/** Structural audit is not pedagogical validation. */
+export function extractedRubricAudit2026(){
+ const records=EXTRACTED_RUBRIC_CRITERIA_2026;
+ const expected=["INSATISFACTORIO","BÁSICO","COMPETENTE","DESTACADO"];
+ const complete=records.filter(x=>expected.every(level=>typeof x.levels[level as keyof typeof x.levels]==="string"&&x.levels[level as keyof typeof x.levels].trim().length>0));
+ const conditional=records.filter(x=>x.conditional);
+ const verified=PORTFOLIO_INDICATOR_COVERAGE_2026.filter(x=>x.canEstimateLevel);
+ return {total:records.length,structurallyComplete:complete.length,conditionalReview:conditional.length,reviewedForEstimatedLevel:verified.length,pendingPedagogicalValidation:records.length-verified.length,readyForOfficialScoring:false};
+}
 export function indicatorCoverage2026(group:string,module:number,name:string){return PORTFOLIO_INDICATOR_COVERAGE_2026.find(x=>x.group===group&&x.module===module&&x.name===name)||null;}
