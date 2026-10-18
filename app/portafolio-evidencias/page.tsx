@@ -7,6 +7,18 @@ export default function PortfolioEvidencePage(){
  const [group,setGroup]=useState(groups[0]),[module,setModule]=useState(1),[section,setSection]=useState(0);
  const [evidence,setEvidence]=useState(""),[review,setReview]=useState<Review|null>(null);
  const [busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState("");
+ const [recovering,setRecovering]=useState(false),[matchInfo,setMatchInfo]=useState(false);
+ async function recover(){
+  if(evidence.trim()&&!window.confirm("Se reemplazará el texto actual con el borrador guardado. ¿Continuar?"))return;
+  setError("");setNotice("");setRecovering(true);
+  try{
+   const r=await fetch("/api/portfolio-drafts",{cache:"no-store"});const x=await r.json();
+   if(!r.ok)throw Error(x.error||"No se pudieron consultar tus borradores");
+   const draft=(x.drafts||[]).find((d:{grouping:string;module:number;section:number})=>d.grouping===group&&d.module===module-1&&d.section===section);
+   if(!draft){setNotice("No hay un borrador guardado para esta agrupación, módulo y sección.");return;}
+   setEvidence(draft.content||"");setReview(null);setNotice("Borrador recuperado desde tu cuenta.");
+  }catch(e){setError(e instanceof Error?e.message:"No se pudo recuperar el borrador");}finally{setRecovering(false);}
+ }
  const card:React.CSSProperties={padding:18,border:"1px solid #d9e4ea",borderRadius:14,background:"#fff",marginTop:14};
  async function analyze(){
   setError("");setNotice("");setReview(null);setBusy(true);
@@ -67,7 +79,10 @@ export default function PortfolioEvidencePage(){
      <div className="portfolio-actions">
       <button type="button" onClick={analyze} disabled={busy||saving||evidence.trim().length<80}>{busy?"Analizando evidencia...":"✦ Analizar con IA"}</button>
       <button type="button" onClick={save} disabled={saving||busy||!evidence.trim()}>{saving?"Guardando...":"Guardar en mi portafolio"}</button>
+      <button type="button" onClick={recover} disabled={recovering||busy||saving}>{recovering?"Recuperando...":"Recuperar borrador"}</button>
+      <button type="button" onClick={()=>setMatchInfo(v=>!v)} aria-expanded={matchInfo}>Match con rúbrica 2026</button>
      </div>
+     {matchInfo&&<div role="status" style={{marginTop:14,padding:14,borderRadius:10,background:"#edf7ff",border:"1px solid #cfe4fa"}}><strong>Match con rúbrica oficial 2026 — pendiente de validación</strong><p style={{margin:"6px 0 0"}}>Este botón estará disponible para comparar evidencias con indicadores oficiales una vez verificados los descriptores de la agrupación. Por ahora no calcula porcentajes, niveles ni puntajes. Puedes utilizar la retroalimentación formativa con IA mientras se completa la validación.</p></div>}
      <p className="portfolio-note">Guardar reemplaza el contenido anterior de la sección elegida, previa confirmación. El análisis IA no se guarda automáticamente.</p>
      {error&&<p role="alert" style={{color:"#a32626"}}>{error}</p>}{notice&&<p role="status" style={{color:"#11634b"}}>{notice}</p>}
     </section>
