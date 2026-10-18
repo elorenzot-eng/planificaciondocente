@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {getSession} from "../../../lib/auth";
 import {prisma} from "../../../lib/prisma";
-import {validatedOfficialIndicators} from "../../../lib/portfolio-official-2026";
+import {validatedOfficialIndicators,OFFICIAL_PORTFOLIO_2026} from "../../../lib/portfolio-official-2026";
 import {EXTRACTED_RUBRIC_CRITERIA_2026} from "../../../lib/portfolio-extracted-criteria-2026";
 const groups=["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional","Pueblos Originarios"];
 function output(x:any){if(typeof x?.output_text==="string")return x.output_text;return(x?.output||[]).flatMap((z:any)=>z.content||[]).filter((z:any)=>z.type==="output_text").map((z:any)=>z.text).join("")}
@@ -20,5 +20,5 @@ const substantiveEvidence=notes.length>=250 && notes.split(/\s+/).filter(Boolean
 const safeEvaluationLevel=(indicator||extracted)&&supportedQuote&&substantiveEvidence&&levels.includes(safeLevel)?safeLevel:"Evidencia insuficiente";
 const safeEvaluationReason=safeEvaluationLevel==="Evidencia insuficiente"&&(!supportedQuote||!substantiveEvidence)?"No hay evidencia textual suficiente y verificable para fundamentar un nivel. Describe las experiencias y adjunta evidencia auténtica antes de volver a evaluar.":safeReason;
 const activeIndicator=indicator||extracted;
-const indicatorEvaluation=activeIndicator&&rawEvaluation&&levels.includes(rawEvaluation.nivelEstimado)&&["fundamento","brecha","siguientePaso"].every(k=>typeof rawEvaluation[k]==="string"&&rawEvaluation[k].trim().length>0)?{indicator:activeIndicator.name,level:safeEvaluationLevel,reason:safeEvaluationReason,gap:rawEvaluation.brecha,nextStep:rawEvaluation.siguientePaso,sourceUrl:indicator?.sourceUrl||"",sourcePage:indicator?.sourcePage||extracted?.page||0,official:false,preliminary:!indicator,verificationStatus:indicator?"criteria_reviewed":"automatic_extraction_not_validated"}:null;
+const indicatorEvaluation=activeIndicator&&rawEvaluation&&levels.includes(rawEvaluation.nivelEstimado)&&["fundamento","brecha","siguientePaso"].every(k=>typeof rawEvaluation[k]==="string"&&rawEvaluation[k].trim().length>0)?{indicator:activeIndicator.name,level:safeEvaluationLevel,reason:safeEvaluationReason,gap:rawEvaluation.brecha,nextStep:rawEvaluation.siguientePaso,sourceUrl:indicator?.sourceUrl||OFFICIAL_PORTFOLIO_2026.find(x=>x.group===group)?.rubric||"",sourcePage:indicator?.sourcePage||extracted?.page||0,official:false,preliminary:!indicator,verificationStatus:indicator?"criteria_reviewed":"automatic_extraction_not_validated"}:null;
 return NextResponse.json({indicatorReference:extracted?{name:extracted.name,sourcePage:extracted.page,reviewStatus:"extracted_pending_validation",conditionalReview:extracted.conditional,levelEstimationEnabled:false}:null,indicatorEvaluation,review:parsed,formativeScore:{...score,total:score.claridad+score.evidencia+score.reflexion+score.coherencia,max:100,official:false}})}catch(e){console.error("[portfolio-review]",e instanceof Error?e.message:"unknown");return NextResponse.json({error:"No se pudo completar la revisión. Intenta nuevamente."},{status:502})}}
