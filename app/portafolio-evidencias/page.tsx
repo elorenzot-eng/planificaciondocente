@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-const groups = ["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional"];
+const groups = ["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional","Pueblos Originarios"];
 type Review = {fortalezas:string[];mejoras:string[];evidencias:string[];preguntas:string[]};
 export default function PortfolioEvidencePage(){
  const [group,setGroup]=useState(groups[0]),[module,setModule]=useState(1),[section,setSection]=useState(0);
