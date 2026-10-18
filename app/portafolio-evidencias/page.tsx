@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { OFFICIAL_PORTFOLIO_2026 } from "../../lib/portfolio-official-2026";
 
 const groups = ["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional","Pueblos Originarios"];
 type Review = {fortalezas:string[];mejoras:string[];evidencias:string[];preguntas:string[]};
@@ -11,6 +12,7 @@ export default function PortfolioEvidencePage(){
  const [recovering,setRecovering]=useState(false),[matchInfo,setMatchInfo]=useState(false);
  const [history,setHistory]=useState<ReviewRecord[]>([]);
  const [showComparison,setShowComparison]=useState(false);
+ const rubricSource=OFFICIAL_PORTFOLIO_2026.find(item=>item.group===group);
  const selectedHistory=history.filter(h=>h.group===group&&h.module===module&&h.section===section);
  const newest=selectedHistory[0],oldest=selectedHistory[selectedHistory.length-1];
  useEffect(()=>{try{const raw=localStorage.getItem("educantay-portfolio-feedback-history-v1");if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed))setHistory(parsed.slice(0,20));}}catch{}},[]);
@@ -94,6 +96,7 @@ export default function PortfolioEvidencePage(){
      </div>
      {matchInfo&&<div role="status" style={{marginTop:14,padding:14,borderRadius:10,background:"#edf7ff",border:"1px solid #cfe4fa"}}>
       <strong>Match formativo de evidencias — sin puntaje oficial</strong>
+      {rubricSource&&<p><a href={rubricSource.rubric} target="_blank" rel="noopener noreferrer">Consultar rúbrica oficial 2026 de esta agrupación ↗</a></p>}
       {review?<><p>Aspectos respaldados por el texto presentado:</p><ul>{review.fortalezas.map((v,i)=><li key={i}>{v}</li>)}</ul><p>Aspectos que requieren evidencia adicional:</p><ul>{review.evidencias.map((v,i)=><li key={i}>{v}</li>)}</ul></>:<p>Primero selecciona «Analizar con IA». El Match formativo mostrará los aspectos identificados y las evidencias que conviene reforzar.</p>}
       <p style={{margin:"6px 0 0"}}>La comparación con indicadores, niveles y porcentajes de rúbricas oficiales DocenteMás 2026 permanece deshabilitada hasta completar su validación.</p>
      </div>}
