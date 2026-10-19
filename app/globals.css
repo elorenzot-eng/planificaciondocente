@@ -805,3 +805,14 @@ main>aside .role .logout:hover{background:#d6eefb!important}
 @media(max-width:1280px){.folderStats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.folderStats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:500px){.folderStats{grid-template-columns:1fr}}
+
+/* Navegación móvil accesible: el menú lateral se oculta bajo 1050px */
+.mobileWorkspaceNav{display:none}
+@media(max-width:1050px){
+ .mobileWorkspaceNav{display:flex;flex-direction:column;gap:9px;margin:0 0 18px;padding:14px;background:#edf8ff;border:1px solid #c6e5f7;border-radius:14px;box-sizing:border-box;max-width:100%}
+ .mobileWorkspaceNav label{font-size:13px;font-weight:800;color:#174568}
+ .mobileWorkspaceNav select{width:100%;min-width:0;max-width:100%;min-height:46px;padding:10px 12px;border:1px solid #9cc9e4;border-radius:10px;background:#fff;color:#153c60;font:inherit;font-weight:700;white-space:normal}
+ .mobileWorkspaceNav .mobilePortfolioShortcut{display:block;width:100%;min-height:44px;padding:10px 12px;border:1px solid #b5d3ec;border-radius:10px;background:#fff;color:#174568;font:inherit;font-weight:800;text-align:center;white-space:normal;overflow-wrap:break-word}
+ .workspace{min-width:0;box-sizing:border-box}
+}
+@media print{.mobileWorkspaceNav{display:none!important}}
