@@ -1,19 +1,33 @@
-import {OFFICIAL_PORTFOLIO_2026,validatedOfficialIndicators} from "../../../lib/portfolio-official-2026";
+import {OFFICIAL_PORTFOLIO_2026,indicatorCoverage2026,validatedOfficialIndicators} from "../../../lib/portfolio-official-2026";
+import {PORTFOLIO_INDICATOR_NAMES_2026} from "../../../lib/portfolio-indicator-names-2026";
 import {NextResponse} from "next/server";
 import {getSession} from "../../../lib/auth";
 import {prisma} from "../../../lib/prisma";
-const groups: string[]=OFFICIAL_PORTFOLIO_2026.map(item=>item.group);
-function output(x:any){if(typeof x?.output_text==="string")return x.output_text;return(x?.output||[]).flatMap((z:any)=>z.content||[]).filter((z:any)=>z.type==="output_text").map((z:any)=>z.text).join("")}
+const groups=OFFICIAL_PORTFOLIO_2026.map(x=>x.group);
 export async function POST(req:Request){
  const session=await getSession();if(!session?.id)return NextResponse.json({error:"Inicia sesión"},{status:401});
- const user=await prisma.user.findUnique({where:{id:String(session.id)},select:{active:true}});if(!user?.active)return NextResponse.json({error:"No autorizado"},{status:403});
- let b:any;try{b=await req.json()}catch{return NextResponse.json({error:"Solicitud inválida"},{status:400})}
- const group=String(b.group||"");const entries=Array.isArray(b.entries)?b.entries:[];if(!groups.includes(group)||entries.length!==9)return NextResponse.json({error:"Agrupación o secciones inválidas"},{status:400});
- const clean=entries.map((e:any)=>({module:Number(e.module),section:Number(e.section),notes:String(e.notes||"").slice(0,4000),rubric:String(e.rubric||"").slice(0,2500)}));
- if(clean.some((e:any)=>![0,1,2].includes(e.module)||![0,1,2].includes(e.section))||new Set(clean.map((e:any)=>e.module+"-"+e.section)).size!==9)return NextResponse.json({error:"Secciones duplicadas o inválidas"},{status:400});
- const official=OFFICIAL_PORTFOLIO_2026.find(v=>v.group===group);
- const verified=validatedOfficialIndicators(group);
- if(!official||verified.length===0)return NextResponse.json({error:"Aún no se han incorporado y verificado los indicadores oficiales 2026 para esta agrupación.",status:"PENDING_OFFICIAL_RUBRIC",source:official?.rubric},{status:422});
- // Never publish a numeric match until each official 2026 rubric indicator has been verified and mapped server-side.
- return NextResponse.json({error:"El porcentaje de match está temporalmente deshabilitado. Se habilitará cuando los indicadores y descriptores de la rúbrica oficial 2026 estén verificados y asociados a esta agrupación. No se permite calcular un porcentaje oficial a partir de texto pegado manualmente.",status:"PENDING_OFFICIAL_RUBRIC"},{status:422});
+ const user=await prisma.user.findUnique({where:{id:String(session.id)},select:{active:true}});
+ if(!user?.active)return NextResponse.json({error:"No autorizado"},{status:403});
+ let body:any;try{body=await req.json()}catch{return NextResponse.json({error:"Solicitud inválida"},{status:400})}
+ const group=String(body.group||"");const entries=Array.isArray(body.entries)?body.entries:[];
+ const expected=group==="Pueblos Originarios"?12:11;
+ if(!groups.includes(group)||entries.length!==expected)return NextResponse.json({error:"La agrupación requiere "+expected+" subtareas oficiales.",status:"INVALID_STRUCTURE"},{status:400});
+ const lengths=group==="Pueblos Originarios"?[6,2,4]:[5,2,4];
+ const keys=new Set<string>();const diagnostics:any[]=[];
+ for(const entry of entries){
+  const module=Number(entry.module),section=Number(entry.section);
+  if(!Number.isInteger(module)||module<0||module>2||!Number.isInteger(section)||section<10||section>=10+lengths[module])return NextResponse.json({error:"Subtarea inválida"},{status:400});
+  const key=module+"-"+section;if(keys.has(key))return NextResponse.json({error:"Subtarea duplicada"},{status:400});keys.add(key);
+  const notes=String(entry.notes||"").slice(0,16000);
+  const requested=String(entry.rubric||"").split(" || ").map(x=>x.trim()).filter(Boolean);
+  const names=PORTFOLIO_INDICATOR_NAMES_2026[group]?.[module]||[];
+  const indicators=requested.map(name=>{
+   const coverage=names.includes(name)?indicatorCoverage2026(group,module+1,name):null;
+   const verified=validatedOfficialIndicators(group).some(x=>x.module===module+1&&x.name===name);
+   return {name,recognized:Boolean(coverage),verification:coverage?.status||"not_in_catalog",verifiedDescriptors:verified,sourcePage:coverage?.sourcePage||null,canEstimateLevel:verified};
+  });
+  diagnostics.push({module,section,hasEvidence:notes.trim().length>=80,evidenceCharacters:notes.trim().length,indicators,missingEvidence:notes.trim().length<80,needsIndicator:indicators.length===0,readyForVerifiedComparison:notes.trim().length>=80&&indicators.some(x=>x.canEstimateLevel)});
+ }
+ if(keys.size!==expected)return NextResponse.json({error:"Faltan subtareas oficiales"},{status:400});
+ return NextResponse.json({status:"FORMATIVE_AUDIT_ONLY",group,total:expected,withEvidence:diagnostics.filter(x=>x.hasEvidence).length,withVerifiedCriteria:diagnostics.filter(x=>x.readyForVerifiedComparison).length,sections:diagnostics,officialScoring:false,numericMatch:null,message:"Diagnóstico documental por subtarea. Solo los descriptores revisados permiten contrastes formativos; no es una calificación oficial."});
 }
