@@ -3,7 +3,7 @@ import {PORTFOLIO_INDICATOR_NAMES_2026} from "../../../lib/portfolio-indicator-n
 import {NextResponse} from "next/server";
 import {getSession} from "../../../lib/auth";
 import {prisma} from "../../../lib/prisma";
-const groups=OFFICIAL_PORTFOLIO_2026.map(x=>x.group);
+const groups:string[]=OFFICIAL_PORTFOLIO_2026.map(x=>x.group);
 export async function POST(req:Request){
  const session=await getSession();if(!session?.id)return NextResponse.json({error:"Inicia sesión"},{status:401});
  const user=await prisma.user.findUnique({where:{id:String(session.id)},select:{active:true}});
