@@ -40,13 +40,14 @@ export async function POST(req:Request){
   const reviewedNames=new Set(details.map((v:any)=>String(v.rubric||"")));
   const selectionMatches=Boolean(validSnapshot&&item.indicators.length>0&&item.indicators.every((v:any)=>reviewedNames.has(v.name))&&details.every((v:any)=>item.indicators.some((x:any)=>x.name===v.rubric)));
   const requested=new Set(item.indicators.map((v:any)=>v.name));
+  const officialByName=new Map(validatedOfficialIndicators(group).filter(x=>x.module===item.module+1).map(x=>[x.name,x]));
   item.pedagogicalReview=selectionMatches?{
    updatedAt:row?.updatedAt,
    strengths:Array.isArray(review?.fortalezas)?review.fortalezas.slice(0,4):[],
    improvements:Array.isArray(review?.mejoras)?review.mejoras.slice(0,4):[],
    evidence:Array.isArray(review?.evidencias)?review.evidencias.slice(0,4):[],
    reflectionQuestions:Array.isArray(review?.preguntas)?review.preguntas.slice(0,4):[],
-   indicatorFindings:details.filter((v:any)=>requested.has(v.rubric)).map((v:any)=>({name:v.rubric,level:v.indicatorEvaluation?.level||null,reason:v.indicatorEvaluation?.reason||null,gap:v.indicatorEvaluation?.gap||null,nextStep:v.indicatorEvaluation?.nextStep||null,preliminary:Boolean(v.indicatorEvaluation?.preliminary),verified:!v.indicatorEvaluation?.preliminary&&Boolean(item.indicators.find((x:any)=>x.name===v.rubric&&x.verifiedDescriptors)),transcribed:!!item.indicators.find((x:any)=>x.name===v.rubric&&x.transcriptionAvailable)})),
+   indicatorFindings:details.filter((v:any)=>requested.has(v.rubric)).map((v:any)=>({name:v.rubric,level:v.indicatorEvaluation?.level||null,rubricReference:(()=>{const criterion=officialByName.get(v.rubric);if(!criterion)return null;const level=String(v.indicatorEvaluation?.level||"").toLocaleLowerCase("es-CL");const descriptor=criterion.descriptors.find(d=>d.level.toLocaleLowerCase("es-CL")===level);return descriptor?{level:descriptor.level,text:descriptor.text,sourcePage:criterion.sourcePage,sourceUrl:criterion.sourceUrl}:null})(),evidenceBasis:Array.isArray(review?.evidencias)?review.evidencias.slice(0,4):[],reason:v.indicatorEvaluation?.reason||null,gap:v.indicatorEvaluation?.gap||null,nextStep:v.indicatorEvaluation?.nextStep||null,preliminary:Boolean(v.indicatorEvaluation?.preliminary),verified:!v.indicatorEvaluation?.preliminary&&Boolean(item.indicators.find((x:any)=>x.name===v.rubric&&x.verifiedDescriptors)),transcribed:!!item.indicators.find((x:any)=>x.name===v.rubric&&x.transcriptionAvailable)})),
    source:"saved_ai_review",reusesGeneration:true
   }:null;
   item.reviewStatus=!row?"not_reviewed":!validSnapshot?"outdated_evidence":!selectionMatches?"outdated_indicators":"review_available";
