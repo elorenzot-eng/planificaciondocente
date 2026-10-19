@@ -1,0 +1,10 @@
+import {NextResponse} from "next/server";
+import {getSession} from "../../../lib/auth";
+import {prisma} from "../../../lib/prisma";
+const groups=["Básica 1° a 6°","Básica Generalista 1° a 4°","7° y 8° Básico / Media HC","Media Técnico-Profesional","Pueblos Originarios"];
+async function owner(){const session=await getSession();if(!session?.id)return null;const user=await prisma.user.findUnique({where:{id:String(session.id)},select:{id:true,active:true}});return user?.active?user.id:null}
+export async function GET(){const userId=await owner();if(!userId)return NextResponse.json({error:"No autorizado"},{status:401});const reviews=await prisma.portfolioReview.findMany({where:{userId,year:2026},select:{id:true,grouping:true,module:true,section:true,result:true,evidenceSnapshot:true,indicatorSnapshot:true,updatedAt:true},orderBy:{updatedAt:"desc"}});return NextResponse.json({reviews},{headers:{"Cache-Control":"private, no-store"}})}
+export async function PUT(req:Request){const userId=await owner();if(!userId)return NextResponse.json({error:"No autorizado"},{status:401});let b:any;try{b=await req.json()}catch{return NextResponse.json({error:"Solicitud inválida"},{status:400})}
+const grouping=String(b.grouping||""),module=Number(b.module),section=Number(b.section),evidenceSnapshot=String(b.evidenceSnapshot||""),indicatorSnapshot=String(b.indicatorSnapshot||"");const result=b.result;
+if(!groups.includes(grouping)||![0,1,2].includes(module)||!Number.isInteger(section)||section<10||section>15||!result||typeof result!=="object"||Array.isArray(result)||JSON.stringify(result).length>50000||evidenceSnapshot.length>16000||indicatorSnapshot.length>6000)return NextResponse.json({error:"Datos inválidos"},{status:400});
+const record=await prisma.portfolioReview.upsert({where:{userId_year_grouping_module_section:{userId,year:2026,grouping,module,section}},create:{userId,year:2026,grouping,module,section,result,evidenceSnapshot,indicatorSnapshot},update:{result,evidenceSnapshot,indicatorSnapshot},select:{id:true,updatedAt:true}});return NextResponse.json({saved:true,...record})}
