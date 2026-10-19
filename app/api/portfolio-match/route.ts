@@ -26,7 +26,7 @@ export async function POST(req:Request){
    const verified=validatedOfficialIndicators(group).some(x=>x.module===module+1&&x.name===name);
    return {name,recognized:Boolean(coverage),verification:coverage?.status||"not_in_catalog",verifiedDescriptors:verified,sourcePage:coverage?.sourcePage||null,canEstimateLevel:Boolean(coverage&&(coverage.canEstimateLevel||coverage.status==="extracted_pending_validation")),transcriptionAvailable:coverage?.status==="extracted_pending_validation"||verified};
   });
-  diagnostics.push({module,section,hasEvidence:notes.trim().length>=80,evidenceCharacters:notes.trim().length,indicators,missingEvidence:notes.trim().length<80,needsIndicator:indicators.length===0,readyForVerifiedComparison:notes.trim().length>=80&&indicators.some(x=>x.canEstimateLevel)});
+  diagnostics.push({module,section,hasEvidence:notes.trim().length>=80,evidenceCharacters:notes.trim().length,indicators,missingEvidence:notes.trim().length<80,needsIndicator:indicators.length===0,readyForFormativeComparison:notes.trim().length>=80&&indicators.some(x=>x.canEstimateLevel)});
  }
  const saved=await prisma.portfolioReview.findMany({where:{userId:String(session.id),year:2026,grouping:group},select:{module:true,section:true,result:true,evidenceSnapshot:true,indicatorSnapshot:true,updatedAt:true}});
  const savedByKey=new Map(saved.map(row=>[row.module+"-"+row.section,row]));
@@ -37,8 +37,10 @@ export async function POST(req:Request){
   const review:any=row?.result||null;
   const validSnapshot=Boolean(row&&row.evidenceSnapshot.trim()===evidence&&evidence.length>=80);
   const details=validSnapshot&&Array.isArray(review?.individualResults)?review.individualResults:[];
+  const reviewedNames=new Set(details.map((v:any)=>String(v.rubric||"")));
+  const selectionMatches=Boolean(validSnapshot&&item.indicators.length>0&&item.indicators.every((v:any)=>reviewedNames.has(v.name))&&details.every((v:any)=>item.indicators.some((x:any)=>x.name===v.rubric)));
   const requested=new Set(item.indicators.map((v:any)=>v.name));
-  item.pedagogicalReview=validSnapshot?{
+  item.pedagogicalReview=selectionMatches?{
    updatedAt:row?.updatedAt,
    strengths:Array.isArray(review?.fortalezas)?review.fortalezas.slice(0,4):[],
    improvements:Array.isArray(review?.mejoras)?review.mejoras.slice(0,4):[],
@@ -47,9 +49,9 @@ export async function POST(req:Request){
    indicatorFindings:details.filter((v:any)=>requested.has(v.rubric)).map((v:any)=>({name:v.rubric,level:v.indicatorEvaluation?.level||null,reason:v.indicatorEvaluation?.reason||null,gap:v.indicatorEvaluation?.gap||null,nextStep:v.indicatorEvaluation?.nextStep||null,preliminary:Boolean(v.indicatorEvaluation?.preliminary),verified:!v.indicatorEvaluation?.preliminary&&Boolean(item.indicators.find((x:any)=>x.name===v.rubric&&x.verifiedDescriptors)),transcribed:!!item.indicators.find((x:any)=>x.name===v.rubric&&x.transcriptionAvailable)})),
    source:"saved_ai_review",reusesGeneration:true
   }:null;
-  item.reviewStatus=!row?"not_reviewed":!validSnapshot?"outdated_evidence":"review_available";
-  item.nextAction=!item.hasEvidence?"Completar evidencia auténtica y contextualizada":item.needsIndicator?"Seleccionar el indicador de la rúbrica correspondiente":!row?"Ejecutar revisión IA por indicador para obtener orientación pedagógica":!validSnapshot?"Actualizar revisión IA porque cambió el borrador":item.pedagogicalReview?.indicatorFindings.length===0?"Revisar los indicadores seleccionados con IA":"Aplicar las mejoras señaladas en el informe IA y documentar evidencias";
+  item.reviewStatus=!row?"not_reviewed":!validSnapshot?"outdated_evidence":!selectionMatches?"outdated_indicators":"review_available";
+  item.nextAction=!item.hasEvidence?"Completar evidencia auténtica y contextualizada":item.needsIndicator?"Seleccionar el indicador de la rúbrica correspondiente":!row?"Ejecutar revisión IA por indicador para obtener orientación pedagógica":!validSnapshot?"Actualizar revisión IA porque cambió el borrador":!selectionMatches?"Actualizar revisión IA porque cambiaron los indicadores seleccionados":item.pedagogicalReview?.indicatorFindings.length===0?"Revisar los indicadores seleccionados con IA":"Aplicar las mejoras señaladas en el informe IA y documentar evidencias";
  }
  if(keys.size!==expected)return NextResponse.json({error:"Faltan subtareas oficiales"},{status:400});
- return NextResponse.json({status:"FORMATIVE_AUDIT_ONLY",group,total:expected,withEvidence:diagnostics.filter(x=>x.hasEvidence).length,withVerifiedCriteria:diagnostics.filter(x=>x.readyForVerifiedComparison).length,withTranscribedCriteria:diagnostics.filter(x=>x.indicators.some((v:any)=>v.transcriptionAvailable)).length,withSavedPedagogicalReviews:diagnostics.filter(x=>x.reviewStatus==="review_available").length,withIndicatorFindings:diagnostics.filter(x=>x.pedagogicalReview?.indicatorFindings?.length>0).length,verifiedIndicators:diagnostics.flatMap(x=>x.indicators).filter(x=>x.verifiedDescriptors).length,pendingValidationIndicators:diagnostics.flatMap(x=>x.indicators).filter(x=>!x.verifiedDescriptors).length,sections:diagnostics,officialScoring:false,numericMatch:null,message:"Match pedagógico formativo: cruza evidencia, indicadores y revisiones IA guardadas. Los niveles basados en descriptores extraídos no validados son preliminares; no equivale a una calificación oficial."});
+ return NextResponse.json({status:"FORMATIVE_AUDIT_ONLY",group,total:expected,withEvidence:diagnostics.filter(x=>x.hasEvidence).length,withVerifiedCriteria:diagnostics.filter(x=>x.hasEvidence&&x.indicators.some((v:any)=>v.verifiedDescriptors)).length,withFormativeCriteria:diagnostics.filter(x=>x.readyForFormativeComparison).length,withTranscribedCriteria:diagnostics.filter(x=>x.indicators.some((v:any)=>v.transcriptionAvailable)).length,withSavedPedagogicalReviews:diagnostics.filter(x=>x.reviewStatus==="review_available").length,withIndicatorFindings:diagnostics.filter(x=>x.pedagogicalReview?.indicatorFindings?.length>0).length,verifiedIndicators:diagnostics.flatMap(x=>x.indicators).filter(x=>x.verifiedDescriptors).length,pendingValidationIndicators:diagnostics.flatMap(x=>x.indicators).filter(x=>!x.verifiedDescriptors).length,sections:diagnostics,officialScoring:false,numericMatch:null,message:"Match pedagógico formativo: contrasta evidencia auténtica con indicadores transcritos y revisiones IA guardadas. Si cambian las evidencias o la selección de indicadores, exige una revisión actualizada. Los niveles orientativos no equivalen a una calificación oficial."});
 }
