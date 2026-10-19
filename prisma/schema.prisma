@@ -92,6 +92,7 @@ model User {
   supportMaterials SupportMaterial[]
   portfolioDrafts PortfolioDraft[]
   portfolioReviews PortfolioReview[]
+  portfolioMatchReports PortfolioMatchReport[]
   teachingAssignments TeachingAssignment[]
   hcTeachingAssignments HCTeachingAssignment[]
   subscriptionPayments SubscriptionPayment[]
@@ -458,6 +459,17 @@ model PortfolioDraft {
   user User @relation(fields:[userId],references:[id],onDelete:Cascade)
   @@unique([userId,year,grouping,module,section])
   @@index([userId,year])
+}
+
+model PortfolioMatchReport {
+  id String @id @default(cuid())
+  userId String
+  year Int @default(2026)
+  grouping String
+  result Json
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  @@index([userId,year,createdAt])
 }
 
 model PortfolioReview {
