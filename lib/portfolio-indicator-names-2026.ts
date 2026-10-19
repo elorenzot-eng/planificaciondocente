@@ -16,11 +16,11 @@ export const PORTFOLIO_INDICATOR_NAMES_2026:Record<string,string[][]>={
     [
       "Ambiente de aula",
       "Promoción de la participación de sus estudiantes",
-      "Promoción de la participación (clase con solo un/a estudiante)",
+      "Promoción de la participación (clase con solo un/a estudiante*)",
       "Contribución de las actividades al logro de los objetivos",
       "Promoción de habilidades que contribuyen al aprendizaje profundo",
       "Uso de conocimientos y experiencias de los/as estudiantes para el aprendizaje profundo",
-      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje",
+      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje (*)",
       "Promoción de la equidad de género en el aula"
     ],
     [
@@ -43,11 +43,11 @@ export const PORTFOLIO_INDICATOR_NAMES_2026:Record<string,string[][]>={
     [
       "Ambiente de aula",
       "Promoción de la participación de sus estudiantes",
-      "Promoción de la participación (clase con solo un/a estudiante)",
+      "Promoción de la participación (clase con solo un/a estudiante*)",
       "Contribución de las actividades al logro de los objetivos",
       "Promoción de habilidades que contribuyen al aprendizaje profundo",
       "Uso de conocimientos y experiencias de los/as estudiantes para el aprendizaje profundo",
-      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje",
+      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje (*)",
       "Promoción de la equidad de género en el aula"
     ],
     [
@@ -70,11 +70,11 @@ export const PORTFOLIO_INDICATOR_NAMES_2026:Record<string,string[][]>={
     [
       "Ambiente de aula",
       "Promoción de la participación de sus estudiantes",
-      "Promoción de la participación (clase con solo un/a estudiante)",
+      "Promoción de la participación (clase con solo un/a estudiante*)",
       "Contribución de las actividades al logro de los objetivos",
       "Promoción de habilidades que contribuyen al aprendizaje profundo",
       "Uso de conocimientos y experiencias de los/as estudiantes para el aprendizaje profundo",
-      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje",
+      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje (*)",
       "Promoción de la equidad de género en el aula"
     ],
     [
@@ -88,7 +88,7 @@ export const PORTFOLIO_INDICATOR_NAMES_2026:Record<string,string[][]>={
     [
       "Relación entre actividades y objetivos",
       "Integración de aprendizajes genéricos en las experiencias",
-      "Integración de las orientaciones metodológicas en las experiencias",
+      "Integración de las orientaciones metodológicas en las experiencias Solo para Técnico Profesional – Educación de Adultos.",
       "Fundamentación de la planificación de una experiencia de aprendizaje",
       "Estrategia de monitoreo de los aprendizajes",
       "Análisis a partir del monitoreo de los aprendizajes",
@@ -98,11 +98,11 @@ export const PORTFOLIO_INDICATOR_NAMES_2026:Record<string,string[][]>={
     [
       "Ambiente de aula",
       "Promoción de la participación de sus estudiantes",
-      "Promoción de la participación (clase con solo un/a estudiante)",
+      "Promoción de la participación (clase con solo un/a estudiante*)",
       "Monitoreo de las actividades",
       "Contribución de las actividades al logro de los objetivos",
       "Preguntas y actividades",
-      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje",
+      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje (*)",
       "Promoción de la equidad de género en el aula",
       "Aprendizaje situado y vínculo con el mundo laboral"
     ],
@@ -131,8 +131,8 @@ export const PORTFOLIO_INDICATOR_NAMES_2026:Record<string,string[][]>={
       "Contribución de las actividades al logro de los objetivos",
       "Transmisión de saberes ancestrales",
       "Preguntas y actividades",
-      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje",
-      "Promoción de habilidades lingüísticas y uso de la lengua (1º a 4º Básico)",
+      "Uso de los desempeños de los/as estudiantes para favorecer el aprendizaje (*)",
+      "Promoción de habilidades lingüísticas y uso de la lengua (1ºa 4º Básico)",
       "Promoción de habilidades lingüísticas y uso de la lengua (5º a 8º Básico)",
       "Promoción de la equidad de género en el aula"
     ],
