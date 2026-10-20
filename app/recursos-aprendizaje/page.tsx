@@ -26,6 +26,7 @@ export default function RecursosAprendizajePage() {
   const [saved, setSaved] = useState<any[]>([]);
   const [showSaved, setShowSaved] = useState(false);
   const [printTeacher, setPrintTeacher] = useState(false);
+  const [answers, setAnswers] = useState<Record<number,string>>({});
   async function loadSaved() {
     setError("");
     try {
@@ -62,7 +63,7 @@ export default function RecursosAprendizajePage() {
       const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,grade,difficulty,quantity,oa,mode}) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Error de generación");
-      setResource(data.resource);
+      setResource(data.resource);setAnswers({});
     } catch (e) { setError(e instanceof Error ? e.message : "No se pudo generar"); }
     finally { setLoading(false); }
   }
@@ -75,7 +76,7 @@ export default function RecursosAprendizajePage() {
     <div className="no-print"><button type="button" onClick={loadSaved}>Ver mis recursos guardados</button>
       {showSaved && <section aria-label="Mis recursos guardados"><h2>Mis recursos guardados</h2>
         {saved.length===0 && <p>No hay recursos guardados.</p>}
-        {saved.map(item => <button key={item.id} type="button" onClick={() => {setResource(item.content);setResourceId(item.id);setModuleId(item.moduleId);setGrade(["2","4","6","8"].find(g=>item.grade===`${g}° básico`)||"4");setSavedMessage("");}} style={{display:"block",margin:"8px 0",padding:10}}>{item.title} · {item.grade}</button>)}
+        {saved.map(item => <button key={item.id} type="button" onClick={() => {setResource(item.content);setAnswers({});setResourceId(item.id);setModuleId(item.moduleId);setGrade(["2","4","6","8"].find(g=>item.grade===`${g}° básico`)||"4");setSavedMessage("");}} style={{display:"block",margin:"8px 0",padding:10}}>{item.title} · {item.grade}</button>)}
       </section>}
     </div>
     <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 12 }}>
@@ -103,8 +104,16 @@ export default function RecursosAprendizajePage() {
           <h4>Actividad {i+1}: {a.skill}</h4><p>{a.stimulus}</p><p><strong>{a.question}</strong></p>
           <div className="no-print"><label>Editar pregunta <textarea value={a.question || ""} onChange={e=>editActivity(i,"question",e.target.value)} /></label></div>
           {a.options?.length > 0 && <ol type="A">{a.options.map((option:string,j:number)=><li key={j}>{option}</li>)}</ol>}
+          {moduleId.startsWith("simce") && <div className="no-print"><label>Respuesta del estudiante <select value={answers[i]||""} onChange={e=>setAnswers(prev=>({...prev,[i]:e.target.value}))}><option value="">Sin responder</option>{(a.options||[]).map((option:string,j:number)=><option key={j} value={option}>{String.fromCharCode(65+j)}. {option}</option>)}</select></label></div>}
           <div className="print-answers"><details open><summary>Respuesta y orientación docente</summary><p>{a.correctAnswer}</p><p>{a.explanation}</p></details></div>
         </section>)}
+        {moduleId.startsWith("simce") && <section className="no-print" style={{padding:16,background:"#eff7f8",borderRadius:12,marginTop:18}}>
+          <h3>Corrección del ensayo</h3>
+          <p>Respuestas correctas: {resource.activities.filter((a:any,i:number)=>answers[i] && answers[i]===a.correctAnswer).length} / {resource.activities.length}</p>
+          <p>Logro: {Math.round(100*resource.activities.filter((a:any,i:number)=>answers[i] && answers[i]===a.correctAnswer).length/resource.activities.length)}%</p>
+          <small>Resultado del ensayo, no puntaje oficial SIMCE. Preguntas sin responder cuentan como incorrectas.</small>
+        </section>}
+        {moduleId.startsWith("simce") && Array.isArray(resource.specificationTable) && <section className="print-answers" style={{marginTop:18}}><h3>Tabla de especificaciones — uso docente</h3><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>{["Ítem","Eje","OA / referencia curricular","Habilidad","Dificultad","Puntos","Clave"].map(x=><th key={x} style={{border:"1px solid #ccc",padding:5}}>{x}</th>)}</tr></thead><tbody>{resource.specificationTable.map((r:any,i:number)=><tr key={i}>{[r.number,r.curricularAxis,r.learningObjective,r.skill,r.difficulty,r.points,r.correctAnswer].map((v:any,j:number)=><td key={j} style={{border:"1px solid #ccc",padding:5}}>{v}</td>)}</tr>)}</tbody></table></div></section>}
         <div className="print-answers"><p>{resource.teacherNotes}</p></div>
         <div className="no-print"><button type="button" disabled={saving} onClick={saveResource}>{saving ? "Guardando…" : "Guardar borrador"}</button>{" "}
         <button type="button" onClick={() => printVersion(false)}>Imprimir estudiante / guardar PDF</button>{" "}
