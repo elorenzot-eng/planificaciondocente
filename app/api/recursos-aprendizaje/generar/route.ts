@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSession } from "../../../lib/auth";
-import { prisma } from "../../../lib/prisma";
+import { getSession } from "../../../../lib/auth";
+import { prisma } from "../../../../lib/prisma";
 
 const allowed = ["precursores","cuadernillos","simce-lectura","simce-matematica","fluidez"] as const;
 export async function POST(request: Request) {
