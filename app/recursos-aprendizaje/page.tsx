@@ -38,7 +38,7 @@ export default function RecursosAprendizajePage() {
   }
   function printVersion(teacher:boolean) {
     setPrintTeacher(teacher);
-    setTimeout(() => window.print(), 80);
+    requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
   }
   async function saveResource() {
     if (!resource) return;
@@ -48,6 +48,7 @@ export default function RecursosAprendizajePage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "No fue posible guardar");
       setSavedMessage("Borrador guardado correctamente.");
+      if (showSaved) await loadSaved();
     } catch (e) { setError(e instanceof Error ? e.message : "Error al guardar"); }
     finally { setSaving(false); }
   }
@@ -63,7 +64,7 @@ export default function RecursosAprendizajePage() {
   }
   const selected = useMemo(() => modules.find(m => m.id === moduleId)!, [moduleId]);
   return <main style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px", fontFamily: "system-ui, sans-serif", color: "#15324b" }}>
-    <a href="/" style={{ color: "#007e90" }}>← Volver a EducAntay</a>
+    <a className="no-print" href="/" style={{ color: "#007e90" }}>← Volver a EducAntay</a>
     <style>{`@media print { .no-print { display:none !important; } main { max-width:none !important; padding:0 !important; } .print-content { border:none !important; margin:0 !important; padding:0 !important; } .print-answers { display:${printTeacher ? "block" : "none"} !important; } .print-answers details { display:block; } .print-answers summary { display:none; } .print-answers details > * { display:block; } }`}</style>
     <h1 className="no-print">Recursos de Aprendizaje IA</h1>
     <p className="no-print">Configura, revisa y guarda recursos de aprendizaje. Puedes imprimir versiones para estudiantes y docentes.</p>
@@ -78,7 +79,7 @@ export default function RecursosAprendizajePage() {
         <strong>{m.title}</strong><div style={{ marginTop: 8 }}>{m.grade}</div><small>{m.description}</small>
       </button>)}
     </div>
-    <section style={{ marginTop: 28, padding: 22, border: "1px solid #d6e1e7", borderRadius: 14 }}>
+    <section className="print-content" style={{ marginTop: 28, padding: 22, border: "1px solid #d6e1e7", borderRadius: 14 }}>
       <h2 className="no-print">Configuración: {selected.title}</h2>
       <p className="no-print">Nivel: {selected.grade}</p>
       <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 16 }}>
