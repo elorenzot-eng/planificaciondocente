@@ -22,14 +22,18 @@ export async function POST(request: Request) {
   }
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "Generación IA no configurada." }, { status: 503 });
   const grade = moduleId.startsWith("simce") ? `${requestedGrade}° básico` : "2° básico";
+  const simce = moduleId.startsWith("simce");
+  const specification = simce ? {level:grade,subject:moduleId==="simce-lectura"?"Lectura":"Matemática",dimensions:moduleId==="simce-lectura"?["Localizar información","Interpretar y relacionar","Reflexionar y evaluar"]:["Números y operaciones","Patrones y álgebra","Geometría","Medición","Datos y probabilidades"],questionCount:quantity,scoring:"Un punto por respuesta correcta; porcentaje de logro. No estimar puntaje oficial SIMCE."} : null;
   const instruction = [
     "Eres especialista en currículum escolar chileno. Genera material ORIGINAL, claro, apropiado para la edad y revisable por un docente.",
     "No atribuyas preguntas a SIMCE ni afirmes que sean oficiales. No inventes códigos ni textos oficiales de OA.",
     "Devuelve exclusivamente JSON válido con estructura: {title:string, introduction:string, activities:[{number:number, stimulus:string, question:string, options:string[], correctAnswer:string, explanation:string, skill:string}], teacherNotes:string}.",
     "Para selección múltiple entrega cuatro alternativas distintas y una única respuesta correcta que coincida exactamente con una alternativa. Para actividades abiertas deja options=[] y correctAnswer como respuesta modelo.",
-    "Para fluidez lectora entrega textos breves y pautas de observación; no inventes resultados de estudiantes."
+    "Para fluidez lectora entrega textos breves y pautas de observación; no inventes resultados de estudiantes.",
+    "Si el módulo es SIMCE, incluye specificationTable como arreglo con una fila por ítem: {number:number, curricularAxis:string, learningObjective:string, skill:string, difficulty:string, points:number, correctAnswer:string}. Los números deben coincidir con activities; asigna 1 punto por ítem. Distribuye habilidades/ejes y complejidades de manera equilibrada, coherente con el currículum del nivel solicitado. No inventes códigos OA oficiales; si no hay OA proporcionado utiliza descripciones curriculares revisables.",
+    "Si el módulo es de 2° básico, crea un cuadernillo de alfabetización con portada, secuencia gradual de actividades y orientaciones para el docente, con textos propios. No copies ni reproduzcas materiales de terceros."
   ].join("\n");
-  const prompt = JSON.stringify({moduleId,grade,difficulty,oa:oa || "OA por definir y validar por docente",quantity,mode});
+  const prompt = JSON.stringify({moduleId,grade,difficulty,oa:oa || "OA por definir y validar por docente",quantity,mode,specification});
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method:"POST",
@@ -43,6 +47,7 @@ export async function POST(request: Request) {
     if (typeof raw !== "string") throw new Error("Empty response");
     const result = JSON.parse(raw);
     if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 40) throw new Error("Invalid structure");
+    if (simce) { const table = result.specificationTable; if (!Array.isArray(table) || table.length !== result.activities.length || result.activities.length !== quantity || !table.every((row:any,i:number)=>row && row.number===i+1 && row.points===1 && typeof row.skill==="string" && typeof row.curricularAxis==="string" && typeof row.learningObjective==="string" && typeof row.correctAnswer==="string")) throw new Error("Invalid specification table"); result.scoring = {maximumPoints:quantity,method:"1 punto por respuesta correcta; porcentaje de logro",officialSimceScore:false}; }
     const charged = await prisma.user.updateMany({ where: { id: account.id, active: true, ...(account.monthlyAiLimit !== null ? { monthlyAiUsed: { lt: account.monthlyAiLimit } } : {}) }, data: { monthlyAiUsed: { increment: 1 } } });
     if (!charged.count) return NextResponse.json({ error: "Límite de generaciones IA alcanzado." }, { status: 429 });
     return NextResponse.json({resource:result,grade,moduleId,notice:"Borrador generado con IA. Revisión docente obligatoria antes de utilizar."});
