@@ -98,7 +98,7 @@ export default function RecursosAprendizajePage() {
       <span className="no-print"><button type="button" disabled={loading} onClick={generate} style={{ padding: "12px 20px", borderRadius: 10, cursor: loading ? "wait" : "pointer" }}>{loading ? "Generando recurso IA…" : "Generar con IA"}</button></span>
       {error && <p role="alert" style={{ color: "#ad2828" }}>{error}</p>}
       {resource && <article className="print-content" style={{ marginTop: 20, padding: 18, border: "1px solid #d6e1e7", borderRadius: 12 }}>
-        <h3>{resource.title}</h3><p>{resource.introduction}</p>
+        <h3>{resource.title}</h3>{(moduleId==="precursores"||moduleId==="cuadernillos") && <div style={{padding:"16px 0",borderBottom:"2px solid #e2edf0",marginBottom:18}}><p><strong>CUADERNILLO DE {moduleId==="precursores"?"PRECURSORES DE LA LECTURA":"COMPRENSIÓN DE LECTURA"} · 2° BÁSICO</strong></p><p>Mi nombre es: ____________________________________</p><p>Mi curso es: __________________</p>{resource.studentInstructions && <section><h4>Instrucciones</h4><p style={{whiteSpace:"pre-wrap"}}>{resource.studentInstructions}</p></section>}</div>}<p>{resource.introduction}</p>
         <div className="no-print"><label>Título editable <input value={resource.title || ""} onChange={e=>{setResource({...resource,title:e.target.value});setSavedMessage("");}} /></label></div>
         {resource.activities?.map((a:any, i:number) => <section key={i} style={{ padding: 12, borderBottom: "1px solid #ddd" }}>
           <h4>Actividad {i+1}: {a.skill}</h4><p>{a.stimulus}</p><p><strong>{a.question}</strong></p>
