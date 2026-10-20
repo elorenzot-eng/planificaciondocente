@@ -20,6 +20,7 @@ export default function RecursosAprendizajePage() {
   const [savedMessage, setSavedMessage] = useState("");
   const [saving, setSaving] = useState(false);
   const [resource, setResource] = useState<any>(null);
+  const [resourceId, setResourceId] = useState<string | null>(null);
   const [saved, setSaved] = useState<any[]>([]);
   const [showSaved, setShowSaved] = useState(false);
   const [printTeacher, setPrintTeacher] = useState(false);
@@ -44,16 +45,17 @@ export default function RecursosAprendizajePage() {
     if (!resource) return;
     setSaving(true); setError(""); setSavedMessage("");
     try {
-      const response = await fetch("/api/recursos-aprendizaje", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({moduleId,content:resource})});
+      const response = await fetch("/api/recursos-aprendizaje", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:resourceId,moduleId,content:resource})});
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "No fue posible guardar");
+      if (data.resource?.id) setResourceId(data.resource.id);
       setSavedMessage("Borrador guardado correctamente.");
       if (showSaved) await loadSaved();
     } catch (e) { setError(e instanceof Error ? e.message : "Error al guardar"); }
     finally { setSaving(false); }
   }
   async function generate() {
-    setLoading(true); setError(""); setSavedMessage(""); setResource(null);
+    setLoading(true); setError(""); setSavedMessage(""); setResource(null); setResourceId(null);
     try {
       const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,difficulty,quantity,oa,mode}) });
       const data = await response.json();
@@ -71,7 +73,7 @@ export default function RecursosAprendizajePage() {
     <div className="no-print"><button type="button" onClick={loadSaved}>Ver mis recursos guardados</button>
       {showSaved && <section aria-label="Mis recursos guardados"><h2>Mis recursos guardados</h2>
         {saved.length===0 && <p>No hay recursos guardados.</p>}
-        {saved.map(item => <button key={item.id} type="button" onClick={() => {setResource(item.content);setModuleId(item.moduleId);setSavedMessage("");}} style={{display:"block",margin:"8px 0",padding:10}}>{item.title} · {item.grade}</button>)}
+        {saved.map(item => <button key={item.id} type="button" onClick={() => {setResource(item.content);setResourceId(item.id);setModuleId(item.moduleId);setSavedMessage("");}} style={{display:"block",margin:"8px 0",padding:10}}>{item.title} · {item.grade}</button>)}
       </section>}
     </div>
     <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 12 }}>
