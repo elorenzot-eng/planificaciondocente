@@ -1,39 +1,43 @@
 "use client";
-import { useState } from "react";
 
-const secondGrade = [
-  { title: "Precursores de la lectura", description: "Conciencia fonológica, sonidos, sílabas, decodificación y vocabulario.", module: "precursores", icon: "🔤" },
-  { title: "Cuadernillos de comprensión lectora", description: "Textos originales, actividades secuenciadas y preguntas de comprensión.", module: "cuadernillos", icon: "📖" },
-  { title: "Fluidez lectora", description: "Lecturas graduadas, precisión, ritmo y seguimiento docente.", module: "fluidez", icon: "📚" },
+const groups = [
+  {grade:"2", title:"2° básico · Lectura", subtitle:"Cuadernillos y actividades de lectura", items:[
+    {title:"Precursores de lectura", module:"precursores", icon:"🔤", description:"Conciencia fonológica, sonidos y palabras"},
+    {title:"Fluidez lectora", module:"fluidez", icon:"📚", description:"Precisión, ritmo y seguimiento lector"},
+    {title:"Comprensión lectora", module:"cuadernillos", icon:"📖", description:"Textos narrativos e informativos y preguntas"}
+  ]},
+  {grade:"4", title:"Ensayo SIMCE · 4° básico", subtitle:"Ensayos originales para practicar y revisar", items:[
+    {title:"Lectura", module:"simce-lectura", icon:"📗", description:"Preguntas por habilidades y OA"},
+    {title:"Matemática", module:"simce-matematica", icon:"📘", description:"Preguntas por ejes y OA"}
+  ]},
+  {grade:"6", title:"Ensayo SIMCE · 6° básico", subtitle:"Ensayos originales para practicar y revisar", items:[
+    {title:"Lectura", module:"simce-lectura", icon:"📗", description:"Preguntas por habilidades y OA"},
+    {title:"Matemática", module:"simce-matematica", icon:"📘", description:"Preguntas por ejes y OA"}
+  ]},
+  {grade:"8", title:"Ensayo SIMCE · 8° básico", subtitle:"Ensayos originales para practicar y revisar", items:[
+    {title:"Lectura", module:"simce-lectura", icon:"📗", description:"Preguntas por habilidades y OA"},
+    {title:"Matemática", module:"simce-matematica", icon:"📘", description:"Preguntas por ejes y OA"}
+  ]}
 ];
-const simceGrades = [
-  { title: "Matemática", description: "Ensayos tipo SIMCE de matemática adaptados al nivel seleccionado.", module: "simce-matematica", icon: "📘" },
-  { title: "Lectura", description: "Ensayos tipo SIMCE de lectura adaptados al nivel seleccionado.", module: "simce-lectura", icon: "📗" },
-];
-export default function EnsayosSimcePage() {
-  const [grade, setGrade] = useState<"2"|"4"|"6"|"8"|null>(null);
-  const items = grade === "2" ? secondGrade : simceGrades;
-  return <main style={{maxWidth:1040,margin:"0 auto",padding:"32px 20px",fontFamily:"system-ui,sans-serif",color:"#15324b"}}>
-    <a href="/" style={{color:"#007e90"}}>← Volver al Centro de Mando</a>
+export default function EnsayosSimcePage(){
+  return <main style={{maxWidth:1060,margin:"0 auto",padding:"32px 20px",fontFamily:"system-ui,sans-serif",color:"#15324b"}}>
+    <a href="/" style={{color:"#007e90"}}>← Volver a EducAntay</a>
     <h1>Ensayos SIMCE y Lectura</h1>
-    <p>Selecciona el nivel para acceder a cuadernillos de lectura de 2° básico o ensayos originales tipo SIMCE de 4°, 6° y 8° básico.</p>
-    <nav aria-label="Carpetas por nivel" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:16,marginTop:28}}>
-      <button type="button" onClick={()=>setGrade("2")} aria-expanded={grade==="2"} style={{textAlign:"left",border:grade==="2"?"2px solid #00a6a6":"1px solid #cbdde5",borderRadius:16,padding:22,background:grade==="2"?"#e9f8f8":"white",color:"inherit",cursor:"pointer"}}>
-        <span aria-hidden="true" style={{fontSize:32}}>📁</span><h2>2° básico</h2><p>Cuadernillos y actividades para aprender y comprender lo que se lee.</p>
-      </button>
-      <button type="button" onClick={()=>setGrade("4")} aria-expanded={grade==="4"} style={{textAlign:"left",border:grade==="4"?"2px solid #00a6a6":"1px solid #cbdde5",borderRadius:16,padding:22,background:grade==="4"?"#e9f8f8":"white",color:"inherit",cursor:"pointer"}}>
-        <span aria-hidden="true" style={{fontSize:32}}>📁</span><h2>4° básico</h2><p>Ensayos tipo SIMCE de Matemática y Lectura.</p>
-      </button>
-      {(["6","8"] as const).map(level=><button type="button" key={level} onClick={()=>setGrade(level)} aria-expanded={grade===level} style={{textAlign:"left",border:grade===level?"2px solid #00a6a6":"1px solid #cbdde5",borderRadius:16,padding:22,background:grade===level?"#e9f8f8":"white",color:"inherit",cursor:"pointer"}}><span aria-hidden="true" style={{fontSize:32}}>📁</span><h2>{level}° básico</h2><p>Ensayos tipo SIMCE de Matemática y Lectura adaptados al nivel.</p></button>)}
-    </nav>
-    {grade && <section style={{marginTop:26}}>
-      <h2>📂 {grade}° básico — {grade==="2"?"Lectura y comprensión":"Ensayos tipo SIMCE"}</h2>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:16}}>
-        {items.map(item=><a key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${grade}`} style={{border:"1px solid #cbdde5",borderRadius:14,padding:22,textDecoration:"none",color:"inherit",background:"#fff"}}>
-          <span style={{fontSize:28}}>{item.icon}</span><h3>{item.title}</h3><p>{item.description}</p><strong style={{color:"#007e90"}}>Abrir →</strong>
+    <p>Selecciona directamente el cuadro del recurso que deseas preparar. Los niveles aparecen de arriba hacia abajo, desde 2° hasta 8° básico.</p>
+    {groups.map(group=><section key={group.grade} aria-label={group.title} style={{marginTop:30}}>
+      <div style={{borderBottom:"2px solid #d8e9ee",paddingBottom:10,marginBottom:16}}>
+        <h2 style={{margin:"0 0 5px",fontSize:23}}>{group.title}</h2>
+        <p style={{margin:0,color:"#60788a"}}>{group.subtitle}</p>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(225px,1fr))",gap:14}}>
+        {group.items.map(item=><a key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${group.grade}`} style={{display:"block",textDecoration:"none",color:"inherit",background:"#fff",border:"1px solid #cbdde5",borderRadius:16,padding:20,boxShadow:"0 2px 8px rgba(15,52,74,.05)"}}>
+          <span aria-hidden="true" style={{fontSize:29}}>{item.icon}</span>
+          <h3 style={{margin:"12px 0 8px",fontSize:19}}>{item.title}</h3>
+          <p style={{fontSize:14,color:"#5b7281",minHeight:40}}>{item.description}</p>
+          <strong style={{color:"#007e90"}}>Abrir recurso →</strong>
         </a>)}
       </div>
-      <p style={{marginTop:20,fontSize:13,color:"#596b77"}}>Los recursos se generan con IA para revisión docente. Los ensayos tipo SIMCE son originales y no oficiales.</p>
-    </section>}
+    </section>)}
+    <p style={{marginTop:30,fontSize:13,color:"#596b77"}}>Los ensayos tipo SIMCE son materiales originales no oficiales. Revisa las preguntas y su tabla de especificaciones antes de aplicarlos.</p>
   </main>;
 }
