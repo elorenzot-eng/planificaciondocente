@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import { curriculumOA } from "../../lib/curriculum";
 
 type ModuleKey = "precursores" | "cuadernillos" | "simce-lectura" | "simce-matematica" | "fluidez";
 const modules: { id: ModuleKey; title: string; grade: string; description: string }[] = [
@@ -16,6 +17,7 @@ export default function RecursosAprendizajePage() {
   const [difficulty, setDifficulty] = useState("Intermedio");
   const [quantity, setQuantity] = useState(10);
   const [oa, setOa] = useState("");
+  const [selectedOaIds, setSelectedOaIds] = useState<string[]>([]);
   const [mode, setMode] = useState("Práctica");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -60,7 +62,7 @@ export default function RecursosAprendizajePage() {
   async function generate() {
     setLoading(true); setError(""); setSavedMessage(""); setResource(null); setResourceId(null);
     try {
-      const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,grade,difficulty,quantity,oa,mode}) });
+      const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,grade,difficulty,quantity,oa: moduleId.startsWith("simce") && selectedOaIds.length ? curriculumOA.filter(x=>selectedOaIds.includes(x.id)).map(x=>`${x.code} (${x.axis}): ${x.text}`).join("\n") : oa,mode}) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Error de generación");
       setResource(data.resource);setAnswers({});
@@ -68,6 +70,8 @@ export default function RecursosAprendizajePage() {
     finally { setLoading(false); }
   }
   const selected = useMemo(() => modules.find(m => m.id === moduleId)!, [moduleId]);
+  const availableOA = useMemo(() => curriculumOA.filter(x => x.level === `${grade}° Básico` && x.subject === (moduleId === "simce-matematica" ? "Matemática" : "Lenguaje y Comunicación / Lengua y Literatura") && x.status === "official"), [grade,moduleId]);
+  useEffect(()=>setSelectedOaIds([]),[grade,moduleId]);
   return <main style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px", fontFamily: "system-ui, sans-serif", color: "#15324b" }}>
     <a className="no-print" href="/" style={{ color: "#007e90" }}>← Volver a EducAntay</a>
     <style>{`@page { size:A4; margin:16mm; } @media print { body { background:white !important; } .workbook-cover { min-height:245mm; break-after:page; page-break-after:always; display:flex !important; flex-direction:column; justify-content:space-between; } .workbook-activity { break-inside:avoid; page-break-inside:avoid; } .workbook-instructions { break-after:page; page-break-after:always; } .workbook-cover h2 { font-size:32pt; } .workbook-answer-space { min-height:65px; border-bottom:1px solid #aaa; } } @media print { .no-print { display:none !important; } main { max-width:none !important; padding:0 !important; } .print-content { border:none !important; margin:0 !important; padding:0 !important; } .print-answers { display:${printTeacher ? "block" : "none"} !important; } .print-answers details { display:block; } .print-answers summary { display:none; } .print-answers details > * { display:block; } }`}</style>
@@ -89,11 +93,12 @@ export default function RecursosAprendizajePage() {
       <p className="no-print">Nivel: {moduleId.startsWith("simce") ? `${grade}° básico` : selected.grade}</p>
       {moduleId.startsWith("simce") && <div className="no-print"><label>Nivel <select value={grade} onChange={e=>setGrade(e.target.value)}><option value="2">2° básico</option><option value="4">4° básico</option><option value="6">6° básico</option><option value="8">8° básico</option></select></label></div>}
       <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 16 }}>
-        <label>Objetivo de Aprendizaje (OA)<input value={oa} onChange={e => setOa(e.target.value)} placeholder="Código o descripción del OA" style={{ display: "block", width: "100%", padding: 10, boxSizing: "border-box" }}/></label>
+        <label>{moduleId.startsWith("simce") ? "OA adicional / indicación curricular" : "Objetivo de Aprendizaje (OA)"}<input value={oa} onChange={e => setOa(e.target.value)} placeholder="Código o descripción del OA" style={{ display: "block", width: "100%", padding: 10, boxSizing: "border-box" }}/></label>
         <label>Dificultad<select value={difficulty} onChange={e => setDifficulty(e.target.value)} style={{ display: "block", width: "100%", padding: 10 }}><option>Inicial</option><option>Intermedio</option><option>Avanzado</option></select></label>
         <label>Cantidad de actividades o preguntas<input type="number" min={1} max={40} value={quantity} onChange={e => setQuantity(Math.max(1,Math.min(40,Number(e.target.value)||1)))} style={{ display: "block", width: "100%", padding: 10, boxSizing: "border-box" }}/></label>
         {moduleId.startsWith("simce") && <label>Modalidad<select value={mode} onChange={e => setMode(e.target.value)} style={{ display: "block", width: "100%", padding: 10 }}><option>Diagnóstico</option><option>Práctica</option><option>Simulacro</option></select></label>}
       </div>
+      {moduleId.startsWith("simce") && <fieldset className="no-print" style={{border:"1px solid #d6e1e7",borderRadius:12,padding:16,marginTop:18}}><legend><strong>Seleccionar Objetivos de Aprendizaje (OA) para el ensayo</strong></legend>{availableOA.length ? <><p>Marca uno o varios OA precargados para orientar las preguntas y su tabla de especificaciones.</p>{availableOA.map(item=><label key={item.id} style={{display:"block",padding:"9px 0",lineHeight:1.5}}><input type="checkbox" checked={selectedOaIds.includes(item.id)} onChange={e=>setSelectedOaIds(prev=>e.target.checked?[...prev,item.id]:prev.filter(id=>id!==item.id))} /> <strong>{item.code}</strong> · {item.axis}: {item.text}</label>)}<p><strong>{selectedOaIds.length}</strong> OA seleccionados</p></>:<p>Aún no hay OA precargados y verificados para esta asignatura y nivel. Puedes ingresar el OA en el campo superior. No se mostrarán códigos inventados.</p>}</fieldset>}
       <p className="no-print" style={{ marginTop: 20, background: "#f2f6f8", padding: 14, borderRadius: 10 }}><strong>Vista previa de configuración:</strong> {selected.grade} · {difficulty} · {quantity} actividades{oa ? ` · OA: ${oa}` : ""}{moduleId.startsWith("simce") ? ` · ${mode}` : ""}.</p>
       <span className="no-print"><button type="button" disabled={loading} onClick={generate} style={{ padding: "12px 20px", borderRadius: 10, cursor: loading ? "wait" : "pointer" }}>{loading ? "Generando recurso IA…" : "Generar con IA"}</button></span>
       {error && <p role="alert" style={{ color: "#ad2828" }}>{error}</p>}
