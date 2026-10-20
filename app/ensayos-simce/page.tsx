@@ -24,12 +24,13 @@ export default function EnsayosSimcePage(){
     <a href="/" style={{color:"#007e90"}}>← Volver a EducAntay</a>
     <h1>Ensayos SIMCE y Lectura</h1>
     <p>Selecciona directamente el cuadro del recurso que deseas preparar. Los niveles aparecen de arriba hacia abajo, desde 2° hasta 8° básico.</p>
-    {groups.map(group=><section key={group.grade} aria-label={group.title} style={{marginTop:30}}>
+    <div style={{display:"flex",flexDirection:"column",gap:24,marginTop:26}}>
+    {groups.map(group=><section key={group.grade} aria-label={group.title} style={{display:"block",width:"100%",margin:0,clear:"both",flex:"0 0 auto"}}>
       <div style={{borderBottom:"2px solid #d8e9ee",paddingBottom:10,marginBottom:16}}>
         <h2 style={{margin:"0 0 5px",fontSize:21}}>{group.title}</h2>
         <p style={{margin:0,color:"#60788a"}}>{group.subtitle}</p>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(165px,1fr))",gap:10}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,185px))",gap:10}}>
         {group.items.map(item=><a key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${group.grade}`} style={{display:"block",textDecoration:"none",color:"inherit",background:group.grade==="2"?"#F0FAFE":group.grade==="4"?"#FAF5FF":group.grade==="6"?"#FFFBF0":"#F1FCF7",border:`1px solid ${group.grade==="2"?"#B8E4EF":group.grade==="4"?"#E3D1F4":group.grade==="6"?"#F5DFA5":"#BFE7D7"}`,borderLeft:`5px solid ${group.grade==="2"?"#0EA5E9":group.grade==="4"?"#9B59D0":group.grade==="6"?"#F0AD25":"#10B981"}`,borderRadius:12,padding:13,boxShadow:"0 1px 5px rgba(15,52,74,.04)",minHeight:130}}>
           <span aria-hidden="true" style={{fontSize:23}}>{item.icon}</span>
           <h3 style={{margin:"7px 0 5px",fontSize:16}}>{item.title}</h3>
@@ -38,6 +39,7 @@ export default function EnsayosSimcePage(){
         </a>)}
       </div>
     </section>)}
+    </div>
     <p style={{marginTop:30,fontSize:13,color:"#596b77"}}>Los ensayos tipo SIMCE son materiales originales no oficiales. Revisa las preguntas y su tabla de especificaciones antes de aplicarlos.</p>
   </main>;
 }
