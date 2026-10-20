@@ -12,7 +12,7 @@ const modules: { id: ModuleKey; title: string; grade: string; description: strin
 export default function RecursosAprendizajePage() {
   const [moduleId, setModuleId] = useState<ModuleKey>("precursores");
   const [grade, setGrade] = useState("4");
-  useEffect(() => { const q = new URLSearchParams(window.location.search); const m=q.get("modulo"); const g=q.get("nivel"); if (m && modules.some(x=>x.id===m)) setModuleId(m as ModuleKey); if(g==="2"||g==="4") setGrade(g); }, []);
+  useEffect(() => { const q = new URLSearchParams(window.location.search); const m=q.get("modulo"); const g=q.get("nivel"); if (m && modules.some(x=>x.id===m)) setModuleId(m as ModuleKey); if(["2","4","6","8"].includes(g||"")) setGrade(g!); }, []);
   const [difficulty, setDifficulty] = useState("Intermedio");
   const [quantity, setQuantity] = useState(10);
   const [oa, setOa] = useState("");
@@ -75,7 +75,7 @@ export default function RecursosAprendizajePage() {
     <div className="no-print"><button type="button" onClick={loadSaved}>Ver mis recursos guardados</button>
       {showSaved && <section aria-label="Mis recursos guardados"><h2>Mis recursos guardados</h2>
         {saved.length===0 && <p>No hay recursos guardados.</p>}
-        {saved.map(item => <button key={item.id} type="button" onClick={() => {setResource(item.content);setResourceId(item.id);setModuleId(item.moduleId);setGrade(item.grade==="2° básico"?"2":"4");setSavedMessage("");}} style={{display:"block",margin:"8px 0",padding:10}}>{item.title} · {item.grade}</button>)}
+        {saved.map(item => <button key={item.id} type="button" onClick={() => {setResource(item.content);setResourceId(item.id);setModuleId(item.moduleId);setGrade(["2","4","6","8"].find(g=>item.grade===`${g}° básico`)||"4");setSavedMessage("");}} style={{display:"block",margin:"8px 0",padding:10}}>{item.title} · {item.grade}</button>)}
       </section>}
     </div>
     <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 12 }}>
@@ -86,7 +86,7 @@ export default function RecursosAprendizajePage() {
     <section className="print-content" style={{ marginTop: 28, padding: 22, border: "1px solid #d6e1e7", borderRadius: 14 }}>
       <h2 className="no-print">Configuración: {selected.title}</h2>
       <p className="no-print">Nivel: {moduleId.startsWith("simce") ? `${grade}° básico` : selected.grade}</p>
-      {moduleId.startsWith("simce") && <div className="no-print"><label>Nivel <select value={grade} onChange={e=>setGrade(e.target.value)}><option value="2">2° básico</option><option value="4">4° básico</option></select></label></div>}
+      {moduleId.startsWith("simce") && <div className="no-print"><label>Nivel <select value={grade} onChange={e=>setGrade(e.target.value)}><option value="2">2° básico</option><option value="4">4° básico</option><option value="6">6° básico</option><option value="8">8° básico</option></select></label></div>}
       <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 16 }}>
         <label>Objetivo de Aprendizaje (OA)<input value={oa} onChange={e => setOa(e.target.value)} placeholder="Código o descripción del OA" style={{ display: "block", width: "100%", padding: 10, boxSizing: "border-box" }}/></label>
         <label>Dificultad<select value={difficulty} onChange={e => setDifficulty(e.target.value)} style={{ display: "block", width: "100%", padding: 10 }}><option>Inicial</option><option>Intermedio</option><option>Avanzado</option></select></label>
