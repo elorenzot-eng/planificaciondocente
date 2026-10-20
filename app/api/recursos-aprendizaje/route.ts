@@ -29,6 +29,12 @@ export async function POST(request: Request) {
       JSON.stringify(content).length > 120000) {
     return NextResponse.json({ error: "Recurso inválido" }, { status: 400 });
   }
+  const existingId = typeof data.id === "string" ? data.id : null;
+  if (existingId) {
+    const updated = await prisma.learningResource.updateMany({ where: { id: existingId, userId: user.id }, data: { moduleId, grade: moduleId.startsWith("simce") ? "4° básico" : "2° básico", title: content.title.slice(0, 200), content } });
+    if (!updated.count) return NextResponse.json({ error: "Recurso no encontrado." }, { status: 404 });
+    return NextResponse.json({ resource: { id: existingId }, updated: true });
+  }
   const resource = await prisma.learningResource.create({
     data: { userId: user.id, moduleId, grade: moduleId.startsWith("simce") ? "4° básico" : "2° básico",
       title: content.title.slice(0, 200), content },
