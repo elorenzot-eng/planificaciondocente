@@ -17,9 +17,22 @@ export default function RecursosAprendizajePage() {
   const [mode, setMode] = useState("Práctica");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [savedMessage, setSavedMessage] = useState("");
+  const [saving, setSaving] = useState(false);
   const [resource, setResource] = useState<any>(null);
+  async function saveResource() {
+    if (!resource) return;
+    setSaving(true); setError(""); setSavedMessage("");
+    try {
+      const response = await fetch("/api/recursos-aprendizaje", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({moduleId,content:resource})});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "No fue posible guardar");
+      setSavedMessage("Borrador guardado correctamente.");
+    } catch (e) { setError(e instanceof Error ? e.message : "Error al guardar"); }
+    finally { setSaving(false); }
+  }
   async function generate() {
-    setLoading(true); setError(""); setResource(null);
+    setLoading(true); setError(""); setSavedMessage(""); setResource(null);
     try {
       const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,difficulty,quantity,oa,mode}) });
       const data = await response.json();
@@ -57,7 +70,7 @@ export default function RecursosAprendizajePage() {
           {a.options?.length > 0 && <ol type="A">{a.options.map((option:string,j:number)=><li key={j}>{option}</li>)}</ol>}
           <details><summary>Respuesta y orientación docente</summary><p>{a.correctAnswer}</p><p>{a.explanation}</p></details>
         </section>)}
-        <p>{resource.teacherNotes}</p><button type="button" onClick={() => window.print()}>Imprimir borrador</button>
+        <p>{resource.teacherNotes}</p><button type="button" disabled={saving} onClick={saveResource}>{saving ? "Guardando…" : "Guardar borrador"}</button> <button type="button" onClick={() => window.print()}>Imprimir borrador</button>{savedMessage && <p role="status">{savedMessage}</p>}
       </article>}
       <p><small>Los ensayos tipo SIMCE serán originales y no oficiales. El guardado, los PDF diferenciados y el registro de resultados todavía no están disponibles.</small></p>
     </section>
