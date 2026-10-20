@@ -89,6 +89,7 @@ model User {
   school School? @relation(fields:[schoolId],references:[id])
   plannings Planning[]
   assessments Assessment[]
+  learningResources LearningResource[]
   supportMaterials SupportMaterial[]
   portfolioDrafts PortfolioDraft[]
   portfolioReviews PortfolioReview[]
@@ -475,4 +476,17 @@ model PortfolioReview {
   user User @relation(fields:[userId],references:[id],onDelete:Cascade)
   @@unique([userId,year,grouping,module,section])
   @@index([userId,year])
+}
+
+model LearningResource {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  moduleId String
+  grade String
+  title String
+  content Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId,updatedAt])
 }
