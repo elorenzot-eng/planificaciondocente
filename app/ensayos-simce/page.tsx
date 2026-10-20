@@ -30,8 +30,8 @@ export default function EnsayosSimcePage(){
         <h2 style={{margin:"0 0 5px",fontSize:21}}>{group.title}</h2>
         <p style={{margin:0,color:"#60788a"}}>{group.subtitle}</p>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,185px))",gap:10}}>
-        {group.items.map(item=><a key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${group.grade}`} style={{display:"block",textDecoration:"none",color:"inherit",background:group.grade==="2"?"#F0FAFE":group.grade==="4"?"#FAF5FF":group.grade==="6"?"#FFFBF0":"#F1FCF7",border:`1px solid ${group.grade==="2"?"#B8E4EF":group.grade==="4"?"#E3D1F4":group.grade==="6"?"#F5DFA5":"#BFE7D7"}`,borderLeft:`5px solid ${group.grade==="2"?"#0EA5E9":group.grade==="4"?"#9B59D0":group.grade==="6"?"#F0AD25":"#10B981"}`,borderRadius:12,padding:13,boxShadow:"0 1px 5px rgba(15,52,74,.04)",minHeight:130}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,150px))",gap:12}}>
+        {group.items.map(item=><a key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${group.grade}`} style={{display:"block",textDecoration:"none",color:"inherit",background:group.grade==="2"?"#F0FAFE":group.grade==="4"?"#FAF5FF":group.grade==="6"?"#FFFBF0":"#F1FCF7",border:`1px solid ${group.grade==="2"?"#B8E4EF":group.grade==="4"?"#E3D1F4":group.grade==="6"?"#F5DFA5":"#BFE7D7"}`,borderLeft:`5px solid ${group.grade==="2"?"#0EA5E9":group.grade==="4"?"#9B59D0":group.grade==="6"?"#F0AD25":"#10B981"}`,borderRadius:12,padding:"18px 12px",boxShadow:"0 1px 5px rgba(15,52,74,.04)",minHeight:185}}>
           <span aria-hidden="true" style={{fontSize:23}}>{item.icon}</span>
           <h3 style={{margin:"7px 0 5px",fontSize:16}}>{item.title}</h3>
           <p style={{fontSize:12,color:"#5b7281",minHeight:30}}>{item.description}</p>
