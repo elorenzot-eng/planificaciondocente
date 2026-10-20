@@ -24,6 +24,7 @@ export async function POST(request: Request) {
   const allowed = ["precursores","cuadernillos","simce-lectura","simce-matematica","fluidez"];
   const moduleId = String(data.moduleId || "");
   const content = data.content;
+  const grade = moduleId.startsWith("simce") ? (String(data.grade) === "2" ? "2° básico" : "4° básico") : "2° básico";
   if (!allowed.includes(moduleId) || !content || typeof content !== "object" || Array.isArray(content) ||
       typeof content.title !== "string" || !Array.isArray(content.activities) || content.activities.length > 40 ||
       JSON.stringify(content).length > 120000) {
@@ -31,12 +32,12 @@ export async function POST(request: Request) {
   }
   const existingId = typeof data.id === "string" ? data.id : null;
   if (existingId) {
-    const updated = await prisma.learningResource.updateMany({ where: { id: existingId, userId: user.id }, data: { moduleId, grade: moduleId.startsWith("simce") ? "4° básico" : "2° básico", title: content.title.slice(0, 200), content } });
+    const updated = await prisma.learningResource.updateMany({ where: { id: existingId, userId: user.id }, data: { moduleId, grade, title: content.title.slice(0, 200), content } });
     if (!updated.count) return NextResponse.json({ error: "Recurso no encontrado." }, { status: 404 });
     return NextResponse.json({ resource: { id: existingId }, updated: true });
   }
   const resource = await prisma.learningResource.create({
-    data: { userId: user.id, moduleId, grade: moduleId.startsWith("simce") ? "4° básico" : "2° básico",
+    data: { userId: user.id, moduleId, grade,
       title: content.title.slice(0, 200), content },
     select: { id: true, title: true, updatedAt: true }
   });
