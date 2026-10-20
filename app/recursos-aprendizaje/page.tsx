@@ -15,11 +15,24 @@ export default function RecursosAprendizajePage() {
   const [quantity, setQuantity] = useState(10);
   const [oa, setOa] = useState("");
   const [mode, setMode] = useState("Práctica");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [resource, setResource] = useState<any>(null);
+  async function generate() {
+    setLoading(true); setError(""); setResource(null);
+    try {
+      const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,difficulty,quantity,oa,mode}) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Error de generación");
+      setResource(data.resource);
+    } catch (e) { setError(e instanceof Error ? e.message : "No se pudo generar"); }
+    finally { setLoading(false); }
+  }
   const selected = useMemo(() => modules.find(m => m.id === moduleId)!, [moduleId]);
   return <main style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px", fontFamily: "system-ui, sans-serif", color: "#15324b" }}>
     <a href="/" style={{ color: "#007e90" }}>← Volver a EducAntay</a>
     <h1>Recursos de Aprendizaje IA</h1>
-    <p>Configura materiales pedagógicos para 2° y 4° básico. Esta sección está en preparación y todavía no genera ni guarda recursos.</p>
+    <p>Configura materiales pedagógicos para 2° y 4° básico. Genera borradores de recursos para revisión docente. El guardado en Mi Carpeta está pendiente.</p>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 12 }}>
       {modules.map(m => <button key={m.id} onClick={() => setModuleId(m.id)} aria-pressed={moduleId === m.id} style={{ textAlign: "left", border: moduleId === m.id ? "2px solid #00a6a6" : "1px solid #d6e1e7", background: moduleId === m.id ? "#eaf8f8" : "white", borderRadius: 14, padding: 18, cursor: "pointer", color: "inherit" }}>
         <strong>{m.title}</strong><div style={{ marginTop: 8 }}>{m.grade}</div><small>{m.description}</small>
@@ -35,8 +48,18 @@ export default function RecursosAprendizajePage() {
         {moduleId.startsWith("simce") && <label>Modalidad<select value={mode} onChange={e => setMode(e.target.value)} style={{ display: "block", width: "100%", padding: 10 }}><option>Diagnóstico</option><option>Práctica</option><option>Simulacro</option></select></label>}
       </div>
       <p style={{ marginTop: 20, background: "#f2f6f8", padding: 14, borderRadius: 10 }}><strong>Vista previa de configuración:</strong> {selected.grade} · {difficulty} · {quantity} actividades{oa ? ` · OA: ${oa}` : ""}{moduleId.startsWith("simce") ? ` · ${mode}` : ""}.</p>
-      <button type="button" disabled style={{ padding: "12px 20px", borderRadius: 10 }}>Generar con IA — próximamente</button>
-      <p><small>Los ensayos tipo SIMCE serán originales y no oficiales. La publicación, exportación y registro de resultados se habilitarán tras la integración con autenticación, IA y Mi Carpeta.</small></p>
+      <button type="button" disabled={loading} onClick={generate} style={{ padding: "12px 20px", borderRadius: 10, cursor: loading ? "wait" : "pointer" }}>{loading ? "Generando recurso IA…" : "Generar con IA"}</button>
+      {error && <p role="alert" style={{ color: "#ad2828" }}>{error}</p>}
+      {resource && <article style={{ marginTop: 20, padding: 18, border: "1px solid #d6e1e7", borderRadius: 12 }}>
+        <h3>{resource.title}</h3><p>{resource.introduction}</p>
+        {resource.activities?.map((a:any, i:number) => <section key={i} style={{ padding: 12, borderBottom: "1px solid #ddd" }}>
+          <h4>Actividad {i+1}: {a.skill}</h4><p>{a.stimulus}</p><p><strong>{a.question}</strong></p>
+          {a.options?.length > 0 && <ol type="A">{a.options.map((option:string,j:number)=><li key={j}>{option}</li>)}</ol>}
+          <details><summary>Respuesta y orientación docente</summary><p>{a.correctAnswer}</p><p>{a.explanation}</p></details>
+        </section>)}
+        <p>{resource.teacherNotes}</p><button type="button" onClick={() => window.print()}>Imprimir borrador</button>
+      </article>}
+      <p><small>Los ensayos tipo SIMCE serán originales y no oficiales. El guardado, los PDF diferenciados y el registro de resultados todavía no están disponibles.</small></p>
     </section>
   </main>;
 }
