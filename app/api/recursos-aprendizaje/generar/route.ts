@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import { getSession } from "../../../lib/auth";
+import { prisma } from "../../../lib/prisma";
 
 const allowed = ["precursores","cuadernillos","simce-lectura","simce-matematica","fluidez"] as const;
 export async function POST(request: Request) {
   const session = await getSession();
   if (!session?.id) return NextResponse.json({ error: "Debes iniciar sesión." }, { status: 401 });
+  const account = await prisma.user.findUnique({ where: { id: String(session.id) }, select: { id: true, active: true, monthlyAiLimit: true, monthlyAiUsed: true } });
+  if (!account?.active) return NextResponse.json({ error: "Cuenta inactiva." }, { status: 403 });
+  if (account.monthlyAiLimit !== null && account.monthlyAiUsed >= account.monthlyAiLimit) return NextResponse.json({ error: "Límite de generaciones IA alcanzado." }, { status: 429 });
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 }); }
   const moduleId = String(body.moduleId || "");
@@ -38,6 +42,8 @@ export async function POST(request: Request) {
     if (typeof raw !== "string") throw new Error("Empty response");
     const result = JSON.parse(raw);
     if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 40) throw new Error("Invalid structure");
+    const charged = await prisma.user.updateMany({ where: { id: account.id, active: true, ...(account.monthlyAiLimit !== null ? { monthlyAiUsed: { lt: account.monthlyAiLimit } } : {}) }, data: { monthlyAiUsed: { increment: 1 } } });
+    if (!charged.count) return NextResponse.json({ error: "Límite de generaciones IA alcanzado." }, { status: 429 });
     return NextResponse.json({resource:result,grade,moduleId,notice:"Borrador generado con IA. Revisión docente obligatoria antes de utilizar."});
   } catch {
     return NextResponse.json({error:"La generación no pudo completarse. Vuelve a intentarlo."},{status:502});
