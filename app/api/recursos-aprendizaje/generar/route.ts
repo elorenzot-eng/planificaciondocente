@@ -17,11 +17,11 @@ export async function POST(request: Request) {
   const quantity = Number(body.quantity);
   const mode = String(body.mode || "Práctica");
   const requestedGrade = String(body.grade || "4");
-  if (!allowed.some(x => x === moduleId) || !["Inicial","Intermedio","Avanzado"].includes(difficulty) || !Number.isInteger(quantity) || quantity < 1 || quantity > 40 || !["Diagnóstico","Práctica","Simulacro"].includes(mode) || !["2","4"].includes(requestedGrade)) {
+  if (!allowed.some(x => x === moduleId) || !["Inicial","Intermedio","Avanzado"].includes(difficulty) || !Number.isInteger(quantity) || quantity < 1 || quantity > 40 || !["Diagnóstico","Práctica","Simulacro"].includes(mode) || !["2","4","6","8"].includes(requestedGrade)) {
     return NextResponse.json({ error: "Parámetros fuera de rango." }, { status: 400 });
   }
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "Generación IA no configurada." }, { status: 503 });
-  const grade = moduleId.startsWith("simce") ? (requestedGrade === "2" ? "2° básico" : "4° básico") : "2° básico";
+  const grade = moduleId.startsWith("simce") ? `${requestedGrade}° básico` : "2° básico";
   const instruction = [
     "Eres especialista en currículum escolar chileno. Genera material ORIGINAL, claro, apropiado para la edad y revisable por un docente.",
     "No atribuyas preguntas a SIMCE ni afirmes que sean oficiales. No inventes códigos ni textos oficiales de OA.",
