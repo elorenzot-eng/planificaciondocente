@@ -58,7 +58,7 @@ export default function EcepPage(){
  const [category,setCategory]=useState("Todas las áreas");
  const availableDomains=Array.from(new Set(sample.filter(q=>category==="Todas las áreas"||(category==="Asignaturas" ? disciplinarySubjects.includes(q.domain):!disciplinarySubjects.includes(q.domain))).map(q=>q.domain)));
  const durationSeconds= Math.max(300,Math.min(3600,availableDomains.length===0?600:sample.filter(q=>(domainFilter==="Todos los ámbitos"||q.domain===domainFilter)&&(category==="Todas las áreas"||(category==="Asignaturas"?disciplinarySubjects.includes(q.domain):!disciplinarySubjects.includes(q.domain)))).length*90));
- const activeQuestions=sample.map((q,i)=>({...q,originalIndex:i})).filter(q=>(domainFilter==="Todos los ámbitos"||q.domain===domainFilter)&&(category==="Todas las áreas"||(category==="Asignaturas"?disciplinarySubjects.includes(q.domain):!disciplinarySubjects.includes(q.domain))));
+ const activeQuestions=sample.map((q,i)=>{const rotation=i%4;return {...q,originalIndex:i,options:[...q.options.slice(rotation),...q.options.slice(0,rotation)],answer:(q.answer-rotation+4)%4};}).filter(q=>(domainFilter==="Todos los ámbitos"||q.domain===domainFilter)&&(category==="Todas las áreas"||(category==="Asignaturas"?disciplinarySubjects.includes(q.domain):!disciplinarySubjects.includes(q.domain))));
  const [started,setStarted]=useState(false);
  const [reviewWrongOnly,setReviewWrongOnly]=useState(false);
  const unanswered=activeQuestions.filter(q=>answers[q.originalIndex]===undefined).length;
