@@ -2,6 +2,34 @@ import { NextResponse } from "next/server";
 import { getSession } from "../../../../lib/auth";
 import { prisma } from "../../../../lib/prisma";
 
+function normalizeSimceAnswers(result: any): boolean {
+  if (!Array.isArray(result.activities)) return false;
+  for (const item of result.activities) {
+    if (!Array.isArray(item.options) || item.options.length !== 4 || item.options.some((o:unknown)=>typeof o!=="string" || !String(o).trim())) return false;
+    const strip = (value:string) => value.trim().replace(/^[A-D][).:\-]\s*/i,"").trim();
+    const options = item.options.map((o:string)=>strip(o));
+    if (new Set(options.map((o:string)=>o.toLocaleLowerCase("es"))).size !== 4) return false;
+    const raw = String(item.correctAnswer ?? "").trim();
+    const letter = raw.match(/^([A-D])(?:[).:\-]\s*.*)?$/i);
+    let index = -1;
+    if (letter) index = letter[1].toUpperCase().charCodeAt(0)-65;
+    else {
+      const matches = options.map((o:string,i:number)=>o.toLocaleLowerCase("es")===strip(raw).toLocaleLowerCase("es")?i:-1).filter((i:number)=>i>=0);
+      if (matches.length===1) index=matches[0];
+    }
+    if (index<0 || index>3) return false;
+    item.options=options;
+    item.correctAnswer=options[index];
+    item.itemType="seleccion_multiple";
+  }
+  if (Array.isArray(result.specificationTable)) {
+    for (let i=0;i<result.specificationTable.length;i++) {
+      if (result.specificationTable[i] && result.activities[i]) result.specificationTable[i].correctAnswer=result.activities[i].correctAnswer;
+    }
+  }
+  return true;
+}
+
 const allowed = ["precursores","cuadernillos","simce-lectura","simce-matematica","fluidez"] as const;
 export async function POST(request: Request) {
   const session = await getSession();
@@ -56,7 +84,7 @@ export async function POST(request: Request) {
     if (data.choices?.[0]?.finish_reason==="length") throw new Error("Response truncated due to token limit");
     const result = JSON.parse(raw);
     if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 40) throw new Error("Invalid structure");
-    if (simce && result.activities.some((a:any)=>!Array.isArray(a.options) || a.options.length!==4 || !a.options.includes(a.correctAnswer))) throw new Error("Invalid answer choices");
+    if (simce && !normalizeSimceAnswers(result)) throw new Error("Invalid answer choices after normalization");
     if (simce) { const table = result.specificationTable; if (!Array.isArray(table) || table.length !== result.activities.length || result.activities.length !== quantity || !table.every((row:any,i:number)=>row && row.number===i+1 && row.points===1 && typeof row.skill==="string" && typeof row.curricularAxis==="string" && typeof row.learningObjective==="string" && typeof row.correctAnswer==="string" && row.correctAnswer===result.activities[i].correctAnswer)) throw new Error("Invalid specification table"); result.scoring = {maximumPoints:quantity,method:"1 punto por respuesta correcta; porcentaje de logro",officialSimceScore:false}; }
     if (moduleId === "cuadernillos" && (!Array.isArray(result.passages) || result.passages.length < 2 || !result.passages.some((p:any)=>p.type==="narrativo") || !result.passages.some((p:any)=>p.type==="informativo") || result.activities.some((a:any)=>!result.passages.some((p:any)=>p.id===a.passageId)))) throw new Error("Invalid reading passages");
     if ((moduleId === "precursores" || moduleId === "cuadernillos") && (!result.studentInstructions || typeof result.studentInstructions !== "string" || result.activities.some((a:any)=>!Array.isArray(a.options) || (a.options.length!==0 && a.options.length!==3) || (a.options.length===3 && !a.options.includes(a.correctAnswer))))) throw new Error("Invalid second-grade workbook");
