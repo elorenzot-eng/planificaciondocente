@@ -4,29 +4,30 @@ import { prisma } from "../../../../lib/prisma";
 
 function normalizeSimceAnswers(result: any): boolean {
   if (!Array.isArray(result.activities)) return false;
-  for (const item of result.activities) {
-    if (!Array.isArray(item.options) || item.options.length !== 4 || item.options.some((o:unknown)=>typeof o!=="string" || !String(o).trim())) return false;
-    const strip = (value:string) => value.trim().replace(/^[A-D][).:\-]\s*/i,"").trim();
-    const options = item.options.map((o:string)=>strip(o));
-    if (new Set(options.map((o:string)=>o.toLocaleLowerCase("es"))).size !== 4) return false;
-    const raw = String(item.correctAnswer ?? "").trim();
-    const letter = raw.match(/^([A-D])(?:[).:\-]\s*.*)?$/i);
-    let index = -1;
-    if (letter) index = letter[1].toUpperCase().charCodeAt(0)-65;
-    else {
-      const matches = options.map((o:string,i:number)=>o.toLocaleLowerCase("es")===strip(raw).toLocaleLowerCase("es")?i:-1).filter((i:number)=>i>=0);
-      if (matches.length===1) index=matches[0];
+  for (let n=0;n<result.activities.length;n++) {
+    const item=result.activities[n];
+    const original=Array.isArray(item.options)?item.options:[];
+    if(original.length!==4) {console.error("SIMCE validation: option count",n+1,original.length);return false;}
+    const strip=(v:string)=>v.trim().replace(/^[A-D][).:\-]\s*/i,"").trim();
+    const options=original.map((o:unknown)=>typeof o==="string"?strip(o):"");
+    if(options.some((o:string)=>!o) || new Set(options.map((o:string)=>o.toLocaleLowerCase("es"))).size!==4) {console.error("SIMCE validation: blank or duplicate options",n+1);return false;}
+    const raw=String(item.correctAnswer??"").trim();
+    let index=-1;
+    const exact=options.map((o:string,i:number)=>o.toLocaleLowerCase("es")===strip(raw).toLocaleLowerCase("es")?i:-1).filter((i:number)=>i>=0);
+    if(exact.length===1) index=exact[0];
+    if(index<0) {
+      const letter=raw.match(/^([A-D])(?:[).:\-]\s*.*)?$/i);
+      if(letter) index=letter[1].toUpperCase().charCodeAt(0)-65;
     }
-    if (index<0 || index>3 && typeof item.correctOptionIndex==="number" && item.correctOptionIndex>=0 && item.correctOptionIndex<4) index=item.correctOptionIndex;
-    if (index<0 || index>3) return false;
+    if(index<0 && Number.isInteger(item.correctOptionIndex) && item.correctOptionIndex>=0 && item.correctOptionIndex<4) index=item.correctOptionIndex;
+    if(index<0) {console.error("SIMCE validation: unresolvable answer",n+1,"answer",raw.slice(0,70));return false;}
     item.options=options;
     item.correctAnswer=options[index];
+    item.correctOptionIndex=index;
     item.itemType="seleccion_multiple";
   }
-  if (Array.isArray(result.specificationTable)) {
-    for (let i=0;i<result.specificationTable.length;i++) {
-      if (result.specificationTable[i] && result.activities[i]) result.specificationTable[i].correctAnswer=result.activities[i].correctAnswer;
-    }
+  if(Array.isArray(result.specificationTable)) for(let i=0;i<result.specificationTable.length;i++) {
+    if(result.specificationTable[i]&&result.activities[i]) result.specificationTable[i].correctAnswer=result.activities[i].correctAnswer;
   }
   return true;
 }
