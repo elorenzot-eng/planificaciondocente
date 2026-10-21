@@ -111,7 +111,21 @@ export async function POST(request: Request) {
       });
       result.scoring = {maximumPoints:quantity,method:"1 punto por respuesta correcta; porcentaje de logro",officialSimceScore:false};
     }
-    if (moduleId === "cuadernillos" && (!Array.isArray(result.passages) || result.passages.length < 2 || !result.passages.some((p:any)=>p.type==="narrativo") || !result.passages.some((p:any)=>p.type==="informativo") || result.activities.some((a:any)=>!result.passages.some((p:any)=>p.id===a.passageId)))) throw new Error("Invalid reading passages");
+    if (moduleId === "cuadernillos") {
+      if (!Array.isArray(result.passages) || result.passages.length < 2) throw new Error("Missing reading passages");
+      result.passages = result.passages.map((passage:any,index:number) => ({
+        ...passage,
+        id: String(passage.id || "texto-"+(index+1)),
+        type: /narrativ|cuento|relato|historia/i.test(String(passage.type||"")) ? "narrativo" : /informativ|expositiv|noticia|art[ií]culo/i.test(String(passage.type||"")) ? "informativo" : index===0 ? "narrativo" : "informativo",
+        title: String(passage.title || "Texto "+(index+1)),
+        text: String(passage.text || "")
+      }));
+      if (!result.passages.some((p:any)=>p.type==="narrativo") || !result.passages.some((p:any)=>p.type==="informativo") || result.passages.some((p:any)=>p.text.trim().length<60)) throw new Error("Invalid reading passages");
+      result.activities.forEach((activity:any,index:number) => {
+        const linked = result.passages.find((p:any)=>String(p.id)===String(activity.passageId));
+        if (!linked) activity.passageId = result.passages[Math.min(result.passages.length-1,Math.floor(index/result.activities.length*result.passages.length))].id;
+      });
+    }
     if (!simce) {
       if (!result.studentInstructions || typeof result.studentInstructions !== "string") result.studentInstructions = moduleId==="fluidez" ? "Lee el texto en voz alta siguiendo las indicaciones del docente." : "Lee con atención cada instrucción y desarrolla las actividades.";
       if (!result.coverSubtitle || typeof result.coverSubtitle !== "string") result.coverSubtitle = moduleId==="precursores"?"Sonidos, sílabas y palabras":moduleId==="fluidez"?"Lectura en voz alta y seguimiento":"Textos narrativos e informativos";
@@ -124,7 +138,17 @@ export async function POST(request: Request) {
           if (!item.question || typeof item.question!=="string") item.question="Lee el texto en voz alta.";
           if (!item.correctAnswer || typeof item.correctAnswer!=="string") item.correctAnswer="Registrar tiempo, errores y palabras correctas sin completar resultados previamente.";
         } else if (item.options.length!==0 && item.options.length!==3) throw new Error("Invalid workbook option count");
-        else if (item.options.length===3 && !item.options.includes(item.correctAnswer)) throw new Error("Invalid workbook answer key");
+        else if (item.options.length===3 && !item.options.includes(item.correctAnswer)) {
+          const clean=(v:unknown)=>String(v??"").trim().replace(/^[A-C][).:\\-]\\s*/i,"").trim();
+          const options=item.options.map((option:unknown)=>clean(option));
+          const answer=clean(item.correctAnswer);
+          const matched=options.findIndex((option:string)=>option.toLocaleLowerCase("es")===answer.toLocaleLowerCase("es"));
+          const letter=String(item.correctAnswer??"").trim().match(/^([A-C])(?:[).:\\-]|$)/i);
+          const index=matched>=0?matched:letter?letter[1].toUpperCase().charCodeAt(0)-65:-1;
+          if(index<0) throw new Error("Invalid workbook answer key");
+          item.options=options;
+          item.correctAnswer=options[index];
+        }
       }
     }
     const charged = await prisma.user.updateMany({ where: { id: account.id, active: true, ...(account.monthlyAiLimit !== null ? { monthlyAiUsed: { lt: account.monthlyAiLimit } } : {}) }, data: { monthlyAiUsed: { increment: 1 } } });
