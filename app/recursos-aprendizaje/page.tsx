@@ -76,17 +76,17 @@ export default function RecursosAprendizajePage() {
   const availableOA = useMemo(() => curriculumOA.filter(x => x.level === `${grade}° Básico` && x.subject === (moduleId === "simce-matematica" ? "Matemática" : "Lenguaje y Comunicación / Lengua y Literatura") && x.status === "official"), [grade,moduleId]);
   useEffect(()=>{setSelectedOaIds([]);setSelectedCustomOa([]);setCustomOaText("");},[grade,moduleId]);
   return <main style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 20px", fontFamily: "system-ui, sans-serif", color: "#15324b" }}>
-    <a className="no-print" href="/" style={{ color: "#007e90" }}>← Volver a EducAntay</a>
+    <a className="no-print" href="/ensayos-simce" style={{ color: "#007e90" }}>← Volver a los niveles</a>
     <style>{`@page { size:A4; margin:16mm; } @media print { body { background:white !important; } .workbook-cover { min-height:245mm; break-after:page; page-break-after:always; display:flex !important; flex-direction:column; justify-content:space-between; } .workbook-activity { break-inside:avoid; page-break-inside:avoid; } .workbook-instructions { break-after:page; page-break-after:always; } .workbook-cover h2 { font-size:32pt; } .workbook-answer-space { min-height:65px; border-bottom:1px solid #aaa; } } @media print { .no-print { display:none !important; } main { max-width:none !important; padding:0 !important; } .print-content { border:none !important; margin:0 !important; padding:0 !important; } .print-answers { display:${printTeacher ? "block" : "none"} !important; } .print-answers details { display:block; } .print-answers summary { display:none; } .print-answers details > * { display:block; } }`}</style>
-    <h1 className="no-print">Recursos de Aprendizaje IA</h1>
-    <p className="no-print">Configura, revisa y guarda recursos de aprendizaje. Puedes imprimir versiones para estudiantes y docentes.</p>
+    <h1 className="no-print">{moduleId.startsWith("simce") ? `Ensayo SIMCE · ${moduleId==="simce-lectura"?"Lectura":"Matemática"} · ${grade}° básico` : selected.title}</h1>
+    <p className="no-print">Selecciona la dificultad y la cantidad de preguntas para generar tu recurso.</p>
     <div className="no-print"><button type="button" onClick={loadSaved}>Ver mis recursos guardados</button>
       {showSaved && <section aria-label="Mis recursos guardados"><h2>Mis recursos guardados</h2>
         {saved.length===0 && <p>No hay recursos guardados.</p>}
         {saved.map(item => <button key={item.id} type="button" onClick={() => {setResource(item.content);setAnswers({});setResourceId(item.id);setModuleId(item.moduleId);setGrade(["2","4","6","8"].find(g=>item.grade===`${g}° básico`)||"4");setSavedMessage("");}} style={{display:"block",margin:"8px 0",padding:10}}>{item.title} · {item.grade}</button>)}
       </section>}
     </div>
-    <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 12 }}>
+    <div className="no-print" style={{ display: "none", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 12 }}>
       {modules.map(m => <button key={m.id} onClick={() => setModuleId(m.id)} aria-pressed={moduleId === m.id} style={{ textAlign: "left", border: moduleId === m.id ? "2px solid #00a6a6" : "1px solid #d6e1e7", background: moduleId === m.id ? "#eaf8f8" : "white", borderRadius: 14, padding: 18, cursor: "pointer", color: "inherit" }}>
         <strong>{m.title}</strong><div style={{ marginTop: 8 }}>{m.grade}</div><small>{m.description}</small>
       </button>)}
@@ -94,7 +94,7 @@ export default function RecursosAprendizajePage() {
     <section className="print-content" style={{ marginTop: 28, padding: 22, border: "1px solid #d6e1e7", borderRadius: 14 }}>
       <h2 className="no-print">Configuración: {selected.title}</h2>
       <p className="no-print">Nivel: {moduleId.startsWith("simce") ? `${grade}° básico` : selected.grade}</p>
-      {moduleId.startsWith("simce") && <div className="no-print"><label>Nivel <select value={grade} onChange={e=>setGrade(e.target.value)}><option value="2">2° básico</option><option value="4">4° básico</option><option value="6">6° básico</option><option value="8">8° básico</option></select></label></div>}
+      
       <div className="no-print" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: 16 }}>
         {!moduleId.startsWith("simce") && <label>Objetivo de Aprendizaje (OA)<input value={oa} onChange={e => setOa(e.target.value)} placeholder="Código o descripción del OA" style={{ display: "block", width: "100%", padding: 10, boxSizing: "border-box" }}/></label>}
         <label>Dificultad<select value={difficulty} onChange={e => setDifficulty(e.target.value)} style={{ display: "block", width: "100%", padding: 10 }}><option>Inicial</option><option>Intermedio</option><option>Avanzado</option></select></label>
