@@ -2,7 +2,6 @@
 import { useState } from "react";
 
 const groups = [
-  {grade:"2",label:"2° básico",color:"#0EA5E9",bg:"#EFF9FE",items:[{title:"Precursores de lectura",module:"precursores",detail:"Actividades de iniciación lectora"},{title:"Fluidez lectora",module:"fluidez",detail:"Lectura y seguimiento"},{title:"Comprensión lectora",module:"cuadernillos",detail:"Textos y preguntas"}]},
   {grade:"4",label:"4° básico",color:"#9855D4",bg:"#F8F3FD",items:[{title:"Lectura",module:"simce-lectura",detail:"Ensayo SIMCE de Lectura"},{title:"Matemática",module:"simce-matematica",detail:"Ensayo SIMCE de Matemática"}]},
   {grade:"6",label:"6° básico",color:"#ECAA19",bg:"#FFFAED",items:[{title:"Lectura",module:"simce-lectura",detail:"Ensayo SIMCE de Lectura"},{title:"Matemática",module:"simce-matematica",detail:"Ensayo SIMCE de Matemática"}]},
   {grade:"8",label:"8° básico",color:"#12B981",bg:"#EFFBF6",items:[{title:"Lectura",module:"simce-lectura",detail:"Ensayo SIMCE de Lectura"},{title:"Matemática",module:"simce-matematica",detail:"Ensayo SIMCE de Matemática"}]}
@@ -17,7 +16,7 @@ export default function EnsayosSimcePage() {
       .ea-simce-root * {box-sizing:border-box!important}
       .ea-simce-root .ea-heading {display:block!important; width:100%!important; margin:0 0 8px!important; font-size:30px!important; line-height:1.2!important; font-weight:750!important}
       .ea-simce-root .ea-description {display:block!important; width:100%!important; margin:0 0 22px!important; font-size:15px!important; color:#61788a!important}
-      .ea-simce-root .ea-grade-grid {display:grid!important; grid-template-columns:repeat(4,minmax(0,1fr))!important; gap:12px!important; width:100%!important; margin:0!important; padding:0!important; align-items:stretch!important}
+      .ea-simce-root .ea-grade-grid {display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:12px!important; width:100%!important; margin:0!important; padding:0!important; align-items:stretch!important}
       .ea-simce-root .ea-grade {display:flex!important; align-items:center!important; justify-content:center!important; width:100%!important; height:66px!important; min-height:66px!important; padding:10px!important; margin:0!important; border-top:1px solid #e4eaf0!important; border-right:1px solid #e4eaf0!important; border-bottom:1px solid #e4eaf0!important; border-radius:12px!important; font-size:17px!important; font-weight:700!important; line-height:1.3!important; text-align:center!important; cursor:pointer!important; box-shadow:none!important; transition:box-shadow .15s ease,transform .15s ease!important}
       .ea-simce-root .ea-grade:hover {transform:translateY(-1px)!important;box-shadow:0 3px 10px #14344c12!important}
       .ea-simce-root .ea-resource-section {display:block!important; width:100%!important; margin:24px 0 0!important; padding:0!important; clear:both!important}
