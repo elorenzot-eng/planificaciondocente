@@ -1,27 +1,51 @@
 "use client";
 import { useState } from "react";
-const groups=[
-{grade:"2",label:"2° básico",color:"#0EA5E9",bg:"#F0FAFE",items:[{title:"Precursores de lectura",module:"precursores"},{title:"Fluidez lectora",module:"fluidez"},{title:"Comprensión lectora",module:"cuadernillos"}]},
-{grade:"4",label:"4° básico",color:"#9B59D0",bg:"#FAF5FF",items:[{title:"Ensayo SIMCE · Lectura",module:"simce-lectura"},{title:"Ensayo SIMCE · Matemática",module:"simce-matematica"}]},
-{grade:"6",label:"6° básico",color:"#F0AD25",bg:"#FFFBF0",items:[{title:"Ensayo SIMCE · Lectura",module:"simce-lectura"},{title:"Ensayo SIMCE · Matemática",module:"simce-matematica"}]},
-{grade:"8",label:"8° básico",color:"#10B981",bg:"#F1FCF7",items:[{title:"Ensayo SIMCE · Lectura",module:"simce-lectura"},{title:"Ensayo SIMCE · Matemática",module:"simce-matematica"}]}
+
+const groups = [
+  {grade:"2",label:"2° básico",color:"#0EA5E9",bg:"#EFF9FE",items:[{title:"Precursores de lectura",module:"precursores",detail:"Actividades de iniciación lectora"},{title:"Fluidez lectora",module:"fluidez",detail:"Lectura y seguimiento"},{title:"Comprensión lectora",module:"cuadernillos",detail:"Textos y preguntas"}]},
+  {grade:"4",label:"4° básico",color:"#9855D4",bg:"#F8F3FD",items:[{title:"Lectura",module:"simce-lectura",detail:"Ensayo SIMCE de Lectura"},{title:"Matemática",module:"simce-matematica",detail:"Ensayo SIMCE de Matemática"}]},
+  {grade:"6",label:"6° básico",color:"#ECAA19",bg:"#FFFAED",items:[{title:"Lectura",module:"simce-lectura",detail:"Ensayo SIMCE de Lectura"},{title:"Matemática",module:"simce-matematica",detail:"Ensayo SIMCE de Matemática"}]},
+  {grade:"8",label:"8° básico",color:"#12B981",bg:"#EFFBF6",items:[{title:"Lectura",module:"simce-lectura",detail:"Ensayo SIMCE de Lectura"},{title:"Matemática",module:"simce-matematica",detail:"Ensayo SIMCE de Matemática"}]}
 ];
-export default function EnsayosSimcePage(){
- const [selected,setSelected]=useState<string|null>(null);
- return <main className="simce-resource-page" style={{maxWidth:1100,margin:"0 auto",padding:"32px 20px",fontFamily:"system-ui,sans-serif",color:"#15324b"}}>
- <style>{`.simce-resource-page { display:block !important; width:100% !important; box-sizing:border-box !important; } .simce-resource-page > h1,.simce-resource-page > p,.simce-resource-page > nav,.simce-resource-page > section { display:block; width:100%; } .simce-resource-page .simce-grade-nav { display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important; gap:12px !important; width:100% !important; } .simce-resource-page .simce-grade-nav button { min-height:58px !important; height:auto !important; width:100% !important; } .simce-resource-page .simce-resource-section { display:block !important; width:100% !important; clear:both !important; } .simce-resource-page .simce-card-row { display:flex !important; flex-direction:row !important; flex-wrap:wrap !important; align-items:stretch !important; gap:12px !important; width:100% !important; } .simce-resource-page .simce-card { display:flex !important; flex:0 0 220px !important; width:220px !important; min-width:220px !important; max-width:220px !important; min-height:120px !important; box-sizing:border-box !important; overflow-wrap:anywhere !important; } @media(max-width:620px){ .simce-resource-page .simce-grade-nav {grid-template-columns:repeat(2,minmax(0,1fr)) !important;} .simce-resource-page .simce-card { flex:1 1 170px !important; width:auto !important; min-width:150px !important; max-width:none !important;} }`}</style>
- <a href="/" style={{color:"#007e90"}}>← Volver a EducAntay</a>
- <h1>Ensayos SIMCE y Lectura</h1>
- <p>Selecciona el nivel y luego el recurso que deseas generar.</p>
- <nav className="simce-grade-nav" aria-label="Seleccionar nivel" style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginTop:22}}>
- {groups.map(g=><button type="button" key={g.grade} onClick={()=>setSelected(v=>v===g.grade?null:g.grade)} aria-expanded={selected===g.grade} style={{border:"none",borderLeft:`5px solid ${g.color}`,borderRadius:12,background:g.bg,color:"#15324b",fontSize:18,fontWeight:600,padding:"14px 8px",cursor:"pointer",outline:selected===g.grade?`2px solid ${g.color}`:"none"}}>{g.label}</button>)}
- </nav>
- {groups.filter(g=>g.grade===selected).map(g=><section className="simce-resource-section" key={g.grade} style={{marginTop:25}}>
- <h2 style={{fontSize:20}}>{g.grade==="2"?"Lectura · 2° básico":`Ensayos SIMCE · ${g.label}`}</h2>
- <div style={{display:"grid",display:"flex",flexDirection:"row",flexWrap:"wrap",alignItems:"stretch",gap:12,width:"100%"}}>
- {g.items.map(item=><a className="simce-card" key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${g.grade}`} style={{textDecoration:"none",color:"#15324b",background:g.bg,borderLeft:`5px solid ${g.color}`,borderRadius:12,padding:18,display:"flex",flexDirection:"column",justifyContent:"space-between",boxSizing:"border-box",width:"220px",maxWidth:"100%",minHeight:115,flex:"0 0 220px"}}>
- <strong>{item.title}</strong><p style={{color:"#007e90",fontSize:13}}>Abrir y seleccionar OA →</p></a>)}
- </div></section>)}
- <p style={{marginTop:28,fontSize:13,color:"#596b77"}}>Los ensayos tipo SIMCE son recursos originales no oficiales. Revisa las preguntas y su tabla de especificaciones antes de aplicarlos.</p>
- </main>;
+
+export default function EnsayosSimcePage() {
+  const [selected,setSelected] = useState<string|null>(null);
+  const active = groups.find(g=>g.grade===selected);
+  return <div className="ea-simce-root">
+    <style>{`
+      .ea-simce-root {display:block!important; width:100%!important; max-width:1120px!important; margin:0 auto!important; padding:28px 24px 44px!important; box-sizing:border-box!important; font-family:system-ui,sans-serif!important; color:#173752!important}
+      .ea-simce-root * {box-sizing:border-box!important}
+      .ea-simce-root .ea-heading {display:block!important; width:100%!important; margin:0 0 8px!important; font-size:30px!important; line-height:1.2!important; font-weight:750!important}
+      .ea-simce-root .ea-description {display:block!important; width:100%!important; margin:0 0 22px!important; font-size:15px!important; color:#61788a!important}
+      .ea-simce-root .ea-grade-grid {display:grid!important; grid-template-columns:repeat(4,minmax(0,1fr))!important; gap:12px!important; width:100%!important; margin:0!important; padding:0!important; align-items:stretch!important}
+      .ea-simce-root .ea-grade {display:flex!important; align-items:center!important; justify-content:center!important; width:100%!important; height:66px!important; min-height:66px!important; padding:10px!important; margin:0!important; border-top:1px solid #e4eaf0!important; border-right:1px solid #e4eaf0!important; border-bottom:1px solid #e4eaf0!important; border-radius:12px!important; font-size:17px!important; font-weight:700!important; line-height:1.3!important; text-align:center!important; cursor:pointer!important; box-shadow:none!important; transition:box-shadow .15s ease,transform .15s ease!important}
+      .ea-simce-root .ea-grade:hover {transform:translateY(-1px)!important;box-shadow:0 3px 10px #14344c12!important}
+      .ea-simce-root .ea-resource-section {display:block!important; width:100%!important; margin:24px 0 0!important; padding:0!important; clear:both!important}
+      .ea-simce-root .ea-section-title {display:block!important; margin:0 0 14px!important; font-size:21px!important; line-height:1.3!important}
+      .ea-simce-root .ea-resource-grid {display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; width:100%!important; gap:14px!important; margin:0!important; padding:0!important; align-items:stretch!important}
+      .ea-simce-root .ea-resource-card {display:flex!important; flex-direction:column!important; justify-content:space-between!important; width:100%!important; min-width:0!important; max-width:none!important; min-height:135px!important; margin:0!important; padding:18px!important; border-radius:12px!important; border-top:1px solid #e3ebef!important; border-right:1px solid #e3ebef!important; border-bottom:1px solid #e3ebef!important; text-decoration:none!important; color:#173752!important; overflow-wrap:normal!important; word-break:normal!important}
+      .ea-simce-root .ea-resource-card strong {display:block!important; font-size:17px!important; line-height:1.3!important; font-weight:700!important}
+      .ea-simce-root .ea-resource-card small {display:block!important; margin-top:7px!important; font-size:13px!important; line-height:1.4!important; color:#5b7281!important}
+      .ea-simce-root .ea-resource-card span {display:block!important; margin-top:16px!important; font-size:13px!important; font-weight:700!important; color:#007e90!important}
+      .ea-simce-root .ea-footnote {display:block!important; width:100%!important; margin:25px 0 0!important; font-size:12px!important; line-height:1.6!important; color:#61788a!important}
+      @media(max-width:700px) {.ea-simce-root .ea-grade-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important}.ea-simce-root .ea-resource-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+      @media(max-width:460px) {.ea-simce-root {padding:18px 12px 30px!important}.ea-simce-root .ea-resource-grid {grid-template-columns:1fr!important}.ea-simce-root .ea-heading {font-size:25px!important}}
+    `}</style>
+    <a href="/" style={{display:"inline-block",marginBottom:18,color:"#007e90",fontSize:14}}>← Volver a EducAntay</a>
+    <h1 className="ea-heading">Ensayos SIMCE y Lectura</h1>
+    <p className="ea-description">Selecciona el nivel y abre el recurso que deseas generar.</p>
+    <div className="ea-grade-grid" role="group" aria-label="Seleccionar nivel">
+      {groups.map(g=><button type="button" className="ea-grade" key={g.grade} onClick={()=>setSelected(g.grade)} aria-pressed={selected===g.grade} style={{background:g.bg,borderLeft:`5px solid ${g.color}`,outline:selected===g.grade?`2px solid ${g.color}`:"none",color:"#173752"}}>{g.label}</button>)}
+    </div>
+    {active && <div className="ea-resource-section">
+      <h2 className="ea-section-title">{active.grade==="2"?"Lectura · 2° básico":`Ensayos SIMCE · ${active.label}`}</h2>
+      <div className="ea-resource-grid">
+        {active.items.map(item=><a className="ea-resource-card" key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${active.grade}`} style={{background:active.bg,borderLeft:`5px solid ${active.color}`}}>
+          <div><strong>{item.title}</strong><small>{item.detail}</small></div>
+          <span>Abrir recurso →</span>
+        </a>)}
+      </div>
+    </div>}
+    <p className="ea-footnote">Los ensayos tipo SIMCE son materiales originales no oficiales. Revisa las preguntas y la hoja de respuestas del docente antes de aplicarlos.</p>
+  </div>;
 }
