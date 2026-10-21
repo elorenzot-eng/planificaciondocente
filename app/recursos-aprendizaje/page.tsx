@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { curriculumOA } from "../../lib/curriculum";
 
-type ModuleKey = "simce-lectura" | "simce-matematica";
+type ModuleKey = "simce-lectura" | "simce-matematica" | "precursores" | "cuadernillos" | "fluidez" | "reforzamiento";
 const modules: { id: ModuleKey; title: string; grade: string; description: string }[] = [
   { id: "simce-lectura", title: "Ensayos tipo SIMCE — Lectura", grade: "4° básico a 2° medio", description: "Diagnóstico, práctica y simulacro" },
   { id: "simce-matematica", title: "Ensayos tipo SIMCE — Matemática", grade: "4° básico a 2° medio", description: "Problemas por eje curricular" },
