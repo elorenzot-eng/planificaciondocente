@@ -11,7 +11,18 @@ const modules: { id: ModuleKey; title: string; grade: string; description: strin
   { id: "fluidez", title: "Fluidez lectora", grade: "2° básico", description: "Registro docente de precisión y progreso" },
 ];
 const visualSymbols: Record<string,string> = {sol:"☀️",gato:"🐈",perro:"🐕",pájaro:"🐦",pajaro:"🐦",luna:"🌙",casa:"🏠",árbol:"🌳",arbol:"🌳",flor:"🌸",manzana:"🍎",pelota:"⚽",pez:"🐟",libro:"📖",mariposa:"🦋",estrella:"⭐",auto:"🚗",tren:"🚂",barco:"⛵",conejo:"🐇",elefante:"🐘",ratón:"🐁",raton:"🐁",mesa:"🪑",taza:"☕",plátano:"🍌",platano:"🍌",zapato:"👟",corazón:"❤️",corazon:"❤️",mano:"✋",ojo:"👁️",oreja:"👂",nube:"☁️",llave:"🔑",reloj:"🕒",avión:"✈️",avion:"✈️",bicicleta:"🚲",abeja:"🐝",oso:"🐻",león:"🦁",leon:"🦁",pato:"🦆",vaca:"🐄",caballo:"🐎",oveja:"🐑",cerdo:"🐖",rana:"🐸",tortuga:"🐢",serpiente:"🐍",uva:"🍇",naranja:"🍊",limón:"🍋",limon:"🍋",sandía:"🍉",sandia:"🍉",zanahoria:"🥕",pan:"🍞",queso:"🧀",leche:"🥛",huevo:"🥚",helado:"🍦",regalo:"🎁",globo:"🎈",lápiz:"✏️",lapiz:"✏️",tijeras:"✂️",mochila:"🎒"};
-function findVisual(stimulus:string):string|null {const normalized=stimulus.toLowerCase();const match=normalized.match(/(?:imagen|ilustraci[oó]n|dibujo|figura)\s+(?:de\s+|del\s+|de\s+un\s+|de\s+una\s+|de\s+el\s+|de\s+la\s+)?([a-záéíóúñ]+)/);const key=match?.[1];return key && visualSymbols[key] ? visualSymbols[key] : null;}
+function findVisual(stimulus:string):string|null {
+  const normalized=stimulus.toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const imageContext=/(imagen|ilustracion|dibujo|figura|observa|mira|representa)/.test(normalized);
+  if(!imageContext) return null;
+  const entries=Object.entries(visualSymbols);
+  const found=entries.find(([word])=>{
+    const plain=word.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    return new RegExp(`(^|[^a-z])${plain}(?=[^a-z]|$)`,"i").test(normalized);
+  });
+  return found?.[1]||null;
+}
+
 export default function RecursosAprendizajePage() {
   const [moduleId, setModuleId] = useState<ModuleKey>("precursores");
   const [grade, setGrade] = useState("4");
