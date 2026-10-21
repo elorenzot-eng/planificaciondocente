@@ -111,12 +111,26 @@ export async function POST(request: Request) {
       result.scoring = {maximumPoints:quantity,method:"1 punto por respuesta correcta; porcentaje de logro",officialSimceScore:false};
     }
     if (moduleId === "cuadernillos" && (!Array.isArray(result.passages) || result.passages.length < 2 || !result.passages.some((p:any)=>p.type==="narrativo") || !result.passages.some((p:any)=>p.type==="informativo") || result.activities.some((a:any)=>!result.passages.some((p:any)=>p.id===a.passageId)))) throw new Error("Invalid reading passages");
-    if ((moduleId === "precursores" || moduleId === "cuadernillos") && (!result.studentInstructions || typeof result.studentInstructions !== "string" || result.activities.some((a:any)=>!Array.isArray(a.options) || (a.options.length!==0 && a.options.length!==3) || (a.options.length===3 && !a.options.includes(a.correctAnswer))))) throw new Error("Invalid second-grade workbook");
+    if (!simce) {
+      if (!result.studentInstructions || typeof result.studentInstructions !== "string") result.studentInstructions = moduleId==="fluidez" ? "Lee el texto en voz alta siguiendo las indicaciones del docente." : "Lee con atención cada instrucción y desarrolla las actividades.";
+      if (!result.coverSubtitle || typeof result.coverSubtitle !== "string") result.coverSubtitle = moduleId==="precursores"?"Sonidos, sílabas y palabras":moduleId==="fluidez"?"Lectura en voz alta y seguimiento":"Textos narrativos e informativos";
+      if (!result.workbookType) result.workbookType = moduleId==="cuadernillos"?"comprension":moduleId;
+      for (const item of result.activities) {
+        if (!Array.isArray(item.options)) item.options=[];
+        if (moduleId==="fluidez") {
+          item.options=[];
+          if (!item.stimulus || typeof item.stimulus!=="string" || item.stimulus.trim().length<40) throw new Error("Fluency text missing");
+          if (!item.question || typeof item.question!=="string") item.question="Lee el texto en voz alta.";
+          if (!item.correctAnswer || typeof item.correctAnswer!=="string") item.correctAnswer="Registrar tiempo, errores y palabras correctas sin completar resultados previamente.";
+        } else if (item.options.length!==0 && item.options.length!==3) throw new Error("Invalid workbook option count");
+        else if (item.options.length===3 && !item.options.includes(item.correctAnswer)) throw new Error("Invalid workbook answer key");
+      }
+    }
     const charged = await prisma.user.updateMany({ where: { id: account.id, active: true, ...(account.monthlyAiLimit !== null ? { monthlyAiUsed: { lt: account.monthlyAiLimit } } : {}) }, data: { monthlyAiUsed: { increment: 1 } } });
     if (!charged.count) return NextResponse.json({ error: "Límite de generaciones IA alcanzado." }, { status: 429 });
     return NextResponse.json({resource:result,grade,moduleId,notice:"Borrador generado con IA. Revisión docente obligatoria antes de utilizar."});
   } catch (error) {
     console.error("Learning resource generation failure",error instanceof Error ? error.message : String(error));
-    return NextResponse.json({error:"No se pudo completar el ensayo. Intenta con menos preguntas o vuelve a generar."},{status:502});
+    return NextResponse.json({error:"No se pudo completar el recurso. Intenta nuevamente o selecciona menos actividades."},{status:502});
   }
 }
