@@ -4,8 +4,8 @@ import { curriculumOA } from "../../lib/curriculum";
 
 type ModuleKey = "simce-lectura" | "simce-matematica";
 const modules: { id: ModuleKey; title: string; grade: string; description: string }[] = [
-  { id: "simce-lectura", title: "Ensayos tipo SIMCE — Lectura", grade: "4° básico", description: "Diagnóstico, práctica y simulacro" },
-  { id: "simce-matematica", title: "Ensayos tipo SIMCE — Matemática", grade: "4° básico", description: "Problemas por eje curricular" },
+  { id: "simce-lectura", title: "Ensayos tipo SIMCE — Lectura", grade: "4° básico a 2° medio", description: "Diagnóstico, práctica y simulacro" },
+  { id: "simce-matematica", title: "Ensayos tipo SIMCE — Matemática", grade: "4° básico a 2° medio", description: "Problemas por eje curricular" },
 ];
 const visualSymbols: Record<string,string> = {sol:"☀️",gato:"🐈",perro:"🐕",pájaro:"🐦",pajaro:"🐦",luna:"🌙",casa:"🏠",árbol:"🌳",arbol:"🌳",flor:"🌸",manzana:"🍎",pelota:"⚽",pez:"🐟",libro:"📖",mariposa:"🦋",estrella:"⭐",auto:"🚗",coche:"🚗",carro:"🚗",tren:"🚂",barco:"⛵",conejo:"🐇",elefante:"🐘",ratón:"🐁",raton:"🐁",mesa:"🪑",taza:"☕",plátano:"🍌",platano:"🍌",zapato:"👟",corazón:"❤️",corazon:"❤️",mano:"✋",ojo:"👁️",oreja:"👂",nube:"☁️",llave:"🔑",reloj:"🕒",avión:"✈️",avion:"✈️",bicicleta:"🚲",abeja:"🐝",oso:"🐻",león:"🦁",leon:"🦁",pato:"🦆",vaca:"🐄",caballo:"🐎",oveja:"🐑",cerdo:"🐖",rana:"🐸",tortuga:"🐢",serpiente:"🐍",uva:"🍇",naranja:"🍊",limón:"🍋",limon:"🍋",sandía:"🍉",sandia:"🍉",zanahoria:"🥕",pan:"🍞",queso:"🧀",leche:"🥛",huevo:"🥚",helado:"🍦",regalo:"🎁",globo:"🎈",lápiz:"✏️",lapiz:"✏️",tijeras:"✂️",mochila:"🎒"};
 function pictureForWord(word:string):string|null {const plain=String(word||"").toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();const entry=Object.entries(visualSymbols).find(([key])=>key.normalize("NFD").replace(/[\u0300-\u036f]/g,"")===plain);return entry?.[1]||null;}
@@ -118,7 +118,7 @@ export default function RecursosAprendizajePage() {
         </div>
       </div>
 
-      <p className="no-print" style={{ marginTop: 20, background: "#f2f6f8", padding: 14, borderRadius: 10 }}><strong>Vista previa de configuración:</strong> {selected.grade} · {difficulty} · {quantity} actividades{moduleId.startsWith("simce") ? `` : ""}.</p>
+      <p className="no-print" style={{ marginTop: 20, background: "#f2f6f8", padding: 14, borderRadius: 10 }}><strong>Vista previa de configuración:</strong> {grade==="10"?"2° medio":`${grade}° básico`} · {difficulty} · {quantity} preguntas{moduleId.startsWith("simce") ? `` : ""}.</p>
       <div className="no-print" style={{display:"flex",alignItems:"center",gap:22,flexWrap:"wrap",marginTop:12}}>
         <button type="button" disabled={loading} onClick={generate} style={{padding:"12px 20px",borderRadius:10,cursor:loading?"wait":"pointer"}}>{loading ? (moduleId.startsWith("simce") ? "Generando ensayo SIMCE…" : "Generando recurso IA…") : "Generar con IA"}</button>
         {moduleId.startsWith("simce") && <label style={{display:"inline-flex",alignItems:"center",gap:10,cursor:"pointer",fontSize:15,fontWeight:500}}><input type="checkbox" checked={printBubbleSheet} onChange={e=>setPrintBubbleSheet(e.target.checked)} style={{width:18,height:18,margin:0,flexShrink:0}}/> Incluir hoja de respuestas con óvalos (A, B, C y D)</label>}
