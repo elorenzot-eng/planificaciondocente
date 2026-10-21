@@ -2,7 +2,8 @@ import Link from "next/link";
 const items=[
 {title:"Precursores de lectura",description:"Conciencia fonológica y reconocimiento inicial",module:"precursores",color:"#0ea5e9",background:"#eaf7ff"},
 {title:"Fluidez lectora",description:"Lectura, precisión y seguimiento",module:"fluidez",color:"#10b981",background:"#ecfdf5"},
-{title:"Comprensión lectora",description:"Textos y preguntas de comprensión",module:"cuadernillos",color:"#a855f7",background:"#f5edff"}
+{title:"Comprensión lectora",description:"Textos y preguntas de comprensión",module:"cuadernillos",color:"#a855f7",background:"#f5edff"},
+{title:"Fichas de reforzamiento",description:"Lecturas breves, sílabas, rimas, vocabulario y escritura",module:"reforzamiento",color:"#f59e0b",background:"#fff8e9"}
 ];
 export default function PrecursoresLecturaPage(){
 return <main style={{maxWidth:1050,margin:"0 auto",padding:"32px 24px",color:"#173752",fontFamily:"system-ui,sans-serif"}}>
