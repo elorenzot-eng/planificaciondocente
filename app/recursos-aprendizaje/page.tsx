@@ -24,7 +24,7 @@ function findVisual(stimulus:string):string|null {
 export default function RecursosAprendizajePage() {
   const [moduleId, setModuleId] = useState<ModuleKey>("simce-lectura");
   const [grade, setGrade] = useState("4");
-  useEffect(() => { const q = new URLSearchParams(window.location.search); const m=q.get("modulo"); const g=q.get("nivel"); if (m && modules.some(x=>x.id===m)) setModuleId(m as ModuleKey); if(["2","4","6","8"].includes(g||"")) setGrade(g!); }, []);
+  useEffect(() => { const q = new URLSearchParams(window.location.search); const m=q.get("modulo"); const g=q.get("nivel"); if (m && modules.some(x=>x.id===m)) setModuleId(m as ModuleKey); if(["4","6","8","10"].includes(g||"")) setGrade(g!); }, []);
   const [printBubbleSheet, setPrintBubbleSheet] = useState(false);
   const [difficulty, setDifficulty] = useState("Intermedio");
   const [quantity, setQuantity] = useState(10);
@@ -85,7 +85,7 @@ export default function RecursosAprendizajePage() {
     finally { setLoading(false); }
   }
   const selected = useMemo(() => modules.find(m => m.id === moduleId)!, [moduleId]);
-  const availableOA = useMemo(() => curriculumOA.filter(x => x.level === `${grade}° Básico` && x.subject === (moduleId === "simce-matematica" ? "Matemática" : "Lenguaje y Comunicación / Lengua y Literatura") && x.status === "official"), [grade,moduleId]);
+  const availableOA = useMemo(() => curriculumOA.filter(x => x.level === (grade==="10"?"2° Medio":`${grade}° Básico`) && x.subject === (moduleId === "simce-matematica" ? "Matemática" : "Lenguaje y Comunicación / Lengua y Literatura") && x.status === "official"), [grade,moduleId]);
   useEffect(()=>{setSelectedOaIds([]);setSelectedCustomOa([]);setCustomOaText("");},[grade,moduleId]);
   return <main className="ea-resource-config" style={{ width:"100%", maxWidth: 1100, margin: "0 auto", padding: "32px 20px", fontFamily: "system-ui, sans-serif", color: "#15324b", boxSizing:"border-box" }}>
     <a className="no-print" href={moduleId.startsWith("simce") ? "/ensayos-simce" : "/ensayos-simce"} style={{ color: "#007e90" }}>← {moduleId.startsWith("simce") ? "Volver a los niveles" : "Volver a ensayos SIMCE"}</a>
