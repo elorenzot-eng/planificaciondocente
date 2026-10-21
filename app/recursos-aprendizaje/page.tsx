@@ -66,7 +66,7 @@ export default function RecursosAprendizajePage() {
   async function generate() {
     setLoading(true); setError(""); setSavedMessage(""); setResource(null); setResourceId(null);
     try {
-      const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,grade,difficulty,quantity,oa: moduleId.startsWith("simce") ? availableOA.map(x=>`${x.code} (${x.axis}): ${x.text}`).join("\n") : oa,mode}) });
+      const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,grade,difficulty,quantity,oa: moduleId.startsWith("simce") ? availableOA.map(x=>`${x.code} (${x.axis}): ${x.text}`).join("\n") : "",mode}) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Error de generación");
       setResource(data.resource);setAnswers({});
@@ -102,12 +102,12 @@ export default function RecursosAprendizajePage() {
           <label>Cantidad de preguntas<input type="number" min={1} max={40} value={quantity} onChange={e=>setQuantity(Math.max(1,Math.min(40,Number(e.target.value)||1)))}/></label>
         </div>
         <div className="ea-config-tile" style={{background:"#effbf6",borderLeft:"5px solid #12b981"}}>
-          <strong style={{fontSize:16}}>Ensayo automático por nivel</strong>
-          <span style={{fontSize:13,lineHeight:1.5,marginTop:8}}>EducAntay distribuye las preguntas por habilidades y ejes curriculares. No necesitas seleccionar OA.</span>
+          <strong style={{fontSize:16}}>{moduleId.startsWith("simce") ? "Ensayo automático por nivel" : "Cuadernillo automático de 2° básico"}</strong>
+          <span style={{fontSize:13,lineHeight:1.5,marginTop:8}}>{moduleId.startsWith("simce") ? "EducAntay distribuye las preguntas por habilidades y ejes curriculares. No necesitas seleccionar OA." : "EducAntay genera el cuadernillo automáticamente según el modelo pedagógico precargado. No necesitas seleccionar OA."}</span>
         </div>
       </div>
-      {!moduleId.startsWith("simce") && <div className="no-print" style={{marginTop:16}}><label>Objetivo de Aprendizaje (OA)<input value={oa} onChange={e=>setOa(e.target.value)} placeholder="Código o descripción del OA" style={{display:"block",width:"100%",padding:10}}/></label></div>}
-      <p className="no-print" style={{ marginTop: 20, background: "#f2f6f8", padding: 14, borderRadius: 10 }}><strong>Vista previa de configuración:</strong> {selected.grade} · {difficulty} · {quantity} actividades{oa ? ` · OA: ${oa}` : ""}{moduleId.startsWith("simce") ? `` : ""}.</p>
+
+      <p className="no-print" style={{ marginTop: 20, background: "#f2f6f8", padding: 14, borderRadius: 10 }}><strong>Vista previa de configuración:</strong> {selected.grade} · {difficulty} · {quantity} actividades{moduleId.startsWith("simce") ? `` : ""}.</p>
       <div className="no-print" style={{display:"flex",alignItems:"center",gap:22,flexWrap:"wrap",marginTop:12}}>
         <button type="button" disabled={loading} onClick={generate} style={{padding:"12px 20px",borderRadius:10,cursor:loading?"wait":"pointer"}}>{loading ? (moduleId.startsWith("simce") ? "Generando ensayo SIMCE…" : "Generando recurso IA…") : "Generar con IA"}</button>
         {moduleId.startsWith("simce") && <label style={{display:"inline-flex",alignItems:"center",gap:10,cursor:"pointer",fontSize:15,fontWeight:500}}><input type="checkbox" checked={printBubbleSheet} onChange={e=>setPrintBubbleSheet(e.target.checked)} style={{width:18,height:18,margin:0,flexShrink:0}}/> Incluir hoja de respuestas con óvalos (A, B, C y D)</label>}
