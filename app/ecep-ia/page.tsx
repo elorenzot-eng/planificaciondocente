@@ -14,7 +14,6 @@ export default function EcepPage(){
  const [answers,setAnswers]=useState<Record<number,number>>({});
  const [finished,setFinished]=useState(false);
  const [history,setHistory]=useState<{date:string;score:number;total:number}[]>([]);
- const [loaded,setLoaded]=useState(false);
  const [timed,setTimed]=useState(false);
  const [started,setStarted]=useState(false);
  const [secondsLeft,setSecondsLeft]=useState(600);
@@ -22,8 +21,8 @@ export default function EcepPage(){
  const timeUp=started&&timed&&secondsLeft===0;
  function restart(){setAnswers({});setFinished(false);setStarted(false);setSecondsLeft(600);}
 
- useEffect(()=>{try{const saved=window.localStorage.getItem("educantay-ecep-demo-history");if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed))setHistory(parsed.filter(x=>typeof x?.score==="number"&&typeof x?.total==="number"&&typeof x?.date==="string").slice(0,20));}}catch{}setLoaded(true)},[]);
- function finishPractice(){const result={date:new Date().toISOString(),score,total:sample.length};const next=[result,...history].slice(0,20);setHistory(next);if(loaded){try{window.localStorage.setItem("educantay-ecep-demo-history",JSON.stringify(next))}catch{}}setFinished(true);}
+ useEffect(()=>{try{const saved=window.localStorage.getItem("educantay-ecep-demo-history");if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed))setHistory(parsed.filter(x=>typeof x?.score==="number"&&typeof x?.total==="number"&&typeof x?.date==="string").slice(0,20));}}catch{}},[]);
+ function finishPractice(){const result={date:new Date().toISOString(),score,total:sample.length};const next=[result,...history].slice(0,20);setHistory(next);try{window.localStorage.setItem("educantay-ecep-demo-history",JSON.stringify(next))}catch{}setFinished(true);}
 
  const score=sample.filter((q,i)=>answers[i]===q.answer).length;
  const domains=Array.from(new Set(sample.map(q=>q.domain))).map(domain=>{const ids=sample.map((q,i)=>q.domain===domain?i:-1).filter(i=>i>=0);return {domain,total:ids.length,correct:ids.filter(i=>answers[i]===sample[i].answer).length};});
@@ -41,7 +40,7 @@ export default function EcepPage(){
  <input type="radio" name={`question-${i}`} checked={answers[i]===j} disabled={finished||timeUp} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/> {String.fromCharCode(65+j)}. {option}</label>)}
  {finished&&<div role="status" style={{padding:12,background:answers[i]===q.answer?"#edf8ef":"#fff5e9",borderRadius:8}}><strong>{answers[i]===q.answer?"Correcta":"Por revisar"} · Respuesta: {String.fromCharCode(65+q.answer)}</strong><p>{q.explanation}</p></div>}
  </section>)}
- {started&&!finished?<button disabled={!timeUp&&Object.keys(answers).length!==sample.length} onClick={finishPractice} style={{padding:"12px 24px",background:"#008c99",color:"white",border:0,borderRadius:9,cursor:"pointer"}}>Corregir práctica</button>:<section aria-live="polite"><h2>Resultado: {score}/{sample.length} ({Math.round(score/sample.length*100)}%)</h2><p>Resultado de práctica orientativo, no equivalente a una calificación ECEP oficial.</p><h3>Desempeño por ámbito</h3><ul>{domains.map(d=><li key={d.domain}>{d.domain}: {d.correct}/{d.total} ({Math.round(100*d.correct/d.total)}%)</li>)}</ul><p>Recomendación: revisa las explicaciones de los ámbitos con menor porcentaje de aciertos antes de repetir la práctica.</p><button onClick={restart} style={{padding:"12px 24px",borderRadius:9}}>Volver a practicar</button></section>}
+ {started&&!finished?<button disabled={!timeUp&&Object.keys(answers).length!==sample.length} onClick={finishPractice} style={{padding:"12px 24px",background:"#008c99",color:"white",border:0,borderRadius:9,cursor:"pointer"}}>Corregir práctica</button>:finished?<section aria-live="polite"><h2>Resultado: {score}/{sample.length} ({Math.round(score/sample.length*100)}%)</h2><p>Resultado de práctica orientativo, no equivalente a una calificación ECEP oficial.</p><h3>Desempeño por ámbito</h3><ul>{domains.map(d=><li key={d.domain}>{d.domain}: {d.correct}/{d.total} ({Math.round(100*d.correct/d.total)}%)</li>)}</ul><p>Recomendación: revisa las explicaciones de los ámbitos con menor porcentaje de aciertos antes de repetir la práctica.</p><button onClick={restart} style={{padding:"12px 24px",borderRadius:9}}>Volver a practicar</button></section>:null}
  {history.length>0&&<section style={{marginTop:30,padding:18,border:"1px solid #d9e3e9",borderRadius:12}}><h2 style={{fontSize:20}}>Mi historial de práctica</h2><p>Se guarda solo en este navegador y dispositivo. No se sincroniza con tu cuenta.</p><ol>{history.map((h,i)=><li key={i}>{new Date(h.date).toLocaleDateString("es-CL")}: {h.score}/{h.total} ({Math.round(h.score/h.total*100)}%)</li>)}</ol><button type="button" onClick={()=>{setHistory([]);try{window.localStorage.removeItem("educantay-ecep-demo-history")}catch{}}}>Eliminar historial local</button></section>}
  </main>
 }
