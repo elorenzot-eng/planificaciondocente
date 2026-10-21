@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 }); }
   const moduleId = String(body.moduleId || "");
   const difficulty = String(body.difficulty || "");
-  const oa = String(body.oa || "").trim().slice(0, 300);
+  const oa = String(body.oa || "").trim().slice(0, 6000);
   const quantity = Number(body.quantity);
   const mode = String(body.mode || "Práctica");
   const requestedGrade = String(body.grade || "4");
