@@ -1,0 +1,25 @@
+"use client";
+import {useState} from "react";
+type Question={domain:string;question:string;options:string[];answer:number;explanation:string};
+const sample:Question[]=[
+{domain:"Evaluación pedagógica",question:"Una docente aplica una actividad diagnóstica y descubre que parte del curso no domina un prerrequisito. ¿Qué decisión es más pertinente?",options:["Mantener la secuencia sin ajustes","Reenseñar el prerrequisito y verificar avances","Calificar el diagnóstico como sumativo","Excluir el contenido del semestre"],answer:1,explanation:"La evaluación diagnóstica permite ajustar la enseñanza a las necesidades detectadas y monitorear el progreso."},
+{domain:"Diversificación de la enseñanza",question:"¿Qué acción favorece el acceso al aprendizaje de estudiantes con necesidades diversas?",options:["Usar una sola modalidad de respuesta","Reducir las expectativas para todo el curso","Ofrecer distintas formas de participación y expresión","Aplicar idéntico apoyo sin considerar barreras"],answer:2,explanation:"Diversificar medios de participación y expresión ayuda a reducir barreras manteniendo objetivos de aprendizaje pertinentes."},
+{domain:"Retroalimentación",question:"¿Cuál de las siguientes retroalimentaciones es más útil para mejorar un texto argumentativo?",options:["Muy bien, sigue así","Tu nota es 5,0","Debes esforzarte más","Tu tesis es clara; agrega evidencia específica para sustentar el segundo argumento"],answer:3,explanation:"Una retroalimentación eficaz señala evidencia concreta del desempeño y un paso accionable para mejorar."}
+];
+export default function EcepPage(){
+ const [answers,setAnswers]=useState<Record<number,number>>({});
+ const [finished,setFinished]=useState(false);
+ const score=sample.filter((q,i)=>answers[i]===q.answer).length;
+ return <main style={{maxWidth:900,margin:"0 auto",padding:"32px 20px",fontFamily:"system-ui,sans-serif",color:"#17324b"}}>
+ <a href="/" style={{color:"#008c99"}}>← Volver a EducAntay</a>
+ <header style={{margin:"28px 0"}}><small>EDUCANTAY · PREPARACIÓN DOCENTE</small><h1>ECEP IA</h1><p>Practica, revisa tus respuestas y fortalece tus conocimientos pedagógicos.</p></header>
+ <section style={{background:"#eef7f8",padding:20,borderRadius:16,marginBottom:24}}><strong>Demostración: Educación Básica</strong><p>Estas preguntas son originales e ilustrativas. No corresponden a ítems oficiales ni constituyen un ensayo ECEP validado. La alineación por especialidad y temario oficial está pendiente.</p></section>
+ {sample.map((q,i)=><section key={i} style={{border:"1px solid #d9e3e9",borderRadius:16,padding:22,marginBottom:16}}>
+ <small>{q.domain} · Pregunta {i+1} de {sample.length}</small><h2 style={{fontSize:19}}>{q.question}</h2>
+ {q.options.map((option,j)=><label key={j} style={{display:"block",padding:"10px 12px",margin:"8px 0",border:"1px solid #dae4e9",borderRadius:9,background:answers[i]===j?"#dff4f2":"white",cursor:finished?"default":"pointer"}}>
+ <input type="radio" name={`question-${i}`} checked={answers[i]===j} disabled={finished} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/> {String.fromCharCode(65+j)}. {option}</label>)}
+ {finished&&<div role="status" style={{padding:12,background:answers[i]===q.answer?"#edf8ef":"#fff5e9",borderRadius:8}}><strong>{answers[i]===q.answer?"Correcta":"Por revisar"} · Respuesta: {String.fromCharCode(65+q.answer)}</strong><p>{q.explanation}</p></div>}
+ </section>)}
+ {!finished?<button disabled={Object.keys(answers).length!==sample.length} onClick={()=>setFinished(true)} style={{padding:"12px 24px",background:"#008c99",color:"white",border:0,borderRadius:9,cursor:"pointer"}}>Corregir práctica</button>:<section aria-live="polite"><h2>Resultado: {score}/{sample.length} ({Math.round(score/sample.length*100)}%)</h2><p>Resultado de práctica orientativo, no equivalente a una calificación ECEP oficial.</p><button onClick={()=>{setAnswers({});setFinished(false)}} style={{padding:"12px 24px",borderRadius:9}}>Volver a practicar</button></section>}
+ </main>
+}
