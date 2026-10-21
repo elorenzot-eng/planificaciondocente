@@ -32,7 +32,7 @@ function normalizeSimceAnswers(result: any): boolean {
   return true;
 }
 
-const allowed = ["precursores","cuadernillos","reforzamiento","simce-lectura","simce-matematica","fluidez"] as const;
+const allowed = ["simce-lectura","simce-matematica"] as const;
 export async function POST(request: Request) {
   const session = await getSession();
   if (!session?.id) return NextResponse.json({ error: "Debes iniciar sesión." }, { status: 401 });
