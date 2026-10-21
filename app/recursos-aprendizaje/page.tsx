@@ -157,7 +157,7 @@ export default function RecursosAprendizajePage() {
         <div className="print-answers"><p>{resource.teacherNotes}</p></div>
         {moduleId.startsWith("simce") && printBubbleSheet && <section className="ea-bubble-sheet" aria-label="Hoja de respuestas con óvalos" style={{background:"#fff",padding:24,marginTop:20}}>
           <h2 style={{textAlign:"center",color:"#15324b"}}>HOJA DE RESPUESTAS · ENSAYO SIMCE</h2>
-          <p style={{textAlign:"center"}}>{moduleId==="simce-lectura"?"Lectura":"Matemática"} · {grade}° básico</p>
+          <p style={{textAlign:"center"}}>{moduleId==="simce-lectura"?"Lectura":"Matemática"} · {grade==="10"?"2° medio":`${grade}° básico`}</p>
           <div style={{display:"grid",gap:12,margin:"25px 0"}}><div>Nombre completo: __________________________________________________</div><div>Curso: ________________________ &nbsp; RUT: ______________________________</div></div>
           <p style={{fontSize:13}}>Marca completamente un solo óvalo por pregunta.</p>
           <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:"10px 28px"}}>
