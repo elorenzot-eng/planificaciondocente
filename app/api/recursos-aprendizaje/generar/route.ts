@@ -31,9 +31,9 @@ export async function POST(request: Request) {
     "Devuelve exclusivamente JSON válido con estructura: {title:string, introduction:string, activities:[{number:number, stimulus:string, question:string, options:string[], correctAnswer:string, explanation:string, skill:string}], teacherNotes:string}.",
     "Para selección múltiple de 2° básico entrega exactamente TRES alternativas A/B/C; para ensayos de 4°, 6° y 8° básico entrega CUATRO alternativas A/B/C/D. Cada pregunta debe tener una única respuesta correcta y correctAnswer debe coincidir exactamente con el texto de una alternativa (sin prefijo A/B/C/D). Para actividades abiertas deja options=[] y correctAnswer como respuesta modelo.",
     "REFERENCIA PEDAGÓGICA: Ejemplos de preguntas Educación Básica 2018, Agencia de Calidad de la Educación (solo como patrón metodológico, no reproducir ítems, textos ni imágenes). El documento presenta ejemplos de Lectura y Matemática de 4° y 6° básico; NO incluye ejemplos de 8° básico. No atribuyas al documento requisitos oficiales de 8°.",
-    "ENSAYOS LECTURA 4°, 6° y 8°: construir varios textos originales completos y variados, literarios y no literarios, con 2 a 5 preguntas relacionadas por texto. Incluir passages:[{id:string,title:string,type:string,text:string,illustrationDescription:string}] y passageId en cada activity. No repetir el texto completo en stimulus por cada pregunta. Equilibrar localizar información explícita, interpretar y relacionar (inferencias, causa-consecuencia, vocabulario contextual) y reflexionar/evaluar con evidencia textual. Incorporar preguntas abiertas de desarrollo con respuesta modelo y criterios de corrección cuando la configuración lo permita.",
+    "ENSAYOS LECTURA 4°, 6° y 8°: construir varios textos originales completos y variados, literarios y no literarios, con 2 a 5 preguntas relacionadas por texto. Incluir passages:[{id:string,title:string,type:string,text:string,illustrationDescription:string}] y passageId en cada activity. No repetir el texto completo en stimulus por cada pregunta. Equilibrar localizar información explícita, interpretar y relacionar (inferencias, causa-consecuencia, vocabulario contextual) y reflexionar/evaluar con evidencia textual. En esta versión los ensayos SIMCE son exclusivamente de selección múltiple A/B/C/D; no incluir preguntas abiertas.",
     "ENSAYOS MATEMÁTICA 4°, 6° y 8°: variar problemas rutinarios y no rutinarios, situaciones contextualizadas, operaciones y procedimientos, representaciones de fracciones o números, patrones y álgebra, geometría, medición, gráficos, tablas y datos, según OA efectivamente seleccionados y pertinencia del nivel. Algunas preguntas requieren un esquema, gráfico o figura: especificar en stimulus una descripción verificable, nunca dar por existente una imagen no generada. No crear preguntas cuya respuesta dependa de un gráfico ausente.",
-    "CALIDAD DE ÍTEMS SIMCE: combinar selección múltiple A/B/C/D y, cuando corresponda, desarrollo. Los distractores deben representar errores plausibles (confusión de datos, inferencia incorrecta, procedimiento incompleto, lectura errónea de gráficos), no respuestas absurdas. Para cada activity agrega itemType ('seleccion_multiple'|'desarrollo'), distractorRationales como objeto opcional por alternativa incorrecta, scoringCriteria para desarrollo y explanation con fundamento comprobable. En specificationTable incluye además itemType y evidence cuando aplique. La dificultad es cualitativa; no asignar puntajes oficiales SIMCE ni inferir escala psicométrica.",
+    "CALIDAD DE ÍTEMS SIMCE: generar exclusivamente selección múltiple A/B/C/D para permitir corrección automática. Los distractores deben representar errores plausibles (confusión de datos, inferencia incorrecta, procedimiento incompleto, lectura errónea de gráficos), no respuestas absurdas. Para cada activity agrega itemType ('seleccion_multiple'), distractorRationales como objeto opcional por alternativa incorrecta, scoringCriteria para desarrollo y explanation con fundamento comprobable. En specificationTable incluye además itemType y evidence cuando aplique. La dificultad es cualitativa; no asignar puntajes oficiales SIMCE ni inferir escala psicométrica.",
     "Para fluidez lectora entrega textos breves y pautas de observación; no inventes resultados de estudiantes.",
     "Si el módulo es SIMCE, incluye specificationTable como arreglo con una fila por ítem: {number:number, curricularAxis:string, learningObjective:string, skill:string, difficulty:string, points:number, correctAnswer:string}. Los números deben coincidir con activities; asigna 1 punto por ítem. Distribuye habilidades/ejes y complejidades de manera equilibrada, coherente con el currículum del nivel solicitado. No inventes códigos OA oficiales; si no hay OA proporcionado utiliza descripciones curriculares revisables.",
     "Para 2° básico, aplica estrictamente el MODELO PEDAGÓGICO correspondiente al módulo, con contenido y ejemplos originales; no reproduzcas textos, imágenes, logos, diagramación exacta ni preguntas de los documentos de referencia.",
@@ -46,13 +46,14 @@ export async function POST(request: Request) {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method:"POST",
       headers:{"Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,"Content-Type":"application/json"},
-      body:JSON.stringify({model:process.env.OPENAI_MODEL || "gpt-4o-mini",temperature:0.4,response_format:{type:"json_object"},messages:[{role:"system",content:instruction},{role:"user",content:prompt}]}),
+      body:JSON.stringify({model:process.env.OPENAI_MODEL || "gpt-4o-mini",temperature:0.3,max_tokens:14000,response_format:{type:"json_object"},messages:[{role:"system",content:instruction},{role:"user",content:prompt}]}),
       signal:AbortSignal.timeout(90000)
     });
     if (!response.ok) return NextResponse.json({error:"No fue posible generar el recurso. Intenta nuevamente."},{status:502});
     const data = await response.json();
     const raw = data.choices?.[0]?.message?.content;
     if (typeof raw !== "string") throw new Error("Empty response");
+    if (data.choices?.[0]?.finish_reason==="length") throw new Error("Response truncated due to token limit");
     const result = JSON.parse(raw);
     if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 40) throw new Error("Invalid structure");
     if (simce && result.activities.some((a:any)=>!Array.isArray(a.options) || a.options.length!==4 || !a.options.includes(a.correctAnswer))) throw new Error("Invalid answer choices");
@@ -62,7 +63,8 @@ export async function POST(request: Request) {
     const charged = await prisma.user.updateMany({ where: { id: account.id, active: true, ...(account.monthlyAiLimit !== null ? { monthlyAiUsed: { lt: account.monthlyAiLimit } } : {}) }, data: { monthlyAiUsed: { increment: 1 } } });
     if (!charged.count) return NextResponse.json({ error: "Límite de generaciones IA alcanzado." }, { status: 429 });
     return NextResponse.json({resource:result,grade,moduleId,notice:"Borrador generado con IA. Revisión docente obligatoria antes de utilizar."});
-  } catch {
-    return NextResponse.json({error:"La generación no pudo completarse. Vuelve a intentarlo."},{status:502});
+  } catch (error) {
+    console.error("Learning resource generation failure",error instanceof Error ? error.message : String(error));
+    return NextResponse.json({error:"No se pudo completar el ensayo. Intenta con menos preguntas o vuelve a generar."},{status:502});
   }
 }
