@@ -17,8 +17,8 @@ export default function EnsayosSimcePage(){
  </nav>
  {groups.filter(g=>g.grade===selected).map(g=><section key={g.grade} style={{marginTop:25}}>
  <h2 style={{fontSize:20}}>{g.grade==="2"?"Lectura · 2° básico":`Ensayos SIMCE · ${g.label}`}</h2>
- <div style={{display:"grid",gridTemplateColumns:g.grade==="2"?"repeat(3,minmax(0,1fr))":"repeat(2,minmax(0,1fr))",gap:12,width:"100%"}}>
- {g.items.map(item=><a key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${g.grade}`} style={{textDecoration:"none",color:"#15324b",background:g.bg,borderLeft:`5px solid ${g.color}`,borderRadius:12,padding:18,display:"block"}}>
+ <div style={{display:"grid",display:"flex",flexDirection:"row",flexWrap:"wrap",alignItems:"stretch",gap:12,width:"100%"}}>
+ {g.items.map(item=><a key={item.module} href={`/recursos-aprendizaje?modulo=${item.module}&nivel=${g.grade}`} style={{textDecoration:"none",color:"#15324b",background:g.bg,borderLeft:`5px solid ${g.color}`,borderRadius:12,padding:18,display:"flex",flexDirection:"column",justifyContent:"space-between",boxSizing:"border-box",width:"220px",maxWidth:"100%",minHeight:115,flex:"0 0 220px"}}>
  <strong>{item.title}</strong><p style={{color:"#007e90",fontSize:13}}>Abrir y seleccionar OA →</p></a>)}
  </div></section>)}
  <p style={{marginTop:28,fontSize:13,color:"#596b77"}}>Los ensayos tipo SIMCE son recursos originales no oficiales. Revisa las preguntas y su tabla de especificaciones antes de aplicarlos.</p>
