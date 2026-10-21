@@ -88,7 +88,28 @@ export async function POST(request: Request) {
     const result = JSON.parse(raw);
     if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 40) throw new Error("Invalid structure");
     if (simce && !normalizeSimceAnswers(result)) throw new Error("Invalid answer choices after normalization");
-    if (simce) { const table = result.specificationTable; if (!Array.isArray(table) || table.length !== result.activities.length || result.activities.length !== quantity || !table.every((row:any,i:number)=>row && row.number===i+1 && row.points===1 && typeof row.skill==="string" && typeof row.curricularAxis==="string" && typeof row.learningObjective==="string" && typeof row.correctAnswer==="string" && row.correctAnswer===result.activities[i].correctAnswer)) throw new Error("Invalid specification table"); result.scoring = {maximumPoints:quantity,method:"1 punto por respuesta correcta; porcentaje de logro",officialSimceScore:false}; }
+    if (simce) {
+      if (result.activities.length !== quantity) throw new Error("Incorrect question count");
+      const rows = Array.isArray(result.specificationTable) ? result.specificationTable : [];
+      result.activities.forEach((item:any,i:number) => {
+        item.number = i+1;
+        if (!item.skill || typeof item.skill !== "string") item.skill = "Habilidad por revisar";
+      });
+      result.specificationTable = result.activities.map((item:any,i:number) => {
+        const source = rows.find((row:any) => Number(row?.number)===i+1) || rows[i] || {};
+        return {
+          ...source,
+          number:i+1,
+          curricularAxis:typeof source.curricularAxis==="string" && source.curricularAxis.trim()?source.curricularAxis:(moduleId==="simce-lectura"?"Lectura":"Matemática"),
+          learningObjective:typeof source.learningObjective==="string" && source.learningObjective.trim()?source.learningObjective:"Objetivo de aprendizaje por revisar por el docente",
+          skill:typeof source.skill==="string" && source.skill.trim()?source.skill:item.skill,
+          difficulty:typeof source.difficulty==="string" && source.difficulty.trim()?source.difficulty:difficulty,
+          points:1,
+          correctAnswer:item.correctAnswer
+        };
+      });
+      result.scoring = {maximumPoints:quantity,method:"1 punto por respuesta correcta; porcentaje de logro",officialSimceScore:false};
+    }
     if (moduleId === "cuadernillos" && (!Array.isArray(result.passages) || result.passages.length < 2 || !result.passages.some((p:any)=>p.type==="narrativo") || !result.passages.some((p:any)=>p.type==="informativo") || result.activities.some((a:any)=>!result.passages.some((p:any)=>p.id===a.passageId)))) throw new Error("Invalid reading passages");
     if ((moduleId === "precursores" || moduleId === "cuadernillos") && (!result.studentInstructions || typeof result.studentInstructions !== "string" || result.activities.some((a:any)=>!Array.isArray(a.options) || (a.options.length!==0 && a.options.length!==3) || (a.options.length===3 && !a.options.includes(a.correctAnswer))))) throw new Error("Invalid second-grade workbook");
     const charged = await prisma.user.updateMany({ where: { id: account.id, active: true, ...(account.monthlyAiLimit !== null ? { monthlyAiUsed: { lt: account.monthlyAiLimit } } : {}) }, data: { monthlyAiUsed: { increment: 1 } } });
