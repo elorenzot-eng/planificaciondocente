@@ -1,0 +1,78 @@
+{
+  "level": "Educación Básica",
+  "specialty": "Tecnología",
+  "units": [
+    {
+      "code": "1.1",
+      "title": "Necesidades y problemas tecnológicos",
+      "summary": "Una necesidad humana puede atenderse con un producto, servicio o sistema. El proceso de diseño comienza por definir usuarios, contexto, restricciones y criterios de éxito.",
+      "example": "En un patio escolar con poca sombra, comparar soluciones de protección solar según uso y seguridad.",
+      "pitfall": "Empezar por construir sin delimitar el problema.",
+      "task": "Redacta una necesidad, dos restricciones y tres criterios verificables."
+    },
+    {
+      "code": "1.2",
+      "title": "Evaluación multicriterio de soluciones",
+      "summary": "Una solución tecnológica se evalúa por funcionalidad, seguridad, costo, estética, eficiencia, impacto ambiental y consideraciones éticas. La ponderación depende de los usuarios y el contexto.",
+      "example": "Comparar dos recipientes reutilizables considerando durabilidad, precio y facilidad de limpieza.",
+      "pitfall": "Confundir novedad con calidad o sustentabilidad.",
+      "task": "Construye una matriz ponderada de dos soluciones y justifica una elección."
+    },
+    {
+      "code": "2.1",
+      "title": "Impactos sociales de la tecnología",
+      "summary": "Los sistemas tecnológicos modifican formas de aprender, comunicarse, producir y trabajar. Un análisis riguroso considera beneficios, riesgos, distribución de efectos y cambios a través del tiempo.",
+      "example": "Comparar efectos del uso de mensajería instantánea en coordinación escolar y privacidad.",
+      "pitfall": "Presentar los impactos como exclusivamente positivos o negativos.",
+      "task": "Elabora una tabla con dos beneficios, dos riesgos y medidas de mitigación."
+    },
+    {
+      "code": "2.2",
+      "title": "Innovación de productos y procesos",
+      "summary": "Innovar puede significar mejorar significativamente un objeto, servicio o proceso en relación con una necesidad. Se distingue de inventar algo enteramente nuevo y debe evaluarse en su contexto.",
+      "example": "Modificar un proceso de clasificación de residuos con etiquetas claras y seguimiento.",
+      "pitfall": "Suponer que toda mejora cosmética constituye innovación relevante.",
+      "task": "Propón una mejora de proceso y define cómo medirías su utilidad."
+    },
+    {
+      "code": "3.1",
+      "title": "Búsqueda y diseño con herramientas digitales",
+      "summary": "La selección de TIC depende del problema: búsqueda crítica de fuentes, bocetos, modelado, prototipado y registro de versiones. Se debe evaluar confiabilidad, accesibilidad y adecuación de las herramientas.",
+      "example": "Usar una hoja de cálculo para comparar materiales y un programa de dibujo para el prototipo.",
+      "pitfall": "Elegir herramientas por popularidad sin vincularlas al objetivo.",
+      "task": "Diseña un flujo digital desde la investigación hasta el prototipo."
+    },
+    {
+      "code": "3.2",
+      "title": "Comunicación y colaboración digital",
+      "summary": "Los recursos digitales permiten presentar información a públicos distintos y coordinar tareas. El formato debe responder al propósito, accesibilidad, protección de datos y condiciones de conectividad.",
+      "example": "Presentar una propuesta de mejora mediante infografía para estudiantes y reporte para dirección.",
+      "pitfall": "Confundir publicar información con comunicarla eficazmente.",
+      "task": "Diseña dos productos comunicativos para audiencias diferentes."
+    },
+    {
+      "code": "4.1",
+      "title": "Aprendizaje basado en proyectos tecnológicos",
+      "summary": "Una secuencia didáctica puede incluir problema auténtico, investigación, diseño, prototipo, prueba, revisión y comunicación. La enseñanza debe modelar decisiones y prever materiales seguros.",
+      "example": "Diseñar un organizador de útiles, probar su resistencia y mejorar el prototipo.",
+      "pitfall": "Evaluar solo el producto final sin observar decisiones del proceso.",
+      "task": "Planifica una secuencia de cuatro etapas con evidencias."
+    },
+    {
+      "code": "4.2",
+      "title": "Diagnóstico y progresión en Tecnología",
+      "summary": "Los conocimientos previos incluyen manejo seguro de materiales, comprensión de funciones y uso de herramientas. El docente adapta la complejidad y ofrece apoyos según necesidades.",
+      "example": "Antes de construir, solicitar un boceto y explicar cómo se probará la estabilidad.",
+      "pitfall": "Suponer que destreza manual equivale a comprensión del diseño.",
+      "task": "Elabora dos preguntas diagnósticas y una actividad de nivelación."
+    },
+    {
+      "code": "4.3",
+      "title": "Evaluación de diseño y procesos",
+      "summary": "La evaluación tecnológica debe observar identificación del problema, pertinencia de criterios, funcionalidad, seguridad, iteración y justificación. Rúbricas y bitácoras recogen evidencias del proceso.",
+      "example": "Valorar un prototipo según cumplimiento de requisitos, pruebas y mejoras documentadas.",
+      "pitfall": "Calificar solo apariencia o presentación.",
+      "task": "Redacta cuatro criterios observables para evaluar un prototipo."
+    }
+  ]
+}
