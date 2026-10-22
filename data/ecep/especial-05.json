@@ -1,0 +1,77 @@
+[
+  {
+    "nivel": "Educación Especial",
+    "especialidad": "Dificultades Específicas del Aprendizaje (DEA)",
+    "dominios": [
+      {
+        "nombre": "FUNDAMENTOS Y NORMATIVA DE LA EDUCACIÓN ESPECIAL.",
+        "subdominios": [
+          {
+            "codigo": "1.1",
+            "nombre": "Fundamentos de la Educación Especial.",
+            "indicadores": [
+              "Identificar los fundamentos del modelo o enfoque biopsicosocial (Asociación Americana de Discapacidades Intelectuales y del Desarrollo; Enfoque biopsicosocial de la discapacidad propuesto por la Organización Mundial de la Salud en la Clasificación Internacional del Funcionamiento, la Discapacidad y la Salud).",
+              "Determinar las implicancias educativas asociadas a la comprensión de las dificultades del aprendizaje desde el modelo biopsicosocial (enfoque ecológico funcional o integral), como factores que influyen en el desarrollo cognitivo, afectivo, social y ambiental del estudiante.",
+              "Identificar los aportes de las siguientes normativas al desarrollo de la Educación Especial en Chile: Convención de Derechos de las Personas con Discapacidad (ONU, 2006); Ley General de Educación; Decreto Supremo 170/09; Ley de Inclusión Nº 20.845/15; Ley que establece normas sobre igualdad de oportunidades e inclusión de personas con Discapacidad Nº 20.422/10; Decreto Supremo Nº 170/09; Decreto Exento Nº 83/15; Decreto Nº 67/18 de Evaluación; Política Nacional de Convivencia Escolar (2015; 2019), entendiendo que su aplicación práctica permite la regularización, contribuye a la solución de conflictos y facilita la gestión.",
+              "Contrastar los enfoques (y el contexto histórico en que surgen) que sustentan la evolución de la Educación Especial (enfoque homogeneizador, centrado en el déficit y la categorización, modelos orientados a la normalización y asimilación versus modelos basados en la diversidad y la inclusión).",
+              "Determinar las implicancias de los principales hitos de la evolución de la educación especial en la forma de concebir y abordar pedagógicamente la diversidad, determinando en su actuar docente estrategias que den respuesta y eliminen las barreras de aprendizaje que presentan los estudiantes.",
+              "Distinguir conceptos centrales del actual enfoque de la educación especial y sus implicancias en el quehacer pedagógico: barreras al aprendizaje y a la participación, estrategias diversificadas para la enseñanza y evaluación, adecuaciones curriculares, necesidades de apoyo, multiculturalidad e inclusión educativa."
+            ]
+          },
+          {
+            "codigo": "1.2",
+            "nombre": "Normativa y orientaciones para la implementación de la política vigente en la Educación Especial.",
+            "indicadores": [
+              "Identificar ámbitos de acción de los diferentes actores en el aula (equipo de aula y equipo interdisciplinario) en el marco del trabajo colaborativo.",
+              "Identificar los requisitos y procedimientos (técnicos y administrativos) que establece el Decreto Supremo Nº 170/09 para el ingreso y apoyos de los estudiantes con necesidades educativas especiales, en la modalidad de educación especial.",
+              "Identificar la información que debe ser recogida a través de la evaluación diagnóstica integral e individual, según el Decreto Supremo Nº 170/09.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de acceso, según el Decreto Exento Nº 83/15.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de los objetivos de aprendizaje, según el Decreto Exento Nº 83/15.",
+              "Identificar las orientaciones que se deben tener presentes para la diversificación de la enseñanza y para la entrega de apoyos en aula a estudiantes del curso, según el Decreto Exento Nº 83/15.",
+              "Determinar las posibilidades de gestión del currículum vigente para el acceso permanencia y egreso de la diversidad de estudiantes en el aula."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "RESPUESTAS EDUCATIVAS A LAS NECESIDADES EDUCATIVAS QUE ENFRENTAN ESTUDIANTES CON DIFICULTADES ESPECÍFICAS DEL APRENDIZAJE.",
+        "subdominios": [
+          {
+            "codigo": "2.1",
+            "nombre": "Caracterización y necesidades de apoyo de los estudiantes con Dificultades Específicas del Aprendizaje, desde una perspectiva multidimensional.",
+            "indicadores": [
+              "Distinguir las barreras al aprendizaje y participación que podrían estar influyendo en la manifestación de una Dificultad Específica del Aprendizaje.",
+              "Determinar las implicancias de los factores socioemocionales en la manifestación de una Dificultad Específica del Aprendizaje.",
+              "Determinar procedimientos para la evaluación psicoeducativa de los estudiantes en las distintas etapas, dimensiones de su desarrollo y niveles educativos.",
+              "Determinar procedimientos de evaluación que permitan el levantamiento de necesidades de apoyo de orden educativo, derivadas de las Dificultades Específicas del Aprendizaje (la entrevista, la observación de aula, estudios de caso, etc.).",
+              "Fundamentar la elección y aplicación de las actuales baterías psicopedagógicas para determinar necesidades de apoyo en las áreas específicas de lectura, escritura y cálculo.",
+              "Determinar las áreas o dimensiones que se deben considerar en la evaluación diagnóstica integral de los estudiantes que enfrentan barreras para aprender, asociadas a las Dificultades Específicas del Aprendizaje.",
+              "Distinguir los requerimientos de apoyo que podrían presentar estudiantes con Dificultades Específicas del Aprendizaje en actividades referidas al cálculo.",
+              "Analizar las principales barreras que podrían enfrentar los y las estudiantes que presentan Dificultades Específicas del Aprendizaje en el área del cálculo y numeración.",
+              "Determinar requerimientos de apoyo en el proceso de la enseñanza de la lectoescritura (escasa fluidez lectora, trastornos sintácticos, trastornos semántico-comprensivos, procesos de decodificación, comprensión global de un texto, habilidades fonológicas) para estudiantes con Dificultades Específicas del Aprendizaje."
+            ]
+          },
+          {
+            "codigo": "2.2",
+            "nombre": "Condiciones y estrategias para la participación y aprendizaje de estudiantes con Dificultades Específicas del Aprendizaje.",
+            "indicadores": [
+              "Determinar estrategias de apoyo pedagógico para estudiantes que enfrentan dificultades de aprendizaje (entre ellas, Dificultades Específicas del Aprendizaje) basadas en los modelos de adquisición de lectoescritura (de destreza, Holístico, Integrado o Equilibrado).",
+              "Distinguir estrategias para trabajar los distintos momentos de la lectura: antes, durante y después para estudiantes que enfrentan Dificultades Específicas del Aprendizaje, en el contexto del aula común (u otros espacios educativos).",
+              "Relacionar distintas estrategias de la enseñanza de la lectura con los distintos momentos de esta: antes, durante y después para estudiantes que enfrentan Dificultades Específicas del Aprendizaje, en el contexto del aula común (u otros espacios educativos).",
+              "Determinar la justificación de estrategias y/o técnicas para apoyar el proceso de la lectoescritura, según las necesidades educativas de estudiantes con Dificultades Específicas del Aprendizaje.",
+              "Proponer estrategias para la enseñanza de nociones prelógicas tales como: clasificación, seriación, inclusión, etc., para estudiantes con Dificultades Específicas del Aprendizaje en contextos educativos.",
+              "Proponer estrategias de apoyo para el aprendizaje del cálculo (composición y descomposición de números, habilidades de contar, valor posicional) para estudiantes con Dificultades Específicas del Aprendizaje en contextos educativos.",
+              "Proponer estrategias para la enseñanza de la matemática basadas en el uso de material didáctico (multibase, tablero posicional, ábaco, bloques lógicos, etc.), recursos tecnológicos y digitales que respondan a la situación educativa y/o propuestas didácticas ministeriales como el “Sumo Primero\".",
+              "Determinar la justificación de la selección de estrategias para facilitar el aprendizaje de la matemática, según las necesidades educativas de estudiantes con Dificultades Específicas del Aprendizaje.",
+              "Proponer distintas estrategias de apoyo en el aula para favorecer el desarrollo de habilidades sociales, adaptación al grupo, rutinas de trabajo, administración del tiempo, funcionamiento autónomo, entre otras, en estudiantes que presentan DEA.",
+              "Proponer estrategias diversificadas de enseñanza (en los casos determinados por la normativa y las orientaciones vigentes, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Dificultades Específicas del Aprendizaje en las asignaturas de Lenguaje y Comunicación, Matemática, Ciencias Naturales e Historia, Geografía y Ciencias Sociales, u otras, en contextos educativos.",
+              "Decidir la fundamentación de estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa vigente, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Dificultades Específicas del Aprendizaje en las asignaturas de Lenguaje y Comunicación, Matemática, Ciencias Naturales e Historia, Geografía y Ciencias Sociales, u otras, en contextos educativos.",
+              "Decidir estrategias para promover la inclusión de los estudiantes con Dificultades Específicas del Aprendizaje y sus familias en el diseño y ejecución de los planes de convivencia escolar y del Plan de Formación Ciudadana del establecimiento escolar.",
+              "Proponer acciones que promuevan el proceso de sensibilización y una cultura de inclusión al interior de las comunidades educativas respecto a la diversidad presente los/as estudiantes."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
