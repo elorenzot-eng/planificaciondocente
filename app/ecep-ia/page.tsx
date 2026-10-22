@@ -78,7 +78,7 @@ export default function EcepPage(){
  const priorityDomains=[...domains].filter(d=>d.correct<d.total).sort((a,b)=>a.correct/a.total-b.correct/b.total);
  return <main style={{maxWidth:900,margin:"0 auto",padding:"32px 20px",fontFamily:"system-ui,sans-serif",color:"#17324b"}}>
  <a href="/" style={{color:"#008c99"}}>← Volver a EducAntay</a>
- <header style={{margin:"28px 0"}}><small>EDUCANTAY · PREPARACIÓN DOCENTE</small><h1>ECEP IA</h1><p>Practica, revisa tus respuestas y fortalece tus conocimientos pedagógicos.</p></header>
+ <header style={{margin:"28px 0"}}><small>EDUCANTAY · PREPARACIÓN DOCENTE</small><h1>ECEP IA</h1><p>Practica, revisa tus respuestas y fortalece tus conocimientos pedagógicos.</p></header><p><a href="/ecep-ia/temarios" style={{display:"inline-block",padding:"10px 14px",border:"1px solid #008c99",borderRadius:10,color:"#006c78",textDecoration:"none"}}>Consultar temarios ECEP 2026 por nivel y especialidad →</a></p>
  <section style={{background:"#eef7f8",padding:20,borderRadius:16,marginBottom:24}}><strong>Demostración multidisciplinaria: Educación Básica</strong><p>Estas preguntas son originales e ilustrativas. No corresponden a ítems oficiales ni constituyen un ensayo ECEP validado. La alineación por especialidad y temario oficial está pendiente.</p></section>
  <section style={{padding:16,border:"1px solid #d9e3e9",borderRadius:12,marginBottom:20}}>
  <h2 style={{fontSize:19}}>Modalidad de práctica</h2>
