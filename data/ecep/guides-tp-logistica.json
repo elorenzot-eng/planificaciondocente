@@ -1,0 +1,142 @@
+{
+  "level": "Educación Media TP",
+  "specialty": "Administración, Mención Logística",
+  "units": [
+    {
+      "code": "1.1",
+      "title": "Estados financieros básicos",
+      "summary": "Balance, resultados y flujos de efectivo describen dimensiones diferentes de una organización: situación patrimonial, desempeño y movimientos de efectivo.",
+      "example": "Una venta a crédito puede afectar resultados sin representar ingreso inmediato de caja.",
+      "pitfall": "Confundir utilidad contable con efectivo disponible.",
+      "task": "Clasifica operaciones según su efecto en estados financieros."
+    },
+    {
+      "code": "1.2",
+      "title": "Gestión comercial y tributaria",
+      "summary": "Las operaciones comerciales requieren documentación, trazabilidad y aplicación de reglas tributarias vigentes. Cualquier cálculo de franquicias debe verificar normativa y período aplicable.",
+      "example": "Identificar antecedentes necesarios para evaluar una operación de importación.",
+      "pitfall": "Aplicar tasas o beneficios sin confirmar vigencia.",
+      "task": "Elabora una lista de datos y fuentes normativas requeridas antes de calcular."
+    },
+    {
+      "code": "2.1",
+      "title": "Atención y segmentación de clientes",
+      "summary": "La atención distingue clientes internos y externos, requerimientos, volúmenes y condiciones de entrega. La respuesta debe documentarse y considerar compromisos de servicio.",
+      "example": "Diseñar respuesta a un cliente que requiere entrega parcial urgente.",
+      "pitfall": "Ofrecer plazos sin verificar inventario y capacidad.",
+      "task": "Redacta un protocolo breve de recepción y seguimiento de solicitudes."
+    },
+    {
+      "code": "3.1",
+      "title": "Recepción y registro de mercancías",
+      "summary": "El ingreso a bodega exige planificar personal, equipos, embalajes, etiquetas y verificaciones de cantidad y estado. La trazabilidad comienza en la recepción.",
+      "example": "Cotejar orden de compra, guía y unidades efectivamente recibidas.",
+      "pitfall": "Registrar ingreso sin comprobar daños o diferencias.",
+      "task": "Diseña una lista de control de recepción."
+    },
+    {
+      "code": "4.1",
+      "title": "Reposición y prevención de quiebres",
+      "summary": "La reposición combina rotación, demanda, plazos de suministro y niveles de servicio. El punto de pedido depende del consumo durante el plazo de reposición y, cuando corresponda, stock de seguridad.",
+      "example": "Con demanda diaria estable de 10 unidades y plazo de 4 días, el consumo esperado durante el plazo es 40 unidades antes de añadir stock de seguridad.",
+      "pitfall": "Aplicar el mismo nivel de reposición a productos de rotación diferente.",
+      "task": "Resuelve un caso de punto de pedido con supuestos declarados."
+    },
+    {
+      "code": "4.2",
+      "title": "Inventario, bajas y trazabilidad",
+      "summary": "El control de inventarios registra existencias, ubicación, movimientos, mermas y bajas conforme a procedimientos y autorizaciones. Los conteos físicos permiten conciliar diferencias.",
+      "example": "Investigar una discrepancia entre existencias registradas y conteo de una ubicación.",
+      "pitfall": "Dar de baja sin respaldo o trazabilidad.",
+      "task": "Diseña un flujo de baja documentada de producto."
+    },
+    {
+      "code": "4.3",
+      "title": "Diseño y organización del almacén",
+      "summary": "La infraestructura y distribución de bodega consideran peso, volumen, rotación, compatibilidad, seguridad y flujo operativo. Las ubicaciones deben facilitar almacenamiento y recuperación.",
+      "example": "Asignar productos de alta rotación a ubicaciones accesibles sin comprometer seguridad.",
+      "pitfall": "Optimizar distancia de picking ignorando cargas y riesgos.",
+      "task": "Propón un plano simple con zonas de recepción, almacenamiento y despacho."
+    },
+    {
+      "code": "4.4",
+      "title": "Picking, empaque y verificación",
+      "summary": "La preparación de pedidos utiliza listas con códigos, cantidades, ubicaciones y condiciones de entrega. El empaque protege el producto y facilita identificación y trazabilidad.",
+      "example": "Verificar código y cantidad antes de cerrar un paquete y emitir etiqueta.",
+      "pitfall": "Empacar sin cotejar la lista de preparación.",
+      "task": "Elabora una lista de verificación para picking y empaque."
+    },
+    {
+      "code": "5.1",
+      "title": "Programación del despacho",
+      "summary": "El despacho considera volumen, peso, características de carga, rutas, ventanas horarias y capacidades del transporte. La documentación debe corresponder al pedido.",
+      "example": "Agrupar entregas por destino y restricción de horario.",
+      "pitfall": "Elegir vehículo solo por cantidad de bultos.",
+      "task": "Diseña una programación de tres despachos con restricciones explícitas."
+    },
+    {
+      "code": "6.1",
+      "title": "Indicadores de desempeño logístico",
+      "summary": "Los KPI logísticos miden productividad, cumplimiento, exactitud, tiempos y costos. Cada indicador requiere fórmula, unidad, período y fuente de datos.",
+      "example": "Exactitud de pedidos: pedidos correctos dividido por pedidos preparados, multiplicado por cien.",
+      "pitfall": "Comparar indicadores con períodos o denominadores diferentes.",
+      "task": "Define tres KPI y explica cómo se medirán."
+    },
+    {
+      "code": "6.2",
+      "title": "Rotulación y manejo de sustancias peligrosas",
+      "summary": "El reconocimiento de peligros exige interpretar etiquetas, pictogramas y documentación de seguridad, aplicando protocolos institucionales y normativa vigente.",
+      "example": "Antes de almacenar un producto, verificar su clasificación y condiciones indicadas en la ficha de datos de seguridad.",
+      "pitfall": "Manipular sustancias basándose solo en color o nombre comercial.",
+      "task": "Diseña una pauta documental de verificación previa al almacenamiento."
+    },
+    {
+      "code": "7.1",
+      "title": "Sustentabilidad en operaciones logísticas",
+      "summary": "La eficiencia energética y la reducción de residuos pueden incorporarse a rutas, embalajes, almacenamiento y equipos. Se comparan resultados mediante indicadores verificables.",
+      "example": "Medir consumo energético por unidad preparada antes y después de un cambio de proceso.",
+      "pitfall": "Suponer que una acción es sustentable sin evaluar impactos.",
+      "task": "Propón una mejora y un indicador ambiental."
+    },
+    {
+      "code": "7.2",
+      "title": "Calidad y disposición al trabajo",
+      "summary": "La formación TP integra prolijidad, seguridad, cumplimiento de procedimientos y trabajo colaborativo. La evidencia debe observar acciones y resultados en tareas simuladas.",
+      "example": "Usar una lista de chequeo durante la recepción de productos.",
+      "pitfall": "Evaluar solo actitudes declaradas y no conductas observables.",
+      "task": "Define criterios de calidad para una tarea de bodega."
+    },
+    {
+      "code": "7.3",
+      "title": "TIC y sistemas de inventario",
+      "summary": "Herramientas digitales de inventario y trazabilidad apoyan registros, búsqueda y reportes. Su elección debe considerar objetivo, confiabilidad y permisos.",
+      "example": "Registrar movimientos en una planilla estructurada y verificar consistencia.",
+      "pitfall": "Compartir datos sin controles de acceso.",
+      "task": "Diseña una plantilla de movimientos con validaciones básicas."
+    },
+    {
+      "code": "8.1",
+      "title": "Currículum TP y perfil de egreso",
+      "summary": "Las Bases y Programas EMTP articulan objetivos, competencias, módulos y evaluación. La planificación debe vincular tareas auténticas con aprendizajes esperados y condiciones de seguridad.",
+      "example": "Alinear una actividad de recepción de productos con un objetivo curricular y evidencia.",
+      "pitfall": "Planificar tareas sin identificar el aprendizaje curricular.",
+      "task": "Construye una matriz objetivo-actividad-evidencia."
+    },
+    {
+      "code": "8.2",
+      "title": "Didáctica de procedimientos logísticos",
+      "summary": "El modelamiento, la simulación y el aprendizaje basado en problemas permiten practicar secuencias de trabajo y decisiones bajo restricciones reales.",
+      "example": "Simular recepción con discrepancias y solicitar registro de acciones correctivas.",
+      "pitfall": "Enseñar solo definiciones sin práctica de procedimientos.",
+      "task": "Diseña una simulación con roles, recursos y pauta de observación."
+    },
+    {
+      "code": "8.3",
+      "title": "Evaluación de competencias logísticas",
+      "summary": "La evaluación de desempeño integra producto, procedimiento, seguridad y decisiones. Puede utilizar rúbricas, listas de cotejo y evidencias documentales.",
+      "example": "Evaluar una preparación de pedido por exactitud, trazabilidad y cumplimiento del protocolo.",
+      "pitfall": "Calificar solo rapidez y omitir seguridad.",
+      "task": "Diseña cuatro criterios observables para una práctica de picking."
+    }
+  ]
+}
