@@ -1,0 +1,77 @@
+[
+  {
+    "nivel": "Educación Especial",
+    "especialidad": "Trastorno del Lenguaje (TEL)",
+    "dominios": [
+      {
+        "nombre": "FUNDAMENTOS Y NORMATIVA DE LA EDUCACIÓN ESPECIAL.",
+        "subdominios": [
+          {
+            "codigo": "1.1",
+            "nombre": "Fundamentos de la Educación Especial.",
+            "indicadores": [
+              "Identificar los fundamentos del modelo o enfoque biopsicosocial (Asociación Americana de Discapacidades Intelectuales y del Desarrollo; Enfoque biopsicosocial de la discapacidad propuesto por la Organización Mundial de la Salud en la Clasificación Internacional del Funcionamiento, la Discapacidad y la Salud).",
+              "Determinar las implicancias educativas asociadas a la comprensión de las necesidades educativas especiales desde el modelo biopsicosocial (enfoque ecológico funcional o integral).",
+              "Identificar los aportes de las siguientes normativas al desarrollo de la Educación Especial en Chile: Convención de Derechos de las Personas con Discapacidad (ONU, 2006); Ley General de Educación Nº20.370/09; Ley de Inclusión Nº20.845/15; Ley que establece normas sobre igualdad de oportunidades e inclusión de personas con Discapacidad Nº20.422/10; Decreto Supremo Nº170/09; Decreto Exento Nº83/15; Decreto Nº67/18 de Evaluación; Política Nacional de Convivencia Escolar (2015; 2019).",
+              "Distinguir los enfoques (y el contexto histórico en que surgen) que sustentan la evolución de la Educación Especial (enfoque homogeneizador, centrado en el déficit y la categorización, modelos orientados a la normalización y asimilación versus modelos basados en la diversidad y la inclusión).",
+              "Relacionar los principales hitos de la evolución de la educación especial, con la finalidad de abordar pedagógicamente la diversidad.",
+              "Distinguir conceptos centrales del actual enfoque de la educación especial: barreras al aprendizaje y a la participación, estrategias diversificadas para la enseñanza y evaluación, adecuaciones curriculares, necesidades de apoyo, multiculturalidad e inclusión educativa."
+            ]
+          },
+          {
+            "codigo": "1.2",
+            "nombre": "Normativa y orientaciones para la implementación de la política vigente en la Educación Especial.",
+            "indicadores": [
+              "Identificar ámbitos de acción de los diferentes actores en el aula (equipo de aula y equipo interdisciplinario) en el marco del trabajo colaborativo.",
+              "Identificar los requisitos y procedimientos (técnicos y administrativos) que establece el Decreto Supremo Nº170/09 para el ingreso, apoyos y egresos de los estudiantes con necesidades educativas especiales, en la modalidad de educación especial.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de acceso, según el Decreto Exento Nº83/15.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de los objetivos de aprendizaje, según el Decreto Exento Nº83/15.",
+              "Identificar la información que debe ser recogida a través de la evaluación diagnóstica individual, según el Decreto Exento Nº83/15.",
+              "Determinar las posibilidades de gestión del currículum vigente para el acceso, permanencia y egreso de la diversidad de estudiantes en el aula."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "RESPUESTAS EDUCATIVAS A LAS NECESIDADES EDUCATIVAS QUE ENFRENTAN ESTUDIANTES CON TRASTORNO DEL LENGUAJE.",
+        "subdominios": [
+          {
+            "codigo": "2.1",
+            "nombre": "Caracterización y necesidades de apoyo de los estudiantes que podrían enfrentar un TEL, desde una perspectiva multidimensional.",
+            "indicadores": [
+              "Determinar las barreras de acceso al aprendizaje y la participación de los estudiantes, que podrían influir en la manifestación de un TEL.",
+              "Inferir los ámbitos (cognitivo, social, emocional, familiar, individual y de salud) en los que podrían requerir apoyo escolar estudiantes que presentan desafíos educativos asociados a un TEL.",
+              "Identificar habilidades psicolingüísticas en contextos educativos, tales como: comprensión (auditiva o verbal, categorización verbal y asociación) y producción (integración gramatical, denominación de palabras frecuentes y palabras poco frecuentes) de lenguaje, memoria (secuencial o verbal inmediata) y atención.",
+              "Comparar en diversos contextos, las funciones del lenguaje propuestas por Halliday (funcional social): instrumental, reguladora, interaccional, personal, heurística, imaginativa y Jakobson (funcional estructural): representativa, expresiva, apelativa, metalingüística.",
+              "Reconocer, en el proceso de adquisición del lenguaje, el desarrollo de los distintos componentes o dimensiones del lenguaje (fonológico, semántico, pragmático, morfosintáctico).",
+              "Seleccionar procedimientos e instrumentos para la evaluación psicoeducativa e integral de los estudiantes, en las distintas dimensiones de su desarrollo, en contextos educativos.",
+              "Determinar procedimientos de evaluación que permitan el levantamiento de necesidades de apoyo de orden educativo, derivadas de la manifestación de un TEL (entrevista, observación de aula, estudios de caso, entre otros).",
+              "Relacionar los criterios diagnósticos basados en la clasificación del DSM V y DSM IV para determinar la presencia de rasgos atribuibles a un TEL.",
+              "Examinar los principales test (SCREENING TEST OF SPANISH GRAMMAR, TEPROSIF, TECAL e IDTEL) aplicados por los fonoaudiólogos, las áreas que evalúan y el tipo de resultados que entregan en función de su aporte al desarrollo de estudiantes con TEL y su proceso de aprendizaje.",
+              "Identificar normas de ingreso y egreso para estudiantes que presentan TEL en escuelas especiales de lenguaje y en PIE.",
+              "Reconocer el rol y la función de la atención pedagógica brindada por el profesor especialista."
+            ]
+          },
+          {
+            "codigo": "2.2",
+            "nombre": "Estrategias educativas para favorecer la participación y el aprendizaje de estudiantes con TEL.",
+            "indicadores": [
+              "Decidir con el equipo multidisciplinar los requerimientos de apoyo de estudiantes que presentan desafíos asociados a un TEL, considerando las diversas áreas de desarrollo y la información proveniente de distintas fuentes.",
+              "Sugerir y fundamentar actividades de aprendizaje para favorecer el desarrollo del componente fonológico en estudiantes de los distintos niveles educativos que presentan TEL.",
+              "Sugerir y fundamentar actividades de aprendizaje para favorecer el desarrollo del componente morfosintáctico en estudiantes de los distintos niveles educativos que presentan TEL.",
+              "Sugerir y fundamentar actividades de aprendizaje para favorecer el desarrollo del componente pragmático en estudiantes de los distintos niveles educativos que presentan TEL.",
+              "Determinar la fundamentación de actividades de aprendizaje que favorezcan el desarrollo de los diversos componentes del lenguaje de estudiantes con TEL en los distintos niveles educativos.",
+              "Sugerir y fundamentar actividades de aprendizaje para favorecer el desarrollo del componente semántico en estudiantes de los distintos niveles educativos que presentan TEL.",
+              "Determinar actividades de aprendizaje para llevar a cabo el proceso de metacognición en estudiantes con TEL en los distintos niveles educativos.",
+              "Evaluar los fundamentos, estructura, componentes y conceptos clave del referente curricular vigente en los distintos niveles educativos, como base para la toma de decisiones pedagógicas y de apoyo curricular.",
+              "Proponer distintas estrategias de apoyo en el aula para favorecer el desarrollo de habilidades sociales, adaptación al grupo, rutinas de trabajo, administración del tiempo, funcionamiento autónomo, entre otras.",
+              "Evaluar la necesidad de posibles adecuaciones curriculares para estudiantes con TEL en las asignaturas y ámbitos de los distintos niveles educativos.",
+              "Determinar estrategias que promuevan la participación activa e informada de la familia en todas las decisiones relacionadas con el plan de apoyo individual.",
+              "Proponer estrategias para promover la inclusión de los estudiantes con TEL y sus familias en el diseño y ejecución de los planes de convivencia escolar y del Plan de Formación Ciudadana del establecimiento escolar."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
