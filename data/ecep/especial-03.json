@@ -1,0 +1,96 @@
+[
+  {
+    "nivel": "Educación Especial",
+    "especialidad": "Discapacidad Múltiple",
+    "dominios": [
+      {
+        "nombre": "FUNDAMENTOS Y NORMATIVA DE LA EDUCACIÓN ESPECIAL.",
+        "subdominios": [
+          {
+            "codigo": "1.1",
+            "nombre": "Fundamentos de la Educación Especial.",
+            "indicadores": [
+              "Identificar los fundamentos del modelo o enfoque biopsicosocial (Asociación Americana de Discapacidades Intelectuales y del Desarrollo; Enfoque biopsicosocial de la discapacidad propuesto por la Organización Mundial de la Salud en la Clasificación Internacional del Funcionamiento, la Discapacidad y la Salud).",
+              "Aplicar los fundamentos del modelo biopsicosocial en la determinación de necesidades de apoyo y el abordaje integral del estudiante que presenta discapacidad múltiple.",
+              "Determinar las implicancias educativas asociadas a la comprensión de la discapacidad múltiple desde el enfoque ecológico funcional.",
+              "Determinar los avances y barreras que persisten para progresar a una mayor inclusión, argumentando desde las diversas normativas e instrumentos vigentes.",
+              "Reconocer los enfoques y el contexto histórico en que surgen, para comprender la evolución de la Educación Especial y sus implicancias en la forma de entender la diversidad (enfoque homogeneizador, centrado en el déficit y la categorización, modelos orientados a la normalización y asimilación versus modelos basados en la diversidad y la inclusión)",
+              "Identificar los fundamentos de una educación inclusiva desde el enfoque de derechos, igualdad de oportunidades, educación de calidad, etc.",
+              "Identificar los aportes de la neurociencia a la comprensión de los procesos de aprendizaje (por ejemplo, redes de interconexión neuronal, evaluación neuropsicológica, entre otros).",
+              "Analizar la toma de decisiones respecto del diseño e implementación de apoyos especializados, a partir de los fundamentos de la educación inclusiva."
+            ]
+          },
+          {
+            "codigo": "1.2",
+            "nombre": "Normativa y orientaciones para la implementación de la política vigente en la Educación Especial.",
+            "indicadores": [
+              "Reconocer la importancia del trabajo colaborativo (incluyendo la familia) como condición básica para favorecer la participación y aprendizaje de estudiantes con NEEM.",
+              "Determinar los requisitos y procedimientos (técnicos y administrativos) que establece el Decreto Supremo Nº170/09 para el ingreso y apoyos de los estudiantes con necesidades educativas especiales, en la modalidad de educación especial.",
+              "Determinar los procedimientos de una evaluación diagnóstica integral e interdisciplinaria incorporando las orientaciones técnico-pedagógicas que el ministerio de educación define en estas materias.",
+              "Determinar sistemas de monitoreo, evaluación y seguimiento del progreso de los estudiantes que presentan necesidades educativas especiales de tipo transitorias y permanentes, de acuerdo con lo que establece el Decreto Supremo Nº170/09.",
+              "Determinar los procedimientos de una evaluación integral e interdisciplinaria que entregue información cualitativa en las áreas cognitivas, sensorial, comunicación, motricidad, habilidades de la vida diaria y socioafectiva de los/as estudiantes con NEEM.",
+              "Identificar los aportes del principio de accesibilidad universal aplicado a los procesos educativos de estudiantes con NEEM.",
+              "Determinar propuestas pedagógicas para estudiantes con NEEM, considerando el principio de accesibilidad universal.",
+              "Reconocer los principios que orientan la toma de decisiones para definir las adecuaciones curriculares según el Decreto Exento Nº83/15.",
+              "Determinar los criterios que se deben tener presentes para generar adecuaciones curriculares de acceso, según el Decreto Exento Nº83/15.",
+              "Determinar los criterios que se deben tener presentes para generar adecuaciones curriculares de los objetivos de aprendizaje, según el Decreto Exento Nº83/15.",
+              "Examinar las características de la discapacidad múltiple, considerando el funcionamiento sensorial, cognitivo, comunicativo, motor, socioafectivo y sus implicancias en el desarrollo y aprendizaje de los/as estudiantes, en interacción con los factores contextuales en que se desenvuelven."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "RESPUESTAS EDUCATIVAS A LAS NECESIDADES EDUCATIVAS DE ESTUDIANTES CON DISCAPACIDAD MÚLTIPLE",
+        "subdominios": [
+          {
+            "codigo": "2.1",
+            "nombre": "Caracterización y necesidades de apoyo de los estudiantes con Discapacidad Múltiple, desde una perspectiva multidimensional.",
+            "indicadores": [
+              "Reconocer las implicancias del concepto de plasticidad cerebral para promover el desarrollo y aprendizaje de estudiantes con NEEM.",
+              "Distinguir las dimensiones del Enfoque multidimensional en las que estudiantes con Discapacidad Múltiple requieren apoyo.",
+              "Reconocer los aspectos personales y contextuales que se debe explorar de acuerdo con el enfoque multidimensional para determinar las necesidades de apoyo en estudiantes con Discapacidad Múltiple.",
+              "Comprender la evaluación psicopedagógica como un proceso multidimensional e interdisciplinario (incluye a la familia).",
+              "Decidir un proceso de evaluación desde el enfoque ecológico que incorpore instrumentos especializados para identificar potencialidades y necesidades de apoyo en estudiantes con Discapacidad Múltiple.",
+              "Determinar la importancia de la estimulación temprana en las distintas áreas de desarrollo de un estudiante con Discapacidad Múltiple, desde un enfoque ecológico funcional.",
+              "Reconocer los elementos centrales del enfoque ecológico para la evaluación de estudiantes con Discapacidad Múltiple."
+            ]
+          },
+          {
+            "codigo": "2.2",
+            "nombre": "Condiciones para la participación, la comunicación y el aprendizaje de estudiantes con Discapacidad Múltiple.",
+            "indicadores": [
+              "Seleccionar diversos recursos de apoyos: tecnológicos, ayudas técnicas y recursos materiales específicos y adaptados, para facilitar la accesibilidad y autonomía de los/as estudiantes de acuerdo con las necesidades de apoyo específico y la realidad del contexto educativo, familiar y social en que se desenvuelve.",
+              "Determinar, a partir de la evaluación diagnóstica integral e interdisciplinaria, las adecuaciones curriculares, ya sea de acceso y/o curriculares que requieren los/las estudiantes con Discapacidad Múltiple en la asignatura de Historia, Geografía y Ciencias Sociales.",
+              "Determinar experiencias de aprendizaje para estudiantes con Discapacidad Múltiple, incorporando estrategias pedagógicas que contribuyan al desarrollo y fortalecimiento de las funciones ejecutivas (memoria, atención, planificación, flexibilidad, razonamiento, entre otras) de manera transversal en todas las asignaturas del currículum, en contextos educativos y en el marco del trabajo colaborativo.",
+              "Proponer experiencias de aprendizaje para estudiantes con Discapacidad Múltiple, que favorezcan y potencien la percepción visual, auditiva y/o táctil de manera transversal en todas las asignaturas del currículum, en contextos educativos y en el marco del trabajo colaborativo.",
+              "Identificar recursos, apoyos, medidas, acciones pedagógicas o actividades para estudiantes con Discapacidad Múltiple, que contribuyan al planeamiento motor y ejecución de actividades (escribir, señalar, indicar, recortar, pintar y otras) en el trabajo de las diversas asignaturas del currículum nacional, en contextos educativos y en el marco del trabajo colaborativo con el equipo de aula.",
+              "Juzgar experiencias de aprendizaje para estudiantes con Discapacidad Múltiple, que contribuyan al planeamiento motor y ejecución de actividades (escribir, señalar, indicar, recortar, pintar y otras) de manera transversal en todas las asignaturas del currículum, en contextos educativos y en el marco del trabajo colaborativo.",
+              "Proponer experiencias de aprendizaje para estudiantes con Discapacidad Múltiple, que incluyan el trabajo de la organización espacial, de manera transversal o integrada en todas las asignaturas del currículum, en contextos educativos y en el marco del trabajo colaborativo.",
+              "Identificar Sistemas de Comunicación Aumentativa y Alternativa pertinentes a los requerimientos de estudiantes con Discapacidad Múltiple, en diversos contextos, considerando el enfoque multidimensional.",
+              "Decidir, tras el análisis de resultados de la evaluación el sistema de comunicación aumentativa pertinente al nivel comunicativo de estudiantes con Discapacidad Múltiple",
+              "Proponer experiencias de aprendizaje que favorezcan el desarrollo de la comunicación y faciliten el aprendizaje en estudiantes con Discapacidad Múltiple, en contextos educativos, familiares y comunitarios.",
+              "Identificar algunos softwares (libres y pagados) y hardware (switch, comunicadores, soportes, entre otros) que facilitan y aumentan las posibilidades de participación y comunicación en estudiantes con Discapacidad Múltiple.",
+              "Proponer experiencias de aprendizaje que incorporen la organización de los distintos elementos del ambiente del aula, en relación con la disposición espacial, para facilitar el desarrollo de la comunicación en estudiantes con Discapacidad Múltiple.",
+              "Determinar estrategias pedagógicas que favorezcan la transición hacia una vida activa desde el ciclo parvulario en estudiantes con Discapacidad Múltiple.",
+              "Incorporar en el diseño del Plan de Adecuación Curricular Individual y Plan de Apoyo Individual, objetivos de aprendizaje y estrategias pedagógicas que promuevan el desarrollo de habilidades de la vida diaria (HVD) en áreas como la alimentación, vestimenta y autocuidado.",
+              "Incorporar en el diseño del Plan de Adecuación Curricular Individual y Plan de Apoyo Individual, objetivos de aprendizaje y estrategias pedagógicas que contribuyan a la participación en comunidad, uso de redes y servicios de estudiantes con Discapacidad Múltiple.",
+              "Incorporar en el diseño del Plan de Adecuación Curricular Individual y Plan de Apoyo Individual, objetivos de aprendizaje y estrategias pedagógicas que favorezcan la socialización y participación social de estudiantes con Discapacidad Múltiple.",
+              "Incorporar en el diseño del Plan de Apoyo Individual, opciones que favorezcan la participación de estudiantes con Discapacidad Múltiple, tales como: deporte adaptado o inclusivo, actividades musicales y otras.",
+              "Decidir estrategias diversificadas de enseñanza a partir de necesidades de apoyo de estudiantes con Necesidades Educativas Múltiples en la asignatura de Lenguaje y Comunicación.",
+              "Decidir, a partir de la evaluación diagnóstica integral e interdisciplinaria, las adecuaciones curriculares, ya sea de acceso y/o de objetivos que requieren los estudiantes con Discapacidad Múltiple en la asignatura de Lenguaje y Comunicación.",
+              "Decidir estrategias diversificadas de enseñanza a partir de necesidades de apoyo de estudiantes con Necesidades Educativas Múltiples en la asignatura de Matemática",
+              "Determinar, a partir de la evaluación diagnóstica integral e interdisciplinaria, las adecuaciones curriculares, ya sea de acceso y/o curriculares que requieren los estudiantes con Discapacidad Múltiple en la asignatura de Matemática.",
+              "Decidir, a partir de la evaluación diagnóstica integral e interdisciplinaria, las adecuaciones curriculares, ya sea de acceso y/o curriculares que requieren los estudiantes con Discapacidad Múltiple en la asignatura de Ciencias Naturales.",
+              "Relacionar las normativas e instrumentos vigentes que regulan la educación general y especial al análisis y toma de decisiones desde un enfoque de inclusión educativa.",
+              "Decidir estrategias diversificadas de enseñanza a partir de necesidades de apoyo de estudiantes con Necesidades Educativas Múltiples en la asignatura de Historia, Geografía y Ciencias Sociales.",
+              "Juzgar la fundamentación de estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa vigente, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Discapacidad Múltiple en las asignaturas de Lenguaje y Comunicación, Matemática, Ciencias Naturales e Historia, Geografía y Ciencias Sociales, u otras, en contextos educativos.",
+              "Proponer estrategias que promueven la participación e informada de la familia en la evaluación diagnóstica integral, la determinación de prioridades para la construcción del Plan de Apoyo Individual y del Plan de Adecuaciones Curriculares Individuales, en estudiantes con Discapacidad Múltiple.",
+              "Proponer estrategias para promover la inclusión de los estudiantes con Discapacidad Múltiple, y sus familias a partir del análisis del contexto educativo.",
+              "Determinar facilitadores y barreras del contexto educativo que inciden en la construcción de comunidades inclusivas."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
