@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     const generateBatch = async (batchSize:number, offset:number, attempt:number) => {
       const batchPrompt = JSON.stringify({
         moduleId,grade,difficulty,oa:oa || "OA por definir y validar por docente",
-        quantity:batchSize,mode,specification,
+        quantity:batchSize,mode,specification:specification?{...specification,questionCount:batchSize}:null,
         instruction: simce
           ? `Genera EXACTAMENTE ${batchSize} preguntas nuevas, numeradas de 1 a ${batchSize}. Este es el bloque ${Math.floor(offset/8)+1} de un ensayo de ${quantity} preguntas. No incluyas más ni menos preguntas. Cada pregunta debe tener cuatro alternativas distintas y una clave correcta. Incluye los textos completos en passages si es Lectura.`
           : undefined,
