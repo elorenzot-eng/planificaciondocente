@@ -822,3 +822,10 @@ main>aside .role .logout:hover{background:#d6eefb!important}
 .ecep-quiz-layout>div{width:100%;min-width:0}
 .ecep-quiz-layout .ecep-quiz-option{display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:center!important;grid-template-columns:none!important;gap:12px!important;width:100%!important;margin:8px 0!important;font-size:inherit!important;font-weight:400!important}
 .ecep-quiz-layout .ecep-quiz-radio{display:inline-block!important;position:static!important;flex:0 0 18px!important;width:18px!important;min-width:18px!important;height:18px!important;margin:0!important;padding:0!important;transform:none!important;appearance:auto!important}
+
+/* Shared ECEP study and self-assessment alignment. Keep inherited typography. */
+.ecep-guide-layout{display:block!important;width:100%!important;min-width:0}
+.ecep-guide-layout .ecep-guide-domain{display:block!important;width:100%!important;box-sizing:border-box!important}
+.ecep-guide-layout .ecep-guide-indicator{display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:flex-start!important;grid-template-columns:none!important;gap:12px!important;width:100%!important;box-sizing:border-box!important;padding:10px 12px!important;margin:8px 0!important;border:1px solid #e0eaf0;border-radius:9px;background:#f8fbfd;font-size:inherit!important;font-weight:400!important}
+.ecep-guide-layout .ecep-guide-indicator>span{display:block!important;flex:1 1 auto!important;min-width:0!important;font-size:inherit!important;font-weight:400!important;letter-spacing:normal!important;line-height:1.5!important}
+.ecep-guide-layout .ecep-guide-checkbox{display:inline-block!important;position:static!important;flex:0 0 18px!important;width:18px!important;min-width:18px!important;height:18px!important;margin:3px 0 0!important;padding:0!important;transform:none!important;appearance:auto!important}
