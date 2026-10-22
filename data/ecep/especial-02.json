@@ -1,0 +1,89 @@
+[
+  {
+    "nivel": "Educación Especial",
+    "especialidad": "Trastorno del Espectro Autista - Disfasia Severa",
+    "dominios": [
+      {
+        "nombre": "FUNDAMENTOS Y NORMATIVA DE LA EDUCACIÓN ESPECIAL.",
+        "subdominios": [
+          {
+            "codigo": "1.1",
+            "nombre": "Fundamentos de la Educación Especial.",
+            "indicadores": [
+              "Identificar los fundamentos de los diferentes modelos que explican las características del autismo (biopsicosocial, neurodiversidad y modelo social).",
+              "Distinguir las implicancias educativas asociadas a la comprensión del autismo, como una discapacidad dinámica, debido a que las necesidades de apoyo varían de acuerdo con el contexto y al día, desde una perspectiva ecológica.",
+              "Identificar los aportes de las siguientes normativas al desarrollo de la Educación Especial en Chile: Ley General de Educación Nº20.370/09; Ley de Inclusión Nº20.845/15; Ley que establece normas sobre igualdad de oportunidades e inclusión de personas con Discapacidad Nº20.422/10; Decreto Supremo Nº170/09; Decreto Exento Nº83/15; Decreto Nº67/18 de Evaluación; Política Nacional de Convivencia Escolar (2015; 2019); Ley Nº21.545 TEA.",
+              "Reconocer los enfoques (y el contexto histórico en que surgen) que sustentan la evolución de la Educación Especial (enfoque homogeneizador, centrado en el déficit y la categorización, modelos orientados a la normalización y asimilación versus modelos basados en la diversidad y la inclusión).",
+              "Reconocer los principios del enfoque de derechos en la educación inclusiva.",
+              "Identificar los fundamentos de una educación inclusiva (por ejemplo: enfoque de derechos, principios de la educación inclusiva, oportunidades equivalentes, neurodiversidad, entre otros).",
+              "Identificar los aportes de la neurociencia a la comprensión de los procesos de aprendizaje (por ejemplo, redes de interconexión neuronal, evaluación neuropsicológica, entre otros)."
+            ]
+          },
+          {
+            "codigo": "1.2",
+            "nombre": "Normativa y orientaciones para la implementación de la política vigente en la Educación Especial.",
+            "indicadores": [
+              "Identificar ámbitos de acción de los diferentes actores en el aula (equipo de aula y equipo interdisciplinario) en el marco del trabajo colaborativo.",
+              "Identificar los requisitos y procedimientos (técnicos y administrativos) que establece el Decreto Supremo Nº170/09 para el ingreso y apoyos de los estudiantes con necesidades educativas especiales, en la modalidad de educación especial.",
+              "Examinar las orientaciones técnico-pedagógicas, sus propósitos y fundamentos, para la Evaluación Diagnóstica Integral en el marco del Decreto Supremo Nº170/09.",
+              "Identificar sistemas de monitoreo, evaluación y seguimiento del progreso de los estudiantes que presentan necesidades educativas especiales de tipo transitorias y permanentes, de acuerdo con lo que establece el Decreto Supremo Nº170/09.",
+              "Contrastar los fundamentos y la estructura del currículum vigente que permiten dar respuesta a la diversidad de estudiantes en el aula.",
+              "Distinguir el principio de accesibilidad y diseño universal aplicado a los procesos de enseñanza aprendizaje y a la evaluación.",
+              "Identificar los principios que orientan la toma de decisiones para definir las adecuaciones curriculares según el Decreto Exento Nº83/15.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de acceso, según el Decreto Exento Nº83/15.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de los objetivos de aprendizaje, según el Decreto Exento Nº83/15."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "RESPUESTAS EDUCATIVAS A LAS NECESIDADES EDUCATIVAS QUE ENFRENTAN ESTUDIANTES CON TRASTORNO DEL ESPECTRO AUTISTA-DISFASIA SEVERA.",
+        "subdominios": [
+          {
+            "codigo": "2.1",
+            "nombre": "Caracterización y necesidades de apoyo de estudiantes con Trastorno del Espectro Autista- Disfasia severa, desde una perspectiva multidimensional.",
+            "indicadores": [
+              "Identificar las diversas definiciones del Trastorno del Espectro Autista entre distintos autores (por ejemplo, Theo Petters, Eric Schopler, Uta Frith, Lorna Wing, Judith Gould, Angel Rivière, Leo Kanner, Hans Asperger, Simon Baron-Cohen).",
+              "Identificar las áreas de desarrollo vinculadas al modelo multidimensional, a saber, funcionamiento intelectual, conducta adaptativa, salud, participación y contexto, en las que estudiantes con Trastorno del Espectro Autista podrían requerir apoyo.",
+              "Reconocer la definición de Trastorno del Espectro Autista en instrumentos de la OMS (CIE 11), DSM 5 y en la normativa nacional.",
+              "Distinguir los elementos del contexto escolar que son importantes de cuidar a la hora de organizar y planificar la enseñanza para estudiantes con Trastorno del Espectro Autista-Disfasia severa.",
+              "Identificar las principales características de las metodologías educativas más utilizadas con estudiantes que presentan Trastorno del Espectro Autista-Disfasia severa (por ejemplo, SAAC, TEACCH, PECS).",
+              "Determinar procedimientos para la evaluación psicoeducativa de los estudiantes con Trastorno del Espectro Autista-Disfasia severa, en las distintas dimensiones de su desarrollo.",
+              "Distinguir los elementos centrales del Enfoque Ecológico para la evaluación de estudiantes con Trastorno del Espectro Autista-Disfasia severa.",
+              "Contrastar cualitativa y cuantitativamente instrumentos y procesos de evaluación vinculados al Trastorno del Espectro Autista (por ejemplo, ICAP, SIS, TADI, CLPT, matriz de comunicación, etc.)."
+            ]
+          },
+          {
+            "codigo": "2.2",
+            "nombre": "Condiciones y estrategias para la participación y aprendizaje de estudiantes con Trastorno del espectro autista-Disfasia severa.",
+            "indicadores": [
+              "Determinar y caracterizar herramientas y/o recursos tecnológicos de apoyo para la comunicación, ya sean hardware y software (ARASACC, ZAC, PEAPO, entre otros) en estudiantes con Trastorno del Espectro Autista-Disfasia severa.",
+              "Valorar las razones que justifican la elección de una determinada herramienta tecnológica de apoyo a la comunicación en estudiantes con Trastorno del Espectro Autista-Disfasia severa, a partir de casos concretos.",
+              "Determinar estrategias que utilicen SAAC para apoyar la comunicación en estudiantes con Trastorno del Espectro Autista-Disfasia severa, en contextos educativos.",
+              "Seleccionar estrategias vinculadas a los objetivos de clase y al PAI (plan de apoyo individual) para trabajar los distintos elementos que componen el lenguaje (estructuración de oraciones, aumentar tipo de vocabulario, etc.) en estudiantes con Trastorno del Espectro Autista-Disfasia severa.",
+              "Valorar la fundamentación de estrategias para favorecer la comunicación según las necesidades educativas de estudiantes con Trastorno del Espectro Autista-Disfasia severa, a partir de casos concretos.",
+              "Seleccionar acciones o decisiones pedagógicas orientadas a responder a la necesidad de un ambiente organizado y estructurado para el trabajo con estudiantes con Trastorno del Espectro Autista-Disfasia severa.",
+              "Determinar estrategias para trabajar la organización temporal en estudiantes con Trastorno del Espectro Autista-Disfasia severa, en el contexto de la planificación de clase y de manera transversal.",
+              "Determinar estrategias para potenciar las habilidades sociales en estudiantes con Trastorno del Espectro Autista-Disfasia severa (por ejemplo: relación con los pares, habilidades interpersonales, adecuación a reglas, etc.), en contextos educativos.",
+              "Determinar los principales elementos que debe incorporar un Plan de Apoyo Individual en el que, además de lo curricular, se considere el proyecto de vida presente y futuro de estudiante con Trastorno del Espectro Autista-Disfasia severa, de acuerdo con su edad e intereses.",
+              "Determinar estrategias que favorezcan paulatinamente el uso del tiempo libre, recreación, vida en comunidad, uso de servicios y redes.",
+              "Valorar la fundamentación de estrategias para promover el desarrollo de habilidades adaptativas y sociales según las necesidades educativas de estudiantes con Trastorno del Espectro Autista-Disfasia severa, a partir de casos concretos.",
+              "Seleccionar estrategias para trabajar funciones ejecutivas en estudiantes con Trastorno del Espectro Autista-Disfasia severa, en el contexto de la planificación de clase y de manera transversal.",
+              "Valorar la justificación de estrategias para favorecer el aprendizaje según las necesidades educativas de estudiantes con Trastorno del Espectro Autista-Disfasia severa, a partir de casos concretos.",
+              "Determinar, en casos concretos, los diferentes criterios que determinan la realización de adecuaciones curriculares a los O. A (por ejemplo, graduación del nivel de complejidad, enriquecimiento, etc.).",
+              "Determinar estrategias didácticas específicas para trabajar la lectura y escritura en estudiantes con Trastorno del Espectro Autista-Disfasia severa, en contextos educativos.",
+              "Determinar estrategias didácticas específicas para trabajar habilidades lógico matemáticas en estudiantes con Trastorno del Espectro Autista-Disfasia severa, en contextos educativos.",
+              "Seleccionar estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa vigente, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Trastorno del Espectro Autista-Disfasia severa en la asignatura de Lenguaje y Comunicación.",
+              "Seleccionar estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa vigente, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Trastorno del Espectro Autista-Disfasia severa en la asignatura de Matemática.",
+              "Seleccionar estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa vigente, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Trastorno del Espectro Autista-Disfasia severa en la asignatura de Ciencias Naturales.",
+              "Seleccionar estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa vigente, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Trastorno del Espectro Autista-Disfasia severa en la asignatura de Historia, Geografía y Ciencias Sociales.",
+              "Valorar la fundamentación de estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa vigente, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Trastorno del Espectro Autista-Disfasia severa en asignaturas de Artes, Educación Física, Tecnología u otras.",
+              "Determinar estrategias de apoyo para promover la inclusión de los estudiantes con Trastorno del Espectro Autista-Disfasia severa y sus familias en el diseño y ejecución de los planes de convivencia escolar y el Plan de Formación Ciudadana del establecimiento escolar.",
+              "Valorar la justificación de estrategias para promover la participación activa de la familia y de la comunidad en el proceso de aprendizaje de los estudiantes con Trastorno del Espectro Autista- Disfasia severa, en contextos educativos."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
