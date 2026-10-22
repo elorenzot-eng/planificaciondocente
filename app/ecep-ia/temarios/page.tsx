@@ -14,17 +14,17 @@ export default function TemariosEcep(){
  const current=topics.find(t=>t.nivel+"::"+t.especialidad===selected);
  const theme=palette[Math.max(0,levels.indexOf(level))];
  const chooseLevel=(next:string)=>{setLevel(next===level?"":next);setSelected("");setQuery("")};
- return <main style={{display:"block",width:"100%",maxWidth:1180,minHeight:"auto",margin:"0 auto",padding:"32px 24px",fontFamily:"system-ui,sans-serif",color:"#17324b"}}>
+ return <div style={{display:"block",width:"100%",maxWidth:1180,minHeight:"auto",margin:"0 auto",padding:"32px 24px",fontFamily:"system-ui,sans-serif",color:"#17324b"}}>
  <a href="/ecep-ia">← ECEP IA</a>
  <h1>Temarios y guías ECEP 2026</h1>
  <p>Selecciona el nivel de enseñanza y luego la asignatura o especialidad que deseas preparar.</p>
- <nav aria-label="Niveles de enseñanza ECEP" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,235px),1fr))",gap:14,margin:"24px 0",width:"100%"}}>
+ <div role="navigation" aria-label="Niveles de enseñanza ECEP" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,235px),1fr))",gap:14,margin:"24px 0",width:"100%"}}>
  {levels.map((name,i)=>{const active=level===name;const count=topics.filter(t=>t.nivel===name).length;return <button type="button" key={name} aria-expanded={active} aria-controls="ecep-specialties" onClick={()=>chooseLevel(name)} style={{...buttonStyle,width:"100%",background:active?palette[i].light:"#fff",borderColor:active?palette[i].solid:"#c8d9e2",borderTop:"5px solid "+palette[i].solid,boxShadow:active?"0 0 0 1px "+palette[i].solid+" inset":"none"}}>
  <span aria-hidden="true" style={{display:"block",fontSize:26,marginBottom:8}}>{["🧸","📘","🎓","🛠️"][i]}</span>
  <strong style={{display:"block",fontSize:17}}>{name}</strong>
  <small style={{display:"block",marginTop:8}}>{count} {count===1?"especialidad":"especialidades"} · {active?"Ocultar":"Ver asignaturas"} →</small>
  </button>})}
- </nav>
+ </div>
  <div id="ecep-specialties">
  {!level?<p style={{padding:18,background:"#f2f7f9",borderRadius:12}}>Elige uno de los cuatro botones para desplegar sus asignaturas.</p>:<>
  <div style={{display:"flex",gap:12,justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",marginBottom:14}}>
@@ -32,12 +32,12 @@ export default function TemariosEcep(){
  <label>Buscar <input value={query} onChange={e=>{setQuery(e.target.value);setSelected("")}} placeholder="Nombre de la asignatura" style={{padding:10,border:"1px solid #c8d9e2",borderRadius:8,marginLeft:8,maxWidth:230}}/></label>
  </div>
  <p>{list.length} {list.length===1?"especialidad disponible":"especialidades disponibles"}</p>
- <nav aria-label={"Asignaturas de "+level} style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,240px),1fr))",gap:12,marginBottom:24,width:"100%"}}>
+ <div role="navigation" aria-label={"Asignaturas de "+level} style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,240px),1fr))",gap:12,marginBottom:24,width:"100%"}}>
  {list.map(t=>{const key=t.nivel+"::"+t.especialidad;const active=selected===key;return <button type="button" key={key} onClick={()=>setSelected(active?"":key)} aria-expanded={active} style={{...buttonStyle,width:"100%",padding:14,background:active?theme.light:"white",borderColor:active?theme.solid:"#c8d9e2",borderLeft:"5px solid "+theme.solid}}>
  <strong style={{display:"block"}}>{t.especialidad}</strong>
  <small style={{display:"block",marginTop:6}}>{stats(t).indicators} indicadores · {active?"Ocultar detalles":"Ver temario"} →</small>
  </button>})}
- </nav>
+ </div>
  {list.length===0&&<p>No se encontraron especialidades con ese nombre.</p>}
  {current&&<section aria-label={"Temario de "+current.especialidad} style={{border:"1px solid #d9e3e9",padding:20,borderRadius:14,background:"#fbfdfd"}}>
  <h2>{current.especialidad}</h2>
@@ -64,5 +64,5 @@ export default function TemariosEcep(){
  </section>}
  </>}
  </div>
- </main>
+ </div>
 }
