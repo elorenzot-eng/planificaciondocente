@@ -1,0 +1,102 @@
+{
+  "level": "Educación Media HC",
+  "specialty": "Artes Visuales",
+  "units": [
+    {
+      "code": "1.1",
+      "title": "Color, textura y composición",
+      "summary": "El lenguaje visual organiza color, línea, forma, textura, espacio y contraste para producir efectos expresivos. El significado depende de la obra, materialidad y contexto.",
+      "example": "Comparar dos composiciones con distinto contraste cromático y jerarquía visual.",
+      "pitfall": "Asignar significados universales a cada color.",
+      "task": "Analiza una obra identificando tres decisiones expresivas."
+    },
+    {
+      "code": "1.2",
+      "title": "Medios bidimensionales y tridimensionales",
+      "summary": "Escultura, instalación y arquitectura operan con volumen, materialidad, espacio y relación con el espectador. Cada medio presenta restricciones técnicas y posibilidades expresivas.",
+      "example": "Comparar una escultura exenta y una instalación de sitio específico.",
+      "pitfall": "Tratar toda obra tridimensional como escultura tradicional.",
+      "task": "Diseña una propuesta tridimensional y justifica material y ubicación."
+    },
+    {
+      "code": "1.3",
+      "title": "Diseño y cultura visual cotidiana",
+      "summary": "El diseño gráfico, textil e industrial integra necesidades de uso, materiales, identidad visual y producción. Analizar una pieza exige considerar usuario, función y contexto cultural.",
+      "example": "Comparar dos envases según legibilidad, ergonomía y material.",
+      "pitfall": "Evaluar el diseño solo por atractivo visual.",
+      "task": "Analiza un objeto cotidiano con criterios funcionales y visuales."
+    },
+    {
+      "code": "2.1",
+      "title": "Patrimonio visual chileno y americano",
+      "summary": "Las expresiones precolombinas, coloniales y posteriores deben situarse en sus contextos culturales y materiales. El análisis observa forma, técnica, función y procesos de intercambio.",
+      "example": "Comparar materialidades y funciones de dos obras de épocas distintas.",
+      "pitfall": "Interpretar todo el patrimonio desde categorías europeas sin contexto.",
+      "task": "Elabora una ficha comparativa de dos manifestaciones patrimoniales."
+    },
+    {
+      "code": "2.2",
+      "title": "Naturaleza muerta y decisiones pictóricas",
+      "summary": "La naturaleza muerta permite estudiar composición, luz, volumen, color y representación de objetos. Artistas de distintas épocas la han abordado con propósitos y técnicas diversas.",
+      "example": "Contrastar organización espacial y tratamiento cromático en dos naturalezas muertas.",
+      "pitfall": "Suponer que la naturaleza muerta es mera copia objetiva.",
+      "task": "Realiza un análisis formal y una reinterpretación visual."
+    },
+    {
+      "code": "2.3",
+      "title": "Muralismo mexicano y arte público",
+      "summary": "El muralismo mexicano articuló narrativas históricas, símbolos y debates sociales en espacios públicos. Su interpretación requiere observar escala, composición, iconografía y contexto.",
+      "example": "Analizar cómo la ubicación pública y los personajes contribuyen al relato visual de un mural.",
+      "pitfall": "Reducir el muralismo a una técnica de pintura de gran formato.",
+      "task": "Diseña una pauta para analizar iconografía y función social."
+    },
+    {
+      "code": "2.4",
+      "title": "Artes visuales modernas y contemporáneas",
+      "summary": "Los cambios artísticos de los siglos XIX al XXI incluyen nuevas técnicas, colectivos y cuestionamientos a convenciones de representación. En Chile se estudian hitos situados en su contexto.",
+      "example": "Comparar una obra académica y una contemporánea por materiales y relación con el público.",
+      "pitfall": "Describir el arte contemporáneo como carente de criterios.",
+      "task": "Elabora una línea de tiempo con tres hitos y sus transformaciones."
+    },
+    {
+      "code": "2.5",
+      "title": "Representación del cuerpo y paradigmas culturales",
+      "summary": "Las representaciones del cuerpo varían según época, técnicas y concepciones sociales. El análisis distingue decisiones formales, idealizaciones y relaciones con identidades y género.",
+      "example": "Comparar proporciones y posturas en obras de períodos diferentes.",
+      "pitfall": "Asumir un canon corporal único y atemporal.",
+      "task": "Compara dos obras y explica qué valores o convenciones reflejan."
+    },
+    {
+      "code": "2.6",
+      "title": "Arquitectura moderna y contemporánea",
+      "summary": "La arquitectura del siglo XX incluye racionalismo, Bauhaus, brutalismo, organicismo y otras corrientes. Se comparan espacialidad, estructura, materiales, función y entorno.",
+      "example": "Contrastar hormigón expuesto en un edificio brutalista con integración paisajística de uno organicista.",
+      "pitfall": "Confundir un material aislado con pertenencia inequívoca a un movimiento.",
+      "task": "Construye una matriz comparativa de tres corrientes."
+    },
+    {
+      "code": "3.1",
+      "title": "Didáctica de observación y creación",
+      "summary": "La enseñanza combina apreciación, experimentación material, creación, diálogo y revisión. El objetivo debe orientar recursos, preguntas y criterios de desempeño.",
+      "example": "Observar una obra, explorar técnicas y producir una interpretación personal argumentada.",
+      "pitfall": "Sustituir creación y análisis por reproducción mecánica.",
+      "task": "Diseña una secuencia de apreciación y producción."
+    },
+    {
+      "code": "3.2",
+      "title": "Diagnóstico de habilidades visuales",
+      "summary": "Los saberes previos abarcan vocabulario visual, observación, experimentación y referencias culturales. Un diagnóstico puede utilizar imágenes y tareas breves.",
+      "example": "Solicitar describir contraste y composición antes de analizar una obra compleja.",
+      "pitfall": "Confundir habilidad técnica con capacidad de interpretación.",
+      "task": "Formula dos actividades diagnósticas diferenciadas."
+    },
+    {
+      "code": "3.3",
+      "title": "Rúbricas para procesos artísticos",
+      "summary": "La evaluación artística puede considerar decisiones expresivas, experimentación, relación con propósito, reflexión y revisión. No exige uniformidad estética.",
+      "example": "Evaluar una bitácora que documente pruebas, decisiones y cambios.",
+      "pitfall": "Calificar gustos personales como si fueran criterios objetivos.",
+      "task": "Redacta cuatro criterios observables de un proyecto artístico."
+    }
+  ]
+}
