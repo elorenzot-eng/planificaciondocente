@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   const allowed = ["precursores","cuadernillos","simce-lectura","simce-matematica","fluidez"];
   const moduleId = String(data.moduleId || "");
   const content = data.content;
-  const grade = moduleId.startsWith("simce") ? (["4","6","8"].includes(String(data.grade)) ? `${data.grade}° básico` : "4° básico") : "2° básico";
+  const grade = moduleId.startsWith("simce") ? (String(data.grade) === "10" ? "2° medio" : ["4","6","8"].includes(String(data.grade)) ? `${data.grade}° básico` : "4° básico") : "2° básico";
   if (!allowed.includes(moduleId) || !content || typeof content !== "object" || Array.isArray(content) ||
       typeof content.title !== "string" || !Array.isArray(content.activities) || content.activities.length > 40 ||
       JSON.stringify(content).length > 120000) {
