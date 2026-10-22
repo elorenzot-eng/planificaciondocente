@@ -1,0 +1,102 @@
+{
+  "level": "Educación Media HC",
+  "specialty": "Filosofía",
+  "units": [
+    {
+      "code": "1.1",
+      "title": "Características de la reflexión filosófica",
+      "summary": "La reflexión filosófica problematiza supuestos mediante preguntas, conceptos y argumentos. Duda, asombro, causalidad y paso del mito al logos ofrecen distintas vías para examinar problemas.",
+      "example": "Ante una afirmación sobre justicia, preguntar qué se entiende por justicia y qué razones la sustentan.",
+      "pitfall": "Reducir la filosofía a opiniones personales sin fundamentación.",
+      "task": "Contrasta una explicación mítica y una argumentación racional sobre un mismo fenómeno."
+    },
+    {
+      "code": "1.2",
+      "title": "Argumentación filosófica",
+      "summary": "La validez lógica depende de la estructura inferencial; la verdad de las premisas es una cuestión distinta. Mayéutica, dialéctica, fenomenología, análisis y hermenéutica orientan preguntas diferentes.",
+      "example": "De «Todos los humanos son mortales» y «Sócrates es humano» se sigue válidamente «Sócrates es mortal».",
+      "pitfall": "Considerar válido un argumento solo porque su conclusión parece verdadera.",
+      "task": "Identifica premisas y conclusión de un argumento y examina su validez."
+    },
+    {
+      "code": "2.1",
+      "title": "Problemas ontológicos",
+      "summary": "La ontología examina categorías como ser, cambio, causalidad, libertad, determinismo y realidad. Comparar autores exige distinguir sus conceptos y presupuestos, no solo nombres.",
+      "example": "Contrastar una interpretación determinista de la acción con otra que defienda libertad y responsabilidad.",
+      "pitfall": "Atribuir a todos los autores una definición única de ser o libertad.",
+      "task": "Formula un problema sobre identidad personal ante el cambio y compara dos posibles respuestas."
+    },
+    {
+      "code": "3.1",
+      "title": "Problemas epistemológicos",
+      "summary": "La epistemología interroga origen, justificación, límites y validez del conocimiento. Empirismo, racionalismo y perspectivas críticas difieren en el papel de experiencia, razón y revisión científica.",
+      "example": "Ante una hipótesis científica, distinguir evidencia observacional de la inferencia usada para defenderla.",
+      "pitfall": "Equiparar certeza subjetiva con justificación pública suficiente.",
+      "task": "Compara cómo podrían evaluar una afirmación de conocimiento dos enfoques epistemológicos."
+    },
+    {
+      "code": "3.2",
+      "title": "Fundamentos de la ética",
+      "summary": "La moral reúne normas y prácticas; la ética reflexiona críticamente sobre su fundamento. Éticas de la virtud, del deber y de las consecuencias justifican decisiones mediante criterios diferentes.",
+      "example": "Ante la promesa de guardar un secreto, analizar deberes, consecuencias y virtudes implicadas.",
+      "pitfall": "Confundir describir una costumbre con justificar éticamente su validez.",
+      "task": "Analiza un dilema usando dos teorías éticas y explicita sus criterios."
+    },
+    {
+      "code": "3.3",
+      "title": "Problemas éticos y políticos contemporáneos",
+      "summary": "Bioética, medioambiente, tecnologías y estudios de género plantean conflictos entre derechos, deberes, consecuencias y responsabilidades. La comparación debe precisar el problema y las razones de cada postura.",
+      "example": "Evaluar el uso de datos biométricos considerando autonomía, seguridad y efectos sociales.",
+      "pitfall": "Presentar un dilema complejo como si solo tuviera una opción moral imaginable.",
+      "task": "Construye una matriz de argumentos para un dilema sobre inteligencia artificial y privacidad."
+    },
+    {
+      "code": "3.4",
+      "title": "Vinculación entre ética y política",
+      "summary": "Libertad, igualdad, justicia y pluralismo moral se relacionan de modos distintos en las teorías políticas. La deliberación exige distinguir ideales normativos y medidas institucionales.",
+      "example": "Comparar políticas distributivas según sus concepciones de igualdad y libertad.",
+      "pitfall": "Suponer que igualdad y justicia significan exactamente lo mismo en todos los autores.",
+      "task": "Contrasta dos nociones de justicia aplicadas a un conflicto de recursos públicos."
+    },
+    {
+      "code": "3.5",
+      "title": "Estado, sociedad y poder",
+      "summary": "Las teorías del Estado examinan autoridad, legitimidad, derechos y participación. Poder y legitimación no son sinónimos: una capacidad de imponer decisiones puede carecer de justificación.",
+      "example": "Analizar una norma escolar diferenciando quién puede establecerla, con qué razones y cómo se legitima.",
+      "pitfall": "Equiparar legalidad, legitimidad y fuerza sin distinguirlas.",
+      "task": "Argumenta cuándo una decisión mayoritaria podría vulnerar derechos fundamentales."
+    },
+    {
+      "code": "4.1",
+      "title": "Fundamentos de la estética",
+      "summary": "La estética estudia experiencia, interpretación y juicio estético; conceptos como belleza, fealdad, técnica y expresión varían según contextos y teorías.",
+      "example": "Comparar dos interpretaciones de una obra atendiendo a forma, contexto y experiencia del espectador.",
+      "pitfall": "Reducir el juicio estético exclusivamente al gusto personal sin argumentación.",
+      "task": "Analiza una obra mediante dos categorías estéticas y fundamenta tu interpretación."
+    },
+    {
+      "code": "5.1",
+      "title": "Estrategias de enseñanza de Filosofía",
+      "summary": "Preguntas problematizadoras, diálogo argumentativo, lectura guiada y análisis de casos ayudan a desarrollar habilidades filosóficas. La mediación debe sostener precisión conceptual y participación.",
+      "example": "Antes de un debate sobre libertad, acordar definiciones y criterios para evaluar argumentos.",
+      "pitfall": "Confundir conversación libre con discusión filosófica fundamentada.",
+      "task": "Diseña una actividad de discusión con pregunta central, criterios y retroalimentación."
+    },
+    {
+      "code": "5.2",
+      "title": "Aprendizaje en Filosofía",
+      "summary": "El pensamiento filosófico se apoya en comprensión lectora, distinción conceptual y justificación de tesis. Los errores frecuentes incluyen confundir tesis con ejemplo o argumento con opinión.",
+      "example": "Pedir al estudiante señalar qué premisa apoya una conclusión en un texto breve.",
+      "pitfall": "Corregir únicamente vocabulario sin examinar la estructura del razonamiento.",
+      "task": "Propón una intervención ante un estudiante que formula una opinión sin razones."
+    },
+    {
+      "code": "5.3",
+      "title": "Evaluación de los aprendizajes en Filosofía",
+      "summary": "Evaluar filosofía implica observar formulación de problemas, precisión conceptual, coherencia de argumentos y consideración de objeciones. Las rúbricas permiten explicitar niveles de desempeño.",
+      "example": "Una respuesta argumentativa se valora por tesis, razones, evidencias y respuesta a una objeción.",
+      "pitfall": "Calificar una postura por coincidir con la opinión personal del evaluador.",
+      "task": "Diseña cuatro criterios para una rúbrica de ensayo argumentativo filosófico."
+    }
+  ]
+}
