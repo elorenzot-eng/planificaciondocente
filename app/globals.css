@@ -829,3 +829,8 @@ main>aside .role .logout:hover{background:#d6eefb!important}
 .ecep-guide-layout .ecep-guide-indicator{display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:flex-start!important;grid-template-columns:none!important;gap:12px!important;width:100%!important;box-sizing:border-box!important;padding:10px 12px!important;margin:8px 0!important;border:1px solid #e0eaf0;border-radius:9px;background:#f8fbfd;font-size:inherit!important;font-weight:400!important}
 .ecep-guide-layout .ecep-guide-indicator>span{display:block!important;flex:1 1 auto!important;min-width:0!important;font-size:inherit!important;font-weight:400!important;letter-spacing:normal!important;line-height:1.5!important}
 .ecep-guide-layout .ecep-guide-checkbox{display:inline-block!important;position:static!important;flex:0 0 18px!important;width:18px!important;min-width:18px!important;height:18px!important;margin:3px 0 0!important;padding:0!important;transform:none!important;appearance:auto!important}
+
+/* ECEP: one question per row, strictly sequential top-to-bottom. */
+.ecep-quiz-layout .ecep-questions-list{display:flex!important;flex-direction:column!important;grid-template-columns:1fr!important;align-items:stretch!important;gap:18px!important;width:100%!important;max-width:none!important;min-width:0!important}
+.ecep-quiz-layout .ecep-question-card{display:block!important;flex:none!important;grid-column:1 / -1!important;width:100%!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important}
+.ecep-quiz-layout .ecep-quiz-option>span{display:block!important;flex:1 1 auto!important;min-width:0!important;width:auto!important}
