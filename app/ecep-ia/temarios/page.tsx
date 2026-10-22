@@ -15,7 +15,7 @@ export default function TemariosEcep(){
  const theme=palette[Math.max(0,levels.indexOf(level))];
  const chooseLevel=(next:string)=>{setLevel(next===level?"":next);setSelected("");setQuery("")};
  return <div style={{display:"block",width:"100%",maxWidth:1180,minHeight:"auto",margin:"0 auto",padding:"32px 24px",fontFamily:"system-ui,sans-serif",color:"#17324b"}}>
- <a href="/ecep-ia">← ECEP IA</a>
+ <a href="/">← Menú principal</a>
  <h1>Temarios y guías ECEP 2026</h1>
  <p>Selecciona el nivel de enseñanza y luego la asignatura o especialidad que deseas preparar.</p>
  <div role="navigation" aria-label="Niveles de enseñanza ECEP" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,235px),1fr))",gap:14,margin:"24px 0",width:"100%"}}>
