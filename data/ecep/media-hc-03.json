@@ -1,1 +1,128 @@
-[{"nivel":"Educación Media HC","especialidad":"Ciencias Para La Ciudadanía","dominios":[{"nombre":"AMBIENTE Y SOSTENIBILIDAD.","subdominios":[{"codigo":"1.1","nombre":"El cambio climático y su impacto en el planeta.","indicadores":[]},{"codigo":"1.2","nombre":"Medidas para promover una vida sostenible.","indicadores":[]}]},{"nombre":"BIENESTAR Y SALUD.","subdominios":[{"codigo":"2.1","nombre":"Nutrición y estilo de vida saludable.","indicadores":[]},{"codigo":"2.2","nombre":"Agentes infecciosos, vacunas y sus efectos.","indicadores":[]}]},{"nombre":"SEGURIDAD, PREVENCIÓN Y AUTOCUIDADO.","subdominios":[{"codigo":"3.1","nombre":"Riesgos socionaturales y medidas preventivas.","indicadores":[]},{"codigo":"3.2","nombre":"Sustancias químicas, sus usos y riesgos.","indicadores":[]}]},{"nombre":"TECNOLOGÍA Y SOCIEDAD.","subdominios":[{"codigo":"4.1","nombre":"La tecnología y su impacto en la vida humana.","indicadores":[]}]},{"nombre":"ENSEÑANZA-APRENDIZAJE EN LA ASIGNATURA DE CIENCIAS PARA LA CIUDADANÍA.","subdominios":[{"codigo":"5.1","nombre":"Estrategias de enseñanza en la asignatura.","indicadores":[]},{"codigo":"5.2","nombre":"Aprendizaje y evaluación en la asignatura.","indicadores":[]}]}],"sha256":"fe56a1ec59ed405786254b9ffaf45cd453d25c9b0c37f5dc48cc9c7f8950b0ba","paginas":3}]
+[
+  {
+    "nivel": "Educación Media HC",
+    "especialidad": "Ciencias Para La Ciudadanía",
+    "dominios": [
+      {
+        "nombre": "AMBIENTE Y SOSTENIBILIDAD.",
+        "subdominios": [
+          {
+            "codigo": "1.1",
+            "nombre": "El cambio climático y su impacto en el planeta.",
+            "indicadores": [
+              "Reconocer la evolución del cambio climático y sus factores.",
+              "Analizar los efectos y proyecciones del cambio climático en el medio socionatural.",
+              "Reconocer acciones de mitigación del cambio climático y su importancia para la preservación de la vida."
+            ]
+          },
+          {
+            "codigo": "1.2",
+            "nombre": "Medidas para promover una vida sostenible.",
+            "indicadores": [
+              "Reconocer acciones de consumo sostenible y su importancia para la preservación de los ecosistemas.",
+              "Identificar soluciones frente a las problemáticas que amenazan la sostenibilidad del planeta.",
+              "Identificar soluciones para la protección y el uso sostenible de los recursos naturales.",
+              "Analizar el impacto social, económico, ético y ambiental de los ODS."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "BIENESTAR Y SALUD.",
+        "subdominios": [
+          {
+            "codigo": "2.1",
+            "nombre": "Nutrición y estilo de vida saludable.",
+            "indicadores": [
+              "Reconocer la relevancia y el impacto de los factores biológicos, ambientales y sociales (nutrición, estrés, calidad de vida, ejercicio físico, consumo de drogas y alcohol) en la salud humana.",
+              "Comparar los diferentes tipos de medicina considerando características, acciones y beneficios en distintos problemas de salud humana.",
+              "Identificar el impacto del uso de organismos transgénicos y otros Organismos Modificados Genéticamente (OMG) en la salud humana (por ejemplo, en la producción de hormonas, producción de alimentos para ganado, plantas con toxinas para plagas, entre otros).",
+              "Interpretar datos (cuantitativos o cualitativos) sobre estilos de vida saludable."
+            ]
+          },
+          {
+            "codigo": "2.2",
+            "nombre": "Agentes infecciosos, vacunas y sus efectos.",
+            "indicadores": [
+              "Reconocer características de microorganismos que producen enfermedades y los posibles tratamientos.",
+              "Reconocer situaciones de transmisión de agentes infecciosos a nivel local y global.",
+              "Identificar medidas de prevención para el contagio de infecciones de transmisión sexual.",
+              "Identificar los efectos inmunológicos específicos de las vacunas en el organismo.",
+              "Analizar las implicancias éticas, económicas, ambientales, sociales y epidemiológicas del uso de vacunas a nivel local y global."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "SEGURIDAD, PREVENCIÓN Y AUTOCUIDADO.",
+        "subdominios": [
+          {
+            "codigo": "3.1",
+            "nombre": "Riesgos socionaturales y medidas preventivas.",
+            "indicadores": [
+              "Identificar situaciones de riesgo (socionatural o antropogénico) presentes en el contexto local y/o nacional.",
+              "Comparar acciones que responden a diferentes tipos de riesgos socionaturales, en distintos momentos, tales como prevención, evacuación, adaptación al nuevo escenario, entre otros, a nivel local y/o nacional.",
+              "Reconocer medidas de seguridad existentes para hacer frente a fenómenos naturales y antropogénicos, a escala local y/o nacional."
+            ]
+          },
+          {
+            "codigo": "3.2",
+            "nombre": "Sustancias químicas, sus usos y riesgos.",
+            "indicadores": [
+              "Reconocer mezclas homogéneas, heterogéneas, sustancias puras, elementos y compuestos químicos, en diversos productos utilizados en la vida diaria.",
+              "Reconocer las propiedades físicas y químicas en sustancias de uso frecuente.",
+              "Reconocer el componente activo de un producto y sus condiciones asociadas.",
+              "Identificar interacciones químicas en productos de uso cotidiano.",
+              "Relacionar la composición química de productos domésticos con la función específica que cumplen.",
+              "Reconocer amenazas y riesgos asociados al uso de productos químicos en el hogar.",
+              "Interpretar riesgos y peligros comunicados en diversos pictogramas de seguridad.",
+              "Identificar la información que se consigna en el etiquetado de un producto químico de uso cotidiano."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "TECNOLOGÍA Y SOCIEDAD.",
+        "subdominios": [
+          {
+            "codigo": "4.1",
+            "nombre": "La tecnología y su impacto en la vida humana.",
+            "indicadores": [
+              "Reconocer los avances e innovaciones tecnológicas que han permitido ampliar la capacidad humana, en función de la comprensión de distintos fenómenos de su entorno.",
+              "Reconocer innovaciones tecnológicas utilizadas por diversas culturas en diferentes épocas.",
+              "Analizar el impacto de diferentes avances tecnológicos en las capacidades sensoriales del ser humano.",
+              "Analizar las implicancias sociales, económicas, éticas y ambientales derivadas de la utilización de diferentes tecnologías aplicadas para el estudio de distintos fenómenos."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "ENSEÑANZA-APRENDIZAJE EN LA ASIGNATURA DE CIENCIAS PARA LA CIUDADANÍA.",
+        "subdominios": [
+          {
+            "codigo": "5.1",
+            "nombre": "Estrategias de enseñanza en la asignatura.",
+            "indicadores": [
+              "Identificar los conocimientos previos requeridos para abordar los distintos aprendizajes de la asignatura.",
+              "Seleccionar diversas formas de representar y formular los contenidos, de modo de hacerlos comprensibles para todos/as los/as estudiantes.",
+              "Identificar errores comunes en la asignatura, con el fin de retroalimentar y promover el aprendizaje a partir del error."
+            ]
+          },
+          {
+            "codigo": "5.2",
+            "nombre": "Aprendizaje y evaluación en la asignatura.",
+            "indicadores": [
+              "Reconocer estrategias metodológicas para abordar objetivos o habilidades propias de la asignatura.",
+              "Analizar estrategias para enfrentar las dificultades que se presentan en el proceso de aprendizaje de los estudiantes.",
+              "Identificar indicadores de evaluación y desempeños que dan cuenta de diferentes objetivos de aprendizaje de la asignatura.",
+              "Seleccionar actividades, estrategias e instrumentos de evaluación pertinentes a los aprendizajes de la asignatura.",
+              "Identificar acciones pedagógicas orientadas a retroalimentar aprendizajes."
+            ]
+          }
+        ]
+      }
+    ],
+    "sha256": "fe56a1ec59ed405786254b9ffaf45cd453d25c9b0c37f5dc48cc9c7f8950b0ba",
+    "paginas": 3
+  }
+]
