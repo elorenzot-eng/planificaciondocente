@@ -46,7 +46,19 @@ export default function TemariosEcep(){
  </div>
  <p style={{fontSize:13}}>Los indicadores provienen de la extracción de temarios aportados. Algunos textos requieren cotejo con su PDF original; las guías de EducAntay son material complementario.</p>
  {stats(current).missing>0&&<p role="status" style={{padding:12,background:"#fff4d8",borderRadius:8}}>Revisión pendiente: {stats(current).missing} subdominios sin indicadores recuperados.</p>}
- {current.dominios.map((d,i)=><details key={i} style={{border:"1px solid #d9e3e9",padding:14,borderRadius:12,marginBottom:12,background:"white"}}><summary style={{cursor:"pointer",fontWeight:700}}>Dominio {i+1}: {d.nombre}</summary>{d.subdominios.map((s,j)=><section key={j}><h3 style={{fontSize:16}}>{s.codigo} {s.nombre}</h3>{s.indicadores.length===0?<p style={{color:"#8a5500"}}>Indicadores pendientes de recuperación y validación.</p>:<ol>{s.indicadores.map((ind,k)=><li key={k} style={{marginBottom:8}}>{ind}</li>)}</ol>}</section>)}</details>)}
+ <h3 style={{marginTop:24}}>Módulos de contenido</h3>
+ <p>Abre un dominio para desplegar sus subdominios y, dentro de cada uno, sus indicadores. No necesitas recorrer listas laterales.</p>
+ <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,300px),1fr))",gap:14,alignItems:"start"}}>
+ {current.dominios.map((d,i)=><details key={i} style={{border:"1px solid #c8d9e2",padding:16,borderRadius:14,background:"white"}}>
+ <summary style={{cursor:"pointer",fontWeight:700,fontSize:17,color:"#087e83",padding:"4px 0"}}>Módulo {i+1}: {d.nombre}<small style={{display:"block",color:"#526b7b",fontWeight:400,marginTop:8}}>{d.subdominios.length} subdominios · Pulsa para desplegar</small></summary>
+ <div style={{marginTop:16,display:"grid",gap:10}}>
+ {d.subdominios.map((s,j)=><details key={j} style={{border:"1px solid #d9e3e9",padding:12,borderRadius:10,background:"#f6fafb"}}>
+ <summary style={{cursor:"pointer",fontWeight:650}}>{s.codigo} · {s.nombre}<small style={{display:"block",color:"#526b7b",fontWeight:400,marginTop:5}}>{s.indicadores.length} indicadores · Ver contenidos</small></summary>
+ <div style={{marginTop:12}}>{s.indicadores.length===0?<p style={{color:"#8a5500"}}>Indicadores pendientes de recuperación y validación.</p>:<ol style={{paddingLeft:22}}>{s.indicadores.map((ind,k)=><li key={k} style={{marginBottom:12,lineHeight:1.5}}>{ind}</li>)}</ol>}</div>
+ </details>)}
+ </div>
+ </details>)}
+ </div>
  </section>}
  </>}
  </div>
