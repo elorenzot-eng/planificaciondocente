@@ -151,7 +151,14 @@ export default function RecursosAprendizajePage() {
           <h3>Corrección del ensayo</h3>
           <p>Respuestas correctas: {resource.activities.filter((a:any,i:number)=>answers[i] && answers[i]===a.correctAnswer).length} / {resource.activities.length}</p>
           <p>Logro: {Math.round(100*resource.activities.filter((a:any,i:number)=>answers[i] && answers[i]===a.correctAnswer).length/resource.activities.length)}%</p>
-          <small>Resultado del ensayo, no puntaje oficial SIMCE. Preguntas sin responder cuentan como incorrectas.</small>
+          <p>Preguntas respondidas: {resource.activities.filter((_:any,i:number)=>Boolean(answers[i])).length} / {resource.activities.length}</p>
+           <h4>Resultados por habilidad</h4>
+           <ul>{Array.from(new Set<string>(resource.activities.map((a:any)=>String(a.skill||"Sin habilidad definida")))).map((skill:string)=>{
+             const items=resource.activities.map((a:any,i:number)=>({...a,answerIndex:i})).filter((a:any)=>String(a.skill||"Sin habilidad definida")===skill);
+             const correct=items.filter((a:any)=>answers[a.answerIndex]===a.correctAnswer).length;
+             return <li key={skill}>{skill}: {correct}/{items.length} ({Math.round(100*correct/items.length)}%)</li>;
+           })}</ul>
+           <small>Resultado del ensayo, no puntaje oficial SIMCE. Preguntas sin responder cuentan como incorrectas.</small>
         </section>}
         {moduleId.startsWith("simce") && Array.isArray(resource.specificationTable) && <section className="print-answers" style={{marginTop:18}}><h3>Hoja de respuestas del docente — habilidades y ejes curriculares</h3><p>Clave de corrección, habilidad evaluada, eje curricular y referencia OA de cada pregunta. Documento de uso docente, no puntaje oficial SIMCE.</p><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>{["Ítem","Eje curricular","OA / referencia curricular","Habilidad evaluada","Dificultad","Puntos","Respuesta correcta"].map(x=><th key={x} style={{border:"1px solid #ccc",padding:5}}>{x}</th>)}</tr></thead><tbody>{resource.specificationTable.map((r:any,i:number)=><tr key={i}>{[r.number,r.curricularAxis,r.learningObjective,r.skill,r.difficulty,r.points,r.correctAnswer].map((v:any,j:number)=><td key={j} style={{border:"1px solid #ccc",padding:5}}>{v}</td>)}</tr>)}</tbody></table></div></section>}
         <div className="print-answers"><p>{resource.teacherNotes}</p></div>
