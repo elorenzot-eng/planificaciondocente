@@ -1,0 +1,118 @@
+{
+  "level": "Educación Media TP",
+  "specialty": "Administración, Mención Recursos Humanos",
+  "units": [
+    {
+      "code": "1.1",
+      "title": "Información contable para la gestión",
+      "summary": "El balance presenta activos, pasivos y patrimonio; el estado de resultados resume ingresos y gastos de un período; el flujo de efectivo registra entradas y salidas de dinero. Son instrumentos complementarios para decisiones de administración.",
+      "example": "Una venta a crédito puede aumentar ingresos contables sin generar inmediatamente efectivo.",
+      "pitfall": "Confundir resultado del ejercicio con saldo disponible en caja.",
+      "task": "Clasifica seis operaciones según su efecto patrimonial, de resultados o de caja."
+    },
+    {
+      "code": "1.2",
+      "title": "Gestión tributaria y verificación normativa",
+      "summary": "Las operaciones comerciales requieren identificar hechos gravados, documentación y condiciones para beneficios tributarios. Las franquicias y tasas dependen de normas vigentes y del tipo de operación; no deben memorizarse sin comprobar la fecha aplicable.",
+      "example": "Antes de calcular un beneficio de importación, identificar la operación, norma aplicable y documentos de respaldo.",
+      "pitfall": "Aplicar un porcentaje desactualizado sin revisar la normativa.",
+      "task": "Diseña una ficha para verificar la vigencia y requisitos de una franquicia."
+    },
+    {
+      "code": "2.1",
+      "title": "Atención de clientes internos y externos",
+      "summary": "La gestión de personas también presta servicios a trabajadores, jefaturas y usuarios externos. La atención efectiva identifica requerimientos, confidencialidad, plazos y canales de respuesta.",
+      "example": "Un trabajador solicita aclaración de una liquidación: registrar consulta, revisar antecedentes autorizados y responder con claridad.",
+      "pitfall": "Entregar datos laborales de terceros sin autorización.",
+      "task": "Redacta un protocolo de atención para consultas sobre remuneraciones."
+    },
+    {
+      "code": "2.2",
+      "title": "Planificación de actividades administrativas",
+      "summary": "Planificar implica definir objetivos, secuencias, responsables, tiempos, recursos y mecanismos de control. Las tareas de recursos humanos requieren coordinación con hitos de contratación, remuneraciones y capacitación.",
+      "example": "Programar un proceso de inducción con responsables, recursos y fechas de ejecución.",
+      "pitfall": "Asignar plazos sin estimar disponibilidad de personal.",
+      "task": "Diseña un cronograma de inducción de cinco etapas."
+    },
+    {
+      "code": "3.1",
+      "title": "Estructuras y procesos organizacionales",
+      "summary": "Las estructuras funcionales, divisionales o matriciales distribuyen autoridad y responsabilidades de manera distinta. Su pertinencia depende de tamaño, actividad, dispersión y complejidad de la organización.",
+      "example": "Comparar la gestión de personal en una empresa pequeña y una con sedes regionales.",
+      "pitfall": "Confundir organigrama con descripción completa de procesos.",
+      "task": "Dibuja dos estructuras y justifica cuál conviene para un caso dado."
+    },
+    {
+      "code": "4.1",
+      "title": "Contratos y documentación laboral",
+      "summary": "La administración laboral exige distinguir contratos de trabajo y modalidades contractuales según su naturaleza jurídica, además de registrar condiciones, modificaciones y respaldos. La regulación puede cambiar y debe verificarse en fuentes oficiales vigentes.",
+      "example": "Comparar un contrato a plazo fijo con uno indefinido atendiendo a duración y obligaciones documentales.",
+      "pitfall": "Tratar un contrato a honorarios como idéntico a uno laboral subordinado.",
+      "task": "Elabora una tabla de tipos contractuales y requisitos que deben verificarse."
+    },
+    {
+      "code": "4.2",
+      "title": "Obligaciones previsionales y remuneraciones",
+      "summary": "El empleador debe administrar registros y obligaciones asociadas a remuneraciones, cotizaciones y retenciones según la relación contractual. La aplicación exige distinguir descuentos de cargo del trabajador y obligaciones del empleador, con normativa vigente.",
+      "example": "Analizar una liquidación ficticia e identificar componentes imponibles, descuentos y costo empleador sin asumir tasas fijas.",
+      "pitfall": "Confundir sueldo líquido con costo total de contratación.",
+      "task": "Diseña una lista de control para revisar una liquidación ficticia."
+    },
+    {
+      "code": "5.1",
+      "title": "Desarrollo de personas y protección laboral",
+      "summary": "La gestión de personas considera capacitación, bienestar, prevención de riesgos y relaciones laborales. Los sindicatos tienen funciones de representación y protección reguladas por la legislación laboral aplicable.",
+      "example": "Analizar un caso de solicitud colectiva de mejores condiciones de seguridad y los canales de diálogo.",
+      "pitfall": "Presentar derechos y atribuciones sin verificar normas vigentes.",
+      "task": "Construye un mapa de actores y responsabilidades en una situación laboral simulada."
+    },
+    {
+      "code": "6.1",
+      "title": "Sustentabilidad en oficinas y procesos de RR. HH.",
+      "summary": "La eficiencia energética, la digitalización responsable y la reducción de residuos pueden incorporarse a la gestión administrativa. Las mejoras deben evaluarse por indicadores y efectos reales.",
+      "example": "Comparar consumo de papel y energía antes y después de digitalizar un trámite.",
+      "pitfall": "Suponer que todo trámite digital es automáticamente más sustentable.",
+      "task": "Propón una medida ambiental y un indicador verificable."
+    },
+    {
+      "code": "6.2",
+      "title": "Calidad, ética y prolijidad administrativa",
+      "summary": "El trabajo en recursos humanos requiere precisión, confidencialidad, trazabilidad, cumplimiento de procedimientos y trato digno. La formación técnica debe observar estos desempeños en simulaciones.",
+      "example": "Verificar datos de una ficha laboral ficticia antes de su archivo seguro.",
+      "pitfall": "Evaluar rapidez sin comprobar exactitud ni resguardo de datos.",
+      "task": "Diseña una pauta de calidad para registrar documentación de personal."
+    },
+    {
+      "code": "6.3",
+      "title": "TIC en la gestión de personas",
+      "summary": "Las herramientas de planillas, bases de datos y sistemas de gestión apoyan control documental, reportes y planificación. Deben seleccionarse por objetivo, seguridad, permisos y facilidad de auditoría.",
+      "example": "Crear una planilla de capacitaciones con campos validados y acceso restringido.",
+      "pitfall": "Compartir información personal por enlaces públicos.",
+      "task": "Propón un registro digital y define controles de acceso."
+    },
+    {
+      "code": "7.1",
+      "title": "Currículum EMTP y competencias de RR. HH.",
+      "summary": "Los instrumentos curriculares de EMTP organizan objetivos de aprendizaje, módulos y desempeños. Una planificación pertinente vincula las competencias con tareas laborales auténticas y evidencias evaluables.",
+      "example": "Relacionar una actividad de archivo de contratos ficticios con un objetivo curricular y su criterio de logro.",
+      "pitfall": "Diseñar una práctica sin identificar su objetivo formativo.",
+      "task": "Construye una matriz objetivo-tarea-evidencia para un módulo."
+    },
+    {
+      "code": "7.2",
+      "title": "Didáctica de procedimientos administrativos",
+      "summary": "La simulación, el modelamiento y el estudio de casos permiten enseñar procesos de contratación, atención y documentación sin exponer datos reales. Las actividades deben incorporar decisiones, retroalimentación y seguridad de la información.",
+      "example": "Simular recepción y revisión de antecedentes de contratación usando identidades ficticias.",
+      "pitfall": "Usar documentos reales con información sensible en actividades abiertas.",
+      "task": "Diseña una simulación con roles, etapas y pauta de observación."
+    },
+    {
+      "code": "7.3",
+      "title": "Evaluación de competencias administrativas",
+      "summary": "Las evaluaciones de desempeño pueden observar exactitud, secuencia de procedimientos, justificación de decisiones, trato y resguardo documental. La rúbrica debe describir evidencias, no solo actitudes declaradas.",
+      "example": "Evaluar una carpeta laboral ficticia por integridad, organización y confidencialidad.",
+      "pitfall": "Calificar solo presentación visual del expediente.",
+      "task": "Formula cuatro criterios observables para evaluar un expediente simulado."
+    }
+  ]
+}
