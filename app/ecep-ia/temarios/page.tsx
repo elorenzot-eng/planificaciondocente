@@ -2,9 +2,9 @@
 import {useMemo,useState} from "react";
 import {topics,type Topic} from "../../../lib/ecep-topics";
 
-const levels=["Educación Parvularia","Educación Básica","Educación Media HC","Educación Media TP"];
+const levels=["Educación Parvularia","Educación Básica","Educación Media HC","Educación Media TP","Educación Especial"];
 const stats=(t:Topic)=>{const sub=t.dominios.flatMap(d=>d.subdominios);return {domains:t.dominios.length,subdomains:sub.length,indicators:sub.reduce((n,s)=>n+s.indicadores.length,0),missing:sub.filter(s=>s.indicadores.length===0).length}};
-const palette=[{solid:"#123f6d",light:"#eaf1fa"},{solid:"#2563eb",light:"#eaf1ff"},{solid:"#e83e8c",light:"#fff0f7"},{solid:"#16a34a",light:"#eaf8ef"}];
+const palette=[{solid:"#123f6d",light:"#eaf1fa"},{solid:"#2563eb",light:"#eaf1ff"},{solid:"#e83e8c",light:"#fff0f7"},{solid:"#16a34a",light:"#eaf8ef"},{solid:"#7c3aed",light:"#f4efff"}];
 const buttonStyle={border:"1px solid #c8d9e2",borderRadius:14,padding:"18px 16px",textAlign:"left" as const,cursor:"pointer",color:"#17324b"};
 export default function TemariosEcep(){
  const [level,setLevel]=useState("");
@@ -20,13 +20,13 @@ export default function TemariosEcep(){
  <p>Selecciona el nivel de enseñanza y luego la asignatura o especialidad que deseas preparar.</p>
  <div role="navigation" aria-label="Niveles de enseñanza ECEP" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,235px),1fr))",gap:14,margin:"24px 0",width:"100%"}}>
  {levels.map((name,i)=>{const active=level===name;const count=topics.filter(t=>t.nivel===name).length;return <button type="button" key={name} aria-expanded={active} aria-controls="ecep-specialties" onClick={()=>chooseLevel(name)} style={{...buttonStyle,width:"100%",background:active?palette[i].light:"#fff",borderColor:active?palette[i].solid:"#c8d9e2",borderTop:"5px solid "+palette[i].solid,boxShadow:active?"0 0 0 1px "+palette[i].solid+" inset":"none"}}>
- <span aria-hidden="true" style={{display:"block",fontSize:26,marginBottom:8}}>{["🧸","📘","🎓","🛠️"][i]}</span>
+ <span aria-hidden="true" style={{display:"block",fontSize:26,marginBottom:8}}>{["🧸","📘","🎓","🛠️","🧩"][i]}</span>
  <strong style={{display:"block",fontSize:17}}>{name}</strong>
  <small style={{display:"block",marginTop:8}}>{count} {count===1?"especialidad":"especialidades"} · {active?"Ocultar":"Ver asignaturas"} →</small>
  </button>})}
  </div>
  <div id="ecep-specialties">
- {!level?<p style={{padding:18,background:"#f2f7f9",borderRadius:12}}>Elige uno de los cuatro botones para desplegar sus asignaturas.</p>:<>
+ {!level?<p style={{padding:18,background:"#f2f7f9",borderRadius:12}}>Elige uno de los cinco botones para desplegar sus asignaturas.</p>:<>
  <div style={{display:"flex",gap:12,justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",marginBottom:14}}>
  <h2 style={{margin:0}}>{level} · Asignaturas y especialidades</h2>
  <label>Buscar <input value={query} onChange={e=>{setQuery(e.target.value);setSelected("")}} placeholder="Nombre de la asignatura" style={{padding:10,border:"1px solid #c8d9e2",borderRadius:8,marginLeft:8,maxWidth:230}}/></label>
