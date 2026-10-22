@@ -1,1 +1,57 @@
-[{"nivel":"Educación Media HC","especialidad":"Educación Ciudadana","dominios":[{"nombre":"ESTADO, DEMOCRACIA Y DERECHOS HUMANOS.","subdominios":[{"codigo":"1.1","nombre":"Democracia y sus instituciones.","indicadores":[]},{"codigo":"1.2","nombre":"Justicia y derechos humanos.","indicadores":[]}]},{"nombre":"TERRITORIO, MEDIOAMBIENTE Y ECONOMÍA.","subdominios":[{"codigo":"2.1","nombre":"Territorio y medioambiente.","indicadores":[]},{"codigo":"2.2","nombre":"Economía.","indicadores":[]}]}]}]
+[
+  {
+    "nivel": "Educación Media HC",
+    "especialidad": "Educación Ciudadana",
+    "dominios": [
+      {
+        "nombre": "ESTADO, DEMOCRACIA Y DERECHOS HUMANOS.",
+        "subdominios": [
+          {
+            "codigo": "1.1",
+            "nombre": "Democracia y sus instituciones.",
+            "indicadores": [
+              "Identificar las características, fundamentos y dimensiones de la democracia y la ciudadanía.",
+              "Identificar las características, funcionamiento y mecanismos de participación dentro de la institucionalidad democrática.",
+              "Reconocer riesgos, desafíos y problemáticas para la democracia, tales como la desafección política, la desigualdad, la corrupción, el narcotráfico, entre otras.",
+              "Identificar oportunidades y riesgos de los medios de comunicación masiva y nuevas tecnologías en el contexto de una sociedad democrática.",
+              "Analizar las características del sistema judicial y los mecanismos de acceso a la justicia en el contexto del resguardo de los derechos humanos.",
+              "Reconocer y ejemplificar diversas formas de participación ciudadana y su aporte al fortalecimiento del bien común, considerando fenómenos sociales contemporáneos y las perspectivas del republicanismo, el liberalismo y el comunitarismo.",
+              "Relacionar los conceptos libertad, igualdad y solidaridad, con desafíos y problemas de la democracia como la desigualdad y superación de la pobreza, la equidad de género, la inclusión, la diversidad étnica, cultural y sexual, entre otros"
+            ]
+          },
+          {
+            "codigo": "1.2",
+            "nombre": "Justicia y derechos humanos.",
+            "indicadores": [
+              "Identificar las características del sistema judicial y sus accesos para el resguardo de los derechos humanos.",
+              "Reconocer la evolución de los mecanismos institucionales que buscan resguardar derechos laborales y los aportes de los movimientos y organizaciones sociales a su fortalecimiento.",
+              "Reconocer los derechos humanos en la vida cotidiana en el marco de su defensa y exigibilidad, considerando sus principios, tales como universalidad, indivisibilidad, inalienabilidad, igualdad y no discriminación."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "TERRITORIO, MEDIOAMBIENTE Y ECONOMÍA.",
+        "subdominios": [
+          {
+            "codigo": "2.1",
+            "nombre": "Territorio y medioambiente.",
+            "indicadores": [
+              "Distinguir relaciones políticas, económicas y socioculturales que configuran el territorio en distintas escalas, proponiendo alternativas para avanzar en justicia social y ambiental",
+              "Reconocer las formas de organización y del espacio público, desde sus elementos políticos, económicos y socioculturales que le configuran.",
+              "Identificar los desafíos del desarrollo sustentable derivados del problema del cambio climático."
+            ]
+          },
+          {
+            "codigo": "2.2",
+            "nombre": "Economía.",
+            "indicadores": [
+              "Analizar las relaciones entre el Estado y el Mercado, considerando el impacto de los modelos de desarrollo y políticas públicas, en la vida cotidiana y temáticas como como sueldos justos, productividad, carga tributaria, comercio justo, probidad, desarrollo sustentable, riqueza y pobreza.",
+              "Analizar la importancia de los derechos laborales en el país a partir de las tendencias globales y nacionales que los enmarcan, la evolución de los mecanismos institucionales destinados a protegerlos y el papel de los movimientos y organizaciones sociales en su fortalecimiento."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
