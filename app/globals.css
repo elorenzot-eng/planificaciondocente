@@ -816,3 +816,9 @@ main>aside .role .logout:hover{background:#d6eefb!important}
  .workspace{min-width:0;box-sizing:border-box}
 }
 @media print{.mobileWorkspaceNav{display:none!important}}
+
+/* ECEP practice: isolate question and option layout from global label/form grid rules. */
+.ecep-quiz-layout{display:block!important;width:100%!important;min-width:0}
+.ecep-quiz-layout>div{width:100%;min-width:0}
+.ecep-quiz-layout .ecep-quiz-option{display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:center!important;grid-template-columns:none!important;gap:12px!important;width:100%!important;margin:8px 0!important;font-size:inherit!important;font-weight:400!important}
+.ecep-quiz-layout .ecep-quiz-radio{display:inline-block!important;position:static!important;flex:0 0 18px!important;width:18px!important;min-width:18px!important;height:18px!important;margin:0!important;padding:0!important;transform:none!important;appearance:auto!important}
