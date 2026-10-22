@@ -1,0 +1,239 @@
+{
+  "level": "Educación Básica",
+  "specialty": "Religión Evangélica",
+  "units": [
+    {
+      "code": "1.1",
+      "title": "Dios, sus atributos.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Distinguir los atributos que son exclusivos de Dios y de la divinidad de Jesús (omnipotencia, omnipresencia, omnisciencia, sabiduría y soberanía).",
+        "Reconocer, en el contexto bíblico y contemporáneo, la manifestación de los atributos morales de Dios en la humanidad (santidad, justicia, fidelidad, misericordia, amor, bondad).",
+        "Describir las distintas expresiones de los atributos morales de Dios en la vida de las personas, en el contexto bíblico y contemporáneo."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "1.2",
+      "title": "Dios, el Creador.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Comparar las distintas cosmovisiones en términos del origen del hombre, su propósito y el valor atribuido a la persona.",
+        "Reconocer elementos distintivos que constituyen la imagen divina en el ser humano.",
+        "Evaluar las diferentes visiones teológicas del libre albedrío y las consecuencias morales y espirituales de ellas derivadas."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "2.1",
+      "title": "La Biblia, la Palabra de Dios.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Distinguir los conceptos bíblicos básicos: inspiración, revelación, canon, verdad/ inerrancia.",
+        "Identificar los temas centrales asociados a los diferentes libros que componen la Biblia.",
+        "Reconocer aspectos básicos del proceso de conformación y redacción del texto bíblico (escritores, idiomas, lugares, período).",
+        "Inferir el sentido simbólico de textos bíblicos.",
+        "Determinar la relevancia de distintos personajes presentes en la Biblia.",
+        "Distinguir la importancia y/o el sentido actual de hechos bíblicos para la vida de los cristianos."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "3.1",
+      "title": "La realidad del pecado y el amor de Dios.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Evaluar consecuencias morales y espirituales derivadas del pecado en el ser humano y la sociedad.",
+        "Explicar bíblicamente la relación entre el amor de Dios y el perdón del pecado."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "3.2",
+      "title": "La obra de Salvación de Jesús.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Identificar las razones por las cuales el pueblo de Israel no aceptó la salvación a través de Jesús.",
+        "Explicar características principales de la obra salvífica de Jesús.",
+        "Analizar los fundamentos teológicos que explican el sentido de la resurrección de Jesús para los cristianos.",
+        "Distinguir los conceptos de nuevo nacimiento, justificación, regeneración, vida eterna, fe, arrepentimiento, confesión y aceptación del perdón de Dios.",
+        "Relacionar la conversión por la fe y el arrepentimiento con una vida caracterizada por vivir los valores del Reino de Dios."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "4.1",
+      "title": "La Iglesia, su fundación y desarrollo.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Reconocer hitos referidos al nacimiento y el desarrollo inicial de la Iglesia.",
+        "Reconocer aspectos de la organización de la Iglesia expresados en los escritos neotestamentarios."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "4.2",
+      "title": "La obra del Espíritu Santo en la Iglesia.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Explicar el contexto religioso en el cual se produjo el advenimiento del Espíritu Santo.",
+        "Determinar la relevancia de las profecías del Antiguo Testamento respecto del advenimiento del Espíritu Santo y su acción en los creyentes.",
+        "Identificar la acción del Espíritu Santo en la comunión, la vida de oración, las ofrendas y la predicación de la Palabra de Dios, que demostraron los primeros cristianos."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "4.3",
+      "title": "La obra evangelizadora de la Iglesia en su desarrollo.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Relacionar el ministerio de Jesucristo con la Gran Comisión encomendada a la Iglesia.",
+        "Explicar la importancia del primer Concilio de la Iglesia en Jerusalén para la expansión del cristianismo."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "4.4",
+      "title": "La Reforma protestante.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Identificar los principios doctrinales fundamentales de la Reforma Protestante."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "4.5",
+      "title": "El testimonio de la Iglesia.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Explicar la responsabilidad del creyente tanto en su tarea evangelizadora como en su rol de agente de transformación de la sociedad."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "5.1",
+      "title": "Dimensión Personal.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Distinguir el valor que Dios le asigna a la persona desde la perspectiva de la obra redentora de Jesucristo.",
+        "Explicar cómo la verdad de la Palabra de Dios proporciona puntos de referencia para establecer principios y valores morales.",
+        "Aplicar conceptos de la ética cristiana a situaciones y hechos de la vida cotidiana."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "5.2",
+      "title": "Dimensión Social.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Reconocer que la fe, la esperanza y el amor son virtudes teologales que inspiran al cristiano a hacer el bien.",
+        "Relacionar los conceptos de misericordia y justicia dentro de las relaciones humanas.",
+        "Explicar cómo ciertas tendencias e ideologías modernas se contraponen al proyecto evangélico de convivencia (individualismo, economía capitalista de libre mercado, relativismo, entre otros)."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "5.3",
+      "title": "Comunidad/Sociedad.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Relacionar problemas individuales que afectan los vínculos al interior de la iglesia y/o comunidad, con las"
+      ],
+      "indicatorStatus": "incompleto"
+    },
+    {
+      "code": "5.4",
+      "title": "La familia.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Confrontar problemáticas familiares con la visión establecida en la Biblia para la convivencia familiar."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "6.1",
+      "title": "Estrategias de enseñanza en la asignatura de Religión Evangélica.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Disponer de variadas formas de representar y formular los conocimientos de modo de hacerlos comprensibles para todos/as los/as estudiantes.",
+        "Retroalimentar a los/as estudiantes con lenguaje comprensible y con precisión conceptual.",
+        "Identificar decisiones e intervenciones pedagógicas que favorecen el aprendizaje en la asignatura de Religión Evangélica.",
+        "Seleccionar recursos didácticos apropiados para abordar diferentes objetivos de aprendizaje de la asignatura.",
+        "Distinguir estrategias para enfrentar las dificultades de aprendizaje de los estudiantes, de modo que estas puedan ser superadas."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "6.2",
+      "title": "Aprendizaje en la asignatura de Religión Evangélica.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Identificar los conocimientos previos requeridos para abordar los distintos aprendizajes de la asignatura.",
+        "Identificar errores comunes en la asignatura, con el fin de retroalimentar y promover el aprendizaje a partir del error."
+      ],
+      "indicatorStatus": "extraído"
+    },
+    {
+      "code": "6.3",
+      "title": "Evaluación de los aprendizajes en la asignatura de Religión Evangélica.",
+      "summary": "Guía de estudio: revisar los conceptos, fuentes y relaciones presentes en este subdominio del temario. Distinguir entre descripción histórica, interpretación textual y planteamientos doctrinales.",
+      "example": "Seleccionar una fuente pertinente y explicar su contexto y relación con el indicador de estudio.",
+      "pitfall": "Responder sin identificar el concepto central ni justificar la interpretación con evidencia.",
+      "task": "Elabora un esquema de conceptos y una respuesta argumentada a uno de los indicadores del subdominio.",
+      "sourceIndicators": [
+        "Identificar indicadores de evaluación y evidencia de desempeños que dan cuenta de los distintos objetivos de aprendizaje de la asignatura.",
+        "Seleccionar actividades, estrategias e instrumentos de evaluación para evaluar los aprendizajes de la asignatura.",
+        "Caracterizar prácticas e interacciones pedagógicas que contribuyen a retroalimentar formativamente el aprendizaje de los estudiantes, ante evidencias de desempeño."
+      ],
+      "indicatorStatus": "extraído"
+    }
+  ]
+}
