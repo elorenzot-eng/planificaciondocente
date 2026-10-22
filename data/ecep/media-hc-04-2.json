@@ -1,1 +1,34 @@
-[{"nivel":"Educación Media HC","especialidad":"Educación Ciudadana","dominios":[{"nombre":"ENSEÑANZA-APRENDIZAJE EN LA ASIGNATURA DE EDUCACIÓN CIUDADANA.","subdominios":[{"codigo":"3.1","nombre":"Enseñanza y evaluación de los aprendizajes en la asignatura de Educación Ciudadana.","indicadores":[]},{"codigo":"3.2","nombre":"Aprendizaje en la asignatura de Educación Ciudadana.","indicadores":[]}]}],"sha256":"56b9fa5f070a6791e70b4f8180f2f60f0e06c49f5633aa67a78da442de13060f","paginas":2}]
+[
+  {
+    "nivel": "Educación Media HC",
+    "especialidad": "Educación Ciudadana",
+    "dominios": [
+      {
+        "nombre": "ENSEÑANZA-APRENDIZAJE EN LA ASIGNATURA DE EDUCACIÓN CIUDADANA.",
+        "subdominios": [
+          {
+            "codigo": "3.1",
+            "nombre": "Enseñanza y evaluación de los aprendizajes en la asignatura de Educación Ciudadana.",
+            "indicadores": [
+              "Seleccionar diversas formas de representar y retroalimentar los contenidos para hacerlos comprensibles a todas y todos los estudiantes.",
+              "Seleccionar estrategias, metodologías, actividades y recursos didácticos que posibiliten la enseñanza-aprendizaje de los objetivos y habilidades propios de la asignatura.",
+              "Reconocer dificultades en el proceso de aprendizaje de los/as estudiantes y formas pertinentes de abordarlas.",
+              "Seleccionar indicadores, actividades, estrategias e instrumentos de evaluación de acuerdo con los objetivos de aprendizaje de la asignatura."
+            ]
+          },
+          {
+            "codigo": "3.2",
+            "nombre": "Aprendizaje en la asignatura de Educación Ciudadana.",
+            "indicadores": [
+              "Identificar los conocimientos previos requeridos para abordar los distintos aprendizajes de la asignatura.",
+              "Seleccionar diversas formas de representar y formular contenidos, para el aprendizaje de todos/as los/as estudiantes.",
+              "Identificar errores comunes en la asignatura, con el fin de retroalimentar y promover el aprendizaje a partir del error."
+            ]
+          }
+        ]
+      }
+    ],
+    "sha256": "56b9fa5f070a6791e70b4f8180f2f60f0e06c49f5633aa67a78da442de13060f",
+    "paginas": 2
+  }
+]
