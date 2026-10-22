@@ -1,0 +1,81 @@
+[
+  {
+    "nivel": "Educación Especial",
+    "especialidad": "Discapacidad Intelectual",
+    "dominios": [
+      {
+        "nombre": "FUNDAMENTOS Y NORMATIVA DE LA EDUCACIÓN ESPECIAL.",
+        "subdominios": [
+          {
+            "codigo": "1.1",
+            "nombre": "Fundamentos de la Educación Especial.",
+            "indicadores": [
+              "Identificar los fundamentos del modelo o enfoque biopsicosocial (Asociación Americana de Discapacidades Intelectuales y del Desarrollo; Enfoque biopsicosocial de la discapacidad propuesto por la Organización Mundial de la Salud en la Clasificación Internacional del Funcionamiento, la Discapacidad y la Salud).",
+              "Determinar las implicancias de los principales postulados de las teorías del desarrollo y el aprendizaje: Teoría del Desarrollo Psicosocial (Erikson), Teoría del Aprendizaje (Piaget), Teoría Sociocultural (Vygotsky), Teorías Conductistas (Skinner) y Teoría del Aprendizaje social (Bandura).",
+              "Determinar las implicancias educativas asociadas a la comprensión de la discapacidad con el modelo biopsicosocial (enfoque ecológico funcional o integral).",
+              "Identificar los aportes de las siguientes normativas al desarrollo de la Educación Especial en Chile: Convención de Derechos de las Personas con Discapacidad (ONU, 2006); Ley General de Educación Nº 20.370/09.",
+              "Reconocer los enfoques (y el contexto histórico en que surgen) que sustentan la evolución de la Educación Especial (enfoque homogeneizador, centrado en el déficit y la categorización, modelos orientados a la normalización y asimilación versus modelos basados en la diversidad y la inclusión.",
+              "Determinar las implicancias de los principales hitos de la evolución de la educación especial en la forma de concebir y abordar pedagógicamente la diversidad.",
+              "Distinguir conceptos centrales del actual enfoque de la educación especial: barreras al aprendizaje y a la participación, estrategias diversificadas para la enseñanza y evaluación, adecuaciones curriculares, necesidades de apoyo, multiculturalidad e inclusión educativa."
+            ]
+          },
+          {
+            "codigo": "1.2",
+            "nombre": "Normativa y orientaciones para la implementación de la política vigente en la Educación Especial.",
+            "indicadores": [
+              "Identificar ámbitos de acción de los diferentes actores en el aula (equipo de aula y equipo interdisciplinario) en el marco del trabajo colaborativo.",
+              "Identificar los requisitos y procedimientos (técnicos y administrativos) que establece el Decreto Supremo Nº 170/09 para el ingreso y apoyos de los estudiantes con necesidades educativas especiales, en la modalidad de educación especial.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de acceso, según el Decreto Exento Nº 83/15.",
+              "Identificar los criterios que se deben tener presentes para generar adecuaciones curriculares de los objetivos de aprendizaje, según el Decreto Exento Nº 83/15.",
+              "Identificar la información que debe ser recogida a través de la evaluación diagnóstica integral e individual, según el Decreto Supremo Nº 170/09.",
+              "Examinar las posibilidades de gestión del currículum vigente para el acceso, permanencia y egreso de la diversidad de estudiantes en el aula."
+            ]
+          }
+        ]
+      },
+      {
+        "nombre": "RESPUESTAS EDUCATIVAS A LAS NECESIDADES EDUCATIVAS QUE ENFRENTAN ESTUDIANTES CON DISCAPACIDAD INTELECTUAL.",
+        "subdominios": [
+          {
+            "codigo": "2.1",
+            "nombre": "Caracterización y necesidades de apoyo de los estudiantes con Discapacidad Intelectual, desde una perspectiva multidimensional.",
+            "indicadores": [
+              "Clasificar las dimensiones involucradas en el enfoque multidimensional y su implicancia en la planificación educativa.",
+              "Reconocer la definición y perspectiva actual del constructo \"Discapacidad Intelectual\" (criterios diagnósticos, modelo multidimensional, sistemas de apoyos).",
+              "Relacionar los principales elementos de la propuesta de Transición a la Vida Activa y su implicancia en el Programa anual de Curso y en el PAI.",
+              "Determinar la justificación de las dimensiones del Enfoque multidimensional en las que estudiantes con Discapacidad Intelectual requieren apoyo en contextos educativos.",
+              "Seleccionar procedimientos para la evaluación psicoeducativa de los estudiantes, en las distintas dimensiones de su desarrollo.",
+              "Contrastar los elementos centrales del Enfoque Ecológico para la evaluación de estudiantes con Discapacidad Intelectual, considerando su edad y etapa de desarrollo.",
+              "Proponer procedimientos o procesos de evaluación para promover los logros de aprendizaje de estudiantes con Discapacidad Intelectual, en relación con su contexto, su condición personal y sus necesidades de apoyo.",
+              "Conocer los instrumentos de evaluación usados por los psicólogos en el ámbito de la Discapacidad Intelectual, cuyos resultados permiten orientar las decisiones educativas.",
+              "Reconocer los criterios que deben estar presentes en la evaluación diagnóstica integral."
+            ]
+          },
+          {
+            "codigo": "2.2",
+            "nombre": "Condiciones y estrategias para la participación y aprendizaje de estudiantes con Discapacidad Intelectual.",
+            "indicadores": [
+              "Proponer estrategias que promuevan el desarrollo de funciones ejecutivas (memoria, atención, planificación, flexibilidad, razonamiento, entre otras) de estudiantes con Discapacidad Intelectual, en el contexto de la planificación de clase y de manera transversal.",
+              "Proponer estrategias que promuevan el desarrollo de habilidades de pensamiento de estudiantes con Discapacidad Intelectual, en el contexto de la planificación de clase y de manera transversal.",
+              "Proponer estrategias para el desarrollo de habilidades de procesamiento de la información (entrada, procesamiento, salida) de estudiantes con Discapacidad Intelectual, en el contexto de la planificación de clase y de manera transversal.",
+              "Proponer estrategias pedagógicas para el desarrollo de habilidades intelectuales, según las necesidades educativas de estudiantes con Discapacidad Intelectual, en contextos educativos.",
+              "Determinar estrategias que favorezcan el desarrollo de habilidades sociales de estudiantes con Discapacidad Intelectual, en contextos educativos.",
+              "Proponer estrategias para desarrollar habilidades comunicativas de estudiantes con Discapacidad Intelectual, a partir de Sistemas Alternativos y Aumentativos de la comunicación, en contextos educativos.",
+              "Determinar estrategias que permitan desarrollar habilidades de comprensión de comunicación verbal de estudiantes con Discapacidad Intelectual, en contextos educativos.",
+              "Determinar estrategias que fomenten el desarrollo de la autonomía y autodeterminación en estudiantes con Discapacidad Intelectual.",
+              "Determinar estrategias para desarrollar habilidades prácticas (de la vida diaria) en estudiantes con Discapacidad Intelectual, en contextos educativos.",
+              "Determinar estrategias que propicien la adquisición de la lectura y escritura de estudiantes con Discapacidad Intelectual, en contextos educativos (por ejemplo, método global u otro complementario a los tradicionales).",
+              "Proponer estrategias que fomenten el aprendizaje de la matemática funcional en estudiantes con Discapacidad Intelectual que lo requieran, en contextos educativos.",
+              "Determinar el uso de estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa y las orientaciones vigentes, adecuaciones curriculares) a partir de las necesidades de apoyo de estudiantes con Discapacidad Intelectual en las asignaturas de Lenguaje y Comunicación, Matemática, Ciencias Naturales e Historia, Geografía y Ciencias Sociales, u otras, en contextos educativos.",
+              "Evaluar la fundamentación del uso de las estrategias diversificadas de enseñanza (o, en los casos determinados por la normativa y las orientaciones vigentes, adecuaciones curriculares), a partir de las necesidades de apoyo de estudiantes con Discapacidad Intelectual en las asignaturas de Lenguaje y Comunicación, Matemática, Ciencias Naturales e Historia, Geografía y Ciencias Sociales, u otras, en contextos educativos.",
+              "Decidir los elementos que debe incorporar un Plan de Apoyo Individual, en el que además de lo curricular se considere el proyecto de vida presente y futuro, de acuerdo con la edad e intereses de estudiantes con Discapacidad Intelectual.",
+              "Determinar estrategias que favorezcan paulatinamente el uso del tiempo libre, recreación, vida en comunidad, uso de servicios y redes, en estudiantes con Discapacidad Intelectual",
+              "Proponer estrategias para promover la participación de la familia y de la comunidad en el proceso de aprendizaje de los estudiantes con Discapacidad Intelectual, en contextos educativos.",
+              "Proponer estrategias para promover la formación sociolaboral de jóvenes con discapacidad intelectual en contextos educativos."
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
