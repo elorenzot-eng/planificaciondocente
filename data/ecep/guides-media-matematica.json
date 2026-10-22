@@ -1,0 +1,110 @@
+{
+  "level": "Educación Media HC",
+  "specialty": "Matemática",
+  "units": [
+    {
+      "code": "1.1",
+      "title": "Sistemas numéricos",
+      "summary": "Los racionales pueden escribirse como cociente de enteros con denominador distinto de cero; los irracionales no. Los complejos a+bi amplían los reales y admiten conjugado a−bi y módulo √(a²+b²).",
+      "example": "Para z=3+4i, su conjugado es 3−4i y su módulo es 5.",
+      "pitfall": "Suponer que todo decimal infinito es irracional, aunque los periódicos son racionales.",
+      "task": "Clasifica √2, 0,333… y −5/2; calcula el módulo y conjugado de 2−3i."
+    },
+    {
+      "code": "1.2",
+      "title": "Potencias, raíces y logaritmos",
+      "summary": "La equivalencia log_b(a)=c si y solo si b^c=a exige b>0, b≠1 y a>0. Las propiedades de exponentes y logaritmos permiten simplificar y modelar crecimiento.",
+      "example": "log₂(32)=5 porque 2⁵=32; log₂(8·4)=log₂8+log₂4=5.",
+      "pitfall": "Aplicar log(a+b)=log a+log b, identidad que no es válida.",
+      "task": "Resuelve 3^(x+1)=81 y explica qué restricciones impone un logaritmo real."
+    },
+    {
+      "code": "2.1",
+      "title": "Funciones",
+      "summary": "La composición f∘g aplica primero g y luego f. La inversa intercambia entradas y salidas cuando la función es inyectiva en su dominio; asíntotas y restricciones determinan el comportamiento gráfico.",
+      "example": "Si f(x)=2x+1 y g(x)=x², entonces f(g(x))=2x²+1; la inversa de f es (x−1)/2.",
+      "pitfall": "Confundir f(g(x)) con g(f(x)) o invertir una cuadrática sin restringir dominio.",
+      "task": "Compara f∘g y g∘f y determina dominio y asíntota de h(x)=1/(x−2)."
+    },
+    {
+      "code": "2.2",
+      "title": "Ecuaciones, inecuaciones y sistemas",
+      "summary": "Los sistemas modelan restricciones simultáneas; una solución debe satisfacer todas las ecuaciones y ser pertinente al contexto. En inecuaciones, multiplicar por un número negativo invierte el sentido.",
+      "example": "x+y=10 y 2x+y=14 implican x=4 e y=6.",
+      "pitfall": "No verificar restricciones de denominadores o ignorar el cambio de signo de una desigualdad.",
+      "task": "Resuelve (x−1)/(x+2)>0 y justifica los intervalos, excluyendo x=−2."
+    },
+    {
+      "code": "3.1",
+      "title": "Ángulos en la circunferencia",
+      "summary": "Un ángulo inscrito mide la mitad del arco que intercepta; el ángulo central correspondiente mide lo mismo que ese arco. Congruencia y semejanza apoyan las deducciones.",
+      "example": "Un arco de 100° determina un ángulo inscrito de 50° que lo intercepta.",
+      "pitfall": "Equiparar siempre el ángulo inscrito con el central.",
+      "task": "Dibuja dos ángulos inscritos que intercepten el mismo arco y fundamenta su medida."
+    },
+    {
+      "code": "3.2",
+      "title": "Semejanza y proporcionalidad",
+      "summary": "Las figuras semejantes conservan ángulos y sus longitudes correspondientes mantienen una razón k; perímetros escalan por k y áreas por k². La trigonometría vincula razones de lados y ángulos.",
+      "example": "Una homotecia de razón 3 triplica longitudes y multiplica áreas por 9.",
+      "pitfall": "Aplicar el factor lineal k al área o confundir seno con coseno.",
+      "task": "Resuelve la altura de un objeto mediante tangente y explica el factor de área en una homotecia de razón 1/2."
+    },
+    {
+      "code": "3.3",
+      "title": "Áreas, volúmenes y cuerpos geométricos",
+      "summary": "Los sólidos de revolución requieren identificar la figura generatriz. Para un cono V=πr²h/3 y para una esfera V=4πr³/3; los sectores circulares dependen del ángulo central.",
+      "example": "Un cono de radio 3 y altura 4 tiene volumen 12π unidades cúbicas.",
+      "pitfall": "Confundir área lateral con área total o emplear fórmulas de volumen sin unidades cúbicas.",
+      "task": "Calcula el volumen de una esfera de radio 3 y el área de un sector de 90° y radio 4."
+    },
+    {
+      "code": "3.4",
+      "title": "Vectores y homotecias",
+      "summary": "Una homotecia centrada en el origen de razón k transforma el vector posición v en kv; si k es negativo invierte el sentido.",
+      "example": "El vector (2,−3) con k=−2 se transforma en (−4,6).",
+      "pitfall": "Confundir el producto por escalar con una traslación.",
+      "task": "Representa una figura mediante vectores y aplica una homotecia de razón −1/2."
+    },
+    {
+      "code": "4.1",
+      "title": "Estadística",
+      "summary": "Media, mediana, cuartiles, varianza y desviación estándar describen centro, posición y dispersión. Comparar grupos exige considerar simultáneamente sus medidas y el contexto.",
+      "example": "Dos grupos pueden tener media 10, pero dispersiones diferentes si uno contiene valores más extremos.",
+      "pitfall": "Concluir que igual media implica distribuciones equivalentes.",
+      "task": "Construye dos muestras con igual media y distinta desviación estándar; interpreta el resultado."
+    },
+    {
+      "code": "4.2",
+      "title": "Probabilidad",
+      "summary": "Para eventos independientes P(A∩B)=P(A)P(B); en general P(A|B)=P(A∩B)/P(B), si P(B)>0. Los modelos binomial y normal requieren supuestos diferentes.",
+      "example": "En dos lanzamientos independientes de moneda equilibrada, P(cara y cara)=1/4.",
+      "pitfall": "Confundir independencia con incompatibilidad o aplicar el modelo normal a cualquier variable discreta.",
+      "task": "Resuelve un problema de probabilidad condicionada y justifica cuándo usarías una distribución binomial."
+    },
+    {
+      "code": "5.1",
+      "title": "Estrategias de enseñanza matemática",
+      "summary": "Las representaciones concreta, pictórica, tabular, gráfica y simbólica pueden articularse para construir comprensión. Ejemplos, contraejemplos y preguntas diagnósticas hacen visibles los razonamientos.",
+      "example": "Para introducir proporcionalidad, comparar tablas, diagramas de doble entrada y expresiones algebraicas.",
+      "pitfall": "Usar solo reglas algorítmicas sin explorar significados ni errores.",
+      "task": "Diseña una secuencia con dos representaciones de una función y una pregunta que revele comprensión."
+    },
+    {
+      "code": "5.2",
+      "title": "Aprendizaje matemático",
+      "summary": "Los conocimientos previos y errores recurrentes permiten ajustar la mediación. Analizar el procedimiento del estudiante aporta más información que marcar únicamente el resultado.",
+      "example": "Si un estudiante afirma (a+b)²=a²+b², un contraejemplo numérico permite discutir el término 2ab.",
+      "pitfall": "Tratar todo error como falta de atención en lugar de explorar la concepción subyacente.",
+      "task": "Diseña una retroalimentación para quien divide fracciones multiplicando numeradores y denominadores sin invertir la segunda."
+    },
+    {
+      "code": "5.3",
+      "title": "Evaluación en matemática",
+      "summary": "Los indicadores de evaluación deben evidenciar el objetivo y la habilidad buscada; la retroalimentación formativa identifica logro, brecha y próximo paso verificable.",
+      "example": "Para evaluar argumentación, solicitar justificar por qué una solución satisface un sistema, no solo dar el par ordenado.",
+      "pitfall": "Confundir cantidad de ejercicios con evidencia suficiente de comprensión.",
+      "task": "Redacta un indicador observable y una pauta breve para evaluar una explicación de semejanza."
+    }
+  ]
+}
