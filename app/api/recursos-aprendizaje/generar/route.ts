@@ -78,18 +78,76 @@ export async function POST(request: Request) {
   ].filter(line => simce ? (!line.includes("2° básico") && !line.includes("MODELO PRECURSORES") && !line.includes("MODELO COMPRENSIÓN") && !line.includes("MODELO FLUIDEZ") && !line.includes("workbookType")) : (!line.startsWith("ENSAYOS ") && !line.startsWith("CALIDAD DE ÍTEMS SIMCE") && !line.startsWith("En cada pregunta SIMCE") && !line.startsWith("Si el módulo es SIMCE") && !line.startsWith("REFERENCIA PEDAGÓGICA") && (moduleId==="cuadernillos" || !line.startsWith("OBLIGATORIO COMPRENSION")) && (!line.startsWith("MODELO ") || (moduleId==="precursores" && line.startsWith("MODELO PRECURSORES")) || (moduleId==="cuadernillos" && line.startsWith("MODELO COMPRENSIÓN")) || (moduleId==="reforzamiento" && line.startsWith("MODELO REFORZAMIENTO")) || (moduleId==="fluidez" && line.startsWith("MODELO FLUIDEZ"))))).join("\n");
   const prompt = JSON.stringify({moduleId,grade,difficulty,oa:oa || "OA por definir y validar por docente",quantity,mode,specification});
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method:"POST",
-      headers:{"Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,"Content-Type":"application/json"},
-      body:JSON.stringify({model:process.env.OPENAI_MODEL || "gpt-4o-mini",temperature:0.3,max_tokens:14000,response_format:{type:"json_object"},messages:[{role:"system",content:instruction},{role:"user",content:prompt}]}),
-      signal:AbortSignal.timeout(90000)
-    });
-    if (!response.ok) return NextResponse.json({error:"No fue posible generar el recurso. Intenta nuevamente."},{status:502});
-    const data = await response.json();
-    const raw = data.choices?.[0]?.message?.content;
-    if (typeof raw !== "string") throw new Error("Empty response");
-    if (data.choices?.[0]?.finish_reason==="length") throw new Error("Response truncated due to token limit");
-    const result = JSON.parse(raw);
+    // Generar ensayos SIMCE en lotes pequeños para evitar respuestas truncadas.
+    // Cada lote se valida antes de unirlo; no se cobra una generación si falla.
+    const generateBatch = async (batchSize:number, offset:number, attempt:number) => {
+      const batchPrompt = JSON.stringify({
+        moduleId,grade,difficulty,oa:oa || "OA por definir y validar por docente",
+        quantity:batchSize,mode,specification,
+        instruction: simce
+          ? `Genera EXACTAMENTE ${batchSize} preguntas nuevas, numeradas de 1 a ${batchSize}. Este es el bloque ${Math.floor(offset/8)+1} de un ensayo de ${quantity} preguntas. No incluyas más ni menos preguntas. Cada pregunta debe tener cuatro alternativas distintas y una clave correcta. Incluye los textos completos en passages si es Lectura.`
+          : undefined,
+        attempt
+      });
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method:"POST",
+        headers:{"Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,"Content-Type":"application/json"},
+        body:JSON.stringify({model:process.env.OPENAI_MODEL || "gpt-4o-mini",temperature:0.3,max_tokens:simce?8000:14000,response_format:{type:"json_object"},messages:[{role:"system",content:instruction},{role:"user",content:batchPrompt}]}),
+        signal:AbortSignal.timeout(90000)
+      });
+      if (!response.ok) {
+        console.error("SIMCE/OpenAI request failed",response.status);
+        throw new Error("AI service request failed");
+      }
+      const data = await response.json();
+      const raw = data.choices?.[0]?.message?.content;
+      if (typeof raw !== "string" || data.choices?.[0]?.finish_reason==="length") throw new Error("AI response incomplete");
+      const parsed = JSON.parse(raw);
+      if (!parsed || !Array.isArray(parsed.activities) || parsed.activities.length!==batchSize) throw new Error("Incorrect question count");
+      if (simce && !normalizeSimceAnswers(parsed)) throw new Error("Invalid SIMCE answer choices");
+      return parsed;
+    };
+    let result:any;
+    if (simce) {
+      const allActivities:any[] = [];
+      const allPassages:any[] = [];
+      const allRows:any[] = [];
+      let firstBatch:any = null;
+      for (let offset=0;offset<quantity;) {
+        const batchSize = Math.min(8,quantity-offset);
+        let batch:any = null;
+        for (let attempt=0;attempt<3;attempt++) {
+          try { batch = await generateBatch(batchSize,offset,attempt); break; }
+          catch (error) {
+            console.warn("SIMCE batch retry", {offset,batchSize,attempt:attempt+1,error:error instanceof Error?error.message:String(error)});
+            if (attempt===2) throw error;
+          }
+        }
+        if (!firstBatch) firstBatch=batch;
+        const prefix = `bloque-${offset}-`;
+        const passages = Array.isArray(batch.passages)?batch.passages:[];
+        const idMap = new Map<string,string>();
+        for (let i=0;i<passages.length;i++) {
+          const originalId=String(passages[i].id??`texto-${i+1}`);
+          const newId=prefix+originalId;
+          idMap.set(originalId,newId);
+          allPassages.push({...passages[i],id:newId});
+        }
+        for (let i=0;i<batch.activities.length;i++) {
+          const item=batch.activities[i];
+          const oldId=String(item.passageId??"");
+          const passageId=idMap.get(oldId)??(passages.length===1?prefix+String(passages[0].id??"texto-1"):undefined);
+          if (moduleId==="simce-lectura" && !passageId) throw new Error("SIMCE reading question missing passage");
+          allActivities.push({...item,number:offset+i+1,...(passageId?{passageId}:{})});
+        }
+        const rows=Array.isArray(batch.specificationTable)?batch.specificationTable:[];
+        for (let i=0;i<batchSize;i++) allRows.push({...rows[i],number:offset+i+1});
+        offset+=batchSize;
+      }
+      result={...firstBatch,activities:allActivities,passages:allPassages,specificationTable:allRows};
+    } else {
+      result=await generateBatch(quantity,0,0);
+    }
     if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 40) throw new Error("Invalid structure");
     if (simce && !normalizeSimceAnswers(result)) throw new Error("Invalid answer choices after normalization");
     if (simce) {
