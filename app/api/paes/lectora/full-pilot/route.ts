@@ -1,3 +1,4 @@
+import { getSession } from "../../../../../lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import type { Prisma } from "@prisma/client";
@@ -18,7 +19,7 @@ function authorized(provided: string | null, expected: string): boolean {
 export async function POST(request: NextRequest) {
   if (process.env.PAES_PILOT_ENABLED !== "true")
     return NextResponse.json({ error: "Piloto deshabilitado." }, { status: 404 });
-  if (!authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
+  if (!(await getSession()) && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
     return NextResponse.json({ error: "Acceso denegado." }, { status: 403 });
   let body: { difficulty?: string; jobId?: string };
   try { body = await request.json(); }
