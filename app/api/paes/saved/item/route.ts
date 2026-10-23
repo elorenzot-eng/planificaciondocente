@@ -1,4 +1,6 @@
 import {NextRequest,NextResponse} from "next/server";
+import {validateHistoryExam,type HistoryExam} from "../../../../../lib/paes/historia";
+import {createHistoryPrint} from "../../../../../lib/paes/historia-print";
 import {getSession} from "../../../../../lib/auth";
 import {prisma} from "../../../../../lib/prisma";
 import {validateScienceFull,SCIENCE_FULL_CONFIG} from "../../../../../lib/paes/ciencias-full";
@@ -19,6 +21,7 @@ export async function GET(request:NextRequest){
  if(!id)return NextResponse.json({error:"Identificador requerido."},{status:400});
  const record=await prisma.savedPaesExam.findFirst({where:{id,userId}});
  if(!record)return NextResponse.json({error:"Ensayo no encontrado."},{status:404});
+ if(record.examType==="HISTORIA"){const exam=record.exam as unknown as HistoryExam;if(validateHistoryExam(exam).length)return NextResponse.json({error:"Ensayo Historia guardado inválido."},{status:422});return NextResponse.json({title:record.title,studentHtml:createHistoryPrint(exam,false),teacherHtml:createHistoryPrint(exam,true)},{headers:{"Cache-Control":"no-store"}});}
  if(record.examType==="LECTORA"){const exam=record.exam as unknown as LectoraExam;return NextResponse.json({title:record.title,studentHtml:createLectoraPrintableHtml(exam,INTERNAL_65_MATRIX,"estudiante"),teacherHtml:createLectoraPrintableHtml(exam,INTERNAL_65_MATRIX,"profesor")},{headers:{"Cache-Control":"no-store"}});}
  if(record.examType==="M1"){const exam=record.exam as unknown as M1Exam;return NextResponse.json({title:record.title,studentHtml:createM1Print(exam,false),teacherHtml:createM1Print(exam,true)},{headers:{"Cache-Control":"no-store"}});}
  if(record.examType==="M2"){const exam=record.exam as unknown as M2Exam;return NextResponse.json({title:record.title,studentHtml:createM2Print(exam,false),teacherHtml:createM2Print(exam,true)},{headers:{"Cache-Control":"no-store"}});}
