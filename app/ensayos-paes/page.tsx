@@ -32,16 +32,16 @@ export default function EnsayosPaes(){
  .paes-heading h2{font-size:21px;line-height:1.3;margin:0 0 6px;color:#173752}
  .paes-heading p{margin:0;color:#61788a;font-size:14px}
  .paes-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;width:100%;align-items:stretch}
- .paes-card{appearance:none;display:flex;flex-direction:column;align-items:stretch;text-align:left;width:100%;min-width:0;margin:0;background:var(--soft);border:1px solid #e4eaf0;border-left:5px solid var(--accent);border-radius:12px;padding:14px 12px;min-height:180px;cursor:pointer;font-family:inherit;box-shadow:none;transition:transform .15s,box-shadow .15s}
+ .paes-card{appearance:none;display:flex;flex-direction:column;align-items:stretch;text-align:left;width:100%;min-width:0;margin:0;background:var(--soft);border:1px solid #e4eaf0;border-left:5px solid var(--accent);border-radius:12px;padding:14px 12px;height:66px;min-height:66px;justify-content:center;cursor:pointer;font-family:inherit;box-shadow:none;transition:transform .15s,box-shadow .15s}
  .paes-card:hover{transform:translateY(-1px);box-shadow:0 3px 10px #14344c12}
  .paes-card:focus-visible{outline:3px solid #1491a4;outline-offset:3px}
  .paes-card[data-selected="true"]{outline:2px solid var(--accent);outline-offset:1px}
- .paes-card-top{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap}
+ .paes-card-top{display:none;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap}
  .paes-symbol{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:#ffffffa0;color:var(--accent);font-size:19px;font-weight:800}
  .paes-count{font-size:11px;color:#5b7281;font-weight:700}
- .paes-card h3{font-size:15px;line-height:1.3;margin:12px 0 7px;color:#173752;overflow-wrap:normal;word-break:normal}
- .paes-card p{color:#5b7281;font-size:12px;line-height:1.4;margin:0 0 12px;flex:1}
- .paes-card-bottom{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--accent)}
+ .paes-card h3{font-size:17px;line-height:1.3;margin:0;text-align:center;color:#173752;overflow-wrap:normal;word-break:normal}
+ .paes-card p{display:none;color:#5b7281;font-size:12px;line-height:1.4;margin:0 0 12px;flex:1}
+ .paes-card-bottom{display:none;justify-content:space-between;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--accent)}
  .paes-arrow{font-size:18px}
  .paes-panel{display:block;margin-top:24px;background:#fff;border:1px solid #e3ebef;border-left:5px solid var(--accent);border-radius:12px;padding:20px}
  .paes-panel-label{font-size:11px;letter-spacing:.06em;font-weight:800;text-transform:uppercase;color:#61788a}
@@ -53,14 +53,14 @@ export default function EnsayosPaes(){
  .paes-note{margin-top:25px;color:#61788a;font-size:12px;line-height:1.6}
  @media(max-width:900px){.paes-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
  @media(max-width:700px){.paes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
- @media(max-width:460px){.paes-root{padding:18px 12px 30px}.paes-grid{grid-template-columns:1fr}.paes-card{min-height:135px;padding:16px}.paes-hero{padding:18px}.paes-hero h1{font-size:25px}.paes-folder{font-size:12px}.paes-cta{width:100%}}
+ @media(max-width:460px){.paes-root{padding:18px 12px 30px}.paes-grid{grid-template-columns:1fr}.paes-card{height:66px;min-height:66px;padding:10px}.paes-hero{padding:18px}.paes-hero h1{font-size:25px}.paes-folder{font-size:12px}.paes-cta{width:100%}}
  @media(prefers-reduced-motion:reduce){.paes-card{transition:none}.paes-card:hover{transform:none}}
  `}</style>
  <div className="paes-shell">
  <nav className="paes-top" aria-label="Navegación PAES"><Link className="paes-back" href="/">← Volver al menú principal</Link><Link className="paes-folder" href="/ensayos-paes/carpeta"><span aria-hidden="true">📁</span> Mi carpeta PAES <span aria-hidden="true">↗</span></Link></nav>
  <header className="paes-hero"><span className="paes-kicker">EducAntay · Preparación académica con IA</span><h1>Tu preparación PAES comienza aquí.</h1><p>Elige tu prueba, genera ensayos con inteligencia artificial y revisa tus respuestas con material de apoyo para estudiantes y docentes.</p><div className="paes-hero-stats"><div className="paes-stat"><strong>5</strong>Pruebas PAES</div><div className="paes-stat"><strong>IA</strong>Generación de ensayos</div><div className="paes-stat"><strong>PDF</strong>Prueba y solucionario</div></div></header>
  <div className="paes-heading"><div><h2>Selecciona tu ensayo</h2><p>Cinco áreas de preparación, una experiencia más simple.</p></div></div>
- <section className="paes-grid" aria-label="Pruebas PAES disponibles">{exams.map((exam,i)=><button type="button" className="paes-card" data-selected={selected===i} aria-pressed={selected===i} key={exam.name} onClick={()=>setSelected(i)} style={{"--accent":exam.tone,"--soft":exam.soft} as React.CSSProperties}><div className="paes-card-top"><span className="paes-symbol" aria-hidden="true">{exam.symbol}</span><span className="paes-count">{exam.questions} preguntas</span></div><h3>{exam.name}</h3><p>{exam.description}</p><div className="paes-card-bottom"><span>{selected===i?"Prueba seleccionada":"Seleccionar prueba"}</span><span className="paes-arrow" aria-hidden="true">→</span></div></button>)}</section>
+ <section className="paes-grid" aria-label="Pruebas PAES disponibles">{exams.map((exam,i)=><button type="button" className="paes-card" data-selected={selected===i} aria-pressed={selected===i} key={exam.name} onClick={()=>setSelected(i)} style={{"--accent":exam.tone,"--soft":exam.soft} as React.CSSProperties}><div className="paes-card-top"><span className="paes-symbol" aria-hidden="true">{exam.symbol}</span><span className="paes-count">{exam.questions} preguntas</span></div><h3>{exam.short==="Historia"?"Historia y Cs. Sociales":exam.short}</h3><p>{exam.description}</p><div className="paes-card-bottom"><span>{selected===i?"Prueba seleccionada":"Seleccionar prueba"}</span><span className="paes-arrow" aria-hidden="true">→</span></div></button>)}</section>
  {active&&<section className="paes-panel" aria-live="polite" style={{"--accent":active.tone} as React.CSSProperties}><span className="paes-panel-label">Tu prueba seleccionada</span><h2>{active.name}</h2><p>{active.description}</p><div className="paes-panel-meta"><span>{active.questions} preguntas · ensayo completo</span><span>{active.details}</span><span>Material para estudiante y docente</span></div><Link className="paes-cta" href={active.path}>Continuar a {active.short} <span aria-hidden="true">→</span></Link></section>}
  <p className="paes-note">Los ensayos son material de práctica de EducAntay generado con IA. No corresponden a pruebas oficiales del DEMRE. La configuración específica se realiza dentro de cada generador.</p>
  </div></main>;
