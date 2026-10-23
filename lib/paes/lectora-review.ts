@@ -50,7 +50,11 @@ export function reviewLectoraExam(
   exam: LectoraExam,
   matrix: ReviewedLectoraMatrix,
 ): ExamReview {
-  const errors = validateLectoraExam(exam, matrix.questionCount === LECTORA_CONFIG.totalQuestions);
+  const errors = validateLectoraExam(exam, matrix?.questionCount === LECTORA_CONFIG.totalQuestions);
+  const safeItems = Array.isArray(exam?.items) ? exam.items : [];
+  const safeTexts = Array.isArray(exam?.texts) ? exam.texts : [];
+  if (!matrix || typeof matrix !== "object")
+    throw new Error("Se requiere una matriz de revisión válida.");
   const warnings: string[] = [];
   const bySkill = counts(skillNames);
   const byGenre = counts(genreNames);
@@ -60,16 +64,17 @@ export function reviewLectoraExam(
       !matrix.sourceReference?.trim()) {
     errors.push("Matriz sin versión, revisión responsable, fecha o referencia documental.");
   }
-  if (exam.specificationVersion !== matrix.version)
+  if (exam?.specificationVersion !== matrix.version)
     errors.push("La versión del ensayo no coincide con la matriz revisada.");
   if (!isNonnegativeInteger(matrix.questionCount) ||
       matrix.questionCount < 1 ||
       matrix.questionCount > LECTORA_CONFIG.totalQuestions)
     errors.push("La matriz indica una cantidad de preguntas inválida.");
-  if (exam.items.length !== matrix.questionCount)
+  if (safeItems.length !== matrix.questionCount)
     errors.push("La cantidad de ítems no coincide con la matriz.");
 
-  for (const item of exam.items) {
+  for (const item of safeItems) {
+    if (!item || typeof item !== "object") continue;
     if (skillNames.includes(item.skill)) bySkill[item.skill]++;
     if (genreNames.includes(item.genre)) byGenre[item.genre]++;
   }
@@ -100,6 +105,6 @@ export function reviewLectoraExam(
     valid: errors.length === 0,
     errors,
     warnings,
-    summary: { questions: exam.items.length, texts: exam.texts.length, bySkill, byGenre },
+    summary: { questions: safeItems.length, texts: safeTexts.length, bySkill, byGenre },
   };
 }
