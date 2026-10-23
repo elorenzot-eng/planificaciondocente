@@ -16,7 +16,7 @@ export async function POST(request:NextRequest){
  let body:{jobId?:string};try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
  if(typeof body.jobId!=="string"||body.jobId.length>100)return NextResponse.json({error:"Identificador inválido."},{status:400});
  const job=await prisma.paesInternalJob.findUnique({where:{id:body.jobId}});
- if(!job||job.nextPart!==12||!job.difficulty.startsWith("CIENCIAS:"))return NextResponse.json({error:"Ensayo no completado."},{status:400});
+ if(!job||job.userId!==userId||job.nextPart!==12||!job.difficulty.startsWith("CIENCIAS:"))return NextResponse.json({error:"Ensayo no completado."},{status:400});
  const elective=job.difficulty.split(":")[1];
  if(!SCIENCE_SUBJECTS.includes(elective as ScienceExam["elective"]))return NextResponse.json({error:"Electivo inválido."},{status:400});
  const exam:ScienceExam={version:"educantay-paes-ciencias-piloto-v1",elective:elective as ScienceExam["elective"],items:job.items as unknown as ScienceExam["items"]};
