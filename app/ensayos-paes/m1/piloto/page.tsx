@@ -14,7 +14,7 @@ export default function M1Pilot(){
     if(data.jobId){current=data.jobId;setJobId(current);}
     if(typeof data.completed==="number")setProgress(data.completed);
     if(!response.ok){setResult({error:data.error||"No se pudo continuar."});return;}
-    if(data.status==="COMPLETED"){setResult(data);setJobId(null);setProgress(65);return;}
+    if(data.status==="COMPLETED"){if(data.jobId){try{const saved=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:data.jobId})});setSaveMessage(saved.ok?"Ensayo guardado automáticamente en Mi carpeta.":"No se pudo guardar automáticamente; utiliza el botón Guardar.");}catch{setSaveMessage("No se pudo guardar automáticamente; utiliza el botón Guardar.");}}setResult(data);setJobId(null);setProgress(65);return;}
    }
    setResult({error:"Presiona continuar para completar el proceso."});
   }catch{setResult({error:"Se interrumpió la conexión. Presiona reanudar para continuar."});}
