@@ -19,7 +19,8 @@ function authorized(provided: string | null, expected: string): boolean {
 export async function POST(request: NextRequest) {
   if (process.env.PAES_PILOT_ENABLED !== "true")
     return NextResponse.json({ error: "Piloto deshabilitado." }, { status: 404 });
-  if (!(await getSession()) && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
+  const session=await getSession();
+  if (!session && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
     return NextResponse.json({ error: "Acceso denegado." }, { status: 403 });
   let body: { difficulty?: string; jobId?: string };
   try { body = await request.json(); }
@@ -29,8 +30,10 @@ export async function POST(request: NextRequest) {
   try {
     let job = body.jobId
       ? await prisma.paesInternalJob.findUnique({ where: { id: body.jobId } })
-      : await prisma.paesInternalJob.create({ data: { difficulty: body.difficulty! } });
+      : await prisma.paesInternalJob.create({ data: { difficulty: body.difficulty!, userId: typeof session?.id==="string"?session.id:null } });
     if (!job) return NextResponse.json({ error: "Proceso no encontrado." }, { status: 404 });
+    if (typeof session?.id!=="string" || job.userId!==session.id)
+      return NextResponse.json({error:"Ensayo de otro usuario o sesión no válida."},{status:403});
     if (job.difficulty !== body.difficulty)
       return NextResponse.json({ error: "La dificultad no coincide con el proceso." }, { status: 400 });
     if (job.nextPart === 30) {
