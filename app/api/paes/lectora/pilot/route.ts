@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
-import { loadApprovedLectoraMatrix } from "../../../../lib/paes/lectora-matrix.server";
-import { planLectoraBatches } from "../../../../lib/paes/lectora-batches";
-import { generateReviewedLectoraDraft } from "../../../../lib/paes/lectora-openai.server";
-import { createLectoraPrintableHtml } from "../../../../lib/paes/lectora-print";
+import { loadApprovedLectoraMatrix } from "../../../../../lib/paes/lectora-matrix.server";
+import { planLectoraBatches } from "../../../../../lib/paes/lectora-batches";
+import { generateReviewedLectoraDraft } from "../../../../../lib/paes/lectora-openai.server";
+import { createLectoraPrintableHtml } from "../../../../../lib/paes/lectora-print";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
