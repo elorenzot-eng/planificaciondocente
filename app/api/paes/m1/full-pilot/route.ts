@@ -13,14 +13,16 @@ export const maxDuration=120;
 function authorized(given:string|null,expected:string){if(!given||expected.length<32)return false;const a=Buffer.from(given),b=Buffer.from(expected);return a.length===b.length&&timingSafeEqual(a,b);}
 export async function POST(request:NextRequest){
  if(process.env.PAES_PILOT_ENABLED!=="true")return NextResponse.json({error:"Piloto no habilitado."},{status:404});
- if(!(await getSession()) && !authorized(request.headers.get("x-paes-pilot-token"),process.env.PAES_PILOT_TOKEN||""))return NextResponse.json({error:"Acceso denegado."},{status:403});
+ const session=await getSession();
+ if(!session && !authorized(request.headers.get("x-paes-pilot-token"),process.env.PAES_PILOT_TOKEN||""))return NextResponse.json({error:"Acceso denegado."},{status:403});
  let body:{difficulty?:string;jobId?:string};
  try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
  if(!["Baja","Media","Alta","Mixta"].includes(body.difficulty||""))return NextResponse.json({error:"Dificultad inválida."},{status:400});
  try{
   const jobDifficulty="M1:"+body.difficulty;
-  let job=body.jobId?await prisma.paesInternalJob.findUnique({where:{id:body.jobId}}):await prisma.paesInternalJob.create({data:{difficulty:jobDifficulty}});
+  let job=body.jobId?await prisma.paesInternalJob.findUnique({where:{id:body.jobId}}):await prisma.paesInternalJob.create({data:{difficulty:jobDifficulty,userId:typeof session?.id==="string"?session.id:null}});
   if(!job)return NextResponse.json({error:"Proceso no encontrado."},{status:404});
+  if(!session||typeof session.id!=="string"||job.userId!==session.id)return NextResponse.json({error:"Ensayo de otro usuario o sesión no válida."},{status:403});
   if(job.difficulty!==jobDifficulty)return NextResponse.json({error:"El proceso no corresponde a esta prueba o dificultad."},{status:400});
   if(job.nextPart===65){
    const exam:M1Exam={version:M1_FULL_CONFIG.version,items:job.items as unknown as M1Item[]};
