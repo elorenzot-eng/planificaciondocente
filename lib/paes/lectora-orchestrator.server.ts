@@ -37,7 +37,7 @@ export async function generateCompleteLectoraExam(
       if (idMap.has(text.id)) throw new Error("ID de texto duplicado dentro del lote.");
       const newId = prefix + text.id;
       if (seenTexts.has(newId)) throw new Error("ID de texto duplicado entre lotes.");
-      const normalizedBody = text.body.trim().replace(/\\s+/g, " ").toLowerCase();
+      const normalizedBody = text.body.trim().replace(/\s+/g, " ").toLowerCase();
       if (seenTextBodies.has(normalizedBody))
         throw new Error("Texto duplicado entre lotes.");
       seenTextBodies.add(normalizedBody);
@@ -48,7 +48,7 @@ export async function generateCompleteLectoraExam(
     for (const item of result.exam.items) {
       const newId = prefix + item.id;
       if (seenItems.has(newId)) throw new Error("ID de pregunta duplicado entre lotes.");
-      const normalizedStem = item.stem.trim().replace(/\\s+/g, " ").toLowerCase();
+      const normalizedStem = item.stem.trim().replace(/\s+/g, " ").toLowerCase();
       if (seenStems.has(normalizedStem))
         throw new Error("Enunciado duplicado entre lotes.");
       seenStems.add(normalizedStem);
