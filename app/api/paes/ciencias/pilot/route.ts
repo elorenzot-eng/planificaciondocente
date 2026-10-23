@@ -8,14 +8,15 @@ import {createSciencePrint} from "../../../../../lib/paes/ciencias-print";
 export const runtime="nodejs";export const dynamic="force-dynamic";export const maxDuration=120;
 export async function POST(request:NextRequest){
  if(process.env.PAES_PILOT_ENABLED!=="true")return NextResponse.json({error:"Piloto no habilitado."},{status:404});
- const session=await getSession();if(!session)return NextResponse.json({error:"Inicia sesión para generar el ensayo."},{status:403});
+ const session=await getSession();if(!session||typeof session.id!=="string")return NextResponse.json({error:"Inicia sesión para generar el ensayo."},{status:403});
  let body:{elective?:ScienceSubject;difficulty?:string;jobId?:string};
  try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
  if(!SCIENCE_SUBJECTS.includes(body.elective as ScienceSubject)||!["Baja","Media","Alta","Mixta"].includes(body.difficulty||""))return NextResponse.json({error:"Configuración inválida."},{status:400});
  const jobDifficulty=`CIENCIAS:${body.elective}:${body.difficulty}`;
  try{
-  let job=body.jobId?await prisma.paesInternalJob.findUnique({where:{id:body.jobId}}):await prisma.paesInternalJob.create({data:{difficulty:jobDifficulty}});
+  let job=body.jobId?await prisma.paesInternalJob.findUnique({where:{id:body.jobId}}):await prisma.paesInternalJob.create({data:{difficulty:jobDifficulty,userId:session.id as string}});
   if(!job)return NextResponse.json({error:"Ensayo no encontrado."},{status:404});
+  if(job.userId!==session.id)return NextResponse.json({error:"Ensayo de otro usuario."},{status:403});
   if(job.difficulty!==jobDifficulty)return NextResponse.json({error:"El ensayo no corresponde a esta configuración."},{status:400});
   if(job.nextPart===12){
    const exam:ScienceExam={version:SCIENCE_PRACTICE_CONFIG.version,elective:body.elective as ScienceSubject,items:job.items as unknown as ScienceItem[]};
