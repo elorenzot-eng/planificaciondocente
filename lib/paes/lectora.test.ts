@@ -1,6 +1,7 @@
 import type { LectoraExam } from "./lectora";
 import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
 import { buildLectoraPrompt, parseAndReviewLectoraResponse } from "./lectora-generator";
+import { createLectoraPrintableHtml } from "./lectora-print";
 
 /**
  * Pruebas de regresión ejecutables por un runner TS del proyecto.
@@ -49,6 +50,20 @@ export function testLectoraPipeline(): void {
     "ítem nulo aceptado");
   assert(!reviewLectoraExam({ ...exam, texts: [null] } as unknown as LectoraExam, matrix).valid,
     "texto nulo aceptado");
+  const studentHtml = createLectoraPrintableHtml(exam, matrix, "estudiante");
+  const teacherHtml = createLectoraPrintableHtml(exam, matrix, "profesor");
+  assert(studentHtml.includes("Hoja de respuestas") && studentHtml.includes("○ D"),
+    "hoja de respuestas del estudiante incompleta");
+  assert(!studentHtml.includes("Clave:</strong>") && !studentHtml.includes("Tabla de especificaciones del ensayo"),
+    "la versión del estudiante expone las respuestas");
+  assert(teacherHtml.includes("Tabla de especificaciones del ensayo") && teacherHtml.includes("<td>B</td>"),
+    "versión del profesor sin clave B");
+  assert(teacherHtml.includes("Evidencia:") && teacherHtml.includes("Justificación:"),
+    "versión del profesor sin fundamentos");
+  let rejectedPrint = false;
+  try { createLectoraPrintableHtml({ ...exam, items: [] }, matrix, "estudiante"); }
+  catch { rejectedPrint = true; }
+  assert(rejectedPrint, "se permitió imprimir un ensayo inválido");
   assert(!reviewLectoraExam({ ...exam, items: undefined } as unknown as LectoraExam, matrix).valid,
     "ensayo sin arreglo de preguntas aceptado");
   assert(!reviewLectoraExam({ ...exam, texts: undefined } as unknown as LectoraExam, matrix).valid,
