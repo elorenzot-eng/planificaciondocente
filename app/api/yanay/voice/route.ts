@@ -8,7 +8,7 @@ export async function POST(request:Request){
   const body=await request.json().catch(()=>({}));
   const preview=body.preview===true;
   const session=await getSession();
-  const demo=process.env.RAILWAY_ENVIRONMENT_NAME==="testing" && preview;
+  const demo=preview; // Public preview only speaks the fixed greeting; custom text requires a session.
   if(!session&&!demo)return NextResponse.json({error:"Inicia sesión para utilizar la voz neuronal."},{status:401});
   if(!session&&demo){
    const ip=(request.headers.get("x-forwarded-for")||"unknown").split(",")[0].trim();
@@ -23,7 +23,7 @@ export async function POST(request:Request){
   if(!text||text.length>1500)return NextResponse.json({error:"Texto inválido."},{status:400});
   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),25000);
   let result:Response;
-  try{result=await fetch("https://api.openai.com/v1/audio/speech",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${key}`},body:JSON.stringify({model:"gpt-4o-mini-tts",voice:"shimmer",input:text,response_format:"mp3",speed:1.15,instructions:"Habla en español de Chile, con voz femenina, dulce, cálida, cercana, natural y expresiva. Usa un acento chileno sutil, pausas naturales y ritmo ágil, ligeramente más rápido que una conversación habitual. Evita sonar robótica o exagerar el acento."}),signal:controller.signal,cache:"no-store"})}finally{clearTimeout(timer)}
+  try{result=await fetch("https://api.openai.com/v1/audio/speech",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${key}`},body:JSON.stringify({model:"gpt-4o-mini-tts",voice:"coral",input:text,response_format:"mp3",speed:1.15,instructions:"Habla en español de Chile con una voz femenina de adulta joven, de registro claramente agudo, fino y ligero. El timbre debe ser muy dulce, suave, aterciopelado y meloso, con calidez afectuosa y una sonrisa audible. Habla como una compañera cercana: juvenil, amable, espontánea y expresiva. Usa una melodía conversacional fluida, pequeñas variaciones de entonación y finales de frase suaves; enlaza las palabras con delicadeza, sin cortes secos ni tono de lectura. Mantén energía serena, dicción clara y un ritmo ágil pero relajado, dejando pequeñas pausas para transmitir cercanía. Usa un acento chileno sutil. Evita una voz grave, áspera, seca, monótona, autoritaria o robótica. Conserva una voz adulta y natural, sin sonar infantil, chillona, estridente, susurrada ni exageradamente actuada."}),signal:controller.signal,cache:"no-store"})}finally{clearTimeout(timer)}
   if(!result.ok)return NextResponse.json({error:"No se pudo generar la muestra de voz."},{status:502});
   const bytes=await result.arrayBuffer();
   return new Response(bytes,{headers:{"Content-Type":"audio/mpeg","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});
