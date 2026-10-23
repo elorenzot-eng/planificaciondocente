@@ -6,10 +6,10 @@ type Result={error?:string;jobId?:string;status?:string;completed?:number;exam?:
 const subjects:Electivo[]=["Biología","Física","Química"];
 function print(html?:string){if(!html)return;const url=URL.createObjectURL(new Blob([html],{type:"text/html;charset=utf-8"}));window.open(url,"_blank","noopener,noreferrer");setTimeout(()=>URL.revokeObjectURL(url),60000);}
 export default function CienciasPaes(){
- const [elective,setElective]=useState<Electivo>("Biología"),[difficulty,setDifficulty]=useState("Media"),[jobId,setJobId]=useState<string|null>(null),[progress,setProgress]=useState(0),[busy,setBusy]=useState(false),[result,setResult]=useState<Result|null>(null);
+ const [saveMessage,setSaveMessage]=useState(""),[elective,setElective]=useState<Electivo>("Biología"),[difficulty,setDifficulty]=useState("Media"),[jobId,setJobId]=useState<string|null>(null),[progress,setProgress]=useState(0),[busy,setBusy]=useState(false),[result,setResult]=useState<Result|null>(null);
  const storageKey=`educantay-paes-ciencias-${elective}-${difficulty}`;
  useEffect(()=>{try{const saved=window.localStorage.getItem(storageKey);if(saved){const data=JSON.parse(saved) as {jobId:string;progress:number};if(data.jobId&&Number.isInteger(data.progress)&&data.progress>=0&&data.progress<12){setJobId(data.jobId);setProgress(data.progress);}}}catch{/* La generación puede iniciarse de nuevo. */}},[storageKey]);
- function reset(){try{window.localStorage.removeItem(storageKey);}catch{/* Almacenamiento no disponible. */}setJobId(null);setProgress(0);setResult(null);}
+ function reset(){setSaveMessage("");try{window.localStorage.removeItem(storageKey);}catch{/* Almacenamiento no disponible. */}setJobId(null);setProgress(0);setResult(null);}
  async function generate(){
   if(busy)return;setBusy(true);setResult(null);let current=jobId;
   try{
@@ -34,6 +34,6 @@ export default function CienciasPaes(){
  <p role="status">Avance: {progress}/12 · {Math.round(progress/12*100)}%</p>
  {result?.error&&<p role="alert" style={{color:"#b91c1c"}}>{result.error}</p>}
  </section>
- {result?.exam&&<section style={{background:"white",padding:24,borderRadius:16,marginTop:24}}><h2>Ensayo generado: {result.exam.items.length} preguntas</h2><div style={{display:"flex",gap:12,flexWrap:"wrap"}}><button onClick={()=>print(result.studentHtml)}>Prueba estudiante · PDF</button><button onClick={()=>print(result.teacherHtml)}>Solucionario docente · PDF</button></div>{result.exam.items.map((q,i)=><article key={q.id} style={{borderTop:"1px solid #ddd",padding:"16px 0"}}><strong>{i+1}. {q.stem}</strong><ol type="A">{q.options.map((o,j)=><li key={j}>{o}</li>)}</ol><p><b>Clave:</b> {"ABCD"[q.correctIndex]} · {q.solution}</p></article>)}</section>}
+ {result?.exam&&<section style={{background:"white",padding:24,borderRadius:16,marginTop:24}}><h2>Ensayo generado: {result.exam.items.length} preguntas</h2><div style={{display:"flex",gap:12,flexWrap:"wrap"}}><button onClick={()=>print(result.studentHtml)}>Prueba estudiante · PDF</button><button onClick={()=>print(result.teacherHtml)}>Solucionario docente · PDF</button><button disabled={!result.jobId} onClick={async()=>{if(!result.jobId)return;setSaveMessage("Guardando…");try{const response=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:result.jobId})});const data=await response.json();setSaveMessage(response.ok?"Ensayo guardado en Mi carpeta.":data.error||"No se pudo guardar.");}catch{setSaveMessage("No se pudo guardar. Intenta nuevamente.");}}}>Guardar en Mi carpeta</button><Link href="/ensayos-paes/carpeta">Ver Mi carpeta PAES</Link></div>{saveMessage&&<p role="status">{saveMessage}</p>}{result.exam.items.map((q,i)=><article key={q.id} style={{borderTop:"1px solid #ddd",padding:"16px 0"}}><strong>{i+1}. {q.stem}</strong><ol type="A">{q.options.map((o,j)=><li key={j}>{o}</li>)}</ol><p><b>Clave:</b> {"ABCD"[q.correctIndex]} · {q.solution}</p></article>)}</section>}
  </div></main>;
 }
