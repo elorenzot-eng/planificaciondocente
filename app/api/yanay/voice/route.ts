@@ -23,7 +23,7 @@ export async function POST(request:Request){
   if(!text||text.length>1500)return NextResponse.json({error:"Texto inválido."},{status:400});
   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),25000);
   let result:Response;
-  try{result=await fetch("https://api.openai.com/v1/audio/speech",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${key}`},body:JSON.stringify({model:"gpt-4o-mini-tts",voice:"shimmer",input:text,response_format:"mp3",instructions:"Habla en español de Chile, con voz femenina, dulce, cálida, cercana, natural y expresiva. Usa un acento chileno sutil, pausas humanas y ritmo tranquilo. Evita sonar robótica o exagerar el acento."}),signal:controller.signal,cache:"no-store"})}finally{clearTimeout(timer)}
+  try{result=await fetch("https://api.openai.com/v1/audio/speech",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${key}`},body:JSON.stringify({model:"gpt-4o-mini-tts",voice:"shimmer",input:text,response_format:"mp3",speed:1.15,instructions:"Habla en español de Chile, con voz femenina, dulce, cálida, cercana, natural y expresiva. Usa un acento chileno sutil, pausas naturales y ritmo ágil, ligeramente más rápido que una conversación habitual. Evita sonar robótica o exagerar el acento."}),signal:controller.signal,cache:"no-store"})}finally{clearTimeout(timer)}
   if(!result.ok)return NextResponse.json({error:"No se pudo generar la muestra de voz."},{status:502});
   const bytes=await result.arrayBuffer();
   return new Response(bytes,{headers:{"Content-Type":"audio/mpeg","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}});
