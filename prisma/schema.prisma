@@ -494,6 +494,7 @@ model LearningResource {
 /** Progreso persistente de generación privada PAES 65; sin datos personales. */
 model PaesInternalJob {
   id String @id @default(cuid())
+  userId String?
   status String @default("PENDING")
   difficulty String
   nextPart Int @default(0)
