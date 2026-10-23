@@ -490,3 +490,17 @@ model LearningResource {
   updatedAt DateTime @updatedAt
   @@index([userId,updatedAt])
 }
+
+/** Progreso persistente de generación privada PAES 65; sin datos personales. */
+model PaesInternalJob {
+  id String @id @default(cuid())
+  status String @default("PENDING")
+  difficulty String
+  nextPart Int @default(0)
+  texts Json @default("[]")
+  items Json @default("[]")
+  error String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status,updatedAt])
+}
