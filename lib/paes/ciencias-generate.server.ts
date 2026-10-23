@@ -1,10 +1,11 @@
 import {buildSciencePracticePlan,type ScienceItem,type ScienceSubject,SCIENCE_SKILLS,SCIENCE_SUBJECTS} from "./ciencias";
+import {buildScienceFullPlan} from "./ciencias-full";
 type Difficulty="Baja"|"Media"|"Alta"|"Mixta";
-export async function generateScienceItem(index:number,elective:ScienceSubject,difficulty:Difficulty):Promise<ScienceItem>{
- if(!SCIENCE_SUBJECTS.includes(elective)||!Number.isInteger(index)||index<0||index>=12)throw new Error("Configuración inválida.");
- const target=buildSciencePracticePlan(elective)[index],key=process.env.OPENAI_API_KEY;
+export async function generateScienceItem(index:number,elective:ScienceSubject,difficulty:Difficulty,full=false):Promise<ScienceItem>{
+ if(!SCIENCE_SUBJECTS.includes(elective)||!Number.isInteger(index)||index<0||index>=(full?80:12))throw new Error("Configuración inválida.");
+ const target=(full?buildScienceFullPlan(elective):buildSciencePracticePlan(elective))[index],key=process.env.OPENAI_API_KEY;
  if(!key)throw new Error("OPENAI_API_KEY no configurada.");
- const prompt=`Crea UNA pregunta ORIGINAL de práctica PAES Ciencias para Chile, número ${index+1} de 12. Módulo: ${target.section}; disciplina: ${target.subject}; habilidad: ${target.skill}; dificultad: ${difficulty}. Contenido de enseñanza media científicamente correcto, enunciado autosuficiente, sin imágenes externas. Para el módulo común, evalúa conocimientos transversales y habilidades de investigación científica; para el electivo, profundiza la disciplina. Responde SOLO JSON: {"stem":"...","options":["...","...","...","..."],"correctIndex":0,"solution":"...","verification":"..."}. Cuatro alternativas diferentes, una correcta, explicación razonada y comprobación independiente. No afirmar que es material oficial DEMRE.`;
+ const prompt=`Crea UNA pregunta ORIGINAL de práctica PAES Ciencias para Chile, número ${index+1} de ${full?80:12}. Módulo: ${target.section}; disciplina: ${target.subject}; habilidad: ${target.skill}; dificultad: ${difficulty}. Contenido de enseñanza media científicamente correcto, enunciado autosuficiente, sin imágenes externas. Para el módulo común, evalúa conocimientos transversales y habilidades de investigación científica; para el electivo, profundiza la disciplina. Responde SOLO JSON: {"stem":"...","options":["...","...","...","..."],"correctIndex":0,"solution":"...","verification":"..."}. Cuatro alternativas diferentes, una correcta, explicación razonada y comprobación independiente. No afirmar que es material oficial DEMRE.`;
  let last:unknown;
  for(let attempt=0;attempt<3;attempt++){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),90000);
