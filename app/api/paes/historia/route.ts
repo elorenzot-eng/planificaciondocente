@@ -1,10 +1,10 @@
-import {getSession} from "../../../../../lib/auth";
+import {getSession} from "../../../../lib/auth";
 import {NextRequest,NextResponse} from "next/server";
 import type {Prisma} from "@prisma/client";
-import {prisma} from "../../../../../lib/prisma";
-import {generateHistoryItem} from "../../../../../lib/paes/historia-generate.server";
-import {HISTORY_CONFIG,validateHistoryExam,type HistoryExam,type HistoryItem} from "../../../../../lib/paes/historia";
-import {createHistoryPrint} from "../../../../../lib/paes/historia-print";
+import {prisma} from "../../../../lib/prisma";
+import {generateHistoryItem} from "../../../../lib/paes/historia-generate.server";
+import {HISTORY_CONFIG,validateHistoryExam,type HistoryExam,type HistoryItem} from "../../../../lib/paes/historia";
+import {createHistoryPrint} from "../../../../lib/paes/historia-print";
 export const runtime="nodejs";export const dynamic="force-dynamic";export const maxDuration=120;
 export async function POST(request:NextRequest){
  if(process.env.PAES_PILOT_ENABLED!=="true")return NextResponse.json({error:"Generador no habilitado."},{status:404});
