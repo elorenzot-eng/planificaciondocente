@@ -22,6 +22,7 @@ function openPrint(html?: string) {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 export default function PaesPilot() {
+  const [saveMessage,setSaveMessage]=useState("");
   const [difficulty, setDifficulty] = useState("Media");
   const [questionCount, setQuestionCount] = useState("10");
   const [loading, setLoading] = useState(false);
@@ -84,7 +85,10 @@ export default function PaesPilot() {
         <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
           <button onClick={()=>openPrint(result.studentHtml)}>Abrir versión estudiante</button>
           <button onClick={()=>openPrint(result.teacherHtml)}>Abrir versión profesor</button>
+          {questionCount==="65"&&<button disabled={!result.jobId} onClick={async()=>{if(!result.jobId)return;setSaveMessage("Guardando…");try{const response=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:result.jobId})});const data=await response.json();setSaveMessage(response.ok?"Ensayo guardado en Mi carpeta.":data.error||"No se pudo guardar.");}catch{setSaveMessage("Error al guardar.");}}}>Guardar en Mi carpeta</button>}
+          <Link href="/ensayos-paes/carpeta">Ver Mi carpeta PAES</Link>
         </div>
+        {saveMessage&&<p role="status">{saveMessage}</p>}
         {result.warnings?.map((w,i)=><p key={i} style={{color:"#92400e"}}>{w}</p>)}
         <h3>Textos del ensayo</h3>
         {result.exam.texts?.map((t,i)=><article key={t.id||i} style={{whiteSpace:"pre-wrap",padding:"12px 0",borderTop:"1px solid #e2e8f0"}}><strong>Texto {i+1}</strong><p>{t.body}</p></article>)}
