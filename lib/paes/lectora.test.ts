@@ -7,7 +7,7 @@ import { createLectoraPrintableHtml } from "./lectora-print";
  * Pruebas de regresión ejecutables por un runner TS del proyecto.
  * Usa un ejemplo didáctico de UN ítem, no una matriz oficial DEMRE.
  */
-export function testLectoraPipeline(): void {
+export function testLectoraPipeline(): { exam: LectoraExam; matrix: ReviewedLectoraMatrix } {
   const matrix: ReviewedLectoraMatrix = {
     version: "TEST-ONLY-1",
     reviewedBy: "Fixture automatizado",
@@ -68,4 +68,5 @@ export function testLectoraPipeline(): void {
     "ensayo sin arreglo de preguntas aceptado");
   assert(!reviewLectoraExam({ ...exam, texts: undefined } as unknown as LectoraExam, matrix).valid,
     "ensayo sin arreglo de textos aceptado");
+  return { exam, matrix };
 }
