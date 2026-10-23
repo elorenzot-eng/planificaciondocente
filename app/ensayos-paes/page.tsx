@@ -4,10 +4,10 @@ import {useState} from "react";
 
 const exams=[
  {name:"Competencia Lectora",short:"Lectura",symbol:"📖",tone:"#0f766e",soft:"#ccfbf1",questions:"65",path:"/ensayos-paes/piloto",description:"Comprende, interpreta y evalúa textos de distintos formatos.",details:"Lectura crítica · Interpretación · Evaluación"},
- {name:"Competencia Matemática M1",short:"Matemática M1",symbol:"∑",tone:"#7c3aed",soft:"#ede9fe",questions:"65",path:"/ensayos-paes/m1/piloto",description:"Resuelve problemas cotidianos mediante razonamiento matemático.",details:"Números · Álgebra · Geometría · Datos"},
- {name:"Competencia Matemática M2",short:"Matemática M2",symbol:"📐",tone:"#1d4ed8",soft:"#dbeafe",questions:"55",path:"/ensayos-paes/m2/piloto",description:"Profundiza en modelamiento y razonamiento matemático avanzado.",details:"Funciones · Modelos · Probabilidades"},
- {name:"Ciencias",short:"Ciencias",symbol:"⚗",tone:"#15803d",soft:"#dcfce7",questions:"80",path:"/ensayos-paes/ciencias",description:"Prepara Ciencias con selección de electivo y práctica guiada.",details:"Biología · Física · Química"},
- {name:"Historia y Ciencias Sociales",short:"Historia",symbol:"🌎",tone:"#c2410c",soft:"#ffedd5",questions:"65",path:"/ensayos-paes/historia",description:"Analiza procesos históricos, fuentes y ciudadanía.",details:"Historia · Ciudadanía · Economía"}
+ {name:"Competencia Matemática M1",short:"Matemática M1",symbol:"∑",tone:"#9855D4",soft:"#F8F3FD",questions:"65",path:"/ensayos-paes/m1/piloto",description:"Resuelve problemas cotidianos mediante razonamiento matemático.",details:"Números · Álgebra · Geometría · Datos"},
+ {name:"Competencia Matemática M2",short:"Matemática M2",symbol:"📐",tone:"#0B83C6",soft:"#EFF8FF",questions:"55",path:"/ensayos-paes/m2/piloto",description:"Profundiza en modelamiento y razonamiento matemático avanzado.",details:"Funciones · Modelos · Probabilidades"},
+ {name:"Ciencias",short:"Ciencias",symbol:"⚗",tone:"#12B981",soft:"#EFFBF6",questions:"80",path:"/ensayos-paes/ciencias",description:"Prepara Ciencias con selección de electivo y práctica guiada.",details:"Biología · Física · Química"},
+ {name:"Historia y Ciencias Sociales",short:"Historia",symbol:"🌎",tone:"#b57d0d",soft:"#FFFAED",questions:"65",path:"/ensayos-paes/historia",description:"Analiza procesos históricos, fuentes y ciudadanía.",details:"Historia · Ciudadanía · Economía"}
 ] as const;
 
 export default function EnsayosPaes(){
@@ -15,44 +15,45 @@ export default function EnsayosPaes(){
  const active=selected===null?null:exams[selected];
  return <main className="paes-root">
  <style>{`
- .paes-root{min-height:100vh;background:#f5f7fb;font-family:Arial,Helvetica,sans-serif;color:#15263b;padding:clamp(18px,4vw,52px)}
- .paes-shell{max-width:1040px;margin:auto}
+ .paes-root{display:block;width:100%;min-height:100vh;background:#f5f7fb;font-family:system-ui,sans-serif;color:#173752;padding:28px 24px 44px;box-sizing:border-box}
+ .paes-root *{box-sizing:border-box}
+ .paes-shell{width:100%;max-width:1120px;min-width:0;margin:0 auto}
  .paes-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
- .paes-back{font-size:14px;color:#25677a;text-decoration:none;font-weight:700}
- .paes-folder{display:inline-flex;align-items:center;gap:9px;text-decoration:none;background:#fff;border:1px solid #dce6ed;color:#19334b;border-radius:12px;padding:12px 16px;font-weight:700;box-shadow:0 4px 14px #18334b0b}
- .paes-hero{margin-top:26px;padding:clamp(22px,3vw,34px);border-radius:20px;background:linear-gradient(115deg,#0d9488 0%,#146f9a 55%,#7c3aed 100%);color:white;position:relative;overflow:hidden;box-shadow:0 18px 44px #174c8430}
- .paes-hero:after{content:"";position:absolute;width:300px;height:300px;right:-100px;top:-120px;border:50px solid #ffffff14;border-radius:50%;pointer-events:none}
- .paes-kicker{display:inline-block;border:1px solid #ffffff75;background:#ffffff20;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
- .paes-hero h1{font-size:clamp(28px,3.8vw,39px);line-height:1.1;margin:20px 0 13px;letter-spacing:-.035em;max-width:700px}
- .paes-hero p{max-width:690px;color:#e1f2fa;font-size:clamp(15px,1.6vw,18px);line-height:1.6;margin:0}
- .paes-hero-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:27px}
- .paes-stat{border:1px solid #ffffff40;background:#ffffff18;border-radius:12px;padding:11px 16px;font-size:13px}
- .paes-stat strong{font-size:21px;display:block;margin-bottom:3px}
- .paes-heading{display:flex;justify-content:space-between;gap:16px;align-items:end;margin:26px 0 15px}
- .paes-heading h2{font-size:clamp(22px,2.6vw,28px);margin:0 0 6px;letter-spacing:-.02em}
- .paes-heading p{margin:0;color:#627389;font-size:14px}
- .paes-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
- .paes-card{appearance:none;display:flex;flex-direction:column;align-items:stretch;text-align:left;width:100%;background:#fff;border:2px solid transparent;border-radius:16px;padding:17px;min-height:210px;cursor:pointer;box-shadow:0 6px 22px #1536530e;transition:transform .15s,box-shadow .15s,border-color .15s}
- .paes-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px #1536531a}
+ .paes-back{font-size:14px;color:#007e90;text-decoration:none;font-weight:700;padding:0}
+ .paes-folder{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:#fff;border:1px solid #dce6ed;color:#173752;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700}
+ .paes-hero{display:block;margin:20px 0 0;padding:20px 24px;border:1px solid #cfe5ee;border-left:5px solid #0b83c6;border-radius:12px;background:#eff8ff;color:#173752}
+ .paes-kicker{display:block;color:#007e90;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+ .paes-hero h1{font-size:28px;line-height:1.2;margin:8px 0;color:#173752;letter-spacing:-.02em}
+ .paes-hero p{max-width:780px;color:#61788a;font-size:14px;line-height:1.5;margin:0}
+ .paes-hero-stats{display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:14px}
+ .paes-stat{display:flex;align-items:center;gap:6px;font-size:12px;color:#61788a}
+ .paes-stat strong{font-size:13px;color:#173752}
+ .paes-heading{display:block;margin:24px 0 14px}
+ .paes-heading h2{font-size:21px;line-height:1.3;margin:0 0 6px;color:#173752}
+ .paes-heading p{margin:0;color:#61788a;font-size:14px}
+ .paes-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;width:100%;align-items:stretch}
+ .paes-card{appearance:none;display:flex;flex-direction:column;align-items:stretch;text-align:left;width:100%;min-width:0;margin:0;background:var(--soft);border:1px solid #e4eaf0;border-left:5px solid var(--accent);border-radius:12px;padding:14px 12px;min-height:180px;cursor:pointer;font-family:inherit;box-shadow:none;transition:transform .15s,box-shadow .15s}
+ .paes-card:hover{transform:translateY(-1px);box-shadow:0 3px 10px #14344c12}
  .paes-card:focus-visible{outline:3px solid #1491a4;outline-offset:3px}
- .paes-card[data-selected="true"]{border-color:var(--accent);box-shadow:0 12px 28px #1536531b}
- .paes-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
- .paes-symbol{width:46px;height:46px;display:grid;place-items:center;border-radius:12px;background:var(--soft);color:var(--accent);font-size:23px;font-weight:800}
- .paes-count{font-size:12px;background:#f2f5f9;color:#53657a;border-radius:999px;padding:7px 10px;font-weight:700}
- .paes-card h3{font-size:17px;line-height:1.25;margin:15px 0 8px;color:#14263b}
- .paes-card p{color:#637387;font-size:13px;line-height:1.5;margin:0 0 14px;flex:1}
- .paes-card-bottom{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;color:var(--accent)}
- .paes-arrow{font-size:22px}
- .paes-panel{margin-top:24px;background:white;border:1px solid #dce6ee;border-radius:20px;padding:clamp(20px,3vw,30px);box-shadow:0 8px 24px #1536530e}
- .paes-panel-label{font-size:12px;letter-spacing:.07em;font-weight:800;text-transform:uppercase;color:#66778a}
- .paes-panel h2{margin:9px 0 10px;font-size:25px}
- .paes-panel p{color:#637387;line-height:1.55}
- .paes-panel-meta{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 23px}
- .paes-panel-meta span{background:#f2f6fa;border-radius:8px;padding:9px 12px;color:#46586d;font-size:13px;font-weight:700}
- .paes-cta{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:15px 22px;background:var(--accent);color:#fff;text-decoration:none;border-radius:12px;font-size:15px;font-weight:800}
- .paes-note{margin-top:24px;color:#7a8898;font-size:12px;line-height:1.5}
- @media(max-width:760px){.paes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
- @media(max-width:600px){.paes-root{padding:16px}.paes-grid{grid-template-columns:1fr;gap:12px}.paes-card{min-height:unset;padding:19px}.paes-card h3{margin:13px 0 7px}.paes-card p{margin-bottom:14px}.paes-hero{border-radius:20px}.paes-heading{margin-top:26px}.paes-folder{font-size:13px}.paes-cta{width:100%;box-sizing:border-box}}
+ .paes-card[data-selected="true"]{outline:2px solid var(--accent);outline-offset:1px}
+ .paes-card-top{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:wrap}
+ .paes-symbol{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:#ffffffa0;color:var(--accent);font-size:19px;font-weight:800}
+ .paes-count{font-size:11px;color:#5b7281;font-weight:700}
+ .paes-card h3{font-size:15px;line-height:1.3;margin:12px 0 7px;color:#173752;overflow-wrap:normal;word-break:normal}
+ .paes-card p{color:#5b7281;font-size:12px;line-height:1.4;margin:0 0 12px;flex:1}
+ .paes-card-bottom{display:flex;justify-content:space-between;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--accent)}
+ .paes-arrow{font-size:18px}
+ .paes-panel{display:block;margin-top:24px;background:#fff;border:1px solid #e3ebef;border-left:5px solid var(--accent);border-radius:12px;padding:20px}
+ .paes-panel-label{font-size:11px;letter-spacing:.06em;font-weight:800;text-transform:uppercase;color:#61788a}
+ .paes-panel h2{margin:8px 0;font-size:21px;color:#173752}
+ .paes-panel p{color:#61788a;font-size:14px;line-height:1.5}
+ .paes-panel-meta{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px}
+ .paes-panel-meta span{background:#f2f6fa;border-radius:8px;padding:8px 10px;color:#46586d;font-size:12px}
+ .paes-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 18px;background:var(--accent);color:#fff;text-decoration:none;border-radius:10px;font-size:14px;font-weight:700}
+ .paes-note{margin-top:25px;color:#61788a;font-size:12px;line-height:1.6}
+ @media(max-width:900px){.paes-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+ @media(max-width:700px){.paes-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+ @media(max-width:460px){.paes-root{padding:18px 12px 30px}.paes-grid{grid-template-columns:1fr}.paes-card{min-height:135px;padding:16px}.paes-hero{padding:18px}.paes-hero h1{font-size:25px}.paes-folder{font-size:12px}.paes-cta{width:100%}}
  @media(prefers-reduced-motion:reduce){.paes-card{transition:none}.paes-card:hover{transform:none}}
  `}</style>
  <div className="paes-shell">
