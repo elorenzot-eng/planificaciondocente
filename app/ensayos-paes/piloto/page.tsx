@@ -21,6 +21,7 @@ function openPrint(html?: string) {
 export default function PaesPilot() {
   const [token, setToken] = useState("");
   const [difficulty, setDifficulty] = useState("Media");
+  const [questionCount, setQuestionCount] = useState("10");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PilotResponse | null>(null);
   const run = async () => {
@@ -28,7 +29,7 @@ export default function PaesPilot() {
     setLoading(true);
     setResult(null);
     try {
-      const response = await fetch("/api/paes/lectora/pilot", {
+      const response = await fetch(questionCount === "65" ? "/api/paes/lectora/full-pilot" : "/api/paes/lectora/pilot", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-paes-pilot-token": token },
         body: JSON.stringify({ difficulty }),
@@ -45,13 +46,14 @@ export default function PaesPilot() {
   return <main style={{fontFamily:"Arial,sans-serif",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,4vw,40px)",color:"#17233c"}}>
     <div style={{maxWidth:920,margin:"auto"}}>
       <Link href="/ensayos-paes" style={{color:"#0d9488"}}>← Volver a PAES</Link>
-      <h1>Prueba privada PAES IA · 10 preguntas</h1>
+      <h1>Prueba privada PAES IA</h1>
       <p>Acceso restringido al equipo de validación. No corresponde a una prueba oficial DEMRE.</p>
       <section style={{background:"white",padding:24,borderRadius:16,display:"grid",gap:14}}>
         <label>Token privado de acceso<input type="password" autoComplete="off" value={token} onChange={e=>setToken(e.target.value)} style={{display:"block",padding:12,width:"100%",boxSizing:"border-box",marginTop:6}} /></label>
+        <label>Cantidad de preguntas<select value={questionCount} onChange={e=>setQuestionCount(e.target.value)} style={{display:"block",padding:12,marginTop:6}}><option value="10">10 preguntas · piloto validado</option><option value="65">65 preguntas · prueba interna experimental</option></select></label>
         <label>Dificultad<select value={difficulty} onChange={e=>setDifficulty(e.target.value)} style={{display:"block",padding:12,marginTop:6}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
-        <button onClick={run} disabled={!token || loading} style={{padding:14,border:0,borderRadius:10,color:"white",background:!token||loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading?"Generando y validando…":"Ejecutar prueba privada de 10 preguntas"}</button>
-        <small>El token se utiliza solamente para esta solicitud; no se guarda en el navegador. La generación puede tardar hasta dos minutos. Si la solicitud falla, el sistema mostrará el error sin revelar credenciales.</small>
+        <button onClick={run} disabled={!token || loading} style={{padding:14,border:0,borderRadius:10,color:"white",background:!token||loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading?"Generando y validando…":"Generar prueba privada de {questionCount} preguntas"}</button>
+        <small>El token se utiliza solamente para esta solicitud; no se guarda en el navegador. La generación de 65 preguntas puede superar el tiempo máximo de respuesta de Railway. En ese caso, no se entregará un ensayo parcial. Si la solicitud falla, el sistema mostrará el error sin revelar credenciales.</small>
       </section>
       {result?.error && <p role="alert" style={{color:"#b91c1c"}}>{result.error}</p>}
       {result?.exam && <section style={{marginTop:24,background:"white",padding:24,borderRadius:16}}>
