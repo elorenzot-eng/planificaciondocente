@@ -21,6 +21,8 @@ export async function generateCompleteLectoraExam(
   };
   const seenTexts = new Set<string>();
   const seenItems = new Set<string>();
+  const seenTextBodies = new Set<string>();
+  const seenStems = new Set<string>();
   for (const [index, batch] of batches.entries()) {
     const matrix: ReviewedLectoraMatrix = {
       ...request.matrix,
@@ -35,6 +37,10 @@ export async function generateCompleteLectoraExam(
       if (idMap.has(text.id)) throw new Error("ID de texto duplicado dentro del lote.");
       const newId = prefix + text.id;
       if (seenTexts.has(newId)) throw new Error("ID de texto duplicado entre lotes.");
+      const normalizedBody = text.body.trim().replace(/\\s+/g, " ").toLowerCase();
+      if (seenTextBodies.has(normalizedBody))
+        throw new Error("Texto duplicado entre lotes.");
+      seenTextBodies.add(normalizedBody);
       seenTexts.add(newId);
       idMap.set(text.id,newId);
       exam.texts.push({ ...text, id: newId });
@@ -42,6 +48,10 @@ export async function generateCompleteLectoraExam(
     for (const item of result.exam.items) {
       const newId = prefix + item.id;
       if (seenItems.has(newId)) throw new Error("ID de pregunta duplicado entre lotes.");
+      const normalizedStem = item.stem.trim().replace(/\\s+/g, " ").toLowerCase();
+      if (seenStems.has(normalizedStem))
+        throw new Error("Enunciado duplicado entre lotes.");
+      seenStems.add(normalizedStem);
       seenItems.add(newId);
       exam.items.push({ ...item, id: newId, textId: idMap.get(item.textId) ?? "" });
     }
