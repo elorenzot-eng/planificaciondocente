@@ -31,11 +31,11 @@ export async function POST(request:NextRequest){
    const item=await generateScienceItem(job.nextPart,body.elective as ScienceSubject,body.difficulty as "Baja"|"Media"|"Alta"|"Mixta",full);
    const items=[...(job.items as unknown as ScienceItem[]),item];
    job=await prisma.paesInternalJob.update({where:{id:job.id},data:{status:"PENDING",nextPart:job.nextPart+1,items:items as unknown as Prisma.InputJsonValue}});
-   return NextResponse.json({jobId:job.id,status:"IN_PROGRESS",completed:job.nextPart,total:12},{headers:{"Cache-Control":"no-store"}});
+   return NextResponse.json({jobId:job.id,status:"IN_PROGRESS",completed:job.nextPart,total},{headers:{"Cache-Control":"no-store"}});
   }catch(e){
    const message=e instanceof Error?e.message:String(e);
    await prisma.paesInternalJob.update({where:{id:job.id},data:{status:"PENDING",error:message.slice(0,400)}});
-   return NextResponse.json({jobId:job.id,completed:job.nextPart,total:12,error:"La pregunta no superó la validación. Puedes reanudar."},{status:422});
+   return NextResponse.json({jobId:job.id,completed:job.nextPart,total,error:"No se pudo generar o validar esta pregunta. Reanuda para intentar nuevamente."},{status:422});
   }
  }catch(e){console.error("[PAES-CIENCIAS]",e);return NextResponse.json({error:"No se pudo continuar el ensayo."},{status:500});}
 }
