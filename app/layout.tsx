@@ -1,4 +1,5 @@
 import "./globals.css";
+import YanayAssistant from "../components/YanayAssistant";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -51,5 +52,5 @@ export const metadata = {
 };
 
 export default function RootLayout({children}:{children:React.ReactNode}){
-  return <html lang="es-CL"><body><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}} />{children}</body></html>
+  return <html lang="es-CL"><body><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}} />{children}<YanayAssistant /></body></html>
 }
