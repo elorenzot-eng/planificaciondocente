@@ -4,6 +4,9 @@ import Link from "next/link";
 
 type PilotResponse = {
   error?: string;
+  jobId?: string;
+  completed?: number;
+  total?: number;
   status?: string;
   count?: number;
   warnings?: string[];
@@ -23,22 +26,43 @@ export default function PaesPilot() {
   const [difficulty, setDifficulty] = useState("Media");
   const [questionCount, setQuestionCount] = useState("10");
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [jobId, setJobId] = useState<string | null>(null);
   const [result, setResult] = useState<PilotResponse | null>(null);
   const run = async () => {
     if (!token || loading) return;
     setLoading(true);
     setResult(null);
     try {
-      const response = await fetch(questionCount === "65" ? "/api/paes/lectora/full-pilot" : "/api/paes/lectora/pilot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-paes-pilot-token": token },
-        body: JSON.stringify({ difficulty }),
-        cache: "no-store",
-      });
-      const data = await response.json() as PilotResponse;
-      setResult(response.ok ? data : { error: data.error || "No se pudo ejecutar el piloto." });
+      let currentJobId = questionCount === "65" ? jobId : null;
+      // Cada solicitud genera un grupo y guarda el progreso en PostgreSQL.
+      // Si hay un error, se puede reintentar desde el último grupo validado.
+      for (let step = 0; step < (questionCount === "65" ? 31 : 1); step++) {
+        const response = await fetch(questionCount === "65" ? "/api/paes/lectora/full-pilot" : "/api/paes/lectora/pilot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-paes-pilot-token": token },
+          body: JSON.stringify({ difficulty, ...(currentJobId ? { jobId: currentJobId } : {}) }),
+          cache: "no-store",
+        });
+        const data = await response.json() as PilotResponse;
+        if (data.jobId && questionCount === "65") {
+          currentJobId = data.jobId;
+          setJobId(data.jobId);
+        }
+        if (typeof data.completed === "number") setProgress(data.completed);
+        if (!response.ok) {
+          setResult({ error: data.error || "No se pudo completar el grupo." });
+          return;
+        }
+        if (data.status === "COMPLETED" || questionCount === "10") {
+          setResult(data);
+          if (questionCount === "65") { setJobId(null); setProgress(30); }
+          return;
+        }
+      }
+      setResult({ error: "El proceso requiere continuación. Presiona generar nuevamente." });
     } catch {
-      setResult({ error: "Error de conexión con el servidor." });
+      setResult({ error: "Se interrumpió la conexión. Presiona generar nuevamente para reanudar." });
     } finally {
       setLoading(false);
     }
@@ -50,9 +74,10 @@ export default function PaesPilot() {
       <p>Acceso restringido al equipo de validación. No corresponde a una prueba oficial DEMRE.</p>
       <section style={{background:"white",padding:24,borderRadius:16,display:"grid",gap:14}}>
         <label>Token privado de acceso<input type="password" autoComplete="off" value={token} onChange={e=>setToken(e.target.value)} style={{display:"block",padding:12,width:"100%",boxSizing:"border-box",marginTop:6}} /></label>
-        <label>Cantidad de preguntas<select value={questionCount} onChange={e=>setQuestionCount(e.target.value)} style={{display:"block",padding:12,marginTop:6}}><option value="10">10 preguntas · piloto validado</option><option value="65">65 preguntas · prueba interna experimental</option></select></label>
-        <label>Dificultad<select value={difficulty} onChange={e=>setDifficulty(e.target.value)} style={{display:"block",padding:12,marginTop:6}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
-        <button onClick={run} disabled={!token || loading} style={{padding:14,border:0,borderRadius:10,color:"white",background:!token||loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading?"Generando y validando…":`Generar prueba privada de ${questionCount} preguntas`}</button>
+        <label>Cantidad de preguntas<select value={questionCount} onChange={e=>{setQuestionCount(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6}}><option value="10">10 preguntas · piloto validado</option><option value="65">65 preguntas · prueba interna experimental</option></select></label>
+        <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
+        <button onClick={run} disabled={!token || loading} style={{padding:14,border:0,borderRadius:10,color:"white",background:!token||loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar prueba privada de ${questionCount} preguntas`}</button>
+        {questionCount === "65" && <p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p>}
         <small>El token se utiliza solamente para esta solicitud; no se guarda en el navegador. La generación de 65 preguntas puede superar el tiempo máximo de respuesta de Railway. En ese caso, no se entregará un ensayo parcial. Si la solicitud falla, el sistema mostrará el error sin revelar credenciales.</small>
       </section>
       {result?.error && <p role="alert" style={{color:"#b91c1c"}}>{result.error}</p>}
