@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
-import { loadApprovedLectoraMatrix } from "../../../../../lib/paes/lectora-matrix.server";
-import { planLectoraBatches } from "../../../../../lib/paes/lectora-batches";
 import { generateReviewedLectoraDraft } from "../../../../../lib/paes/lectora-openai.server";
 import { createLectoraPrintableHtml } from "../../../../../lib/paes/lectora-print";
 
@@ -33,14 +31,16 @@ export async function POST(request: NextRequest) {
   busy = true;
   lastAttempt = Date.now();
   try {
-    const approved = loadApprovedLectoraMatrix();
-    const batches = planLectoraBatches(approved, 5);
-    const batch = {
+    // Matriz interna de prueba aprobada para 10 ítems; no es especificación DEMRE.
+    const matrix = {
+      version: "educantay-paes-pilot-10-v1",
+      reviewedBy: "Configuración piloto EducAntay",
+      reviewedAt: "2026-10-23",
+      sourceReference: "Piloto interno de 10 preguntas; distribución no oficial",
       questionCount: 10,
-      bySkill: { Localizar: batches[0].bySkill.Localizar + batches[1].bySkill.Localizar, Interpretar: batches[0].bySkill.Interpretar + batches[1].bySkill.Interpretar, Evaluar: batches[0].bySkill.Evaluar + batches[1].bySkill.Evaluar },
-      byGenre: { Literario: batches[0].byGenre.Literario + batches[1].byGenre.Literario, "No literario": batches[0].byGenre["No literario"] + batches[1].byGenre["No literario"] },
+      bySkill: { Localizar: 2, Interpretar: 6, Evaluar: 2 },
+      byGenre: { Literario: 5, "No literario": 5 },
     };
-    const matrix = { ...approved, questionCount: batch.questionCount, bySkill: batch.bySkill, byGenre: batch.byGenre };
     const { exam, warnings } = await generateReviewedLectoraDraft({ matrix, difficulty: difficulty as "Baja" | "Media" | "Alta" | "Mixta" });
     return NextResponse.json({
       status: "PILOT_ONLY_NOT_FULL_EXAM",
