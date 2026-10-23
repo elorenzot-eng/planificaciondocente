@@ -22,10 +22,12 @@ export function createLectoraPrintableHtml(
   const grouped = new Map<string, typeof exam.items>();
   for (const item of exam.items) grouped.set(item.textId, [...(grouped.get(item.textId) ?? []), item]);
   let number = 0;
+  const printedItems: typeof exam.items = [];
   const sections = [...grouped.entries()].map(([textId, items]) => {
     const passage = texts.get(textId)!;
     const questions = items.map(item => {
       const n = ++number;
+      printedItems.push(item);
       const options = item.options.map((option, i) =>
         `<li><strong>${"ABCD"[i]}.</strong> ${escapeHtml(option)}</li>`
       ).join("");
@@ -36,7 +38,7 @@ export function createLectoraPrintableHtml(
     return `<section><h2>Texto ${escapeHtml(textId)}</h2><article class="passage">${escapeHtml(passage.body)}</article><p class="source">Fuente: ${escapeHtml(passage.sourceAttribution)}</p>${questions}</section>`;
   }).join("");
   const key = version === "profesor" ?
-    `<section class="key"><h2>Tabla de especificaciones del ensayo</h2><table><thead><tr><th>N.º</th><th>Clave</th><th>Habilidad</th><th>Género</th><th>Texto</th></tr></thead><tbody>${exam.items.map((item, i) =>
+    `<section class="key"><h2>Tabla de especificaciones del ensayo</h2><table><thead><tr><th>N.º</th><th>Clave</th><th>Habilidad</th><th>Género</th><th>Texto</th></tr></thead><tbody>${printedItems.map((item, i) =>
       `<tr><td>${i + 1}</td><td>${"ABCD"[item.correctIndex]}</td><td>${escapeHtml(item.skill)}</td><td>${escapeHtml(item.genre)}</td><td>${escapeHtml(item.textId)}</td></tr>`
     ).join("")}</tbody></table></section>` : "";
   return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ensayo PAES Competencia Lectora - ${version}</title><style>
