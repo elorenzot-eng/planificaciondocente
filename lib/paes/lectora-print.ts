@@ -18,6 +18,8 @@ export function createLectoraPrintableHtml(
 ): string {
   const review = reviewLectoraExam(exam, matrix);
   if (!review.valid) throw new Error("Ensayo no validado: " + review.errors.join(" | "));
+  if (version !== "estudiante" && version !== "profesor")
+    throw new Error("Versión de impresión inválida.");
   const texts = new Map(exam.texts.map(t => [t.id, t]));
   const grouped = new Map<string, typeof exam.items>();
   for (const item of exam.items) grouped.set(item.textId, [...(grouped.get(item.textId) ?? []), item]);
@@ -37,6 +39,10 @@ export function createLectoraPrintableHtml(
     }).join("");
     return `<section><h2>Texto ${escapeHtml(textId)}</h2><article class="passage">${escapeHtml(passage.body)}</article><p class="source">Fuente: ${escapeHtml(passage.sourceAttribution)}</p>${questions}</section>`;
   }).join("");
+  const answerSheet = version === "estudiante" ?
+    `<section class="answers"><h2>Hoja de respuestas</h2><p>Nombre: __________________________ Curso: __________ Fecha: __________</p><div class="answer-grid">${printedItems.map((_,i) =>
+      `<div class="answer-row"><strong>${i+1}.</strong> ○ A &nbsp; ○ B &nbsp; ○ C &nbsp; ○ D</div>`
+    ).join("")}</div></section>` : "";
   const key = version === "profesor" ?
     `<section class="key"><h2>Tabla de especificaciones del ensayo</h2><table><thead><tr><th>N.º</th><th>Clave</th><th>Habilidad</th><th>Género</th><th>Texto</th></tr></thead><tbody>${printedItems.map((item, i) =>
       `<tr><td>${i + 1}</td><td>${"ABCD"[item.correctIndex]}</td><td>${escapeHtml(item.skill)}</td><td>${escapeHtml(item.genre)}</td><td>${escapeHtml(item.textId)}</td></tr>`
@@ -48,9 +54,11 @@ export function createLectoraPrintableHtml(
   .question{break-inside:avoid;margin:18px 0}.options{list-style:none;padding:0}.options li{padding:4px 0}
   aside{background:#edf9f7;padding:10px;border-left:3px solid #0d9488}table{border-collapse:collapse;width:100%;font-size:9pt}
   td,th{border:1px solid #aaa;padding:5px;text-align:left}section{margin-top:20px}
+  .answer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.answer-row{font-size:10pt;white-space:nowrap}
+  @media(max-width:600px){.answer-grid{grid-template-columns:repeat(2,1fr)}}
   @media print{body{max-width:none}.question{break-inside:avoid}section.key{break-before:page}}
   </style></head><body><header><h1>Ensayo PAES · Competencia Lectora</h1>
   <p>Versión: ${version === "profesor" ? "Profesor" : "Estudiante"} · Preguntas: ${exam.items.length} · Matriz: ${escapeHtml(matrix.version)}</p>
   <p>Material de práctica EducAntay; no es una prueba oficial DEMRE.</p></header>
-  ${sections}${key}</body></html>`;
+  ${sections}${answerSheet}${key}</body></html>`;
 }
