@@ -1,4 +1,3 @@
-import "server-only";
 import { buildLectoraPrompt, parseAndReviewLectoraResponse, type LectoraGenerationRequest } from "./lectora-generator";
 import type { LectoraExam } from "./lectora";
 
