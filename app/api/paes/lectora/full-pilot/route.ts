@@ -38,7 +38,15 @@ export async function POST(request: NextRequest) {
       studentHtml: createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "estudiante"),
       teacherHtml: createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "profesor"),
     }, { headers: { "Cache-Control": "no-store" } });
-  } catch {
-    return NextResponse.json({ error: "No se pudo completar la generación de 65 preguntas. Revise los registros del servidor." }, { status: 422 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error desconocido";
+    // Diagnóstico sin registrar el token ni el contenido del ensayo.
+    console.error("[PAES65] Error de generación:", message.slice(0, 1200));
+    const publicError = message.startsWith("Ensayo rechazado:") || message.startsWith("Ensayo completo rechazado:")
+      ? "La IA no cumplió la estructura o distribución de preguntas exigida. Revise los registros del servidor."
+      : message.includes("abort") || message.includes("timeout")
+      ? "La generación excedió el tiempo permitido. Se recomienda generar por bloques más pequeños."
+      : "La generación de 65 preguntas no terminó. Revise el diagnóstico en Railway.";
+    return NextResponse.json({ error: publicError }, { status: 422 });
   } finally { busy = false; }
 }
