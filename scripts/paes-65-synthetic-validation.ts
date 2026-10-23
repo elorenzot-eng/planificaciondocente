@@ -24,7 +24,7 @@ for (const version of ["estudiante", "profesor"] as const) {
   const html = createLectoraPrintableHtml(exam, matrix, version);
   if ((html.match(/<h3>Pregunta /g) || []).length !== 65) throw new Error(`Faltan preguntas en ${version}`);
   if (version === "estudiante" && (html.includes("Clave:</strong>") || html.includes("Tabla de especificaciones del ensayo"))) throw new Error("Se filtraron claves al estudiante");
-  if (version === "profesor" && (html.match(/<tr><td>[0-9]+<\\/td>/g) || []).length !== 65) throw new Error("Tabla de especificaciones incompleta");
+  if (version === "profesor" && html.split("<tr><td>").length - 1 !== 65) throw new Error("Tabla de especificaciones incompleta");
   mkdirSync("artifacts/paes-lectora-65", { recursive: true });
   writeFileSync(`artifacts/paes-lectora-65/${version}.html`, html, "utf8");
 }
