@@ -22,7 +22,6 @@ function openPrint(html?: string) {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 export default function PaesPilot() {
-  const [token, setToken] = useState("");
   const [difficulty, setDifficulty] = useState("Media");
   const [questionCount, setQuestionCount] = useState("10");
   const [loading, setLoading] = useState(false);
@@ -30,7 +29,7 @@ export default function PaesPilot() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [result, setResult] = useState<PilotResponse | null>(null);
   const run = async () => {
-    if (!token || loading) return;
+    if (loading) return;
     setLoading(true);
     setResult(null);
     try {
@@ -40,7 +39,7 @@ export default function PaesPilot() {
       for (let step = 0; step < (questionCount === "65" ? 31 : 1); step++) {
         const response = await fetch(questionCount === "65" ? "/api/paes/lectora/full-pilot" : "/api/paes/lectora/pilot", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-paes-pilot-token": token },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ difficulty, ...(currentJobId ? { jobId: currentJobId } : {}) }),
           cache: "no-store",
         });
@@ -76,9 +75,9 @@ export default function PaesPilot() {
         <label>Token privado de acceso<input type="password" autoComplete="off" value={token} onChange={e=>setToken(e.target.value)} style={{display:"block",padding:12,width:"100%",boxSizing:"border-box",marginTop:6,minHeight:46}} /></label>
         <label>Cantidad de preguntas<select value={questionCount} onChange={e=>{setQuestionCount(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6,width:"100%",boxSizing:"border-box",minHeight:46}}><option value="10">10 preguntas · piloto validado</option><option value="65">65 preguntas · prueba interna experimental</option></select></label>
         <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
-        <button onClick={run} disabled={!token || loading} style={{padding:14,border:0,borderRadius:10,minHeight:48,color:"white",background:!token||loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar prueba privada de ${questionCount} preguntas`}</button>
+        <button onClick={run} disabled={loading} style={{padding:14,border:0,borderRadius:10,minHeight:48,color:"white",background:loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar prueba privada de ${questionCount} preguntas`}</button>
         {questionCount === "65" && <p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p>}
-        <small style={{gridColumn:"1 / -1"}}>El token se utiliza solamente para esta solicitud; no se guarda en el navegador. La generación de 65 preguntas puede superar el tiempo máximo de respuesta de Railway. En ese caso, no se entregará un ensayo parcial. Si la solicitud falla, el sistema mostrará el error sin revelar credenciales.</small>
+        <small style={{gridColumn:"1 / -1"}}>Inicia sesión en EducAntay para generar ensayos. El acceso se controla en el servidor.</small>
       </section>
       {result?.error && <p role="alert" style={{color:"#b91c1c"}}>{result.error}</p>}
       {result?.exam && <section style={{marginTop:24,background:"white",padding:"clamp(18px,2vw,30px)",borderRadius:16}}>
