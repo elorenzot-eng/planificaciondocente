@@ -7,7 +7,7 @@ export async function generateM2Item(index:number,difficulty:Difficulty):Promise
   const key=process.env.OPENAI_API_KEY;
   if(!key)throw new Error("OPENAI_API_KEY no configurada.");
   const target=plan[index];
-  const prompt=`Crea EXACTAMENTE UNA pregunta ORIGINAL de práctica PAES Matemática M2 para Chile. Índice ${index+1}/65. Eje obligatorio: ${target.area}. Habilidad obligatoria: ${target.skill}. Dificultad: ${difficulty}. Responde exclusivamente JSON: {"stem":"...","options":["...","...","...","..."],"correctIndex":0,"solution":"...","verification":"..."}.
+  const prompt=`Crea EXACTAMENTE UNA pregunta ORIGINAL de práctica PAES Matemática M2 para Chile. Índice ${index+1}/55. Eje obligatorio: ${target.area}. Habilidad obligatoria: ${target.skill}. Dificultad: ${difficulty}. Responde exclusivamente JSON: {"stem":"...","options":["...","...","...","..."],"correctIndex":0,"solution":"...","verification":"..."}.
 Contenidos M2 de profundización: funciones exponenciales, logarítmicas y trigonométricas, sistemas de ecuaciones, vectores, circunferencia, combinatoria, probabilidad condicional y distribuciones de probabilidad; ajusta el contenido al eje. Requisitos: enunciado autosuficiente, sin imágenes externas, cuatro alternativas únicas A-D, una sola correcta, solución matemática paso a paso, verificación INDEPENDIENTE sustituyendo o calculando por otra vía. No inventes aprobación DEMRE. Usa notación textual clara. Evita preguntas ambiguas y evita repetir ejercicios estándar.`;
   let last:unknown;
   for(let attempt=0;attempt<3;attempt++){
