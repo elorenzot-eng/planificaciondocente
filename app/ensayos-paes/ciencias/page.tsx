@@ -1,23 +1,25 @@
 "use client";
 import Link from "next/link";
-import {useState} from "react";
+import {useEffect,useState} from "react";
 type Electivo="Biología"|"Física"|"Química";
 type Result={error?:string;jobId?:string;status?:string;completed?:number;exam?:{items:Array<{id:string;stem:string;options:string[];correctIndex:number;solution:string}>};studentHtml?:string;teacherHtml?:string};
 const subjects:Electivo[]=["Biología","Física","Química"];
 function print(html?:string){if(!html)return;const url=URL.createObjectURL(new Blob([html],{type:"text/html;charset=utf-8"}));window.open(url,"_blank","noopener,noreferrer");setTimeout(()=>URL.revokeObjectURL(url),60000);}
 export default function CienciasPaes(){
  const [elective,setElective]=useState<Electivo>("Biología"),[difficulty,setDifficulty]=useState("Media"),[jobId,setJobId]=useState<string|null>(null),[progress,setProgress]=useState(0),[busy,setBusy]=useState(false),[result,setResult]=useState<Result|null>(null);
- function reset(){setJobId(null);setProgress(0);setResult(null);}
+ const storageKey=`educantay-paes-ciencias-${elective}-${difficulty}`;
+ useEffect(()=>{try{const saved=window.localStorage.getItem(storageKey);if(saved){const data=JSON.parse(saved) as {jobId:string;progress:number};if(data.jobId&&Number.isInteger(data.progress)&&data.progress>=0&&data.progress<12){setJobId(data.jobId);setProgress(data.progress);}}}catch{/* La generación puede iniciarse de nuevo. */}},[storageKey]);
+ function reset(){try{window.localStorage.removeItem(storageKey);}catch{/* Almacenamiento no disponible. */}setJobId(null);setProgress(0);setResult(null);}
  async function generate(){
   if(busy)return;setBusy(true);setResult(null);let current=jobId;
   try{
    for(let i=0;i<14;i++){
     const response=await fetch("/api/paes/ciencias/pilot",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({elective,difficulty,...(current?{jobId:current}:{})}),cache:"no-store"});
     const data=await response.json() as Result;
-    if(data.jobId){current=data.jobId;setJobId(current);}
+    if(data.jobId){current=data.jobId;setJobId(current);try{window.localStorage.setItem(storageKey,JSON.stringify({jobId:current,progress:typeof data.completed==="number"?data.completed:progress}));}catch{/* Continuar sin persistencia local. */}}
     if(typeof data.completed==="number")setProgress(data.completed);
     if(!response.ok){setResult({error:data.error||"No se pudo continuar."});return;}
-    if(data.status==="COMPLETED"){setResult(data);setJobId(null);setProgress(12);return;}
+    if(data.status==="COMPLETED"){setResult(data);setJobId(null);setProgress(12);try{window.localStorage.removeItem(storageKey);}catch{/* Sin almacenamiento. */}return;}
    }
    setResult({error:"Presiona reanudar para continuar."});
   }catch{setResult({error:"Conexión interrumpida. Puedes reanudar."});}finally{setBusy(false);}
