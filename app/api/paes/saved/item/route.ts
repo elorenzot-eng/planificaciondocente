@@ -1,6 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
 import {getSession} from "../../../../../lib/auth";
 import {prisma} from "../../../../../lib/prisma";
+import {validateScienceFull,SCIENCE_FULL_CONFIG} from "../../../../../lib/paes/ciencias-full";
 import {validateSciencePractice,type ScienceExam} from "../../../../../lib/paes/ciencias";
 import {createSciencePrint} from "../../../../../lib/paes/ciencias-print";
 import {createM1Print} from "../../../../../lib/paes/m1-print";
@@ -23,6 +24,6 @@ export async function GET(request:NextRequest){
  if(record.examType==="M2"){const exam=record.exam as unknown as M2Exam;return NextResponse.json({title:record.title,studentHtml:createM2Print(exam,false),teacherHtml:createM2Print(exam,true)},{headers:{"Cache-Control":"no-store"}});}
  if(record.examType!=="CIENCIAS")return NextResponse.json({error:"Formato aún no disponible."},{status:422});
  const exam=record.exam as unknown as ScienceExam;
- if(validateSciencePractice(exam).length)return NextResponse.json({error:"Ensayo guardado inválido."},{status:422});
+ if((exam.version===SCIENCE_FULL_CONFIG.version?validateScienceFull(exam):validateSciencePractice(exam)).length)return NextResponse.json({error:"Ensayo guardado inválido."},{status:422});
  return NextResponse.json({title:record.title,exam,studentHtml:createSciencePrint(exam,false),teacherHtml:createSciencePrint(exam,true)},{headers:{"Cache-Control":"no-store"}});
 }
