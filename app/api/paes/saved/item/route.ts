@@ -3,6 +3,10 @@ import {getSession} from "../../../../../lib/auth";
 import {prisma} from "../../../../../lib/prisma";
 import {validateSciencePractice,type ScienceExam} from "../../../../../lib/paes/ciencias";
 import {createSciencePrint} from "../../../../../lib/paes/ciencias-print";
+import {createM1Print} from "../../../../../lib/paes/m1-print";
+import {createM2Print} from "../../../../../lib/paes/m2-print";
+import type {M1Exam} from "../../../../../lib/paes/m1";
+import type {M2Exam} from "../../../../../lib/paes/m2";
 export const dynamic="force-dynamic";
 export async function GET(request:NextRequest){
  const session=await getSession(),userId=session?.id;
@@ -11,6 +15,8 @@ export async function GET(request:NextRequest){
  if(!id)return NextResponse.json({error:"Identificador requerido."},{status:400});
  const record=await prisma.savedPaesExam.findFirst({where:{id,userId}});
  if(!record)return NextResponse.json({error:"Ensayo no encontrado."},{status:404});
+ if(record.examType==="M1"){const exam=record.exam as unknown as M1Exam;return NextResponse.json({title:record.title,studentHtml:createM1Print(exam,false),teacherHtml:createM1Print(exam,true)},{headers:{"Cache-Control":"no-store"}});}
+ if(record.examType==="M2"){const exam=record.exam as unknown as M2Exam;return NextResponse.json({title:record.title,studentHtml:createM2Print(exam,false),teacherHtml:createM2Print(exam,true)},{headers:{"Cache-Control":"no-store"}});}
  if(record.examType!=="CIENCIAS")return NextResponse.json({error:"Formato aún no disponible."},{status:422});
  const exam=record.exam as unknown as ScienceExam;
  if(validateSciencePractice(exam).length)return NextResponse.json({error:"Ensayo guardado inválido."},{status:422});
