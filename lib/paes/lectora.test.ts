@@ -45,4 +45,12 @@ export function testLectoraPipeline(): void {
     "cantidad incorrecta aceptada");
   assert(!reviewLectoraExam({ ...exam, items: [{ ...exam.items[0], textId: "NO-EXISTE" }] }, matrix).valid,
     "ítem sin texto aceptado");
+  assert(!reviewLectoraExam({ ...exam, items: [null] } as unknown as LectoraExam, matrix).valid,
+    "ítem nulo aceptado");
+  assert(!reviewLectoraExam({ ...exam, texts: [null] } as unknown as LectoraExam, matrix).valid,
+    "texto nulo aceptado");
+  assert(!reviewLectoraExam({ ...exam, items: undefined } as unknown as LectoraExam, matrix).valid,
+    "ensayo sin arreglo de preguntas aceptado");
+  assert(!reviewLectoraExam({ ...exam, texts: undefined } as unknown as LectoraExam, matrix).valid,
+    "ensayo sin arreglo de textos aceptado");
 }
