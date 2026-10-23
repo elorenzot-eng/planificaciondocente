@@ -67,21 +67,21 @@ export default function PaesPilot() {
       setLoading(false);
     }
   };
-  return <main style={{fontFamily:"Arial,sans-serif",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,4vw,40px)",color:"#17233c"}}>
-    <div style={{maxWidth:920,margin:"auto"}}>
+  return <main style={{fontFamily:"Arial,sans-serif",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,3vw,36px)",color:"#17233c",width:"100%",boxSizing:"border-box"}}>
+    <div style={{maxWidth:1600,width:"100%",margin:"auto"}}>
       <Link href="/ensayos-paes" style={{color:"#0d9488"}}>← Volver a PAES</Link>
       <h1>Prueba privada PAES IA</h1>
       <p>Acceso restringido al equipo de validación. No corresponde a una prueba oficial DEMRE.</p>
-      <section style={{background:"white",padding:24,borderRadius:16,display:"grid",gap:14}}>
-        <label>Token privado de acceso<input type="password" autoComplete="off" value={token} onChange={e=>setToken(e.target.value)} style={{display:"block",padding:12,width:"100%",boxSizing:"border-box",marginTop:6}} /></label>
-        <label>Cantidad de preguntas<select value={questionCount} onChange={e=>{setQuestionCount(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6}}><option value="10">10 preguntas · piloto validado</option><option value="65">65 preguntas · prueba interna experimental</option></select></label>
+      <section style={{background:"white",padding:"clamp(18px,2vw,30px)",borderRadius:16,display:"grid",gap:14,gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,280px),1fr))",alignItems:"end"}}>
+        <label>Token privado de acceso<input type="password" autoComplete="off" value={token} onChange={e=>setToken(e.target.value)} style={{display:"block",padding:12,width:"100%",boxSizing:"border-box",marginTop:6,minHeight:46}} /></label>
+        <label>Cantidad de preguntas<select value={questionCount} onChange={e=>{setQuestionCount(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6,width:"100%",boxSizing:"border-box",minHeight:46}}><option value="10">10 preguntas · piloto validado</option><option value="65">65 preguntas · prueba interna experimental</option></select></label>
         <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
-        <button onClick={run} disabled={!token || loading} style={{padding:14,border:0,borderRadius:10,color:"white",background:!token||loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar prueba privada de ${questionCount} preguntas`}</button>
+        <button onClick={run} disabled={!token || loading} style={{padding:14,border:0,borderRadius:10,minHeight:48,color:"white",background:!token||loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar prueba privada de ${questionCount} preguntas`}</button>
         {questionCount === "65" && <p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p>}
-        <small>El token se utiliza solamente para esta solicitud; no se guarda en el navegador. La generación de 65 preguntas puede superar el tiempo máximo de respuesta de Railway. En ese caso, no se entregará un ensayo parcial. Si la solicitud falla, el sistema mostrará el error sin revelar credenciales.</small>
+        <small style={{gridColumn:"1 / -1"}}>El token se utiliza solamente para esta solicitud; no se guarda en el navegador. La generación de 65 preguntas puede superar el tiempo máximo de respuesta de Railway. En ese caso, no se entregará un ensayo parcial. Si la solicitud falla, el sistema mostrará el error sin revelar credenciales.</small>
       </section>
       {result?.error && <p role="alert" style={{color:"#b91c1c"}}>{result.error}</p>}
-      {result?.exam && <section style={{marginTop:24,background:"white",padding:24,borderRadius:16}}>
+      {result?.exam && <section style={{marginTop:24,background:"white",padding:"clamp(18px,2vw,30px)",borderRadius:16}}>
         <h2>Resultado: {result.count} preguntas</h2>
         <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
           <button onClick={()=>openPrint(result.studentHtml)}>Abrir versión estudiante</button>
