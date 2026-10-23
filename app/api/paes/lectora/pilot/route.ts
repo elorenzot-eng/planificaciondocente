@@ -1,3 +1,4 @@
+import { getSession } from "../../../../../lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { generateReviewedLectoraDraft } from "../../../../../lib/paes/lectora-openai.server";
@@ -19,7 +20,7 @@ function authorized(provided: string | null, expected: string): boolean {
 export async function POST(request: NextRequest) {
   if (process.env.PAES_PILOT_ENABLED !== "true")
     return NextResponse.json({ error: "Piloto PAES no habilitado." }, { status: 404 });
-  if (!authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
+  if (!(await getSession()) && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
     return NextResponse.json({ error: "Acceso denegado." }, { status: 403 });
   if (busy || Date.now() - lastAttempt < 600_000)
     return NextResponse.json({ error: "Espere 10 minutos antes de otra prueba." }, { status: 429 });
