@@ -19,7 +19,7 @@ export default function CienciasPaes(){
     if(data.jobId){current=data.jobId;setJobId(current);try{window.localStorage.setItem(storageKey,JSON.stringify({jobId:current,progress:typeof data.completed==="number"?data.completed:progress}));}catch{/* Continuar sin persistencia local. */}}
     if(typeof data.completed==="number")setProgress(data.completed);
     if(!response.ok){setResult({error:data.error||"No se pudo continuar."});return;}
-    if(data.status==="COMPLETED"){setResult(data);setJobId(null);setProgress(12);try{window.localStorage.removeItem(storageKey);}catch{/* Sin almacenamiento. */}return;}
+    if(data.status==="COMPLETED"){if(data.jobId){try{const saved=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:data.jobId})});setSaveMessage(saved.ok?"Ensayo guardado automáticamente en Mi carpeta.":"No se pudo guardar automáticamente; utiliza el botón Guardar.");}catch{setSaveMessage("No se pudo guardar automáticamente; utiliza el botón Guardar.");}}setResult(data);setJobId(null);setProgress(12);try{window.localStorage.removeItem(storageKey);}catch{/* Sin almacenamiento. */}return;}
    }
    setResult({error:"Presiona reanudar para continuar."});
   }catch{setResult({error:"Conexión interrumpida. Puedes reanudar."});}finally{setBusy(false);}
