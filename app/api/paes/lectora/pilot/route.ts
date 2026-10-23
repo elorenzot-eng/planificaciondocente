@@ -34,7 +34,12 @@ export async function POST(request: NextRequest) {
   lastAttempt = Date.now();
   try {
     const approved = loadApprovedLectoraMatrix();
-    const batch = planLectoraBatches(approved, 5)[0];
+    const batches = planLectoraBatches(approved, 5);
+    const batch = {
+      questionCount: 10,
+      bySkill: { Localizar: batches[0].bySkill.Localizar + batches[1].bySkill.Localizar, Interpretar: batches[0].bySkill.Interpretar + batches[1].bySkill.Interpretar, Evaluar: batches[0].bySkill.Evaluar + batches[1].bySkill.Evaluar },
+      byGenre: { Literario: batches[0].byGenre.Literario + batches[1].byGenre.Literario, "No literario": batches[0].byGenre["No literario"] + batches[1].byGenre["No literario"] },
+    };
     const matrix = { ...approved, questionCount: batch.questionCount, bySkill: batch.bySkill, byGenre: batch.byGenre };
     const { exam, warnings } = await generateReviewedLectoraDraft({ matrix, difficulty: difficulty as "Baja" | "Media" | "Alta" | "Mixta" });
     return NextResponse.json({
