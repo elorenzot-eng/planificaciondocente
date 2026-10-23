@@ -504,3 +504,17 @@ model PaesInternalJob {
   updatedAt DateTime @updatedAt
   @@index([status,updatedAt])
 }
+
+/** Ensayos PAES guardados en la carpeta personal del usuario. */
+model SavedPaesExam {
+  id String @id @default(cuid())
+  userId String
+  sourceJobId String
+  title String
+  examType String
+  exam Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([userId,sourceJobId])
+  @@index([userId,createdAt])
+}
