@@ -54,8 +54,12 @@ export function createLectoraPrintableHtml(
   .question{break-inside:avoid;margin:18px 0}.options{list-style:none;padding:0}.options li{padding:4px 0}
   aside{background:#edf9f7;padding:10px;border-left:3px solid #0d9488}table{border-collapse:collapse;width:100%;font-size:9pt}
   td,th{border:1px solid #aaa;padding:5px;text-align:left}section{margin-top:20px}
-  .answer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.answer-row{font-size:10pt;white-space:nowrap}
-  @media(max-width:600px){.answer-grid{grid-template-columns:repeat(2,1fr)}}
+  .answers{break-before:page;page-break-before:always;margin-top:0}
+.answers h2{margin:0 0 6px}.answers p{margin:0 0 9px;font-size:9pt}
+.answer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px 10px}
+.answer-row{font-size:8pt;white-space:nowrap;padding:2px 0;border-bottom:1px solid #e2e8f0;break-inside:avoid}
+.answers{font-size:9pt}
+  @media screen and (max-width:600px){.answer-grid{grid-template-columns:repeat(2,1fr)}}
   @media print{body{max-width:none}.question{break-inside:avoid}section.key{break-before:page}}
   </style></head><body><header><h1>Ensayo PAES · Competencia Lectora</h1>
   <p>Versión: ${version === "profesor" ? "Profesor" : "Estudiante"} · Preguntas: ${exam.items.length} · Matriz: ${escapeHtml(matrix.version)}</p>
