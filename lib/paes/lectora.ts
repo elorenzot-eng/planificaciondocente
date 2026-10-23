@@ -42,21 +42,34 @@ export type LectoraExam = {
 
 export function validateLectoraExam(exam: LectoraExam, fullExam = true): string[] {
   const errors: string[] = [];
+  if (!exam || typeof exam !== "object" || !Array.isArray(exam.items) || !Array.isArray(exam.texts))
+    return ["La estructura del ensayo es inválida: faltan textos o preguntas."];
   if (fullExam && exam.items.length !== LECTORA_CONFIG.totalQuestions)
     errors.push(`Ensayo completo: se requieren ${LECTORA_CONFIG.totalQuestions} preguntas.`);
   if (!fullExam && (exam.items.length < 1 || exam.items.length > LECTORA_CONFIG.totalQuestions))
     errors.push("Cantidad de preguntas fuera de rango.");
-  if (!exam.specificationVersion?.trim())
+  if (typeof exam.specificationVersion !== "string" || !exam.specificationVersion.trim())
     errors.push("Falta la versión de la matriz de especificaciones revisada.");
-  const textMap = new Map(exam.texts.map(t => [t.id, t]));
+  const textMap = new Map(exam.texts.filter(t => t && typeof t.id === "string").map(t => [t.id, t]));
   if (textMap.size !== exam.texts.length) errors.push("Hay textos con identificadores repetidos.");
   for (const t of exam.texts) {
+    if (!t || typeof t !== "object" || typeof t.id !== "string" || typeof t.body !== "string" ||
+        typeof t.sourceAttribution !== "string" || !LECTORA_CONFIG.genres.includes(t.genre)) {
+      errors.push("Texto con estructura o género inválido.");
+      continue;
+    }
     if (!t.body?.trim()) errors.push(`Texto ${t.id}: contenido vacío.`);
     if (!t.sourceAttribution?.trim()) errors.push(`Texto ${t.id}: falta procedencia o atribución.`);
   }
   const ids = new Set<string>();
   for (const [i, item] of exam.items.entries()) {
     const prefix = `Ítem ${i + 1}`;
+    if (!item || typeof item !== "object" || typeof item.id !== "string" ||
+        typeof item.textId !== "string" || typeof item.stem !== "string" ||
+        typeof item.rationale !== "string" || typeof item.evidence !== "string") {
+      errors.push(`${prefix}: estructura inválida.`);
+      continue;
+    }
     if (!item.id?.trim() || ids.has(item.id)) errors.push(`${prefix}: identificador vacío o duplicado.`);
     ids.add(item.id);
     const text = textMap.get(item.textId);
