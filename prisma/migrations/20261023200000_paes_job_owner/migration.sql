@@ -1,0 +1,1 @@
+ALTER TABLE "PaesInternalJob" ADD COLUMN IF NOT EXISTS "userId" TEXT;
