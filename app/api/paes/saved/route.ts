@@ -38,7 +38,7 @@ export async function POST(request:NextRequest){
   const m2:M2Exam={version:M2_FULL_CONFIG.version,items:job.items as unknown as M2Exam["items"]};
   if(validateM2Full(m2).length)return NextResponse.json({error:"Ensayo M2 inválido."},{status:422});
   exam=m2;title="PAES Matemática M2 · 55 preguntas";examType="M2";
- }else if(job.nextPart===30&&job.difficulty.startsWith("LECTORA:")){
+ }else if(job.nextPart===30&&["Baja","Media","Alta","Mixta"].includes(job.difficulty)){
   const lectora:LectoraExam={specificationVersion:INTERNAL_65_MATRIX.version,texts:job.texts as unknown as LectoraExam["texts"],items:job.items as unknown as LectoraExam["items"]};
   if(!reviewLectoraExam(lectora,INTERNAL_65_MATRIX).valid)return NextResponse.json({error:"Ensayo Lectora inválido."},{status:422});
   exam=lectora;title="PAES Competencia Lectora · 65 preguntas";examType="LECTORA";
