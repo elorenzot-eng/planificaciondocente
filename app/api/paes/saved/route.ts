@@ -1,4 +1,5 @@
 import {NextRequest,NextResponse} from "next/server";
+import {HISTORY_CONFIG,validateHistoryExam,type HistoryExam} from "../../../../lib/paes/historia";
 import {getSession} from "../../../../lib/auth";
 import {prisma} from "../../../../lib/prisma";
 import {SCIENCE_FULL_CONFIG,validateScienceFull} from "../../../../lib/paes/ciencias-full";
@@ -24,8 +25,12 @@ export async function POST(request:NextRequest){
  if(typeof body.jobId!=="string"||body.jobId.length>100)return NextResponse.json({error:"Identificador inválido."},{status:400});
  const job=await prisma.paesInternalJob.findUnique({where:{id:body.jobId}});
  if(!job||job.userId!==userId)return NextResponse.json({error:"Ensayo no disponible para este usuario."},{status:403});
- let exam:ScienceExam|M1Exam|M2Exam|LectoraExam,title:string,examType:string;
- if(job.difficulty.startsWith("CIENCIAS_FULL:")&&job.nextPart===SCIENCE_FULL_CONFIG.totalQuestions){
+ let exam:ScienceExam|M1Exam|M2Exam|LectoraExam|HistoryExam,title:string,examType:string;
+ if(job.difficulty.startsWith("HISTORIA:")&&job.nextPart===HISTORY_CONFIG.totalQuestions){
+  const history:HistoryExam={version:HISTORY_CONFIG.version,items:job.items as unknown as HistoryExam["items"]};
+  if(validateHistoryExam(history).length)return NextResponse.json({error:"Ensayo Historia inválido."},{status:422});
+  exam=history;title="PAES Historia y Ciencias Sociales · 65 preguntas";examType="HISTORIA";
+ }else if(job.difficulty.startsWith("CIENCIAS_FULL:")&&job.nextPart===SCIENCE_FULL_CONFIG.totalQuestions){
   const elective=job.difficulty.split(":")[1];
   if(!SCIENCE_SUBJECTS.includes(elective as ScienceExam["elective"]))return NextResponse.json({error:"Electivo inválido."},{status:400});
   const science:ScienceExam={version:SCIENCE_FULL_CONFIG.version,elective:elective as ScienceExam["elective"],items:job.items as unknown as ScienceExam["items"]};
