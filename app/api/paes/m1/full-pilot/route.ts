@@ -1,3 +1,4 @@
+import { getSession } from "../../../../../lib/auth";
 import { NextRequest,NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import type { Prisma } from "@prisma/client";
@@ -12,7 +13,7 @@ export const maxDuration=120;
 function authorized(given:string|null,expected:string){if(!given||expected.length<32)return false;const a=Buffer.from(given),b=Buffer.from(expected);return a.length===b.length&&timingSafeEqual(a,b);}
 export async function POST(request:NextRequest){
  if(process.env.PAES_PILOT_ENABLED!=="true")return NextResponse.json({error:"Piloto no habilitado."},{status:404});
- if(!authorized(request.headers.get("x-paes-pilot-token"),process.env.PAES_PILOT_TOKEN||""))return NextResponse.json({error:"Acceso denegado."},{status:403});
+ if(!(await getSession()) && !authorized(request.headers.get("x-paes-pilot-token"),process.env.PAES_PILOT_TOKEN||""))return NextResponse.json({error:"Acceso denegado."},{status:403});
  let body:{difficulty?:string;jobId?:string};
  try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
  if(!["Baja","Media","Alta","Mixta"].includes(body.difficulty||""))return NextResponse.json({error:"Dificultad inválida."},{status:400});
