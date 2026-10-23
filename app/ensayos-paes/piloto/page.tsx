@@ -54,7 +54,7 @@ export default function PaesPilot() {
           setResult({ error: data.error || "No se pudo completar el grupo." });
           return;
         }
-        if (data.status === "COMPLETED" || questionCount === "10") {
+        if (data.status === "COMPLETED" || questionCount === "10") {if(questionCount==="65"&&data.jobId){try{const saved=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:data.jobId})});setSaveMessage(saved.ok?"Ensayo guardado automáticamente en Mi carpeta.":"Utiliza Guardar en Mi carpeta para reintentar.");}catch{setSaveMessage("Utiliza Guardar en Mi carpeta para reintentar.");}}
           setResult(data);
           if (questionCount === "65") { setJobId(null); setProgress(30); }
           return;
