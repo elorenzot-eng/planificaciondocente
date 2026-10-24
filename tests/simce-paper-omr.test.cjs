@@ -87,3 +87,11 @@ test("Registro SIMCE: detecta cuatro cuadrados negros en una imagen sintética",
   assert.ok(Math.abs(center.x-300)<4);
   assert.ok(Math.abs(center.y-400)<4);
 });
+
+test("Registro SIMCE: rechaza una hoja sin las cuatro referencias",()=>{
+  const width=600,height=800,data=new Uint8ClampedArray(width*height*4).fill(255);
+  for(const [sx,sy] of [[40,40],[540,40],[40,740]])for(let y=sy;y<sy+20;y++)for(let x=sx;x<sx+20;x++){
+    const i=(y*width+x)*4;data[i]=data[i+1]=data[i+2]=0;
+  }
+  assert.throws(()=>detectRegistrationCorners(data,width,height),/cuatro marcas/);
+});
