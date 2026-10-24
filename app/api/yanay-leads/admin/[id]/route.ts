@@ -8,6 +8,7 @@ export async function PATCH(req:Request,{params}:{params:Promise<{id:string}>}){
  const origin=req.headers.get("origin"),host=req.headers.get("host");
  if(!origin||!host)return NextResponse.json({error:"Origen no autorizado"},{status:403});
  try{if(new URL(origin).host!==host)return NextResponse.json({error:"Origen no autorizado"},{status:403});}catch{return NextResponse.json({error:"Origen inválido"},{status:403});}
+ if(!(req.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return NextResponse.json({error:"Formato no admitido"},{status:415});
  const b=await req.json().catch(()=>null);
  const allowed=["NUEVO","POR_LLAMAR","AGENDADO","CONTACTADO","PROPUESTA_ENVIADA","CERRADO","DESCARTADO"];
  if(!allowed.includes(b?.status))return NextResponse.json({error:"Estado inválido"},{status:400});
