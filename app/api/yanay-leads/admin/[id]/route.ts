@@ -18,3 +18,15 @@ export async function PATCH(req:Request,{params}:{params:Promise<{id:string}>}){
  const lead=await prisma.yanayCommercialLead.update({where:{id},data:{status:b.status,confirmedMeetingAt:meeting},select:{id:true,status:true}}).catch(()=>null);
  return lead?NextResponse.json({lead}):NextResponse.json({error:"No encontrado"},{status:404});
 }
+
+export async function DELETE(req:Request,{params}:{params:Promise<{id:string}>}){
+ const s=await getSession();if(!s?.id)return NextResponse.json({error:"No autorizado"},{status:403});
+ const user=await prisma.user.findUnique({where:{id:String(s.id)},select:{role:true,active:true}});
+ if(!user?.active||user.role!=="SUPERADMIN")return NextResponse.json({error:"No autorizado"},{status:403});
+ const origin=req.headers.get("origin"),host=req.headers.get("host");
+ if(!origin||!host)return NextResponse.json({error:"Origen no autorizado"},{status:403});
+ try{if(new URL(origin).host!==host)return NextResponse.json({error:"Origen no autorizado"},{status:403});}catch{return NextResponse.json({error:"Origen inválido"},{status:403});}
+ const {id}=await params;
+ const lead=await prisma.yanayCommercialLead.delete({where:{id},select:{id:true}}).catch(()=>null);
+ return lead?NextResponse.json({deleted:true}):NextResponse.json({error:"No encontrado"},{status:404});
+}
