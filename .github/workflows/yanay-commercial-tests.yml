@@ -1,0 +1,27 @@
+name: Yanay commercial tests
+on:
+  pull_request:
+    paths:
+      - 'lib/yanay-commercial.ts'
+      - 'lib/chile-meeting-time.ts'
+      - 'tests/yanay-commercial.test.cjs'
+      - 'package.json'
+      - '.github/workflows/yanay-commercial-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'lib/yanay-commercial.ts'
+      - 'lib/chile-meeting-time.ts'
+      - 'tests/yanay-commercial.test.cjs'
+      - 'package.json'
+      - '.github/workflows/yanay-commercial-tests.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run test:yanay
