@@ -22,7 +22,7 @@ export default function HojaRespuestasSimce() {
       .sheet-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:18px}
       .sheet-meta div{border-bottom:1px solid #9daeb9;padding:7px 0}
       .bubble-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
-      .bubble-row{display:flex;align-items:center;gap:11px;padding:6px 2px;break-inside:avoid;font-size:13px}
+      .bubble-column{display:flex;flex-direction:column;min-width:0}\n      .bubble-row{display:flex;align-items:center;gap:11px;padding:6px 2px;break-inside:avoid;font-size:13px}
       .bubble-number{width:27px;text-align:right;font-weight:bold}
       .bubble{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #172d3b;border-radius:50%;width:26px;height:26px;font-size:11px;font-weight:bold}
       .sheet-note{font-size:12px;margin-top:18px;color:#465b65}
@@ -32,7 +32,7 @@ export default function HojaRespuestasSimce() {
     <a className="sheet-back" href="/ensayos-simce">← Volver a Ensayos SIMCE</a>
     <h1 className="sheet-intro">Hoja de respuestas SIMCE · versión imprimible</h1>
     <section className="sheet-config">
-      <p>Configura e imprime la hoja. Esta primera versión todavía no realiza lectura ni corrección automática.</p>
+      <p>Configura e imprime la hoja. Las preguntas se distribuyen por columnas correlativas para facilitar la lectura óptica. La corrección automática aún está en validación.</p>
       <div className="sheet-fields">
         <label>Identificador del ensayo<input maxLength={60} value={ensayo} onChange={e=>setEnsayo(e.target.value)} placeholder="Ej. SIMCE-4M-001" /></label>
         <label>Nivel<select value={nivel} onChange={e=>setNivel(e.target.value)}>{["4° básico","6° básico","8° básico","2° medio"].map(x=><option key={x}>{x}</option>)}</select></label>
@@ -45,7 +45,7 @@ export default function HojaRespuestasSimce() {
     <section className="answer-sheet" aria-label="Hoja imprimible">
       <h2 className="sheet-title">EducAntay · Hoja de respuestas</h2>
       <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div></div>
-      <div className="bubble-grid">{Array.from({length:total},(_,i)=><div className="bubble-row" key={i}><span className="bubble-number">{i+1}.</span>{choices.map(c=><span key={c} className="bubble">{c}</span>)}</div>)}</div>
+      <div className="bubble-grid">{[0,1].map(column=><div className="bubble-column" key={column}>{Array.from({length:column===0?Math.ceil(total/2):Math.floor(total/2)},(_,offset)=>{const i=offset+(column===0?0:Math.ceil(total/2));return <div className="bubble-row" key={i}><span className="bubble-number">{i+1}.</span>{choices.map(c=><span key={c} className="bubble">{c}</span>)}</div>;})}</div>)}</div>
       <p className="sheet-note">Marca completamente una sola alternativa por pregunta con lápiz oscuro. Esta hoja no contiene la pauta de respuestas.</p>
     </section>
   </main>;
