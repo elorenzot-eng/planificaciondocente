@@ -12,7 +12,7 @@ require.extensions[".ts"]=function(mod,filename){
 const {readCalibratedSheet}=require("../lib/simce-paper-sheet-reader.ts");
 const {classifyBubbleRow}=require("../lib/simce-paper-omr.ts");
 function synthetic(marks){
-  const width=400,height=300;
+  const width=400,height=Math.max(300,marks.length*60+70);
   const data=new Uint8ClampedArray(width*height*4).fill(255);
   const rows=marks.map((mark,i)=>({
     number:i+1,
