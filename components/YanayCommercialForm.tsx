@@ -8,7 +8,7 @@ export default function YanayCommercialForm({onClose}:{onClose:()=>void}){
  async function submit(e:React.FormEvent){e.preventDefault();setBusy(true);setResult("");try{
  const r=await fetch("/api/yanay-leads",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
  const v=await r.json();if(!r.ok)throw new Error(v.details?.join(". ")||v.error||"Error de conexión");
- setDone(true);setResult("Solicitud registrada. Te contactaremos para confirmar el horario; aún no hay una reunión reservada.");
+ if(r.status===202){setResult("No pudimos completar el registro. Inténtalo nuevamente.");return;}setDone(true);setResult("Solicitud registrada. Te contactaremos para confirmar el horario; aún no hay una reunión reservada.");
  }catch(e){setResult(e instanceof Error?e.message:"No se pudo enviar");}finally{setBusy(false)}}
  const field=(key:"name"|"institution"|"role"|"phone"|"email"|"preferredTime"|"notes",label:string,required=false)=> <label style={{display:"grid",gap:3,fontSize:12}}>{label}<input required={required} type={key==="email"?"email":key==="phone"?"tel":"text"} value={data[key]} maxLength={key==="notes"?1000:180} onChange={e=>set(key,e.target.value)} style={{padding:8,border:"1px solid #abc",borderRadius:7}}/></label>;
  return <section aria-label="Solicitar llamada comercial" style={{padding:12,overflowY:"auto",maxHeight:340,display:"grid",gap:8}}>
