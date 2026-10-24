@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { assessSimceImageQuality, type SimceImageQuality } from "@/lib/simce-paper-image-quality";
 import { buildSimceGrid } from "@/lib/simce-paper-grid";
 import { readCalibratedSheet, type OmrSheetResult } from "@/lib/simce-paper-sheet-reader";
 
@@ -12,11 +13,12 @@ export default function CargaHojaSimce() {
   const [preview,setPreview] = useState<string|null>(null);
   const [total,setTotal] = useState(40);
   const [result,setResult] = useState<OmrSheetResult|null>(null);
+  const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [cal,setCal] = useState({leftX:0.18,leftY:0.25,rightX:0.65,rightY:0.25,spacing:0.048,rowSpacing:0.026,radius:0.012,leftRows:20});
   useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
   const choose = (f?:File) => {
-    setFile(null);setError("");setResult(null);
+    setFile(null);setError("");setResult(null);setQuality(null);
     if(!f){setPreview(null);return;}
     const ext=f.name.toLowerCase().split(".").pop();
     const mime=f.type||({jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",pdf:"application/pdf"} as Record<string,string>)[ext||""];
@@ -35,6 +37,8 @@ export default function CargaHojaSimce() {
         if(!ctx)throw new Error("No se pudo abrir el lector de imagen");
         ctx.drawImage(img,0,0);
         const pixels=ctx.getImageData(0,0,img.width,img.height);
+        const imageQuality=assessSimceImageQuality(pixels.data,img.width,img.height);
+        setQuality(imageQuality);
         const rows=buildSimceGrid(total,{
           firstColumnA:{x:cal.leftX*img.width,y:cal.leftY*img.height},
           secondColumnA:{x:cal.rightX*img.width,y:cal.rightY*img.height},
@@ -78,6 +82,7 @@ export default function CargaHojaSimce() {
         </div>
         <button type="button" disabled={busy} onClick={analyze} style={{marginTop:14,background:"#087f91",color:"white",border:0,borderRadius:8,padding:"12px 18px"}}>{busy?"Analizando…":"Leer marcas (experimental)"}</button>
       </section>}
+      {quality&&<section aria-live="polite" style={{padding:12,marginTop:12,border:"1px solid #bde5e6",borderRadius:8}}><h3>Calidad de imagen</h3>{quality.warnings.length?quality.warnings.map((warning,i)=><p key={i} style={{color:"#995000"}}>⚠ {warning}</p>):<p>No se detectaron problemas evidentes de iluminación, contraste o nitidez. Esto no garantiza una lectura correcta.</p>}</section>}
       {result&&<section aria-live="polite">
         <h3>Lectura preliminar: {result.answers.length} respuestas</h3>
         <p>{result.reviewNumbers.length} marcas dudosas o múltiples. <strong>No es una calificación ni debe utilizarse sin revisión docente.</strong></p>
