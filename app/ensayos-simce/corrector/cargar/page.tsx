@@ -26,6 +26,7 @@ export default function CargaHojaSimce() {
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [autoAlign,setAutoAlign] = useState(true);
+  const [pdfPage,setPdfPage] = useState(1);
   const [advanced,setAdvanced] = useState(false);
   const [cal,setCal] = useState({leftX:0.18,leftY:0.25,rightX:0.65,rightY:0.25,spacing:0.048,rowSpacing:0.026,radius:0.012,leftRows:20});
   useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
@@ -39,19 +40,34 @@ export default function CargaHojaSimce() {
     setFile(f);setPreview(URL.createObjectURL(f));
   };
   async function analyze(){
-    if(!file||!preview||file.name.toLowerCase().endsWith(".pdf")){setError("El análisis óptico inicial admite imágenes JPG o PNG; PDF está pendiente.");return;}
+    if(!file||!preview){setError("Selecciona una hoja JPG, PNG o PDF.");return;}
     if(!Number.isInteger(total)||total<1||total>50||!Number.isInteger(firstQuestion)||firstQuestion<1||firstQuestion+total-1>100){setError("Cada hoja admite entre 1 y 50 preguntas, numeradas hasta la 100. Revisa el inicio y la cantidad de preguntas.");return;}
     setBusy(true);setError("");setResult(null);
     try{
-      const img=await createImageBitmap(file);
-      try{
-        const canvas=document.createElement("canvas");canvas.width=img.width;canvas.height=img.height;
+      const canvas=document.createElement("canvas");
+      if(file.name.toLowerCase().endsWith(".pdf")){
+        const pdfjs=await import("pdfjs-dist");
+        pdfjs.GlobalWorkerOptions.workerSrc=new URL("pdfjs-dist/build/pdf.worker.min.mjs",import.meta.url).toString();
+        const doc=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+        try{
+          if(!Number.isInteger(pdfPage)||pdfPage<1||pdfPage>doc.numPages)throw new Error(`El PDF tiene ${doc.numPages} página(s). Selecciona una página válida.`);
+          const page=await doc.getPage(pdfPage);
+          const viewport=page.getViewport({scale:2});
+          canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+          const context=canvas.getContext("2d",{willReadFrequently:true});
+          if(!context)throw new Error("No se pudo crear el lienzo PDF");
+          await page.render({canvasContext:context,viewport}).promise;
+        }finally{await doc.destroy();}
+      }else{
+        const img=await createImageBitmap(file);
+        try{canvas.width=img.width;canvas.height=img.height;const context=canvas.getContext("2d",{willReadFrequently:true});if(!context)throw new Error("No se pudo abrir el lector de imagen");context.drawImage(img,0,0);}finally{img.close();}
+      }
+      {
         const ctx=canvas.getContext("2d",{willReadFrequently:true});
-        if(!ctx)throw new Error("No se pudo abrir el lector de imagen");
-        ctx.drawImage(img,0,0);
-        const pixels=ctx.getImageData(0,0,img.width,img.height);
-        const aligned=autoAlign?rectifySheet(pixels,detectRegistrationCorners(pixels.data,img.width,img.height)):pixels;
-        const imageQuality=assessSimceImageQuality(pixels.data,img.width,img.height);
+        if(!ctx)throw new Error("No se pudo leer la hoja");
+        const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
+        const aligned=autoAlign?rectifySheet(pixels,detectRegistrationCorners(pixels.data,canvas.width,canvas.height)):pixels;
+        const imageQuality=assessSimceImageQuality(pixels.data,canvas.width,canvas.height);
         setQuality(imageQuality);
         const rows=buildSimceGrid(total,{
           firstColumnA:{x:cal.leftX*aligned.width,y:cal.leftY*aligned.height},
@@ -62,7 +78,7 @@ export default function CargaHojaSimce() {
         const reading=readCalibratedSheet({data:aligned.data,width:aligned.width,height:aligned.height},rows);
         const offset=firstQuestion-1;
         setResult({...reading,answers:reading.answers.map(a=>({...a,number:a.number+offset})),reviewNumbers:reading.reviewNumbers.map(n=>n+offset),measurements:reading.measurements.map(m=>({...m,number:m.number+offset}))});
-      }finally{img.close();}
+      }
     }catch(e){setError(e instanceof Error?e.message:"No fue posible analizar la imagen");}
     finally{setBusy(false);}
   }
@@ -111,7 +127,7 @@ export default function CargaHojaSimce() {
   return <main style={{maxWidth:780,margin:"auto",padding:24,fontFamily:"Arial,sans-serif",color:"#173752"}}>
     <a href="/ensayos-simce/corrector" style={{color:"#087f91"}}>← Volver al corrector</a>
     <h1>Cargar hoja de respuestas SIMCE</h1>
-    <p>Admite JPG, PNG y PDF (máximo 10 MB). La lectura experimental permite alineación mediante las marcas de registro.</p>
+    <p>Admite JPG, PNG y PDF (máximo 10 MB). En PDF se procesa una página a la vez. La lectura experimental permite alineación mediante las marcas de registro.</p>
     <section style={{border:"2px dashed #39aeb7",background:"#f2fbfb",padding:24,borderRadius:14}}>
       <input type="file" accept={ACCEPT} onChange={e=>choose(e.target.files?.[0])} aria-label="Seleccionar hoja de respuestas"/>
       {error&&<p role="alert" style={{color:"#a41e42"}}>{error}</p>}
@@ -121,8 +137,9 @@ export default function CargaHojaSimce() {
       <h2>Vista previa</h2>
       {file.name.toLowerCase().endsWith(".pdf")?<iframe title="Vista previa PDF" src={preview} style={{width:"100%",height:400,border:"1px solid #d7e8eb"}}/>:
       <img alt="Hoja seleccionada" src={preview} style={{maxWidth:"100%",maxHeight:480,borderRadius:8}}/>}
-      {!file.name.toLowerCase().endsWith(".pdf")&&<section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
+      <section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
         <h3>Lectura óptica experimental · una página por vez</h3>
+        {file.name.toLowerCase().endsWith(".pdf")&&<label>Página del PDF <input type="number" min={1} value={pdfPage} onChange={e=>{setPdfPage(Number(e.target.value));setResult(null);}}/></label>}
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
         <p style={{fontSize:13}}>Para ensayos de más de 50 preguntas, carga cada página por separado. Puedes agregar cada página al consolidado y exportar todas juntas.</p>
         <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada. La distribución entre columnas se calcula automáticamente según la cantidad de preguntas, salvo que actives calibración avanzada.</p>
