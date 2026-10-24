@@ -17,7 +17,7 @@ export default function HojaRespuestasSimce() {
       .sheet-fields label{font-size:14px;font-weight:600;display:grid;gap:5px}
       .sheet-fields input,.sheet-fields select{width:100%;padding:10px;border:1px solid #adcbd0;border-radius:8px;background:white;color:#18394c}
       .sheet-action{border:0;background:#087f91;color:white;padding:12px 18px;border-radius:9px;font-weight:700;cursor:pointer;margin-top:15px}
-      .answer-sheet{background:white;border:2px solid #18394c;padding:22px;position:relative}
+      .answer-sheet{background:white;border:2px solid #18394c;padding:22px;position:relative;margin-bottom:20px;break-inside:avoid;page-break-inside:avoid}
       .sheet-registration{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
       .sheet-fiducial{width:12mm;height:12mm;background:#111;display:block;flex-shrink:0}
       .sheet-registration-bottom{margin-top:16px;margin-bottom:0}
@@ -30,7 +30,7 @@ export default function HojaRespuestasSimce() {
       .bubble{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #172d3b;border-radius:50%;width:26px;height:26px;font-size:11px;font-weight:bold}
       .sheet-note{font-size:12px;margin-top:18px;color:#465b65}
       @media(max-width:600px){.sheet-fields,.sheet-meta,.bubble-grid{grid-template-columns:1fr}.sheet-page{padding:12px}}
-      @media print{ @page{size:A4;margin:12mm} body{background:white!important}.sheet-config,.sheet-back,.sheet-intro{display:none!important}.sheet-page{padding:0;max-width:none}.answer-sheet{border:0;padding:0}.sheet-fiducial{print-color-adjust:exact;-webkit-print-color-adjust:exact}.bubble-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bubble-row{padding:5px 2px}.sheet-title{font-size:18px}}
+      @media print{ @page{size:A4;margin:12mm} body{background:white!important}.sheet-config,.sheet-back,.sheet-intro{display:none!important}.sheet-page{padding:0;max-width:none}.answer-sheet{border:0;padding:0}.sheet-fiducial{print-color-adjust:exact;-webkit-print-color-adjust:exact}.bubble-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bubble-row{padding:3px 2px}.sheet-title{font-size:18px}.answer-sheet{break-after:page;page-break-after:always}.answer-sheet:last-child{break-after:auto;page-break-after:auto}}
     `}</style>
     <a className="sheet-back" href="/ensayos-simce">← Volver a Ensayos SIMCE</a>
     <h1 className="sheet-intro">Hoja de respuestas SIMCE · versión imprimible</h1>
@@ -45,13 +45,18 @@ export default function HojaRespuestasSimce() {
       </div>
       <button className="sheet-action" onClick={()=>window.print()}>Imprimir / Guardar PDF</button>
     </section>
-    <section className="answer-sheet" aria-label="Hoja imprimible">
-      <div className="sheet-registration" aria-label="Marcas de referencia superiores"><span className="sheet-fiducial"/><span className="sheet-fiducial"/></div>
-      <h2 className="sheet-title">EducAntay · Hoja de respuestas</h2>
-      <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div></div>
-      <div className="bubble-grid">{[0,1].map(column=><div className="bubble-column" key={column}>{Array.from({length:column===0?Math.ceil(total/2):Math.floor(total/2)},(_,offset)=>{const i=offset+(column===0?0:Math.ceil(total/2));return <div className="bubble-row" key={i}><span className="bubble-number">{i+1}.</span>{choices.map(c=><span key={c} className="bubble">{c}</span>)}</div>;})}</div>)}</div>
-      <div className="sheet-registration sheet-registration-bottom" aria-label="Marcas de referencia inferiores"><span className="sheet-fiducial"/><span className="sheet-fiducial"/></div>
-      <p className="sheet-note">Marca completamente una sola alternativa por pregunta con lápiz oscuro. Esta hoja no contiene la pauta de respuestas.</p>
-    </section>
+    {Array.from({length:Math.ceil(total/50)},(_,pageIndex)=>{
+      const first=pageIndex*50+1;
+      const count=Math.min(50,total-pageIndex*50);
+      const leftCount=Math.ceil(count/2);
+      return <section className="answer-sheet" key={pageIndex} aria-label={`Hoja imprimible ${pageIndex+1}`}>
+        <div className="sheet-registration" aria-label="Marcas de referencia superiores"><span className="sheet-fiducial"/><span className="sheet-fiducial"/></div>
+        <h2 className="sheet-title">EducAntay · Hoja de respuestas</h2>
+        <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div><div>Página: {pageIndex+1} de {Math.ceil(total/50)}</div><div>Preguntas: {first}–{first+count-1}</div></div>
+        <div className="bubble-grid">{[0,1].map(column=><div className="bubble-column" key={column}>{Array.from({length:column===0?leftCount:count-leftCount},(_,offset)=>{const number=first+offset+(column===0?0:leftCount);return <div className="bubble-row" key={number}><span className="bubble-number">{number}.</span>{choices.map(c=><span key={c} className="bubble">{c}</span>)}</div>;})}</div>)}</div>
+        <div className="sheet-registration sheet-registration-bottom" aria-label="Marcas de referencia inferiores"><span className="sheet-fiducial"/><span className="sheet-fiducial"/></div>
+        <p className="sheet-note">Marca completamente una alternativa por pregunta. Procesa cada página por separado.</p>
+      </section>;
+    })}
   </main>;
 }
