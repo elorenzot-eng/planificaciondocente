@@ -67,3 +67,23 @@ test("Grilla SIMCE: rechaza coordenadas que exceden el papel",()=>{
     bubbleSpacing:40,rowSpacing:70,bubbleRadius:12,leftRows:25
   },1200,1600),/calibración excede/);
 });
+
+const {detectRegistrationCorners}=require("../lib/simce-paper-registration.ts");
+const {createSheetProjection}=require("../lib/simce-paper-perspective.ts");
+test("Registro SIMCE: detecta cuatro cuadrados negros en una imagen sintética",()=>{
+  const width=600,height=800,data=new Uint8ClampedArray(width*height*4).fill(255);
+  const squares=[[40,40],[540,40],[40,740],[540,740]];
+  for(const [sx,sy] of squares)for(let y=sy;y<sy+20;y++)for(let x=sx;x<sx+20;x++){
+    const i=(y*width+x)*4;data[i]=data[i+1]=data[i+2]=0;
+  }
+  const corners=detectRegistrationCorners(data,width,height);
+  const expected=[[50,50],[550,50],[50,750],[550,750]];
+  for(const [i,p] of [corners.topLeft,corners.topRight,corners.bottomLeft,corners.bottomRight].entries()){
+    assert.ok(Math.abs(p.x-expected[i][0])<4);
+    assert.ok(Math.abs(p.y-expected[i][1])<4);
+  }
+  const project=createSheetProjection(corners);
+  const center=project(0.5,0.5);
+  assert.ok(Math.abs(center.x-300)<4);
+  assert.ok(Math.abs(center.y-400)<4);
+});
