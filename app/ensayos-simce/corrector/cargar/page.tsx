@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { assessSimceImageQuality, type SimceImageQuality } from "@/lib/simce-paper-image-quality";
+import { detectRegistrationCorners } from "@/lib/simce-paper-registration";
+import { rectifySheet } from "@/lib/simce-paper-perspective";
 import { buildSimceGrid } from "@/lib/simce-paper-grid";
 import { readCalibratedSheet, type OmrSheetResult } from "@/lib/simce-paper-sheet-reader";
 
@@ -15,6 +17,7 @@ export default function CargaHojaSimce() {
   const [result,setResult] = useState<OmrSheetResult|null>(null);
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
+  const [autoAlign,setAutoAlign] = useState(false);
   const [cal,setCal] = useState({leftX:0.18,leftY:0.25,rightX:0.65,rightY:0.25,spacing:0.048,rowSpacing:0.026,radius:0.012,leftRows:20});
   useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
   const choose = (f?:File) => {
@@ -37,15 +40,16 @@ export default function CargaHojaSimce() {
         if(!ctx)throw new Error("No se pudo abrir el lector de imagen");
         ctx.drawImage(img,0,0);
         const pixels=ctx.getImageData(0,0,img.width,img.height);
+        const aligned=autoAlign?rectifySheet(pixels,detectRegistrationCorners(pixels.data,img.width,img.height)):pixels;
         const imageQuality=assessSimceImageQuality(pixels.data,img.width,img.height);
         setQuality(imageQuality);
         const rows=buildSimceGrid(total,{
-          firstColumnA:{x:cal.leftX*img.width,y:cal.leftY*img.height},
-          secondColumnA:{x:cal.rightX*img.width,y:cal.rightY*img.height},
-          bubbleSpacing:cal.spacing*img.width,rowSpacing:cal.rowSpacing*img.height,
-          bubbleRadius:cal.radius*Math.min(img.width,img.height),leftRows:cal.leftRows
-        },img.width,img.height);
-        setResult(readCalibratedSheet({data:pixels.data,width:img.width,height:img.height},rows));
+          firstColumnA:{x:cal.leftX*aligned.width,y:cal.leftY*aligned.height},
+          secondColumnA:{x:cal.rightX*aligned.width,y:cal.rightY*aligned.height},
+          bubbleSpacing:cal.spacing*aligned.width,rowSpacing:cal.rowSpacing*aligned.height,
+          bubbleRadius:cal.radius*Math.min(aligned.width,aligned.height),leftRows:cal.leftRows
+        },aligned.width,aligned.height);
+        setResult(readCalibratedSheet({data:aligned.data,width:aligned.width,height:aligned.height},rows));
       }finally{img.close();}
     }catch(e){setError(e instanceof Error?e.message:"No fue posible analizar la imagen");}
     finally{setBusy(false);}
@@ -75,6 +79,7 @@ export default function CargaHojaSimce() {
       <img alt="Hoja seleccionada" src={preview} style={{maxWidth:"100%",maxHeight:480,borderRadius:8}}/>}
       {!file.name.toLowerCase().endsWith(".pdf")&&<section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
         <h3>Lectura óptica experimental · calibración manual</h3>
+        <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Intentar enderezar hoja automáticamente usando cuatro marcas negras (experimental)</label>
         <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada.</p>
         <label>Preguntas <input type="number" min={1} max={100} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12,marginTop:12}}>
@@ -89,7 +94,7 @@ export default function CargaHojaSimce() {
         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{result.answers.map(a=><span key={a.number} style={{padding:8,border:"1px solid #a7d6dc",borderRadius:6}}>{a.number}: {a.mark??"—"}</span>)}</div>
         <button type="button" style={{marginTop:14,padding:10}} onClick={()=>{const csv="Pregunta,Marca,Confianza\n"+result.answers.map((a,i)=>[a.number,a.mark??"",result.measurements[i].confidence.toFixed(3)].join(",")).join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const link=document.createElement("a");link.href=url;link.download="lectura-simce-experimental.csv";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}}>Exportar lectura CSV para revisión</button>
       </section>}
-      <p style={{fontSize:13,color:"#526a78"}}>Procesamiento local en el navegador: no se sube el archivo al servidor. Faltan corrección automática de perspectiva, PDF y vinculación a la pauta oficial del ensayo.</p>
+      <p style={{fontSize:13,color:"#526a78"}}>Procesamiento local en el navegador: no se sube el archivo al servidor. La corrección de perspectiva es experimental; aún faltan validación con fotografías reales, PDF y vinculación a la pauta del ensayo.</p>
     </section>}
   </main>;
 }
