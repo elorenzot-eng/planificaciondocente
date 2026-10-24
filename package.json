@@ -11,7 +11,8 @@
     "postinstall": "prisma generate",
     "android:add": "npx cap add android",
     "android:sync": "npx cap sync android",
-    "android:open": "npx cap open android"
+    "android:open": "npx cap open android",
+    "test:yanay": "node --test tests/yanay-commercial.test.cjs"
   },
   "dependencies": {
     "@types/node": "^22.0.0",
