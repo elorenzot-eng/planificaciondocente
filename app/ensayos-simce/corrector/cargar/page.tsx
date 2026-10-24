@@ -17,6 +17,7 @@ export default function CargaHojaSimce() {
   const [firstQuestion,setFirstQuestion] = useState(1);
   const [result,setResult] = useState<OmrSheetResult|null>(null);
   const [pages,setPages] = useState<OmrSheetResult[]>([]);
+  const [corrections,setCorrections] = useState<Record<number,string>>({});
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [autoAlign,setAutoAlign] = useState(true);
@@ -70,7 +71,7 @@ export default function CargaHojaSimce() {
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
     if(!answers.length)return;
-    const rows=["Pregunta;Marca;Estado",...answers.map(a=>[a.number,String(a.mark??""),a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA"].join(";"))];
+    const rows=["Pregunta;Marca;Estado",...answers.map(a=>[a.number,String(corrections[a.number]??a.mark??""),corrections[a.number]!==undefined?"REVISADA":a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA"].join(";"))];
     const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const link=document.createElement("a");link.href=url;link.download="lectura-simce-paginas.csv";link.click();
@@ -102,7 +103,7 @@ export default function CargaHojaSimce() {
       {!file.name.toLowerCase().endsWith(".pdf")&&<section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
         <h3>Lectura óptica experimental · una página por vez</h3>
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
-        <p style={{fontSize:13}}>Para ensayos de más de 50 preguntas, carga cada página por separado. Esta versión todavía no consolida automáticamente varias páginas.</p>
+        <p style={{fontSize:13}}>Para ensayos de más de 50 preguntas, carga cada página por separado. Puedes agregar cada página al consolidado y exportar todas juntas.</p>
         <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada. La distribución entre columnas se calcula automáticamente según la cantidad de preguntas, salvo que actives calibración avanzada.</p>
         <label>Primera pregunta de esta página <input type="number" min={1} max={100} value={firstQuestion} onChange={e=>{setFirstQuestion(Number(e.target.value));setResult(null);}}/></label>
         <label>Preguntas <input type="number" min={1} max={50} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
@@ -124,8 +125,16 @@ export default function CargaHojaSimce() {
         <h3>Ensayo consolidado · {pages.length} página(s)</h3>
         <p>{pages.reduce((n,p)=>n+p.answers.length,0)} respuestas registradas. {pages.reduce((n,p)=>n+p.reviewNumbers.length,0)} marcas requieren revisión. Revisa todas las marcas antes de corregir.</p>
         <p style={{fontSize:13}}>Páginas: {pages.map(p=>`${p.answers[0].number}–${p.answers[p.answers.length-1].number}`).join(", ")}. La exportación no equivale a una calificación validada.</p>
+        <details style={{marginBottom:12}}><summary>Revisar y corregir respuestas ({pages.flatMap(p=>p.reviewNumbers).length} observaciones)</summary>
+          {pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number).map(a=><label key={a.number} style={{display:"inline-flex",alignItems:"center",gap:6,margin:6,fontSize:13}}>
+            {a.number}: <select aria-label={`Respuesta revisada pregunta ${a.number}`} value={corrections[a.number]??(a.mark??"")} onChange={e=>setCorrections(old=>({...old,[a.number]:e.target.value}))}>
+              <option value="">Sin respuesta</option>{["A","B","C","D"].map(v=><option key={v} value={v}>{v}</option>)}
+              {a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?<option value={a.mark}>{a.mark==="UNCERTAIN"?"Dudosa":"Múltiple"}</option>:null}
+            </select>
+          </label>)}
+        </details>
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
-        <button type="button" onClick={()=>setPages([])} style={{padding:10}}>Vaciar páginas</button>
+        <button type="button" onClick={()=>{setPages([]);setCorrections({});}} style={{padding:10}}>Vaciar páginas</button>
       </section>}
       <p style={{fontSize:13,color:"#526a78"}}>Procesamiento local en el navegador: no se sube el archivo al servidor. La corrección de perspectiva es experimental; aún faltan validación con fotografías reales, PDF y vinculación a la pauta del ensayo.</p>
     </section>}
