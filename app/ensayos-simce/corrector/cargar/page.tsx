@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { simcePaperCalibration } from "../../../../lib/simce-paper-template";
 import { assessSimceImageQuality, type SimceImageQuality } from "../../../../lib/simce-paper-image-quality";
 import { detectRegistrationCorners } from "../../../../lib/simce-paper-registration";
 import { rectifySheet } from "../../../../lib/simce-paper-perspective";
@@ -28,7 +29,7 @@ export default function CargaHojaSimce() {
   const [autoAlign,setAutoAlign] = useState(true);
   const [pdfPage,setPdfPage] = useState(1);
   const [advanced,setAdvanced] = useState(false);
-  const [cal,setCal] = useState({leftX:0.18,leftY:0.25,rightX:0.65,rightY:0.25,spacing:0.048,rowSpacing:0.026,radius:0.012,leftRows:20});
+  const [cal,setCal] = useState(simcePaperCalibration);
   useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
   const choose = (f?:File) => {
     setFile(null);setError("");setResult(null);setQuality(null);
@@ -142,7 +143,7 @@ export default function CargaHojaSimce() {
         {file.name.toLowerCase().endsWith(".pdf")&&<label>Página del PDF <input type="number" min={1} value={pdfPage} onChange={e=>{setPdfPage(Number(e.target.value));setResult(null);}}/></label>}
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
         <p style={{fontSize:13}}>Para ensayos de más de 50 preguntas, carga cada página por separado. Puedes agregar cada página al consolidado y exportar todas juntas.</p>
-        <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada. La distribución entre columnas se calcula automáticamente según la cantidad de preguntas, salvo que actives calibración avanzada.</p>
+        <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales corresponden a la plantilla A4 de EducAntay; confirma la lectura antes de calificar. La distribución entre columnas se calcula automáticamente según la cantidad de preguntas, salvo que actives calibración avanzada.</p>
         <label>Primera pregunta de esta página <input type="number" min={1} max={100} value={firstQuestion} onChange={e=>{setFirstQuestion(Number(e.target.value));setResult(null);}}/></label>
         <label>Preguntas <input type="number" min={1} max={50} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
         <button type="button" onClick={()=>setAdvanced(!advanced)} style={{marginTop:12,display:"block"}}>{advanced?"Ocultar":"Mostrar"} calibración avanzada</button>
