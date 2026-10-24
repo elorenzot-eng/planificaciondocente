@@ -69,7 +69,7 @@ export default function CargaHojaSimce() {
   };
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
-    const rows=["Pregunta;Marca",...answers.map(a=>[a.number,String(a.mark??"")].join(";"))];
+    const rows=["Pregunta;Marca;Estado",...answers.map(a=>[a.number,String(a.mark??""),a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA"].join(";"))];
     const blob=new Blob(["\\uFEFF"+rows.join("\\r\\n")],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const link=document.createElement("a");link.href=url;link.download="lectura-simce-paginas.csv";link.click();
@@ -121,7 +121,8 @@ export default function CargaHojaSimce() {
       </section>}
       {pages.length>0&&<section style={{marginTop:16,padding:16,border:"1px solid #a7d6dc",borderRadius:10}}>
         <h3>Ensayo consolidado · {pages.length} página(s)</h3>
-        <p>{pages.reduce((n,p)=>n+p.answers.length,0)} respuestas registradas. Revisa todas las marcas antes de corregir.</p>
+        <p>{pages.reduce((n,p)=>n+p.answers.length,0)} respuestas registradas. {pages.reduce((n,p)=>n+p.reviewNumbers.length,0)} marcas requieren revisión. Revisa todas las marcas antes de corregir.</p>
+        <p style={{fontSize:13}}>Páginas: {pages.map(p=>`${p.answers[0].number}–${p.answers[p.answers.length-1].number}`).join(", ")}. La exportación no equivale a una calificación validada.</p>
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
         <button type="button" onClick={()=>setPages([])} style={{padding:10}}>Vaciar páginas</button>
       </section>}
