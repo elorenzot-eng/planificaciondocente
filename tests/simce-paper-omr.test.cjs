@@ -95,3 +95,20 @@ test("Registro SIMCE: rechaza una hoja sin las cuatro referencias",()=>{
   }
   assert.throws(()=>detectRegistrationCorners(data,width,height),/cuatro marcas/);
 });
+
+test("Plantilla A4: lector coincide con centros de las burbujas impresas",()=>{
+  const {SIMCE_PAPER_MM:mm,simcePaperCalibration}=require("../lib/simce-paper-template.ts");
+  const cal=simcePaperCalibration(),width=1200,height=1600;
+  const rows=buildSimceGrid(50,{
+    firstColumnA:{x:cal.leftX*width,y:cal.leftY*height},
+    secondColumnA:{x:cal.rightX*width,y:cal.rightY*height},
+    bubbleSpacing:cal.spacing*width,rowSpacing:cal.rowSpacing*height,
+    bubbleRadius:cal.radius*Math.min(width,height),leftRows:25
+  },width,height);
+  const expectedX=(mm.firstLeftX-mm.fiducialLeft)/(mm.fiducialRight-mm.fiducialLeft)*width;
+  const expectedY=(mm.firstY-mm.fiducialTop)/(mm.fiducialBottom-mm.fiducialTop)*height;
+  assert.ok(Math.abs(rows[0].bubbles[0].x-expectedX)<0.001);
+  assert.ok(Math.abs(rows[0].bubbles[0].y-expectedY)<0.001);
+  assert.ok(rows[24].bubbles[0].y<height);
+  assert.equal(rows[25].bubbles[0].x,cal.rightX*width);
+});
