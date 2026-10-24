@@ -69,11 +69,13 @@ export default function CargaHojaSimce() {
     setPages(previous=>[...previous,result].sort((a,b)=>a.answers[0].number-b.answers[0].number));
     setError("");
   };
-  const key=answerKey.toUpperCase().replace(/[^ABCD]/g,"");
+  const key=answerKey.toUpperCase().replace(/[\\s,;|-]/g,"").replace(/[^ABCD]/g,"");
+  const keyValid=/^[ABCD]*$/.test(answerKey.toUpperCase().replace(/[\\s,;|-]/g,""));
   const combinedAnswers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
   const resolved=combinedAnswers.map(a=>({number:a.number,mark:corrections[a.number]??a.mark}));
   const scored=resolved.filter(a=>a.number<=key.length && ["A","B","C","D"].includes(String(a.mark)));
   const correct=scored.filter(a=>a.mark===key[a.number-1]).length;
+  const keyComplete=combinedAnswers.length>0&&keyValid&&key.length>=Math.max(...combinedAnswers.map(a=>a.number));
   const pending=resolved.filter(a=>a.mark==="UNCERTAIN"||a.mark==="MULTIPLE").length;
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
@@ -144,7 +146,7 @@ export default function CargaHojaSimce() {
           <label style={{display:"grid",gap:6}}>Clave de respuestas (A, B, C, D en orden, sin números)
             <textarea value={answerKey} onChange={e=>setAnswerKey(e.target.value.toUpperCase())} rows={3} placeholder="Ejemplo: ABCDABCD..." style={{width:"100%",padding:8}}/>
           </label>
-          <p style={{fontSize:13}}>Clave: {key.length} preguntas. Respuestas correctas verificables: {correct} de {scored.length}. Pendientes de revisión óptica: {pending}.</p>
+          <p style={{fontSize:13}}>Clave: {key.length} preguntas. {keyComplete?`Aciertos provisionales: ${correct} de ${combinedAnswers.length}.`:"La clave no está completa o contiene caracteres inválidos; no se calcula una puntuación global."} Pendientes de revisión óptica: {pending}.</p>
           <p style={{fontSize:12}}>Resultado provisional; comprueba que la clave corresponda al ensayo y revisa las respuestas dudosas antes de utilizarlo.</p>
         </div>
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
