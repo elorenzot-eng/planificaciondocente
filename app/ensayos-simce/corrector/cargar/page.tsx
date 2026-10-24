@@ -51,7 +51,7 @@ export default function CargaHojaSimce() {
           firstColumnA:{x:cal.leftX*aligned.width,y:cal.leftY*aligned.height},
           secondColumnA:{x:cal.rightX*aligned.width,y:cal.rightY*aligned.height},
           bubbleSpacing:cal.spacing*aligned.width,rowSpacing:cal.rowSpacing*aligned.height,
-          bubbleRadius:cal.radius*Math.min(aligned.width,aligned.height),leftRows:cal.leftRows
+          bubbleRadius:cal.radius*Math.min(aligned.width,aligned.height),leftRows:advanced?cal.leftRows:Math.ceil(total/2)
         },aligned.width,aligned.height);
         const reading=readCalibratedSheet({data:aligned.data,width:aligned.width,height:aligned.height},rows);
         const offset=firstQuestion-1;
@@ -103,7 +103,7 @@ export default function CargaHojaSimce() {
         <h3>Lectura óptica experimental · una página por vez</h3>
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
         <p style={{fontSize:13}}>Para ensayos de más de 50 preguntas, carga cada página por separado. Esta versión todavía no consolida automáticamente varias páginas.</p>
-        <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada.</p>
+        <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada. La distribución entre columnas se calcula automáticamente según la cantidad de preguntas, salvo que actives calibración avanzada.</p>
         <label>Primera pregunta de esta página <input type="number" min={1} max={100} value={firstQuestion} onChange={e=>{setFirstQuestion(Number(e.target.value));setResult(null);}}/></label>
         <label>Preguntas <input type="number" min={1} max={50} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
         <button type="button" onClick={()=>setAdvanced(!advanced)} style={{marginTop:12,display:"block"}}>{advanced?"Ocultar":"Mostrar"} calibración avanzada</button>
