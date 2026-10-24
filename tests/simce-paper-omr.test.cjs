@@ -136,3 +136,31 @@ test("Lectura integral: 50 respuestas sintéticas en geometría A4 oficial",()=>
   assert.deepEqual(result.answers.map(a=>a.mark),expected);
   assert.deepEqual(result.reviewNumbers,[]);
 });
+
+test("Lectura integral: 50 preguntas con blanco y doble marca requieren revisión",()=>{
+  const {simcePaperCalibration}=require("../lib/simce-paper-template.ts");
+  const cal=simcePaperCalibration(),width=1200,height=1600;
+  const rows=buildSimceGrid(50,{
+    firstColumnA:{x:cal.leftX*width,y:cal.leftY*height},
+    secondColumnA:{x:cal.rightX*width,y:cal.rightY*height},
+    bubbleSpacing:cal.spacing*width,rowSpacing:cal.rowSpacing*height,
+    bubbleRadius:cal.radius*Math.min(width,height),leftRows:25
+  },width,height);
+  const data=new Uint8ClampedArray(width*height*4).fill(255);
+  rows.forEach((row,i)=>{
+    const selected=i===9?[]:i===19?[0,2]:[i%4];
+    for(const index of selected){
+      const bubble=row.bubbles[index],cx=Math.round(bubble.x),cy=Math.round(bubble.y);
+      const radius=Math.floor(bubble.radius*0.7);
+      for(let dy=-radius;dy<=radius;dy++)for(let dx=-radius;dx<=radius;dx++){
+        if(dx*dx+dy*dy>radius*radius)continue;
+        const k=((cy+dy)*width+cx+dx)*4;data[k]=data[k+1]=data[k+2]=0;
+      }
+    }
+  });
+  const result=readCalibratedSheet({data,width,height},rows);
+  assert.equal(result.answers[9].mark,null);
+  assert.equal(result.answers[19].mark,"MULTIPLE");
+  assert.deepEqual(result.reviewNumbers,[20]);
+  assert.equal(result.answers.length,50);
+});
