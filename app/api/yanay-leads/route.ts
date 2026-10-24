@@ -7,6 +7,8 @@ export async function POST(req:Request){
   const host=req.headers.get("host");
   if(!origin || !host)return NextResponse.json({error:"Origen requerido"},{status:403});
   if(origin && host){try{if(new URL(origin).host!==host)return NextResponse.json({error:"Origen no autorizado"},{status:403});}catch{return NextResponse.json({error:"Origen inválido"},{status:403});}}
+  const type=req.headers.get("content-type")||"";
+  if(!type.toLowerCase().startsWith("application/json"))return NextResponse.json({error:"Formato no admitido"},{status:415});
   const size=Number(req.headers.get("content-length")||0);
   if(size>8192)return NextResponse.json({error:"Solicitud demasiado grande"},{status:413});
   let payload:unknown;
