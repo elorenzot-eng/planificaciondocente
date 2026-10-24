@@ -14,6 +14,7 @@ export default function CargaHojaSimce() {
   const [error,setError] = useState("");
   const [preview,setPreview] = useState<string|null>(null);
   const [total,setTotal] = useState(40);
+  const [firstQuestion,setFirstQuestion] = useState(1);
   const [result,setResult] = useState<OmrSheetResult|null>(null);
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
@@ -32,7 +33,7 @@ export default function CargaHojaSimce() {
   };
   async function analyze(){
     if(!file||!preview||file.name.toLowerCase().endsWith(".pdf")){setError("El análisis óptico inicial admite imágenes JPG o PNG; PDF está pendiente.");return;}
-    if(!Number.isInteger(total)||total<1||total>50){setError("Cada hoja admite entre 1 y 50 preguntas. Carga las páginas por separado.");return;}
+    if(!Number.isInteger(total)||total<1||total>50||!Number.isInteger(firstQuestion)||firstQuestion<1||firstQuestion+total-1>100){setError("Cada hoja admite entre 1 y 50 preguntas, numeradas hasta la 100. Revisa el inicio y la cantidad de preguntas.");return;}
     setBusy(true);setError("");setResult(null);
     try{
       const img=await createImageBitmap(file);
@@ -51,7 +52,9 @@ export default function CargaHojaSimce() {
           bubbleSpacing:cal.spacing*aligned.width,rowSpacing:cal.rowSpacing*aligned.height,
           bubbleRadius:cal.radius*Math.min(aligned.width,aligned.height),leftRows:cal.leftRows
         },aligned.width,aligned.height);
-        setResult(readCalibratedSheet({data:aligned.data,width:aligned.width,height:aligned.height},rows));
+        const reading=readCalibratedSheet({data:aligned.data,width:aligned.width,height:aligned.height},rows);
+        const offset=firstQuestion-1;
+        setResult({...reading,answers:reading.answers.map(a=>({...a,number:a.number+offset})),reviewNumbers:reading.reviewNumbers.map(n=>n+offset),measurements:reading.measurements.map(m=>({...m,number:m.number+offset}))});
       }finally{img.close();}
     }catch(e){setError(e instanceof Error?e.message:"No fue posible analizar la imagen");}
     finally{setBusy(false);}
@@ -84,6 +87,7 @@ export default function CargaHojaSimce() {
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
         <p style={{fontSize:13}}>Para ensayos de más de 50 preguntas, carga cada página por separado. Esta versión todavía no consolida automáticamente varias páginas.</p>
         <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada.</p>
+        <label>Primera pregunta de esta página <input type="number" min={1} max={100} value={firstQuestion} onChange={e=>{setFirstQuestion(Number(e.target.value));setResult(null);}}/></label>
         <label>Preguntas <input type="number" min={1} max={50} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
         <button type="button" onClick={()=>setAdvanced(!advanced)} style={{marginTop:12,display:"block"}}>{advanced?"Ocultar":"Mostrar"} calibración avanzada</button>
         {advanced && <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12,marginTop:12}}>
