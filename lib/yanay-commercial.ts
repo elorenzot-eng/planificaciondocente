@@ -8,8 +8,8 @@ export function parseYanayLead(v:unknown):{ok:true;data:YanayLeadInput}|{ok:fals
  const data:YanayLeadInput={name:clean(b.name,120),institution:clean(b.institution,180),role:clean(b.role,100),phone:clean(b.phone,32),email:clean(b.email,254).toLowerCase(),product:products.includes(b.product as YanayProduct)?b.product as YanayProduct:"OTRO",preferredTime:clean(b.preferredTime,120),notes:clean(b.notes,1000),consent:b.consent===true};
  const errors:string[]=[];
  if(data.name.length<2)errors.push("Ingresa tu nombre");
- if(!/^\\+?[0-9 ()-]{8,32}$/.test(data.phone)||data.phone.replace(/\\D/g,"").length<8)errors.push("Teléfono inválido");
- if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(data.email))errors.push("Correo inválido");
+ if(!/^\+?[0-9 ()-]{8,32}$/.test(data.phone)||data.phone.replace(/\D/g,"").length<8)errors.push("Teléfono inválido");
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))errors.push("Correo inválido");
  if(!data.consent)errors.push("Autoriza el registro de datos y el contacto comercial");
  return errors.length?{ok:false,errors}:{ok:true,data};
 }
