@@ -31,7 +31,8 @@ export default function CargaHojaSimce() {
     setFile(f);setPreview(URL.createObjectURL(f));
   };
   async function analyze(){
-    if(!file||!preview||file.type==="application/pdf"){setError("El análisis óptico inicial admite imágenes JPG o PNG; PDF está pendiente.");return;}
+    if(!file||!preview||file.name.toLowerCase().endsWith(".pdf")){setError("El análisis óptico inicial admite imágenes JPG o PNG; PDF está pendiente.");return;}
+    if(!Number.isInteger(total)||total<1||total>50){setError("Cada hoja admite entre 1 y 50 preguntas. Carga las páginas por separado.");return;}
     setBusy(true);setError("");setResult(null);
     try{
       const img=await createImageBitmap(file);
@@ -79,10 +80,11 @@ export default function CargaHojaSimce() {
       {file.name.toLowerCase().endsWith(".pdf")?<iframe title="Vista previa PDF" src={preview} style={{width:"100%",height:400,border:"1px solid #d7e8eb"}}/>:
       <img alt="Hoja seleccionada" src={preview} style={{maxWidth:"100%",maxHeight:480,borderRadius:8}}/>}
       {!file.name.toLowerCase().endsWith(".pdf")&&<section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
-        <h3>Lectura óptica experimental · calibración manual</h3>
+        <h3>Lectura óptica experimental · una página por vez</h3>
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
+        <p style={{fontSize:13}}>Para ensayos de más de 50 preguntas, carga cada página por separado. Esta versión todavía no consolida automáticamente varias páginas.</p>
         <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada.</p>
-        <label>Preguntas <input type="number" min={1} max={100} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
+        <label>Preguntas <input type="number" min={1} max={50} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
         <button type="button" onClick={()=>setAdvanced(!advanced)} style={{marginTop:12,display:"block"}}>{advanced?"Ocultar":"Mostrar"} calibración avanzada</button>
         {advanced && <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12,marginTop:12}}>
           {fields.map(f=><label key={f.key} style={{display:"grid",gap:4,fontSize:13}}>{f.label}<input type="number" step={f.step} min={0} max={f.key==="leftRows"?100:1} value={cal[f.key]} onChange={e=>{setCal(old=>({...old,[f.key]:Number(e.target.value)}));setResult(null);}}/></label>)}
