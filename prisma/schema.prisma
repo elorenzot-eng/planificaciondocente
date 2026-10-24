@@ -519,3 +519,22 @@ model SavedPaesExam {
   @@unique([userId,sourceJobId])
   @@index([userId,createdAt])
 }
+
+model YanayCommercialLead {
+  id String @id @default(cuid())
+  name String
+  institution String?
+  role String?
+  phone String
+  email String
+  product String
+  preferredTime String?
+  notes String? @db.Text
+  consentAt DateTime
+  status String @default("NUEVO")
+  confirmedMeetingAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status,createdAt])
+  @@index([email,createdAt])
+}
