@@ -19,6 +19,8 @@ export default function CargaHojaSimce() {
   const [pages,setPages] = useState<OmrSheetResult[]>([]);
   const [corrections,setCorrections] = useState<Record<number,string>>({});
   const [answerKey,setAnswerKey] = useState("");
+  const [studentId,setStudentId] = useState("");
+  const [essayId,setEssayId] = useState("");
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [autoAlign,setAutoAlign] = useState(true);
@@ -80,7 +82,8 @@ export default function CargaHojaSimce() {
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
     if(!answers.length)return;
-    const rows=["Pregunta;Marca;Estado",...answers.map(a=>[a.number,String(corrections[a.number]??a.mark??""),corrections[a.number]!==undefined?"REVISADA":a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA"].join(";"))];
+    const safe=(value:string)=>{const v=value.replace(/"/g,'""');return `"${/^[=+@-]/.test(v.trimStart())?"\u0027"+v:v}"`;};
+    const rows=["Estudiante;Ensayo;Pregunta;Marca;Estado",...answers.map(a=>[safe(studentId),safe(essayId),a.number,String(corrections[a.number]??a.mark??""),corrections[a.number]!==undefined?"REVISADA":a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA"].join(";"))];
     const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const link=document.createElement("a");link.href=url;link.download="lectura-simce-paginas.csv";link.click();
@@ -142,6 +145,7 @@ export default function CargaHojaSimce() {
             </select>
           </label>)}
         </details>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}><label>Estudiante<input value={studentId} onChange={e=>setStudentId(e.target.value)} maxLength={100}/></label><label>Identificador del ensayo<input value={essayId} onChange={e=>setEssayId(e.target.value)} maxLength={60}/></label></div>
         <div style={{padding:12,marginBottom:12,background:"#fff",borderRadius:8}}>
           <label style={{display:"grid",gap:6}}>Clave de respuestas (A, B, C, D en orden, sin números)
             <textarea value={answerKey} onChange={e=>setAnswerKey(e.target.value.toUpperCase())} rows={3} placeholder="Ejemplo: ABCDABCD..." style={{width:"100%",padding:8}}/>
