@@ -169,9 +169,9 @@ test("OMR: marca tenue se conserva como dudosa y no se adivina",()=>{
   const {raster,rows}=synthetic([null]);
   const bubble=rows[0].bubbles[1],cx=bubble.x,cy=bubble.y;
   for(let y=cy-9;y<=cy+9;y++)for(let x=cx-9;x<=cx+9;x++){
-    if((x-cx)**2+(y-cy)**2>81)continue;
+    if((x-cx)**2+(y-cy)**2>81 || (x+y)%4!==0)continue;
     const k=(y*raster.width+x)*4;
-    raster.data[k]=raster.data[k+1]=raster.data[k+2]=110;
+    raster.data[k]=raster.data[k+1]=raster.data[k+2]=0;
   }
   const result=readCalibratedSheet(raster,rows);
   assert.equal(result.answers[0].mark,"UNCERTAIN");
