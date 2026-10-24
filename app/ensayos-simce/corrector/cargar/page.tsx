@@ -137,7 +137,7 @@ export default function CargaHojaSimce() {
       <h2>Vista previa</h2>
       {file.name.toLowerCase().endsWith(".pdf")?<iframe title="Vista previa PDF" src={preview} style={{width:"100%",height:400,border:"1px solid #d7e8eb"}}/>:
       <img alt="Hoja seleccionada" src={preview} style={{maxWidth:"100%",maxHeight:480,borderRadius:8}}/>}
-      <section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
+      {<section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
         <h3>Lectura óptica experimental · una página por vez</h3>
         {file.name.toLowerCase().endsWith(".pdf")&&<label>Página del PDF <input type="number" min={1} value={pdfPage} onChange={e=>{setPdfPage(Number(e.target.value));setResult(null);}}/></label>}
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
