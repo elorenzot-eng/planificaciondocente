@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { gradeSimce, type SimceAlternative, type SimceMark } from "@/lib/simce-paper-grading";
+import { gradeSimce, type SimceAlternative, type SimceMark } from "../../../lib/simce-paper-grading";
 
 const OPTIONS: SimceAlternative[] = ["A", "B", "C", "D"];
 function parseKey(raw: string) {
