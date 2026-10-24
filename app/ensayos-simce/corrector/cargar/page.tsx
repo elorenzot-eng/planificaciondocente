@@ -81,6 +81,8 @@ export default function CargaHojaSimce() {
   const completeSet=Number.isInteger(expectedQuestions)&&expectedQuestions>=1&&expectedQuestions<=100&&combinedAnswers.length===expectedQuestions&&combinedAnswers.every((a,i)=>a.number===i+1);
   const keyComplete=completeSet&&keyValid&&key.length===expectedQuestions;
   const pending=resolved.filter(a=>a.mark==="UNCERTAIN"||a.mark==="MULTIPLE").length;
+  const blank=resolved.filter(a=>a.mark===null||a.mark==="").length;
+  const readyToScore=keyComplete&&pending===0;
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
     if(!answers.length)return;
@@ -152,7 +154,7 @@ export default function CargaHojaSimce() {
           <label style={{display:"grid",gap:6}}>Clave de respuestas (A, B, C, D en orden, sin números)
             <textarea value={answerKey} onChange={e=>setAnswerKey(e.target.value.toUpperCase())} rows={3} placeholder="Ejemplo: ABCDABCD..." style={{width:"100%",padding:8}}/>
           </label>
-          <p style={{fontSize:13}}>Cobertura: {combinedAnswers.length} de {expectedQuestions} preguntas. {completeSet?"Numeración completa.":"Faltan preguntas o existen saltos de numeración."} Clave: {key.length} preguntas. {keyComplete?`Aciertos provisionales: ${correct} de ${combinedAnswers.length}.`:"La clave no está completa o contiene caracteres inválidos; no se calcula una puntuación global."} Pendientes de revisión óptica: {pending}.</p>
+          <p style={{fontSize:13}}>Cobertura: {combinedAnswers.length} de {expectedQuestions} preguntas. {completeSet?"Numeración completa.":"Faltan preguntas o existen saltos de numeración."} Clave: {key.length} preguntas. {readyToScore?`Aciertos provisionales: ${correct} de ${expectedQuestions}.`:"La corrección no está lista: verifica cobertura, clave y marcas dudosas antes de mostrar el resultado global."} Pendientes de revisión óptica: {pending}. Sin respuesta: {blank}.</p>
           <p style={{fontSize:12}}>Resultado provisional; comprueba que la clave corresponda al ensayo y revisa las respuestas dudosas antes de utilizarlo.</p>
         </div>
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
