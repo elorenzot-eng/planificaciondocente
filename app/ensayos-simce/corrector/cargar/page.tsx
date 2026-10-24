@@ -22,6 +22,7 @@ export default function CargaHojaSimce() {
   const [studentId,setStudentId] = useState("");
   const [essayId,setEssayId] = useState("");
   const [expectedQuestions,setExpectedQuestions] = useState(40);
+  const [confirmedReview,setConfirmedReview] = useState(false);
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [autoAlign,setAutoAlign] = useState(true);
@@ -66,13 +67,14 @@ export default function CargaHojaSimce() {
     finally{setBusy(false);}
   }
   const newStudent = () => {
-    setPages([]);setCorrections({});setStudentId("");setResult(null);setFile(null);setPreview(null);setQuality(null);setError("");setFirstQuestion(1);
+    setPages([]);setCorrections({});setConfirmedReview(false);setStudentId("");setResult(null);setFile(null);setPreview(null);setQuality(null);setError("");setFirstQuestion(1);
   };
   const savePage = () => {
     if(!result)return;
     const numbers=new Set(result.answers.map(a=>a.number));
     if(pages.some(page=>page.answers.some(a=>numbers.has(a.number)))){setError("Esta página contiene preguntas ya guardadas. Elimina las páginas anteriores antes de reemplazarlas.");return;}
     setPages(previous=>[...previous,result].sort((a,b)=>a.answers[0].number-b.answers[0].number));
+    setConfirmedReview(false);
     setError("");
   };
   const key=answerKey.toUpperCase().replace(/[\\s,;|-]/g,"").replace(/[^ABCD]/g,"");
@@ -85,7 +87,7 @@ export default function CargaHojaSimce() {
   const keyComplete=completeSet&&keyValid&&key.length===expectedQuestions;
   const pending=resolved.filter(a=>a.mark==="UNCERTAIN"||a.mark==="MULTIPLE").length;
   const blank=resolved.filter(a=>a.mark===null||a.mark==="").length;
-  const readyToScore=keyComplete&&pending===0;
+  const readyToScore=keyComplete&&pending===0&&confirmedReview;
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
     if(!answers.length)return;
@@ -146,18 +148,19 @@ export default function CargaHojaSimce() {
         <p style={{fontSize:13}}>Páginas: {pages.map(p=>`${p.answers[0].number}–${p.answers[p.answers.length-1].number}`).join(", ")}. La exportación no equivale a una calificación validada.</p>
         <details style={{marginBottom:12}}><summary>Revisar y corregir respuestas ({pages.flatMap(p=>p.reviewNumbers).length} observaciones)</summary>
           {pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number).map(a=><label key={a.number} style={{display:"inline-flex",alignItems:"center",gap:6,margin:6,fontSize:13}}>
-            {a.number}: <select aria-label={`Respuesta revisada pregunta ${a.number}`} value={corrections[a.number]??(a.mark??"")} onChange={e=>setCorrections(old=>({...old,[a.number]:e.target.value}))}>
+            {a.number}: <select aria-label={`Respuesta revisada pregunta ${a.number}`} value={corrections[a.number]??(a.mark??"")} onChange={e=>{setCorrections(old=>({...old,[a.number]:e.target.value}));setConfirmedReview(false);}}>
               <option value="">Sin respuesta</option>{["A","B","C","D"].map(v=><option key={v} value={v}>{v}</option>)}
               {a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?<option value={a.mark}>{a.mark==="UNCERTAIN"?"Dudosa":"Múltiple"}</option>:null}
             </select>
           </label>)}
         </details>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}><label>Total de preguntas del ensayo<input type="number" min={1} max={100} value={expectedQuestions} onChange={e=>setExpectedQuestions(Number(e.target.value))}/></label><label>Estudiante<input value={studentId} onChange={e=>setStudentId(e.target.value)} maxLength={100}/></label><label>Identificador del ensayo<input value={essayId} onChange={e=>setEssayId(e.target.value)} maxLength={60}/></label></div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}><label>Total de preguntas del ensayo<input type="number" min={1} max={100} value={expectedQuestions} onChange={e=>{setExpectedQuestions(Number(e.target.value));setConfirmedReview(false);}}/></label><label>Estudiante<input value={studentId} onChange={e=>setStudentId(e.target.value)} maxLength={100}/></label><label>Identificador del ensayo<input value={essayId} onChange={e=>setEssayId(e.target.value)} maxLength={60}/></label></div>
+        <label style={{display:"flex",gap:8,alignItems:"center",marginBottom:12}}><input type="checkbox" checked={confirmedReview} onChange={e=>setConfirmedReview(e.target.checked)}/> Confirmo que revisé las marcas y que la pauta corresponde a este ensayo.</label>
         <div style={{padding:12,marginBottom:12,background:"#fff",borderRadius:8}}>
           <label style={{display:"grid",gap:6}}>Clave de respuestas (A, B, C, D en orden, sin números)
-            <textarea value={answerKey} onChange={e=>setAnswerKey(e.target.value.toUpperCase())} rows={3} placeholder="Ejemplo: ABCDABCD..." style={{width:"100%",padding:8}}/>
+            <textarea value={answerKey} onChange={e=>{setAnswerKey(e.target.value.toUpperCase());setConfirmedReview(false);}} rows={3} placeholder="Ejemplo: ABCDABCD..." style={{width:"100%",padding:8}}/>
           </label>
-          <p style={{fontSize:13}}>Cobertura: {combinedAnswers.length} de {expectedQuestions} preguntas. {completeSet?"Numeración completa.":"Faltan preguntas o existen saltos de numeración."} Clave: {key.length} preguntas. {readyToScore?`Aciertos provisionales: ${correct} de ${expectedQuestions}.`:"La corrección no está lista: verifica cobertura, clave y marcas dudosas antes de mostrar el resultado global."} Pendientes de revisión óptica: {pending}. Sin respuesta: {blank}.</p>
+          <p style={{fontSize:13}}>Cobertura: {combinedAnswers.length} de {expectedQuestions} preguntas. {completeSet?"Numeración completa.":"Faltan preguntas o existen saltos de numeración."} Clave: {key.length} preguntas. {readyToScore?`Aciertos provisionales: ${correct} de ${expectedQuestions}.`:"La corrección no está lista: verifica cobertura, clave, marcas dudosas y confirmación docente antes de mostrar el resultado global."} Pendientes de revisión óptica: {pending}. Sin respuesta: {blank}.</p>
           <p style={{fontSize:12}}>Resultado provisional; comprueba que la clave corresponda al ensayo y revisa las respuestas dudosas antes de utilizarlo.</p>
         </div>
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
