@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { assessSimceImageQuality, type SimceImageQuality } from "@/lib/simce-paper-image-quality";
-import { detectRegistrationCorners } from "@/lib/simce-paper-registration";
-import { rectifySheet } from "@/lib/simce-paper-perspective";
-import { buildSimceGrid } from "@/lib/simce-paper-grid";
-import { readCalibratedSheet, type OmrSheetResult } from "@/lib/simce-paper-sheet-reader";
+import { assessSimceImageQuality, type SimceImageQuality } from "../../../../lib/simce-paper-image-quality";
+import { detectRegistrationCorners } from "../../../../lib/simce-paper-registration";
+import { rectifySheet } from "../../../../lib/simce-paper-perspective";
+import { buildSimceGrid } from "../../../../lib/simce-paper-grid";
+import { readCalibratedSheet, type OmrSheetResult } from "../../../../lib/simce-paper-sheet-reader";
 
 const ACCEPT = ".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf";
 const MAX_BYTES = 10 * 1024 * 1024;
