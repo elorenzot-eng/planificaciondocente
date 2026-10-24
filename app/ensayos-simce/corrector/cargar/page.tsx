@@ -65,6 +65,9 @@ export default function CargaHojaSimce() {
     }catch(e){setError(e instanceof Error?e.message:"No fue posible analizar la imagen");}
     finally{setBusy(false);}
   }
+  const newStudent = () => {
+    setPages([]);setCorrections({});setStudentId("");setResult(null);setFile(null);setPreview(null);setQuality(null);setError("");setFirstQuestion(1);
+  };
   const savePage = () => {
     if(!result)return;
     const numbers=new Set(result.answers.map(a=>a.number));
@@ -158,7 +161,7 @@ export default function CargaHojaSimce() {
           <p style={{fontSize:12}}>Resultado provisional; comprueba que la clave corresponda al ensayo y revisa las respuestas dudosas antes de utilizarlo.</p>
         </div>
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
-        <button type="button" onClick={()=>{setPages([]);setCorrections({});}} style={{padding:10}}>Vaciar páginas</button>
+        <button type="button" onClick={()=>{if(window.confirm("¿Iniciar otro estudiante? Se borrarán las lecturas y revisiones actuales. Exporta primero los resultados si deseas conservarlos."))newStudent();}} style={{padding:10}}>Nuevo estudiante · limpiar lecturas</button>
       </section>}
       <p style={{fontSize:13,color:"#526a78"}}>Procesamiento local en el navegador: no se sube el archivo al servidor. La corrección de perspectiva es experimental; aún faltan validación con fotografías reales, PDF y vinculación a la pauta del ensayo.</p>
     </section>}
