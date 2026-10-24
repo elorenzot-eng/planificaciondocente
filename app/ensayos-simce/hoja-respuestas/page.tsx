@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { SIMCE_PAPER_MM as mm } from "../../../lib/simce-paper-template";
 
 const choices = ["A", "B", "C", "D"];
 export default function HojaRespuestasSimce() {
@@ -17,20 +18,17 @@ export default function HojaRespuestasSimce() {
       .sheet-fields label{font-size:14px;font-weight:600;display:grid;gap:5px}
       .sheet-fields input,.sheet-fields select{width:100%;padding:10px;border:1px solid #adcbd0;border-radius:8px;background:white;color:#18394c}
       .sheet-action{border:0;background:#087f91;color:white;padding:12px 18px;border-radius:9px;font-weight:700;cursor:pointer;margin-top:15px}
-      .answer-sheet{background:white;border:2px solid #18394c;padding:22px;position:relative;margin-bottom:20px;break-inside:avoid;page-break-inside:avoid}
-      .sheet-registration{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-      .sheet-fiducial{width:12mm;height:12mm;background:#111;display:block;flex-shrink:0}
-      .sheet-registration-bottom{margin-top:16px;margin-bottom:0}
-      .sheet-title{text-align:center;margin:0 0 12px;font-size:22px}
-      .sheet-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:18px}
-      .sheet-meta div{border-bottom:1px solid #9daeb9;padding:7px 0}
-      .bubble-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
-      .bubble-column{display:flex;flex-direction:column;min-width:0}\n      .bubble-row{display:flex;align-items:center;gap:11px;padding:6px 2px;break-inside:avoid;font-size:13px}
-      .bubble-number{width:27px;text-align:right;font-weight:bold}
-      .bubble{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #172d3b;border-radius:50%;width:26px;height:26px;font-size:11px;font-weight:bold}
-      .sheet-note{font-size:12px;margin-top:18px;color:#465b65}
-      @media(max-width:600px){.sheet-fields,.sheet-meta,.bubble-grid{grid-template-columns:1fr}.sheet-page{padding:12px}}
-      @media print{ @page{size:A4;margin:12mm} body{background:white!important}.sheet-config,.sheet-back,.sheet-intro{display:none!important}.sheet-page{padding:0;max-width:none}.answer-sheet{border:0;padding:0}.sheet-fiducial{print-color-adjust:exact;-webkit-print-color-adjust:exact}.bubble-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bubble-row{padding:2px 2px;gap:9px;font-size:11px}.bubble{width:21px;height:21px;font-size:9px}.sheet-registration{margin-bottom:6px}.sheet-registration-bottom{margin-top:8px;margin-bottom:0}.sheet-meta{margin-bottom:9px;font-size:11px;gap:4px}.sheet-meta div{padding:3px 0}.sheet-title{font-size:17px;margin-bottom:7px}.sheet-note{margin-top:7px;font-size:10px}.answer-sheet{break-after:page;page-break-after:always}.answer-sheet:last-child{break-after:auto;page-break-after:auto}}
+      .answer-sheet{background:white;position:relative;margin:0 auto 20px;width:186mm;height:273mm;box-sizing:border-box;break-inside:avoid;page-break-inside:avoid;overflow:hidden;color:#18394c}
+      .sheet-fiducial{position:absolute;width:12mm;height:12mm;background:#111;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+      .sheet-title{position:absolute;top:20mm;left:0;width:100%;text-align:center;font-size:18px;margin:0}
+      .sheet-meta{position:absolute;top:29mm;left:20mm;width:146mm;display:grid;grid-template-columns:1fr 1fr;gap:2mm;font-size:10px}
+      .sheet-meta div{border-bottom:1px solid #9daeb9;padding:1mm 0;overflow:hidden;white-space:nowrap}
+      .bubble-row{position:absolute;height:6mm;display:flex;align-items:center;gap:4mm;font-size:11px}
+      .bubble-number{position:absolute;right:3mm;width:12mm;text-align:right;font-weight:bold}
+      .bubble{position:absolute;top:0;width:6mm;height:6mm;box-sizing:border-box;border:0.35mm solid #172d3b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold}
+      .sheet-note{position:absolute;bottom:14mm;left:20mm;font-size:10px;color:#465b65}
+      @media(max-width:600px){.sheet-fields{grid-template-columns:1fr}.sheet-page{padding:12px}.answer-sheet{transform-origin:top left;max-width:none}}
+      @media print{@page{size:A4;margin:12mm}body{background:white!important}.sheet-config,.sheet-back,.sheet-intro{display:none!important}.sheet-page{padding:0;max-width:none}.answer-sheet{margin:0;break-after:page;page-break-after:always}.answer-sheet:last-child{break-after:auto;page-break-after:auto}}
     `}</style>
     <a className="sheet-back" href="/ensayos-simce">← Volver a Ensayos SIMCE</a>
     <h1 className="sheet-intro">Hoja de respuestas SIMCE · versión imprimible</h1>
@@ -50,11 +48,18 @@ export default function HojaRespuestasSimce() {
       const count=Math.min(50,total-pageIndex*50);
       const leftCount=Math.ceil(count/2);
       return <section className="answer-sheet" key={pageIndex} aria-label={`Hoja imprimible ${pageIndex+1}`}>
-        <div className="sheet-registration" aria-label="Marcas de referencia superiores"><span className="sheet-fiducial"/><span className="sheet-fiducial"/></div>
+        {[[mm.fiducialLeft,mm.fiducialTop],[mm.fiducialRight,mm.fiducialTop],[mm.fiducialLeft,mm.fiducialBottom],[mm.fiducialRight,mm.fiducialBottom]].map(([x,y],i)=><span key={i} className="sheet-fiducial" style={{left:`${x-6}mm`,top:`${y-6}mm`}}/>)}
         <h2 className="sheet-title">EducAntay · Hoja de respuestas</h2>
         <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div><div>Página: {pageIndex+1} de {Math.ceil(total/50)}</div><div>Preguntas: {first}–{first+count-1}</div></div>
-        <div className="bubble-grid">{[0,1].map(column=><div className="bubble-column" key={column}>{Array.from({length:column===0?leftCount:count-leftCount},(_,offset)=>{const number=first+offset+(column===0?0:leftCount);return <div className="bubble-row" key={number}><span className="bubble-number">{number}.</span>{choices.map(c=><span key={c} className="bubble">{c}</span>)}</div>;})}</div>)}</div>
-        <div className="sheet-registration sheet-registration-bottom" aria-label="Marcas de referencia inferiores"><span className="sheet-fiducial"/><span className="sheet-fiducial"/></div>
+        {[0,1].flatMap(column=>Array.from({length:column===0?leftCount:count-leftCount},(_,offset)=>{
+          const number=first+offset+(column===0?0:leftCount);
+          const firstX=column===0?mm.firstLeftX:mm.firstRightX;
+          const y=mm.firstY+offset*mm.rowStep;
+          return <div key={number} className="bubble-row" style={{left:`${firstX}mm`,top:`${y-3}mm`}}>
+            <span className="bubble-number" style={{top:0,right:"4mm",transform:"translateX(-4mm)"}}>{number}.</span>
+            {choices.map((c,i)=><span key={c} className="bubble" style={{left:`${i*mm.optionStep-3}mm`}}>{c}</span>)}
+          </div>;
+        }))}
         <p className="sheet-note">Marca completamente una alternativa por pregunta. Procesa cada página por separado.</p>
       </section>;
     })}
