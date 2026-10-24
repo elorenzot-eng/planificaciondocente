@@ -31,6 +31,7 @@ export default function CorrectorSimcePage() {
   return <main style={{maxWidth:1000,margin:"auto",padding:24,fontFamily:"Arial,sans-serif",color:"#173752"}}>
     <a href="/ensayos-simce" style={{color:"#087f91"}}>← Ensayos SIMCE</a>
     <h1>Corrector SIMCE · revisión docente</h1>
+    <a href="/ensayos-simce/corrector/cargar" style={{display:"inline-block",background:"#087f91",color:"#fff",padding:"11px 16px",borderRadius:9,textDecoration:"none",marginBottom:12}}>Cargar hoja JPG, PNG o PDF →</a>
     <p>Versión inicial para ingresar o revisar respuestas manualmente. La lectura por fotografía y la vinculación automática con ensayos guardados todavía no están disponibles.</p>
     <div style={{background:"#f0fafb",padding:18,borderRadius:12,display:"grid",gap:12}}>
       <label>Estudiante (opcional)<input value={name} maxLength={100} onChange={e=>{setName(e.target.value);setLocked(false);}} style={{display:"block",padding:10,width:"100%",boxSizing:"border-box"}}/></label>
