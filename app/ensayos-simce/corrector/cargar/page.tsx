@@ -16,6 +16,7 @@ export default function CargaHojaSimce() {
   const [total,setTotal] = useState(40);
   const [firstQuestion,setFirstQuestion] = useState(1);
   const [result,setResult] = useState<OmrSheetResult|null>(null);
+  const [pages,setPages] = useState<OmrSheetResult[]>([]);
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [autoAlign,setAutoAlign] = useState(true);
@@ -59,6 +60,21 @@ export default function CargaHojaSimce() {
     }catch(e){setError(e instanceof Error?e.message:"No fue posible analizar la imagen");}
     finally{setBusy(false);}
   }
+  const savePage = () => {
+    if(!result)return;
+    const numbers=new Set(result.answers.map(a=>a.number));
+    if(pages.some(page=>page.answers.some(a=>numbers.has(a.number)))){setError("Esta página contiene preguntas ya guardadas. Elimina las páginas anteriores antes de reemplazarlas.");return;}
+    setPages(previous=>[...previous,result].sort((a,b)=>a.answers[0].number-b.answers[0].number));
+    setError("");
+  };
+  const exportCombined = () => {
+    const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
+    const rows=["Pregunta;Marca",...answers.map(a=>[a.number,String(a.mark??"")].join(";"))];
+    const blob=new Blob(["\\uFEFF"+rows.join("\\r\\n")],{type:"text/csv;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");link.href=url;link.download="lectura-simce-paginas.csv";link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
   const fields: {key:keyof typeof cal;label:string;step:string}[]=[
     {key:"leftX",label:"Columna izquierda X",step:"0.001"},
     {key:"leftY",label:"Columna izquierda Y",step:"0.001"},
@@ -100,7 +116,14 @@ export default function CargaHojaSimce() {
         <h3>Lectura preliminar: {result.answers.length} respuestas</h3>
         <p>{result.reviewNumbers.length} marcas dudosas o múltiples. <strong>No es una calificación ni debe utilizarse sin revisión docente.</strong></p>
         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{result.answers.map(a=><span key={a.number} style={{padding:8,border:"1px solid #a7d6dc",borderRadius:6}}>{a.number}: {a.mark??"—"}</span>)}</div>
+        <button type="button" onClick={savePage} style={{marginTop:14,marginRight:8,padding:10}}>Agregar esta página al ensayo</button>
         <button type="button" style={{marginTop:14,padding:10}} onClick={()=>{const csv="Pregunta,Marca,Confianza\n"+result.answers.map((a,i)=>[a.number,a.mark??"",result.measurements[i].confidence.toFixed(3)].join(",")).join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const link=document.createElement("a");link.href=url;link.download="lectura-simce-experimental.csv";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}}>Exportar lectura CSV para revisión</button>
+      </section>}
+      {pages.length>0&&<section style={{marginTop:16,padding:16,border:"1px solid #a7d6dc",borderRadius:10}}>
+        <h3>Ensayo consolidado · {pages.length} página(s)</h3>
+        <p>{pages.reduce((n,p)=>n+p.answers.length,0)} respuestas registradas. Revisa todas las marcas antes de corregir.</p>
+        <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
+        <button type="button" onClick={()=>setPages([])} style={{padding:10}}>Vaciar páginas</button>
       </section>}
       <p style={{fontSize:13,color:"#526a78"}}>Procesamiento local en el navegador: no se sube el archivo al servidor. La corrección de perspectiva es experimental; aún faltan validación con fotografías reales, PDF y vinculación a la pauta del ensayo.</p>
     </section>}
