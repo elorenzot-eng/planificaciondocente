@@ -10,7 +10,7 @@ export async function POST(req:Request){
   const size=Number(req.headers.get("content-length")||0);
   if(size>8192)return NextResponse.json({error:"Solicitud demasiado grande"},{status:413});
   let payload:unknown;
-  try{payload=await req.json();}catch{return NextResponse.json({error:"JSON inválido"},{status:400});}
+  try{const raw=await req.text();if(raw.length>8192)return NextResponse.json({error:"Solicitud demasiado grande"},{status:413});payload=JSON.parse(raw);}catch{return NextResponse.json({error:"JSON inválido"},{status:400});}
   if(payload && typeof payload==="object" && "website" in payload && Boolean((payload as {website?:unknown}).website))return NextResponse.json({message:"Solicitud recibida",confirmed:false},{status:202});
   const parsed=parseYanayLead(payload);
   if(!parsed.ok)return NextResponse.json({error:"Revisa los datos",details:parsed.errors},{status:400});
