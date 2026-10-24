@@ -47,3 +47,23 @@ test("OMR: rechaza geometría duplicada",()=>{
   const {raster,rows}=synthetic(["A"]);
   assert.throws(()=>readCalibratedSheet(raster,[rows[0],rows[0]]),/Geometría/);
 });
+const {buildSimceGrid}=require("../lib/simce-paper-grid.ts");
+test("Grilla SIMCE: distribución correlativa de 40 preguntas en dos columnas",()=>{
+  const rows=buildSimceGrid(40,{
+    firstColumnA:{x:100,y:100},secondColumnA:{x:650,y:100},
+    bubbleSpacing:40,rowSpacing:45,bubbleRadius:12,leftRows:20
+  },1200,1600);
+  assert.equal(rows.length,40);
+  assert.equal(rows[0].number,1);
+  assert.equal(rows[19].bubbles[0].y,955);
+  assert.equal(rows[20].number,21);
+  assert.equal(rows[20].bubbles[0].x,650);
+  assert.equal(rows[39].number,40);
+  assert.equal(rows[39].bubbles[3].x,770);
+});
+test("Grilla SIMCE: rechaza coordenadas que exceden el papel",()=>{
+  assert.throws(()=>buildSimceGrid(50,{
+    firstColumnA:{x:100,y:100},secondColumnA:{x:650,y:100},
+    bubbleSpacing:40,rowSpacing:70,bubbleRadius:12,leftRows:25
+  },1200,1600),/calibración excede/);
+});
