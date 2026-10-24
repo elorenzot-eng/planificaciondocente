@@ -93,8 +93,8 @@ export default function CargaHojaSimce() {
     setConfirmedReview(false);
     setError("");
   };
-  const key=answerKey.toUpperCase().replace(/[\\s,;|-]/g,"").replace(/[^ABCD]/g,"");
-  const keyValid=/^[ABCD]*$/.test(answerKey.toUpperCase().replace(/[\\s,;|-]/g,""));
+  const key=answerKey.toUpperCase().replace(/[\s,;|:-]/g,"").replace(/[^ABCD]/g,"");
+  const keyValid=/^[ABCD]*$/.test(answerKey.toUpperCase().replace(/[\s,;|:-]/g,""));
   const combinedAnswers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
   const resolved=combinedAnswers.map(a=>({number:a.number,mark:corrections[a.number]??a.mark}));
   const scored=resolved.filter(a=>a.number<=key.length && ["A","B","C","D"].includes(String(a.mark)));
