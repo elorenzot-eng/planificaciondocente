@@ -15,9 +15,9 @@ export async function PATCH(req:Request,{params}:{params:Promise<{id:string}>}){
  const meeting=b.status==="AGENDADO"&&typeof b.confirmedMeetingAt==="string"?new Date(b.confirmedMeetingAt):null;
  if(b.status==="AGENDADO"&&(!meeting||!Number.isFinite(meeting.getTime())||meeting.getTime()<=Date.now()))return NextResponse.json({error:"Indica fecha futura para confirmar la reunión"},{status:400});
  const {id}=await params;
- const save=async(tx:typeof prisma)=>{if(meeting){const overlapping=await tx.yanayCommercialLead.count({where:{id:{not:id},status:"AGENDADO",confirmedMeetingAt:{gte:new Date(meeting.getTime()-20*60*1000),lt:new Date(meeting.getTime()+20*60*1000)}}});if(overlapping)throw new Error("HORARIO_OCUPADO");}return tx.yanayCommercialLead.update({where:{id},data:{status:b.status,confirmedMeetingAt:meeting},select:{id:true,status:true,confirmedMeetingAt:true}});};
+ const save=async(tx:Pick<typeof prisma,"yanayCommercialLead">)=>{if(meeting){const overlapping=await tx.yanayCommercialLead.count({where:{id:{not:id},status:"AGENDADO",confirmedMeetingAt:{gte:new Date(meeting.getTime()-20*60*1000),lt:new Date(meeting.getTime()+20*60*1000)}}});if(overlapping)throw new Error("HORARIO_OCUPADO");}return tx.yanayCommercialLead.update({where:{id},data:{status:b.status,confirmedMeetingAt:meeting},select:{id:true,status:true,confirmedMeetingAt:true}});};
  let lead;
- try{lead=meeting?await prisma.$transaction(async tx=>save(tx as typeof prisma),{isolationLevel:"Serializable"}):await save(prisma);}
+ try{lead=meeting?await prisma.$transaction(async tx=>save(tx),{isolationLevel:"Serializable"}):await save(prisma);}
  catch(e){if(e instanceof Error&&e.message==="HORARIO_OCUPADO")return NextResponse.json({error:"Ya existe una reunión en ese horario"},{status:409});return NextResponse.json({error:"No se pudo actualizar. Reintenta si el horario está disponible."},{status:409});}
  return lead?NextResponse.json({lead}):NextResponse.json({error:"No encontrado"},{status:404});
 }
