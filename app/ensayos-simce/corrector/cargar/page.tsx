@@ -69,8 +69,9 @@ export default function CargaHojaSimce() {
   };
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
+    if(!answers.length)return;
     const rows=["Pregunta;Marca;Estado",...answers.map(a=>[a.number,String(a.mark??""),a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA"].join(";"))];
-    const blob=new Blob(["\\uFEFF"+rows.join("\\r\\n")],{type:"text/csv;charset=utf-8"});
+    const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const link=document.createElement("a");link.href=url;link.download="lectura-simce-paginas.csv";link.click();
     setTimeout(()=>URL.revokeObjectURL(url),1000);
