@@ -17,7 +17,7 @@ export default function CargaHojaSimce() {
   const [result,setResult] = useState<OmrSheetResult|null>(null);
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
-  const [autoAlign,setAutoAlign] = useState(false);
+  const [autoAlign,setAutoAlign] = useState(true);
   const [advanced,setAdvanced] = useState(false);
   const [cal,setCal] = useState({leftX:0.18,leftY:0.25,rightX:0.65,rightY:0.25,spacing:0.048,rowSpacing:0.026,radius:0.012,leftRows:20});
   useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
@@ -68,7 +68,7 @@ export default function CargaHojaSimce() {
   return <main style={{maxWidth:780,margin:"auto",padding:24,fontFamily:"Arial,sans-serif",color:"#173752"}}>
     <a href="/ensayos-simce/corrector" style={{color:"#087f91"}}>← Volver al corrector</a>
     <h1>Cargar hoja de respuestas SIMCE</h1>
-    <p>Admite JPG, PNG y PDF (máximo 10 MB). La lectura experimental requiere una imagen frontal, sin inclinación, y calibración manual.</p>
+    <p>Admite JPG, PNG y PDF (máximo 10 MB). La lectura experimental permite alineación mediante las marcas de registro.</p>
     <section style={{border:"2px dashed #39aeb7",background:"#f2fbfb",padding:24,borderRadius:14}}>
       <input type="file" accept={ACCEPT} onChange={e=>choose(e.target.files?.[0])} aria-label="Seleccionar hoja de respuestas"/>
       {error&&<p role="alert" style={{color:"#a41e42"}}>{error}</p>}
@@ -80,7 +80,7 @@ export default function CargaHojaSimce() {
       <img alt="Hoja seleccionada" src={preview} style={{maxWidth:"100%",maxHeight:480,borderRadius:8}}/>}
       {!file.name.toLowerCase().endsWith(".pdf")&&<section style={{background:"#f2fbfb",padding:16,borderRadius:12,marginTop:16}}>
         <h3>Lectura óptica experimental · calibración manual</h3>
-        <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Intentar enderezar hoja automáticamente usando cuatro marcas negras (experimental)</label>
+        <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Alinear automáticamente usando las cuatro marcas negras (experimental)</label>
         <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada.</p>
         <label>Preguntas <input type="number" min={1} max={100} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
         <button type="button" onClick={()=>setAdvanced(!advanced)} style={{marginTop:12,display:"block"}}>{advanced?"Ocultar":"Mostrar"} calibración avanzada</button>
