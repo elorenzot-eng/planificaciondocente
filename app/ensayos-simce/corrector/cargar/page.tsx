@@ -90,7 +90,7 @@ export default function CargaHojaSimce() {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
     if(!answers.length)return;
     const safe=(value:string)=>{const v=value.replace(/"/g,'""');return `"${/^[=+@-]/.test(v.trimStart())?"\u0027"+v:v}"`;};
-    const rows=["Estudiante;Ensayo;Pregunta;Marca;Estado",...answers.map(a=>[safe(studentId),safe(essayId),a.number,String(corrections[a.number]??a.mark??""),corrections[a.number]!==undefined?"REVISADA":a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA"].join(";"))];
+    const rows=["Estudiante;Ensayo;Pregunta;Marca;Estado;Clave;Resultado",...answers.map(a=>{const mark=String(corrections[a.number]??a.mark??"");const status=corrections[a.number]!==undefined?"REVISADA":a.mark==="UNCERTAIN"||a.mark==="MULTIPLE"?"REVISAR":a.mark===null?"SIN_RESPUESTA":"LEIDA";const expected=readyToScore?key[a.number-1]:"";const outcome=readyToScore?(mark===expected?"CORRECTA":"INCORRECTA"):"NO_VALIDADO";return [safe(studentId),safe(essayId),a.number,safe(mark),status,expected,outcome].join(";");})];
     const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const link=document.createElement("a");link.href=url;link.download="lectura-simce-paginas.csv";link.click();
