@@ -18,6 +18,7 @@ export default function CargaHojaSimce() {
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [autoAlign,setAutoAlign] = useState(false);
+  const [advanced,setAdvanced] = useState(false);
   const [cal,setCal] = useState({leftX:0.18,leftY:0.25,rightX:0.65,rightY:0.25,spacing:0.048,rowSpacing:0.026,radius:0.012,leftRows:20});
   useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
   const choose = (f?:File) => {
@@ -82,9 +83,10 @@ export default function CargaHojaSimce() {
         <label style={{display:"flex",gap:8,alignItems:"center"}}><input type="checkbox" checked={autoAlign} onChange={e=>{setAutoAlign(e.target.checked);setResult(null);}}/> Intentar enderezar hoja automáticamente usando cuatro marcas negras (experimental)</label>
         <p style={{fontSize:13}}>Coordenadas normalizadas de 0 a 1. Ajusta los centros de la primera burbuja A de cada columna. Los valores iniciales son ilustrativos, no una calibración validada.</p>
         <label>Preguntas <input type="number" min={1} max={100} value={total} onChange={e=>{const next=Number(e.target.value);setTotal(next);setCal(old=>({...old,leftRows:Math.ceil(next/2)}));setResult(null);}}/></label>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12,marginTop:12}}>
+        <button type="button" onClick={()=>setAdvanced(!advanced)} style={{marginTop:12,display:"block"}}>{advanced?"Ocultar":"Mostrar"} calibración avanzada</button>
+        {advanced && <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12,marginTop:12}}>
           {fields.map(f=><label key={f.key} style={{display:"grid",gap:4,fontSize:13}}>{f.label}<input type="number" step={f.step} min={0} max={f.key==="leftRows"?100:1} value={cal[f.key]} onChange={e=>{setCal(old=>({...old,[f.key]:Number(e.target.value)}));setResult(null);}}/></label>)}
-        </div>
+        </div>}
         <button type="button" disabled={busy} onClick={analyze} style={{marginTop:14,background:"#087f91",color:"white",border:0,borderRadius:8,padding:"12px 18px"}}>{busy?"Analizando…":"Leer marcas (experimental)"}</button>
       </section>}
       {quality&&<section aria-live="polite" style={{padding:12,marginTop:12,border:"1px solid #bde5e6",borderRadius:8}}><h3>Calidad de imagen</h3>{quality.warnings.length?quality.warnings.map((warning,i)=><p key={i} style={{color:"#995000"}}>⚠ {warning}</p>):<p>No se detectaron problemas evidentes de iluminación, contraste o nitidez. Esto no garantiza una lectura correcta.</p>}</section>}
