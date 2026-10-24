@@ -5,6 +5,7 @@ export const runtime="nodejs";
 export async function POST(req:Request){
   const origin=req.headers.get("origin");
   const host=req.headers.get("host");
+  if(!origin || !host)return NextResponse.json({error:"Origen requerido"},{status:403});
   if(origin && host){try{if(new URL(origin).host!==host)return NextResponse.json({error:"Origen no autorizado"},{status:403});}catch{return NextResponse.json({error:"Origen inválido"},{status:403});}}
   const size=Number(req.headers.get("content-length")||0);
   if(size>8192)return NextResponse.json({error:"Solicitud demasiado grande"},{status:413});
