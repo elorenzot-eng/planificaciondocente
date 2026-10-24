@@ -21,6 +21,7 @@ export default function CargaHojaSimce() {
   const [answerKey,setAnswerKey] = useState("");
   const [studentId,setStudentId] = useState("");
   const [essayId,setEssayId] = useState("");
+  const [expectedQuestions,setExpectedQuestions] = useState(40);
   const [quality,setQuality] = useState<SimceImageQuality|null>(null);
   const [busy,setBusy] = useState(false);
   const [autoAlign,setAutoAlign] = useState(true);
@@ -77,7 +78,8 @@ export default function CargaHojaSimce() {
   const resolved=combinedAnswers.map(a=>({number:a.number,mark:corrections[a.number]??a.mark}));
   const scored=resolved.filter(a=>a.number<=key.length && ["A","B","C","D"].includes(String(a.mark)));
   const correct=scored.filter(a=>a.mark===key[a.number-1]).length;
-  const keyComplete=combinedAnswers.length>0&&keyValid&&key.length>=Math.max(...combinedAnswers.map(a=>a.number));
+  const completeSet=Number.isInteger(expectedQuestions)&&expectedQuestions>=1&&expectedQuestions<=100&&combinedAnswers.length===expectedQuestions&&combinedAnswers.every((a,i)=>a.number===i+1);
+  const keyComplete=completeSet&&keyValid&&key.length===expectedQuestions;
   const pending=resolved.filter(a=>a.mark==="UNCERTAIN"||a.mark==="MULTIPLE").length;
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
@@ -145,12 +147,12 @@ export default function CargaHojaSimce() {
             </select>
           </label>)}
         </details>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}><label>Estudiante<input value={studentId} onChange={e=>setStudentId(e.target.value)} maxLength={100}/></label><label>Identificador del ensayo<input value={essayId} onChange={e=>setEssayId(e.target.value)} maxLength={60}/></label></div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}><label>Total de preguntas del ensayo<input type="number" min={1} max={100} value={expectedQuestions} onChange={e=>setExpectedQuestions(Number(e.target.value))}/></label><label>Estudiante<input value={studentId} onChange={e=>setStudentId(e.target.value)} maxLength={100}/></label><label>Identificador del ensayo<input value={essayId} onChange={e=>setEssayId(e.target.value)} maxLength={60}/></label></div>
         <div style={{padding:12,marginBottom:12,background:"#fff",borderRadius:8}}>
           <label style={{display:"grid",gap:6}}>Clave de respuestas (A, B, C, D en orden, sin números)
             <textarea value={answerKey} onChange={e=>setAnswerKey(e.target.value.toUpperCase())} rows={3} placeholder="Ejemplo: ABCDABCD..." style={{width:"100%",padding:8}}/>
           </label>
-          <p style={{fontSize:13}}>Clave: {key.length} preguntas. {keyComplete?`Aciertos provisionales: ${correct} de ${combinedAnswers.length}.`:"La clave no está completa o contiene caracteres inválidos; no se calcula una puntuación global."} Pendientes de revisión óptica: {pending}.</p>
+          <p style={{fontSize:13}}>Cobertura: {combinedAnswers.length} de {expectedQuestions} preguntas. {completeSet?"Numeración completa.":"Faltan preguntas o existen saltos de numeración."} Clave: {key.length} preguntas. {keyComplete?`Aciertos provisionales: ${correct} de ${combinedAnswers.length}.`:"La clave no está completa o contiene caracteres inválidos; no se calcula una puntuación global."} Pendientes de revisión óptica: {pending}.</p>
           <p style={{fontSize:12}}>Resultado provisional; comprueba que la clave corresponda al ensayo y revisa las respuestas dudosas antes de utilizarlo.</p>
         </div>
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
