@@ -7,7 +7,7 @@ const redirectUri = "https://yanay-voice-preview-testing.up.railway.app/api/yana
 const account = "contacto@educantay.cl";
 
 function redirect(request: NextRequest, status: string) {
-  const url = new URL("/yanay-comercial", request.url);
+  const url = new URL("https://yanay-voice-preview-testing.up.railway.app/yanay-comercial");
   url.searchParams.set("google_calendar", status);
   const response = NextResponse.redirect(url);
   response.cookies.set("yanay_google_oauth_state", "", { httpOnly: true, secure: true, sameSite: "lax", path: "/api/yanay-commercial/google", maxAge: 0 });
