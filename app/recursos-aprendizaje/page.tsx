@@ -131,7 +131,7 @@ export default function RecursosAprendizajePage() {
       <h2 className="no-print ea-config-title">{moduleId.startsWith("simce") ? `Ensayo SIMCE · ${moduleId==="simce-lectura"?"Lectura":"Matemática"} · ${grade==="10"?"2° medio":`${grade}° básico`}` : selected.title}</h2>
       <div className="no-print ea-config-layout">
         <div className="ea-config-tile" style={{background:"#eff8fd",borderLeft:"5px solid #0ea5e9"}}>
-          <label>Dificultad<select value={difficulty} onChange={e=>setDifficulty(e.target.value)}><option>Inicial</option><option>Intermedio</option><option>Avanzado</option></select></label>
+          <label>Dificultad<select value={difficulty} onChange={e=>setDifficulty(e.target.value)}><option>Inicial</option><option>Intermedio</option><option>Avanzado</option><option>Mixta</option></select></label>
         </div>
         <div className="ea-config-tile" style={{background:"#f8f3fd",borderLeft:"5px solid #9855d4"}}>
           <label>Cantidad de preguntas<input type="number" min={1} max={40} value={quantity} onChange={e=>setQuantity(Math.max(1,Math.min(40,Number(e.target.value)||1)))}/></label>
