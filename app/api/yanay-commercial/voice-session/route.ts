@@ -73,7 +73,7 @@ export async function POST(request: Request) {
           type: "realtime",
           model: process.env.YANAY_REALTIME_MODEL || "gpt-realtime",
           instructions,
-          audio: { output: { voice: process.env.YANAY_REALTIME_VOICE || "shimmer" } }
+          audio: { output: { voice: process.env.YANAY_REALTIME_VOICE || "marin" } }
         }
       }),
       cache: "no-store",
