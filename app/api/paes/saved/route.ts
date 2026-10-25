@@ -1,3 +1,4 @@
+import {chargeCompletedPaes,PaesQuotaError} from "../../../../lib/paes/ai-usage.server";
 import {NextRequest,NextResponse} from "next/server";
 import {HISTORY_CONFIG,validateHistoryExam,type HistoryExam} from "../../../../lib/paes/historia";
 import {getSession} from "../../../../lib/auth";
@@ -55,6 +56,8 @@ export async function POST(request:NextRequest){
   if(!reviewLectoraExam(lectora,INTERNAL_65_MATRIX).valid)return NextResponse.json({error:"Ensayo Lectora inválido."},{status:422});
   exam=lectora;title="PAES Competencia Lectora · 65 preguntas";examType="LECTORA";
  }else return NextResponse.json({error:"Ensayo incompleto o no compatible."},{status:400});
+ const previous=await prisma.savedPaesExam.findUnique({where:{userId_sourceJobId:{userId,sourceJobId:job.id}},select:{id:true}});
+ if(!previous)try{await chargeCompletedPaes(userId,job.id);}catch(error){if(error instanceof PaesQuotaError)return NextResponse.json({error:error.message},{status:error.status});throw error;}
  const saved=await prisma.savedPaesExam.upsert({where:{userId_sourceJobId:{userId,sourceJobId:job.id}},create:{userId,sourceJobId:job.id,title,examType,exam:exam as unknown as import("@prisma/client").Prisma.InputJsonValue},update:{},select:{id:true}});
  return NextResponse.json({savedId:saved.id});
 }

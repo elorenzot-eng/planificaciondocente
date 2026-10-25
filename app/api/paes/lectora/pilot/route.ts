@@ -1,3 +1,5 @@
+import {assertPaesAiAccess,PaesQuotaError} from "../../../../../lib/paes/ai-usage.server";
+import {reserveAiUse,releaseAiUse} from "../../../../../lib/ai-entitlement";
 import { getSession } from "../../../../../lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
@@ -34,7 +36,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Dificultad inválida." }, { status: 400 });
   busy = true;
   lastAttempt = Date.now();
+  let reserved=false;
   try {
+    if(typeof session?.id==="string"){
+      await assertPaesAiAccess(session.id);
+      const use=await reserveAiUse(session.id);
+      if(!use.ok)return NextResponse.json({error:use.error},{status:429});
+      reserved=use.reserved;
+    }
     // Matriz interna de prueba aprobada para 10 ítems; no es especificación DEMRE.
     const matrix = {
       version: "educantay-paes-pilot-10-v1",
@@ -67,7 +76,9 @@ export async function POST(request: NextRequest) {
       studentHtml: createLectoraPrintableHtml(exam, matrix, "estudiante"),
       teacherHtml: createLectoraPrintableHtml(exam, matrix, "profesor"),
     }, { headers: { "Cache-Control": "no-store" } });
-  } catch {
+  } catch(error) {
+    if(reserved&&typeof session?.id==="string")await releaseAiUse(session.id);
+    if(error instanceof PaesQuotaError)return NextResponse.json({error:error.message},{status:error.status});
     return NextResponse.json({ error: "No se completó la prueba. Revise la configuración y registros del servidor." }, { status: 422 });
   } finally {
     busy = false;

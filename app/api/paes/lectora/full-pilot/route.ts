@@ -1,3 +1,4 @@
+import {assertPaesAiAccess,chargeCompletedPaes,PaesQuotaError} from "../../../../../lib/paes/ai-usage.server";
 import { getSession } from "../../../../../lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
@@ -41,12 +42,15 @@ export async function POST(request: NextRequest) {
         texts: job.texts as LectoraExam["texts"], items: job.items as LectoraExam["items"] };
       const review = reviewLectoraExam(exam, INTERNAL_65_MATRIX);
       if (!review.valid) throw new Error("La validación final no fue aprobada.");
-      return NextResponse.json({ jobId: job.id, status: "COMPLETED", count: exam.items.length,
+      const studentHtml=createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "estudiante"),teacherHtml=createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "profesor");
+   await chargeCompletedPaes(session!.id as string,job.id);
+   return NextResponse.json({ jobId: job.id, status: "COMPLETED", count: exam.items.length,
         warnings: review.warnings, exam,
-        studentHtml: createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "estudiante"),
-        teacherHtml: createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "profesor"),
+        studentHtml,
+        teacherHtml,
       }, { headers: { "Cache-Control": "no-store" } });
     }
+  await assertPaesAiAccess(session!.id as string);
     // Reclamo atómico entre instancias para impedir doble generación del mismo grupo.
     const claim = await prisma.paesInternalJob.updateMany({
       where: { id: job.id, status: "PENDING", nextPart: job.nextPart },
@@ -75,7 +79,7 @@ export async function POST(request: NextRequest) {
         error: "El grupo no superó la validación. Puedes reintentar sin perder los grupos anteriores." }, { status: 422 });
     }
   } catch (error) {
-    console.error("[PAES65] Error del proceso:", error instanceof Error ? error.message.slice(0, 500) : "Desconocido");
+    if(error instanceof PaesQuotaError)return NextResponse.json({error:error.message,jobId:body.jobId},{status:error.status});console.error("[PAES65] Error del proceso:", error instanceof Error ? error.message.slice(0, 500) : "Desconocido");
     return NextResponse.json({ error: "No fue posible continuar la generación. Revisa los registros de Railway." }, { status: 500 });
   }
 }

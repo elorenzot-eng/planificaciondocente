@@ -1,3 +1,4 @@
+import {assertPaesAiAccess,chargeCompletedPaes,PaesQuotaError} from "../../../../../lib/paes/ai-usage.server";
 import { getSession } from "../../../../../lib/auth";
 import { NextRequest,NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
@@ -28,8 +29,11 @@ export async function POST(request:NextRequest){
    const exam:M1Exam={version:M1_FULL_CONFIG.version,items:job.items as unknown as M1Item[]};
    const errors=validateM1Full(exam);
    if(errors.length)throw new Error("Validación final: "+errors.join(" | ").slice(0,400));
-   return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:65,total:65,count:65,exam,studentHtml:createM1Print(exam,false),teacherHtml:createM1Print(exam,true)},{headers:{"Cache-Control":"no-store"}});
+   const studentHtml=createM1Print(exam,false),teacherHtml=createM1Print(exam,true);
+   await chargeCompletedPaes(session!.id as string,job.id);
+   return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:65,total:65,count:65,exam,studentHtml,teacherHtml},{headers:{"Cache-Control":"no-store"}});
   }
+  await assertPaesAiAccess(session!.id as string);
   // Recover only an expired lease; normal item generation has at most 3 x 90 seconds.
   if(job.status==="RUNNING" && Date.now()-job.updatedAt.getTime()>300000){
    await prisma.paesInternalJob.updateMany({where:{id:job.id,status:"RUNNING",nextPart:job.nextPart,updatedAt:job.updatedAt},data:{status:"PENDING",error:null}});
@@ -47,5 +51,5 @@ export async function POST(request:NextRequest){
    await prisma.paesInternalJob.update({where:{id:job.id},data:{status:"PENDING",error:message.slice(0,400)}});
    return NextResponse.json({jobId:job.id,completed:job.nextPart,total:65,error:"La pregunta no superó la validación. Reintenta para continuar."},{status:422});
   }
- }catch(error){console.error("[PAES-M1] Proceso:",error instanceof Error?error.message.slice(0,400):"Desconocido");return NextResponse.json({error:"No fue posible continuar el ensayo M1."},{status:500});}
+ }catch(error){if(error instanceof PaesQuotaError)return NextResponse.json({error:error.message,jobId:body.jobId},{status:error.status});console.error("[PAES-M1] Proceso:",error instanceof Error?error.message.slice(0,400):"Desconocido");return NextResponse.json({error:"No fue posible continuar el ensayo M1."},{status:500});}
 }

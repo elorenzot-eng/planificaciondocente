@@ -1,3 +1,4 @@
+import {assertPaesAiAccess,chargeCompletedPaes,PaesQuotaError} from "../../../../lib/paes/ai-usage.server";
 import {getSession} from "../../../../lib/auth";
 import {NextRequest,NextResponse} from "next/server";
 import type {Prisma} from "@prisma/client";
@@ -20,9 +21,12 @@ export async function POST(request:NextRequest){
   if(job.nextPart===total){
    const exam:HistoryExam={version:HISTORY_CONFIG.version,items:job.items as unknown as HistoryItem[]};
    const errors=validateHistoryExam(exam);if(errors.length)throw Error(errors.join(" | "));
-   return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:total,total,exam,studentHtml:createHistoryPrint(exam,false),teacherHtml:createHistoryPrint(exam,true)},{headers:{"Cache-Control":"no-store"}});
+   const studentHtml=createHistoryPrint(exam,false),teacherHtml=createHistoryPrint(exam,true);
+   await chargeCompletedPaes(session!.id as string,job.id);
+   return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:total,total,exam,studentHtml,teacherHtml},{headers:{"Cache-Control":"no-store"}});
   }
   if(job.nextPart>total)return NextResponse.json({error:"Estado inválido del ensayo."},{status:422});
+  await assertPaesAiAccess(session!.id as string);
   const claim=await prisma.paesInternalJob.updateMany({where:{id:job.id,status:"PENDING",nextPart:job.nextPart},data:{status:"RUNNING",error:null}});
   if(claim.count!==1)return NextResponse.json({jobId:job.id,status:"BUSY",completed:job.nextPart,total,error:"Generación en curso; intenta nuevamente."},{status:409});
   try{
@@ -35,5 +39,5 @@ export async function POST(request:NextRequest){
    await prisma.paesInternalJob.update({where:{id:job.id},data:{status:"PENDING",error:message.slice(0,400)}});
    return NextResponse.json({jobId:job.id,completed:job.nextPart,total,error:"No se pudo generar o validar esta pregunta. Puedes reanudar."},{status:422});
   }
- }catch(e){console.error("[PAES-HISTORIA]",e);return NextResponse.json({error:"No se pudo continuar el ensayo."},{status:500});}
+ }catch(e){if(e instanceof PaesQuotaError)return NextResponse.json({error:e.message,jobId:body.jobId},{status:e.status});console.error("[PAES-HISTORIA]",e);return NextResponse.json({error:"No se pudo continuar el ensayo."},{status:500});}
 }

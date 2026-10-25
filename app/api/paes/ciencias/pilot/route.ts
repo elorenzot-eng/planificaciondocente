@@ -1,3 +1,4 @@
+import {assertPaesAiAccess,chargeCompletedPaes,PaesQuotaError} from "../../../../../lib/paes/ai-usage.server";
 import {getSession} from "../../../../../lib/auth";
 import {NextRequest,NextResponse} from "next/server";
 import type {Prisma} from "@prisma/client";
@@ -23,8 +24,11 @@ export async function POST(request:NextRequest){
   if(job.nextPart===total){
    const exam:ScienceExam={version:full?SCIENCE_FULL_CONFIG.version:SCIENCE_PRACTICE_CONFIG.version,elective:body.elective as ScienceSubject,items:job.items as unknown as ScienceItem[]};
    const errors=full?validateScienceFull(exam):validateSciencePractice(exam);if(errors.length)throw new Error(errors.join(" | "));
-   return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:total,total,exam,studentHtml:createSciencePrint(exam,false),teacherHtml:createSciencePrint(exam,true)},{headers:{"Cache-Control":"no-store"}});
+   const studentHtml=createSciencePrint(exam,false),teacherHtml=createSciencePrint(exam,true);
+   await chargeCompletedPaes(session!.id as string,job.id);
+   return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:total,total,exam,studentHtml,teacherHtml},{headers:{"Cache-Control":"no-store"}});
   }
+  await assertPaesAiAccess(session!.id as string);
   const claim=await prisma.paesInternalJob.updateMany({where:{id:job.id,status:"PENDING",nextPart:job.nextPart},data:{status:"RUNNING",error:null}});
   if(claim.count!==1)return NextResponse.json({jobId:job.id,status:"BUSY",completed:job.nextPart,total,error:"La generación está en curso. Intenta nuevamente."},{status:409});
   try{
@@ -37,5 +41,5 @@ export async function POST(request:NextRequest){
    await prisma.paesInternalJob.update({where:{id:job.id},data:{status:"PENDING",error:message.slice(0,400)}});
    return NextResponse.json({jobId:job.id,completed:job.nextPart,total,error:"No se pudo generar o validar esta pregunta. Reanuda para intentar nuevamente."},{status:422});
   }
- }catch(e){console.error("[PAES-CIENCIAS]",e);return NextResponse.json({error:"No se pudo continuar el ensayo."},{status:500});}
+ }catch(e){if(e instanceof PaesQuotaError)return NextResponse.json({error:e.message,jobId:body.jobId},{status:e.status});console.error("[PAES-CIENCIAS]",e);return NextResponse.json({error:"No se pudo continuar el ensayo."},{status:500});}
 }

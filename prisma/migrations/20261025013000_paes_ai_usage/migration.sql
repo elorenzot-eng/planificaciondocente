@@ -1,0 +1,1 @@
+ALTER TABLE "PaesInternalJob" ADD COLUMN IF NOT EXISTS "aiChargedAt" TIMESTAMP(3);
