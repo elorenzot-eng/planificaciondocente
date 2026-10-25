@@ -92,7 +92,7 @@ export default function PaesPilot() {
           <Link href="/ensayos-paes/carpeta">Ver Mi carpeta PAES</Link>
         </div>
         {saveMessage&&<p role="status">{saveMessage}</p>}
-        {result.warnings?.map((w,i)=><p key={i} style={{color:"#92400e"}}>{w}</p>)}
+        {result.warnings?.filter(w=>!w.startsWith("Validación estructural aprobada. Pendiente revisión humana")).map((w,i)=><p key={i} style={{color:"#92400e"}}>{w}</p>)}
         <h3>Textos del ensayo</h3>
         {result.exam.texts?.map((t,i)=><article key={t.id||i} style={{whiteSpace:"pre-wrap",padding:"12px 0",borderTop:"1px solid #e2e8f0"}}><strong>Texto {i+1}</strong><p>{t.body}</p></article>)}
         <h3>Preguntas y pautas de corrección</h3>
