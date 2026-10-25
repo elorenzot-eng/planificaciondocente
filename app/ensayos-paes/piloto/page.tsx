@@ -4,6 +4,8 @@ import Link from "next/link";
 
 type PilotResponse = {
   error?: string;
+  savedId?: string;
+  saveError?: string;
   jobId?: string;
   completed?: number;
   total?: number;
@@ -55,6 +57,7 @@ export default function PaesPilot() {
           return;
         }
         if (data.status === "COMPLETED" || questionCount === "10") {if(questionCount==="65"&&data.jobId){try{const saved=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:data.jobId})});setSaveMessage(saved.ok?"Ensayo guardado automáticamente en Mi carpeta.":"Utiliza Guardar en Mi carpeta para reintentar.");}catch{setSaveMessage("Utiliza Guardar en Mi carpeta para reintentar.");}}
+          if(questionCount==="10")setSaveMessage(data.savedId?"Ensayo guardado automáticamente en Mi carpeta.":data.saveError||"Inicia sesión para guardar tus ensayos.");
           setResult(data);
           if (questionCount === "65") { setJobId(null); setProgress(30); }
           return;
