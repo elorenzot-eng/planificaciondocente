@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+// Preliminary single-instance throttle. Replace with a shared durable limiter before public launch.
+const attempts = new Map<string, { count: number; resetAt: number }>();
+const WINDOW_MS = 60 * 60 * 1000;
+const MAX_SESSIONS = 3;
+
 const instructions = [
   "Eres Yanay Comercial, asistente virtual de inteligencia artificial de EducAntay.",
   "Habla español de Chile con tono cálido, juvenil, profesional y natural.",
@@ -26,6 +31,22 @@ export async function POST(request: Request) {
   if (!origin || !host || (() => { try { return new URL(origin).host !== host; } catch { return true; } })()) {
     return NextResponse.json({ error: "Origen no autorizado." }, { status: 403 });
   }
+
+  if (process.env.YANAY_COMMERCIAL_VOICE_ENABLED !== "true") {
+    return NextResponse.json({ error: "La prueba de voz aún no está habilitada." }, { status: 503 });
+  }
+  const forwarded = request.headers.get("x-forwarded-for");
+  const clientIp = forwarded?.split(",")[0]?.trim() || "unknown";
+  const now = Date.now();
+  if (attempts.size > 10000) {
+    for (const [ip, entry] of attempts) if (entry.resetAt <= now) attempts.delete(ip);
+  }
+  const entry = attempts.get(clientIp);
+  if (entry && entry.resetAt > now && entry.count >= MAX_SESSIONS) {
+    return NextResponse.json({ error: "Límite de sesiones alcanzado. Inténtalo más tarde." }, { status: 429, headers: { "Retry-After": String(Math.ceil((entry.resetAt - now) / 1000)) } });
+  }
+  if (!entry || entry.resetAt <= now) attempts.set(clientIp, { count: 1, resetAt: now + WINDOW_MS });
+  else entry.count++;
 
   try {
     const upstream = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
