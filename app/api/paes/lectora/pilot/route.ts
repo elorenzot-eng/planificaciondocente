@@ -1,5 +1,7 @@
 import { getSession } from "../../../../../lib/auth";
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "../../../../../lib/prisma";
+import { randomUUID } from "node:crypto";
 import { timingSafeEqual } from "node:crypto";
 import { generateReviewedLectoraDraft } from "../../../../../lib/paes/lectora-openai.server";
 import { createLectoraPrintableHtml } from "../../../../../lib/paes/lectora-print";
@@ -20,7 +22,8 @@ function authorized(provided: string | null, expected: string): boolean {
 export async function POST(request: NextRequest) {
   if (process.env.PAES_PILOT_ENABLED !== "true")
     return NextResponse.json({ error: "Piloto PAES no habilitado." }, { status: 404 });
-  if (!(await getSession()) && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
+  const session = await getSession();
+  if (!session && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
     return NextResponse.json({ error: "Acceso denegado." }, { status: 403 });
   if (busy || Date.now() - lastAttempt < 600_000)
     return NextResponse.json({ error: "Espere 10 minutos antes de otra prueba." }, { status: 429 });
@@ -43,7 +46,20 @@ export async function POST(request: NextRequest) {
       byGenre: { Literario: 5, "No literario": 5 },
     };
     const { exam, warnings } = await generateReviewedLectoraDraft({ matrix, difficulty: difficulty as "Baja" | "Media" | "Alta" | "Mixta" });
+    let savedId: string | undefined;
+    let saveError: string | undefined;
+    if (typeof session?.id === "string") {
+      try {
+        const saved = await prisma.savedPaesExam.create({data:{
+          userId:session.id,sourceJobId:"LECTORA10:"+randomUUID(),
+          title:"PAES Competencia Lectora · 10 preguntas",examType:"LECTORA",
+          exam:exam as unknown as import("@prisma/client").Prisma.InputJsonValue
+        },select:{id:true}});
+        savedId=saved.id;
+      } catch { saveError="No se pudo guardar el ensayo en Mi carpeta."; }
+    }
     return NextResponse.json({
+      savedId, saveError,
       status: "PILOT_ONLY_NOT_FULL_EXAM",
       count: exam.items.length,
       warnings,
