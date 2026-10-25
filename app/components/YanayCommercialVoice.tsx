@@ -96,7 +96,7 @@ export default function YanayCommercialVoice() {
     <section aria-label="Yanay Comercial IA" style={{ border: "1px solid #cbd5e1", borderRadius: 16, padding: 20, maxWidth: 380 }}>
       <h2>Habla con Yanay</h2>
       <p>Asesora comercial virtual de EducAntay, impulsada por inteligencia artificial.</p>
-      <audio ref={audioRef} autoPlay playsInline />
+      <audio ref={audioRef} autoPlay />
       <p role="status">{status === "connected" ? "Conversación activa" : status === "connecting" ? "Conectando..." : "Lista para conversar"}</p>
       {error && <p role="alert">{error}</p>}
       {status === "connected" ? (
