@@ -6,6 +6,17 @@ export default function ConnectGoogleCalendar() {
   const [key, setKey] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [checkResult, setCheckResult] = useState("");
+  async function checkCalendar() {
+    setBusy(true); setError(""); setCheckResult("");
+    try {
+      const response = await fetch("/api/yanay-commercial/google/check", { method: "POST", headers: { "x-yanay-admin-key": key }, cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok || !result.connected) throw new Error(result.reason === "pending_authorization" ? "Falta autorizar el calendario." : "No se pudo validar la conexión del calendario.");
+      setCheckResult("Google Calendar conectado: consulta de disponibilidad correcta.");
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Error al comprobar Calendar."); }
+    finally { setBusy(false); }
+  }
   async function connect(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true); setError("");
@@ -33,6 +44,8 @@ export default function ConnectGoogleCalendar() {
       <input id="admin-key" type="password" autoComplete="off" value={key} onChange={event => setKey(event.target.value)} required style={{display:"block",width:"100%",padding:12,margin:"12px 0"}} />
       <button disabled={busy} type="submit" style={{padding:12}}>{busy ? "Conectando..." : "Autorizar con Google"}</button>
     </form>
+    <button type="button" disabled={busy || !key} onClick={checkCalendar} style={{padding:12,marginTop:12,marginLeft:8}}>Verificar Google Calendar</button>
+    {checkResult && <p role="status">{checkResult}</p>}
     {error && <p role="alert">{error}</p>}
     <p>Utiliza exclusivamente contacto@educantay.cl en Google. Nunca compartas la clave administrativa.</p>
   </main>;
