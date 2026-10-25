@@ -16,7 +16,8 @@ export default function TemariosEcep(){
  const chooseLevel=(next:string)=>{setLevel(next===level?"":next);setSelected("");setQuery("")};
  return <div style={{display:"block",width:"100%",maxWidth:1180,minHeight:"auto",margin:"0 auto",padding:"32px 24px",fontFamily:"system-ui,sans-serif",color:"#17324b"}}>
  <a href="/">← Menú principal</a>
- <h1>Temarios y guías ECEP 2026</h1>
+ <h1>Temarios, guías y ensayos ECEP</h1>
+ <div style={{display:"flex",gap:12,flexWrap:"wrap",margin:"18px 0"}}><a href="/ecep-ia/ensayos" style={{padding:14,background:"#087e83",color:"white",borderRadius:10,textDecoration:"none",fontWeight:700}}>Generar ensayo ECEP con IA →</a><a href="/ecep-ia/carpeta" style={{padding:14,border:"1px solid #b9dce1",borderRadius:10,textDecoration:"none",color:"#087e83"}}>Mi carpeta · Ensayos ECEP</a></div>
  <p>Selecciona el nivel de enseñanza y luego la asignatura o especialidad que deseas preparar.</p>
  <div role="navigation" aria-label="Niveles de enseñanza ECEP" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,235px),1fr))",gap:14,margin:"24px 0",width:"100%"}}>
  {levels.map((name,i)=>{const active=level===name;const count=topics.filter(t=>t.nivel===name).length;return <button type="button" key={name} aria-expanded={active} aria-controls="ecep-specialties" onClick={()=>chooseLevel(name)} style={{...buttonStyle,width:"100%",background:active?palette[i].light:"#fff",borderColor:active?palette[i].solid:"#c8d9e2",borderTop:"5px solid "+palette[i].solid,boxShadow:active?"0 0 0 1px "+palette[i].solid+" inset":"none"}}>
@@ -43,7 +44,8 @@ export default function TemariosEcep(){
  <h2>{current.especialidad}</h2>
  <p>{current.nivel} · {stats(current).domains} dominios · {stats(current).subdomains} subdominios · {stats(current).indicators} indicadores recuperados</p>
  <div style={{display:"flex",gap:10,flexWrap:"wrap",margin:"16px 0"}}>
- <a href={`/ecep-ia/estudio?especialidad=${encodeURIComponent(current.nivel+"::"+current.especialidad)}`} style={{display:"inline-block",padding:12,background:theme.solid,borderRadius:9,color:"white",textDecoration:"none",fontWeight:650}}>Estudiar guía y autoevaluación →</a>
+ <a href={`/ecep-ia/ensayos?especialidad=${encodeURIComponent(current.nivel+"::"+current.especialidad)}`} style={{display:"inline-block",padding:12,background:"#087e83",borderRadius:9,color:"white",textDecoration:"none",fontWeight:700}}>Generar ensayo de esta especialidad con IA →</a>
+<a href={`/ecep-ia/estudio?especialidad=${encodeURIComponent(current.nivel+"::"+current.especialidad)}`} style={{display:"inline-block",padding:12,background:theme.solid,borderRadius:9,color:"white",textDecoration:"none",fontWeight:650}}>Estudiar guía y autoevaluación →</a>
  {current.nivel==="Educación Parvularia"&&<><a href="/ecep-ia/guias/parvularia" style={{padding:12,background:"#e9f5f5",color:"#087e83",borderRadius:9,textDecoration:"none"}}>Guías de apoyo →</a><a href="/ecep-ia/ensayos/parvularia" style={{padding:12,background:"#e9f5f5",color:"#087e83",borderRadius:9,textDecoration:"none"}}>Ensayo y retroalimentación →</a></>}
  </div>
  <p style={{fontSize:13}}>Los indicadores provienen de la extracción de temarios aportados. Algunos textos requieren cotejo con su PDF original; las guías de EducAntay son material complementario.</p>
