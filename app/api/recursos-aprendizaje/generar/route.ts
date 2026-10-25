@@ -47,14 +47,17 @@ export async function POST(request: Request) {
   const quantity = Number(body.quantity);
   const mode = String(body.mode || "Práctica");
   const requestedGrade = String(body.grade || "4");
-  if (!allowed.some(x => x === moduleId) || !["Inicial","Intermedio","Avanzado"].includes(difficulty) || !Number.isInteger(quantity) || quantity < 1 || quantity > 40 || !["Diagnóstico","Práctica","Simulacro"].includes(mode) || !["4","6","8","10"].includes(requestedGrade)) {
+  if (!allowed.some(x => x === moduleId) || !["Inicial","Intermedio","Avanzado","Mixta"].includes(difficulty) || !Number.isInteger(quantity) || quantity < 1 || quantity > 40 || !["Diagnóstico","Práctica","Simulacro"].includes(mode) || !["4","6","8","10"].includes(requestedGrade)) {
     return NextResponse.json({ error: "Parámetros fuera de rango." }, { status: 400 });
   }
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "Generación IA no configurada." }, { status: 503 });
   const grade = moduleId.startsWith("simce") ? (requestedGrade==="10"?"2° medio":`${requestedGrade}° básico`) : "2° básico";
   const simce = moduleId.startsWith("simce");
   const specification = simce ? {level:grade,subject:moduleId==="simce-lectura"?"Lectura":"Matemática",dimensions:moduleId==="simce-lectura"?["Localizar información","Interpretar y relacionar","Reflexionar y evaluar"]:["Números y operaciones","Patrones y álgebra","Geometría","Medición","Datos y probabilidades"],questionCount:quantity,scoring:"Un punto por respuesta correcta; porcentaje de logro. No estimar puntaje oficial SIMCE."} : null;
+  const difficultyLevels = ["Inicial","Intermedio","Avanzado"] as const;
+  const difficultyPlan = Array.from({length:quantity},(_,i)=>difficulty==="Mixta"?difficultyLevels[i%3]:difficulty);
   const instruction = [
+    "DIFICULTAD MIXTA: combina preguntas Iniciales, Intermedias y Avanzadas según difficultyByQuestion. Respeta el orden y la dificultad asignada a cada ítem; adapta la complejidad real de las inferencias o procedimientos, no solo la etiqueta. En specificationTable.difficulty escribe Inicial, Intermedio o Avanzado por pregunta, nunca Mixta.",
     "Eres especialista en currículum escolar chileno. Genera material ORIGINAL, claro, apropiado para la edad y revisable por un docente.",
     "No atribuyas preguntas a SIMCE ni afirmes que sean oficiales. No inventes códigos ni textos oficiales de OA.",
     "ENSAYOS AUTOMÁTICOS: el usuario no elige OA. Para cada ensayo distribuye autónomamente las preguntas entre los ejes y habilidades pertinentes al nivel y asignatura. Si recibes OA verificados, distribuye ítems entre ellos; si no, usa descripciones curriculares sin códigos oficiales inventados. Registra la correspondencia de cada pregunta en specificationTable. No solicites al usuario seleccionar OA ni afirmes cobertura curricular oficial completa.",
@@ -83,6 +86,7 @@ export async function POST(request: Request) {
     const generateBatch = async (batchSize:number, offset:number, attempt:number) => {
       const batchPrompt = JSON.stringify({
         moduleId,grade,difficulty,oa:oa || "OA por definir y validar por docente",
+        difficultyByQuestion:difficultyPlan.slice(offset,offset+batchSize),
         quantity:batchSize,mode,specification:specification?{...specification,questionCount:batchSize}:null,
         instruction: simce
           ? `Genera EXACTAMENTE ${batchSize} preguntas nuevas, numeradas de 1 a ${batchSize}. Este es el bloque ${Math.floor(offset/8)+1} de un ensayo de ${quantity} preguntas. No incluyas más ni menos preguntas. Cada pregunta debe tener cuatro alternativas distintas y una clave correcta. Incluye los textos completos en passages si es Lectura.`
@@ -105,6 +109,7 @@ export async function POST(request: Request) {
       const parsed = JSON.parse(raw);
       if (!parsed || !Array.isArray(parsed.activities) || parsed.activities.length!==batchSize) throw new Error("Incorrect question count");
       if (simce && !normalizeSimceAnswers(parsed)) throw new Error("Invalid SIMCE answer choices");
+      if (difficulty==="Mixta" && (!Array.isArray(parsed.specificationTable) || parsed.specificationTable.length!==batchSize || parsed.specificationTable.some((row:any,i:number)=>row?.difficulty!==difficultyPlan[offset+i]))) throw new Error("Mixed difficulty distribution mismatch");
       return parsed;
     };
     let result:any;
