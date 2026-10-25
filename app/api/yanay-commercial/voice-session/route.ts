@@ -35,11 +35,17 @@ export async function POST(request: Request) {
   if (process.env.YANAY_COMMERCIAL_VOICE_ENABLED !== "true") {
     return NextResponse.json({ error: "La prueba de voz aún no está habilitada." }, { status: 503 });
   }
+  // Railway sets the connecting address; do not trust the first X-Forwarded-For hop.
+  // This is only a provisional throttle, not a durable or authenticated quota.
   const forwarded = request.headers.get("x-forwarded-for");
-  const clientIp = forwarded?.split(",")[0]?.trim() || "unknown";
+  const clientIp = forwarded?.split(",").map((part) => part.trim()).filter(Boolean).at(-1);
+  if (!clientIp || clientIp.length > 128) {
+    return NextResponse.json({ error: "No fue posible verificar el origen de la solicitud." }, { status: 403 });
+  }
   const now = Date.now();
-  if (attempts.size > 10000) {
-    for (const [ip, entry] of attempts) if (entry.resetAt <= now) attempts.delete(ip);
+  for (const [ip, entry] of attempts) if (entry.resetAt <= now) attempts.delete(ip);
+  if (attempts.size >= 10000 && !attempts.has(clientIp)) {
+    return NextResponse.json({ error: "Servicio temporalmente ocupado." }, { status: 503 });
   }
   const entry = attempts.get(clientIp);
   if (entry && entry.resetAt > now && entry.count >= MAX_SESSIONS) {
