@@ -8,6 +8,7 @@ export default function YanayCommercialVoice() {
   const [status, setStatus] = useState<Status>("idle");
   const [muted, setMuted] = useState(false);
   const [error, setError] = useState("");
+  const [meetingRequested, setMeetingRequested] = useState(false);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const micRef = useRef<MediaStream | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -101,7 +102,7 @@ export default function YanayCommercialVoice() {
   }
 
   return (
-    <section aria-label="Yanay Comercial IA" style={{ border: "1px solid #cbd5e1", borderRadius: 16, padding: 20, maxWidth: 380 }}>
+    <section aria-label="Yanay Comercial IA" style={{ border: "1px solid #cbd5e1", borderRadius: 16, padding: 20, width: "100%", maxWidth: 420, boxSizing: "border-box", background: "#fff", color: "#18233a", fontSize: 16, lineHeight: 1.5 }}>
       <h2>Habla con Yanay</h2>
       <p>Asesora comercial virtual de EducAntay, impulsada por inteligencia artificial.</p>
       <audio ref={audioRef} autoPlay />
@@ -117,7 +118,13 @@ export default function YanayCommercialVoice() {
           {status === "connecting" ? "Conectando..." : "Hablar con Yanay"}
         </button>
       )}
-      <small>Al iniciar, tu navegador solicitará permiso para usar el micrófono.</small>
+      <p style={{ fontSize: 13, color: "#475569" }}>Al iniciar, tu navegador solicitará permiso para usar el micrófono. La conversación de prueba no registra automáticamente datos ni agenda reuniones.</p>
+      <div style={{ borderTop: "1px solid #e2e8f0", marginTop: 20, paddingTop: 16 }}>
+        <button type="button" onClick={() => setMeetingRequested(value => !value)} aria-expanded={meetingRequested} style={{ cursor: "pointer", padding: "10px 14px", borderRadius: 8, border: "1px solid #0f766e", color: "#0f766e", background: "#f0fdfa", fontWeight: 600 }}>
+          {meetingRequested ? "Ocultar información" : "¿Te interesa una reunión comercial?"}
+        </button>
+        {meetingRequested && <p style={{ fontSize: 14 }}>Yanay puede orientarte sobre las soluciones EducAntay. La solicitud y confirmación de reuniones todavía no están habilitadas en esta versión de prueba. No compartas datos personales por esta vía hasta que se habilite el formulario seguro.</p>}
+      </div>
     </section>
   );
 }
