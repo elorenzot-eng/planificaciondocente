@@ -2,13 +2,27 @@
 import Link from "next/link";
 import {useEffect,useState} from "react";
 type Item={id:string;title:string;examType:string;createdAt:string};
-type Opened={title:string;studentHtml:string;teacherHtml:string};
-function print(html:string){const url=URL.createObjectURL(new Blob([html],{type:"text/html;charset=utf-8"}));window.open(url,"_blank","noopener,noreferrer");setTimeout(()=>URL.revokeObjectURL(url),60000);}
+const documentUrl=(id:string,version:"estudiante"|"profesor")=>"/api/paes/saved/item?id="+encodeURIComponent(id)+"&version="+version;
 export default function PaesFolder(){
- const [items,setItems]=useState<Item[]>([]),[error,setError]=useState(""),[busy,setBusy]=useState(true),[opened,setOpened]=useState<Opened|null>(null);
+ const [items,setItems]=useState<Item[]>([]),[error,setError]=useState(""),[busy,setBusy]=useState(true),[preview,setPreview]=useState<string|null>(null);
  async function load(){setError("");setBusy(true);try{const r=await fetch("/api/paes/saved",{cache:"no-store"});const d=await r.json();if(!r.ok)throw Error(d.error||"No se pudo cargar.");setItems(d.items);}catch(e){setError(e instanceof Error?e.message:"Error de carga.");}finally{setBusy(false);}}
  useEffect(()=>{void load();},[]);
- async function open(id:string){setError("");try{const r=await fetch("/api/paes/saved/item?id="+encodeURIComponent(id),{cache:"no-store"});const d=await r.json();if(!r.ok)throw Error(d.error||"No se pudo abrir.");setOpened(d);}catch(e){setError(e instanceof Error?e.message:"Error al abrir.");}}
- async function remove(id:string){if(!window.confirm("¿Eliminar este ensayo guardado?"))return;const r=await fetch("/api/paes/saved?id="+encodeURIComponent(id),{method:"DELETE"});if(r.ok){setOpened(null);void load();}else setError("No se pudo eliminar.");}
- return <main style={{minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,4vw,48px)",fontFamily:"Arial,sans-serif",color:"#17233c"}}><div style={{maxWidth:1000,margin:"auto"}}><Link href="/ensayos-paes">← Ensayos PAES</Link><h1>Mi carpeta · Ensayos PAES</h1><p>Recupera tus ensayos guardados, la prueba del estudiante y el solucionario docente sin generar nuevamente con IA.</p>{busy?<p>Cargando…</p>:items.length===0&&!error?<p>Todavía no tienes ensayos PAES guardados.</p>:items.map(item=><article key={item.id} style={{background:"white",padding:18,borderRadius:12,margin:"12px 0",border:"1px solid #ddd"}}><strong>{item.title}</strong><p>{new Date(item.createdAt).toLocaleDateString("es-CL")}</p><div style={{display:"flex",gap:12}}><button onClick={()=>open(item.id)}>Abrir documentos</button><button onClick={()=>remove(item.id)}>Eliminar</button></div></article>)}{error&&<p role="alert" style={{color:"#b91c1c"}}>{error}</p>}{opened&&<section style={{background:"white",padding:22,borderRadius:12,marginTop:20}}><h2>{opened.title}</h2><div style={{display:"flex",gap:12,flexWrap:"wrap"}}><button onClick={()=>print(opened.studentHtml)}>Prueba estudiante · Imprimir / guardar PDF</button><button onClick={()=>print(opened.teacherHtml)}>Solucionario docente · Imprimir / guardar PDF</button></div></section>}</div></main>;
+ async function remove(id:string){if(!window.confirm("¿Eliminar este ensayo guardado?"))return;try{const r=await fetch("/api/paes/saved?id="+encodeURIComponent(id),{method:"DELETE"});if(!r.ok)throw Error("No se pudo eliminar.");setPreview(null);void load();}catch(e){setError(e instanceof Error?e.message:"No se pudo eliminar.");}}
+ const actionStyle={display:"inline-block",padding:"10px 14px",border:"1px solid #b9dce1",borderRadius:10,background:"#f2fafb",color:"#147b89",fontWeight:700,textDecoration:"none"};
+ return <main style={{display:"block",width:"100%",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,3vw,36px)",fontFamily:"Arial,sans-serif",color:"#17233c"}}>
+ <div style={{width:"100%",minWidth:0,margin:"auto"}}>
+ <Link href="/ensayos-paes">← Ensayos PAES</Link><h1>Mi carpeta · Ensayos PAES</h1>
+ <p>Abre la prueba del estudiante o el solucionario docente de cada ensayo guardado, sin generar nuevamente con IA. Para guardar un PDF, abre el documento y usa Imprimir.</p>
+ {error&&<p role="alert" style={{color:"#b91c1c"}}>{error}</p>}
+ {busy?<p role="status">Cargando…</p>:items.length===0&&!error?<p>Todavía no tienes ensayos PAES guardados.</p>:items.map(item=><article key={item.id} style={{background:"white",padding:22,borderRadius:12,margin:"16px 0",border:"1px solid #dce3ed",width:"100%"}}>
+ <h2 style={{fontSize:20,marginTop:0}}>{item.title}</h2><p>{new Date(item.createdAt).toLocaleDateString("es-CL")}</p>
+ <div style={{display:"flex",gap:12,flexWrap:"wrap",alignItems:"center"}}>
+ <a href={documentUrl(item.id,"estudiante")} target="_blank" rel="noopener noreferrer" style={actionStyle}>Abrir prueba estudiante · PDF</a>
+ <a href={documentUrl(item.id,"profesor")} target="_blank" rel="noopener noreferrer" style={actionStyle}>Abrir solucionario docente · PDF</a>
+ <button onClick={()=>setPreview(preview===item.id?null:item.id)} style={{...actionStyle,cursor:"pointer"}}>{preview===item.id?"Cerrar vista previa":"Ver aquí"}</button>
+ <button onClick={()=>remove(item.id)} style={{...actionStyle,cursor:"pointer",color:"#b91c1c"}}>Eliminar</button>
+ </div>
+ {preview===item.id&&<iframe title={"Vista previa: "+item.title} src={documentUrl(item.id,"estudiante")} sandbox="allow-same-origin" style={{width:"100%",height:"75vh",border:"1px solid #dce3ed",borderRadius:10,marginTop:18,background:"white"}}/>}
+ </article>)}
+ </div></main>;
 }
