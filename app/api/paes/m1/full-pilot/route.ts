@@ -30,6 +30,10 @@ export async function POST(request:NextRequest){
    if(errors.length)throw new Error("Validación final: "+errors.join(" | ").slice(0,400));
    return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:65,total:65,count:65,exam,studentHtml:createM1Print(exam,false),teacherHtml:createM1Print(exam,true)},{headers:{"Cache-Control":"no-store"}});
   }
+  // Recover only an expired lease; normal item generation has at most 3 x 90 seconds.
+  if(job.status==="RUNNING" && Date.now()-job.updatedAt.getTime()>300000){
+   await prisma.paesInternalJob.updateMany({where:{id:job.id,status:"RUNNING",nextPart:job.nextPart,updatedAt:job.updatedAt},data:{status:"PENDING",error:null}});
+  }
   const claim=await prisma.paesInternalJob.updateMany({where:{id:job.id,status:"PENDING",nextPart:job.nextPart},data:{status:"RUNNING",error:null}});
   if(claim.count!==1)return NextResponse.json({jobId:job.id,status:"BUSY",completed:job.nextPart,total:65,error:"El grupo ya se está generando. Reintenta."},{status:409});
   try{
