@@ -12,8 +12,11 @@ export default function YanayCommercialVoice() {
   const micRef = useRef<MediaStream | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const connectingRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function disconnect() {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
     pcRef.current?.close();
     pcRef.current = null;
     micRef.current?.getTracks().forEach(track => track.stop());
@@ -28,6 +31,7 @@ export default function YanayCommercialVoice() {
   }
 
   useEffect(() => () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     pcRef.current?.close();
     micRef.current?.getTracks().forEach(track => track.stop());
   }, []);
@@ -74,6 +78,10 @@ export default function YanayCommercialVoice() {
       if (!response.ok) throw new Error("No fue posible establecer la llamada.");
       await pc.setRemoteDescription({ type: "answer", sdp: await response.text() });
       setStatus("connected");
+      timeoutRef.current = setTimeout(() => {
+        disconnect();
+        setError("La llamada de prueba finalizó al alcanzar el límite de 5 minutos.");
+      }, 5 * 60 * 1000);
     } catch (e) {
       pc?.close();
       mic?.getTracks().forEach(track => track.stop());
