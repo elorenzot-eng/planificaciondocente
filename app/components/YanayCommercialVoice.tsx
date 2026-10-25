@@ -9,6 +9,7 @@ export default function YanayCommercialVoice() {
   const [muted, setMuted] = useState(false);
   const [error, setError] = useState("");
   const [meetingRequested, setMeetingRequested] = useState(false);
+  const [contactConsent, setContactConsent] = useState(false);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const micRef = useRef<MediaStream | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -123,7 +124,11 @@ export default function YanayCommercialVoice() {
         <button type="button" onClick={() => setMeetingRequested(value => !value)} aria-expanded={meetingRequested} style={{ cursor: "pointer", padding: "10px 14px", borderRadius: 8, border: "1px solid #0f766e", color: "#0f766e", background: "#f0fdfa", fontWeight: 600 }}>
           {meetingRequested ? "Ocultar información" : "¿Te interesa una reunión comercial?"}
         </button>
-        {meetingRequested && <p style={{ fontSize: 14 }}>Yanay puede orientarte sobre las soluciones EducAntay. La solicitud y confirmación de reuniones todavía no están habilitadas en esta versión de prueba. No compartas datos personales por esta vía hasta que se habilite el formulario seguro.</p>}
+        {meetingRequested && <div style={{ fontSize: 14 }}>
+          <p>Para solicitar una reunión, el equipo comercial debe habilitar primero el registro seguro de contactos. Ninguna reunión se agenda automáticamente desde esta prueba.</p>
+          <label style={{ display: "flex", alignItems: "flex-start", gap: 8 }}><input type="checkbox" checked={contactConsent} onChange={e => setContactConsent(e.target.checked)} /> Autorizo que EducAntay me contacte comercialmente cuando se habilite el formulario de solicitud.</label>
+          <p style={{ color: "#64748b" }}>{contactConsent ? "Consentimiento seleccionado. El registro todavía no está habilitado; no se han enviado datos." : "No solicitaremos datos personales sin tu consentimiento."}</p>
+        </div>}
       </div>
     </section>
   );
