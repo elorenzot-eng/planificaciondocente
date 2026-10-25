@@ -67,8 +67,8 @@ export default function PaesPilot() {
       setLoading(false);
     }
   };
-  return <main style={{fontFamily:"Arial,sans-serif",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,3vw,36px)",color:"#17233c",width:"100%",boxSizing:"border-box"}}>
-    <div style={{maxWidth:1600,width:"100%",margin:"auto"}}>
+  return <main style={{display:"block",fontFamily:"Arial,sans-serif",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,3vw,36px)",color:"#17233c",width:"100%",boxSizing:"border-box"}}>
+    <div style={{width:"100%",minWidth:0,margin:"auto"}}>
       <Link href="/ensayos-paes" style={{color:"#0d9488"}}>← Volver a PAES</Link>
       <h1>PAES Competencia Lectora · Ensayos IA</h1>
       <p>Genera ensayos de 10 o 65 preguntas, con versiones para estudiantes y docentes. Material de práctica original, no oficial DEMRE.</p>
