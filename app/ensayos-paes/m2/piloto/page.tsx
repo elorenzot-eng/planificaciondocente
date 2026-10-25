@@ -20,7 +20,7 @@ export default function M2Pilot(){
   }catch{setResult({error:"Se interrumpió la conexión. Presiona reanudar para continuar."});}
   finally{setBusy(false);}
  }
- return <main style={{minHeight:"100vh",background:"#f5f7fb",fontFamily:"Arial,sans-serif",color:"#17233c",padding:"clamp(16px,3vw,36px)"}}><div style={{maxWidth:1600,margin:"auto"}}>
+ return <main style={{display:"block",width:"100%",minWidth:0,boxSizing:"border-box",minHeight:"100vh",background:"#f5f7fb",fontFamily:"Arial,sans-serif",color:"#17233c",padding:"clamp(16px,3vw,36px)"}}><div style={{width:"100%",minWidth:0,margin:"auto"}}>
  <Link href="/ensayos-paes">← Volver a PAES</Link><h1>PAES Matemática M2 · 55 preguntas</h1><p>Generación experimental restringida. 140 minutos de referencia · 55 preguntas de práctica. La selección de ítems para puntaje en la PAES oficial corresponde al DEMRE. No es material oficial DEMRE.</p>
  <section style={{background:"white",borderRadius:16,padding:24,display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,280px),1fr))",gap:16,alignItems:"end"}}>
  <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);setResult(null);}} style={{display:"block",width:"100%",padding:12,marginTop:8}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>

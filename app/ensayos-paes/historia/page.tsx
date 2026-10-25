@@ -26,7 +26,7 @@ export default function HistoriaPaes(){
    setResult({error:"Se alcanzó el límite de solicitudes. Presiona reanudar para continuar."});
   }catch{setResult({error:"Conexión interrumpida. Puedes reanudar."});}finally{setBusy(false);}
  }
- return <main style={{minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,4vw,48px)",fontFamily:"Arial,sans-serif",color:"#17233c"}}><div style={{maxWidth:1100,margin:"auto"}}>
+ return <main style={{display:"block",width:"100%",minWidth:0,boxSizing:"border-box",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,4vw,48px)",fontFamily:"Arial,sans-serif",color:"#17233c"}}><div style={{width:"100%",minWidth:0,margin:"auto"}}>
  <Link href="/ensayos-paes" style={{color:"#c2410c",fontWeight:700,textDecoration:"none"}}>← Volver a Ensayos PAES</Link>
  <h1 style={{marginTop:28}}>PAES Historia y Ciencias Sociales IA</h1><p>Ensayo completo de 65 preguntas. Matriz interna experimental de EducAntay, no oficial DEMRE.</p>
  <section style={{background:"white",border:"1px solid #dce3ed",borderRadius:16,padding:24,marginTop:22}}>
