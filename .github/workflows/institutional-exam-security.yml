@@ -5,6 +5,8 @@ on:
       - 'lib/institutional-exam-*.ts'
       - 'tests/institutional-exam-*.test.cjs'
       - 'package.json'
+      - 'prisma/schema.prisma'
+      - 'app/api/institutional/**'
       - '.github/workflows/institutional-exam-security.yml'
   workflow_dispatch:
 
