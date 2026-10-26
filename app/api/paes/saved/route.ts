@@ -23,7 +23,7 @@ export async function POST(request:NextRequest){
  const session=await getSession(),userId=session?.id;
  if(typeof userId!=="string")return NextResponse.json({error:"Acceso denegado."},{status:401});
  let body:{jobId?:string};try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
- if(typeof body.jobId!=="string"||body.jobId.length>100)return NextResponse.json({error:"Identificador inválido."},{status:400});
+ if(typeof body.jobId!=="string"||!body.jobId.trim()||body.jobId.length>100)return NextResponse.json({error:"Identificador inválido."},{status:400});
  const account=await prisma.user.findUnique({where:{id:userId},select:{active:true,accountType:true}});
  if(!account?.active)return NextResponse.json({error:"Cuenta inactiva."},{status:403});
  if(account.accountType==="INSTITUTIONAL")return NextResponse.json({error:"El guardado institucional PAES requiere vinculación verificada de licencia y trabajo finalizado."},{status:503});
