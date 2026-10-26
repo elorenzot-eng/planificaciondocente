@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'lib/institutional-exam-*.ts'
+      - 'lib/institutional-license-*.ts'
+      - 'app/api/paes/saved/route.ts'
+      - 'tests/institutional-license-*.test.cjs'
       - 'tests/institutional-exam-*.test.cjs'
       - 'package.json'
       - 'prisma/schema.prisma'
