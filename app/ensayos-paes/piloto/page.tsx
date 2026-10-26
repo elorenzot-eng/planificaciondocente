@@ -71,14 +71,14 @@ export default function PaesPilot() {
     }
   };
   return <main style={{display:"block",fontFamily:"Arial,sans-serif",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,3vw,36px)",color:"#17233c",width:"100%",boxSizing:"border-box"}}>
-    <div style={{width:"100%",maxWidth:1050,minWidth:0,margin:"auto"}}>
+    <div style={{width:"100%",maxWidth:900,minWidth:0,margin:"auto"}}>
       <Link href="/ensayos-paes" style={{color:"#0d9488"}}>← Volver a PAES</Link>
       <h1>PAES Competencia Lectora IA</h1>
       <p>Genera ensayos de 10 o 65 preguntas, con versiones para estudiantes y docentes. Material de práctica original, no oficial DEMRE.</p>
-      <section style={{background:"white",padding:"clamp(18px,2vw,30px)",borderRadius:16,display:"grid",gap:14,gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,220px),1fr))",alignItems:"end"}}>
-        <label>Cantidad de preguntas<select value={questionCount} onChange={e=>{setQuestionCount(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6,width:"100%",boxSizing:"border-box",minHeight:46}}><option value="10">10 preguntas</option><option value="65">65 preguntas · ensayo completo</option></select></label>
-        <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:6}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
-        <button onClick={run} disabled={loading} style={{padding:14,border:0,borderRadius:10,minHeight:48,color:"white",background:loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar ensayo de ${questionCount} preguntas`}</button>
+      <section style={{background:"white",padding:"clamp(18px,3vw,28px)",borderRadius:16,display:"grid",gap:14,gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,240px),1fr))",alignItems:"stretch"}}>
+        <label>Cantidad de preguntas<select value={questionCount} onChange={e=>{setQuestionCount(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:8,width:"100%",boxSizing:"border-box",minHeight:48}}><option value="10">10 preguntas</option><option value="65">65 preguntas · ensayo completo</option></select></label>
+        <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",width:"100%",boxSizing:"border-box",padding:12,marginTop:8,minHeight:48}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
+        <button onClick={run} disabled={loading} style={{padding:14,border:0,borderRadius:10,minHeight:48,width:"100%",color:"white",background:loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar ensayo de ${questionCount} preguntas`}</button>
         {questionCount === "65" && <p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p>}
         <small style={{gridColumn:"1 / -1"}}>La generación requiere una sesión activa de EducAntay.</small>
       </section>
