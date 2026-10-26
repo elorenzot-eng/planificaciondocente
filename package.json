@@ -26,7 +26,8 @@
     "@prisma/client": "^6.16.2",
     "bcryptjs": "^3.0.2",
     "jose": "^6.1.0",
-    "pdfjs-dist": "^4.10.38"
+    "pdfjs-dist": "^4.10.38",
+    "exceljs": "^4.4.0"
   },
   "devDependencies": {
     "prisma": "^6.16.2"
