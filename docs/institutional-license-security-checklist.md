@@ -17,3 +17,7 @@ Mantener PR #134 y #135 sin fusionar hasta que se hayan armonizado las migracion
 ## Bloqueo de endpoint de consumo directo (PR #135)
 
 La ruta `POST /api/institutional/usage` de PR #135 recibe `kind`, `requestKey` y `studentId` desde el navegador y descuenta cupos sin comprobar un trabajo de generación o corrección completado. **No fusionar ni publicar esa ruta.** El descuento debe ser ejecutado exclusivamente por el manejador servidor que haya persistido el resultado final; `requestKey` debe derivarse de un ID de trabajo verificable, no de una afirmación del cliente. En el mismo proceso validar sesión, establecimiento, asignatura y licencia y usar `chargeInstitutionalExam`. Probar que POST manual no puede gastar cupos.
+
+## Resultado de CI y publicación
+
+El commit `d7eefffc420fb6e8d417fe0b6080260c3316766a` pasó los cinco workflows (build SEO, controles institucionales, migración Recursos IA, OMR SIMCE y Yanay comercial). **Estas comprobaciones no sustituyen las pruebas de integración de licencias** ni autorizan fusionar PR #135. Pendientes: conectar `chargeInstitutionalExam` con finalización real y persistida de PDF/revisión, deshabilitar endpoint de consumo arbitrario, validar simultaneidad en PostgreSQL real y probar una licencia completa de colegio antes del despliegue.
