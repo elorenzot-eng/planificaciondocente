@@ -27,6 +27,8 @@ async function playVoice(payload:{text?:string;preview?:boolean}){if(!voiceRef.c
 async function previewNeural(){if(!neuralBusy)await playVoice({text:welcomeText,preview:true})}
 useEffect(()=>{try{const enabled=localStorage.getItem("yanay-muted")!=="true";voiceRef.current=enabled;setVoice(enabled)}catch{}},[]);
 
+useEffect(()=>{const openCommercial=()=>{openRef.current=true;setOpen(true);setCommercialOpen(true)};window.addEventListener("educantay:commercial",openCommercial);return()=>window.removeEventListener("educantay:commercial",openCommercial)},[]);
+
 useEffect(()=>{if(location.pathname!=="/")return;let greeted=false;try{greeted=sessionStorage.getItem("yanay-greeted")==="true"}catch{}if(!greeted)openAssistant()},[]);
 
 useEffect(()=>{const detect=()=>{const h=document.querySelector("h1,h2");setSection(h?.textContent?.trim().slice(0,90)||location.pathname)};detect();const obs=new MutationObserver(detect);obs.observe(document.body,{childList:true,subtree:true});return()=>obs.disconnect()},[]);
