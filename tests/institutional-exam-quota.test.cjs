@@ -32,6 +32,7 @@ function fixture() {
         where.module === license.module && where.level === license.level && where.subject === license.subject && license.status === "ACTIVE" ? license : null,
       updateMany: async () => { if (license.pdfUsed >= license.pdfLimit) return { count: 0 }; license.pdfUsed++; return { count: 1 }; },
     },
+    institutionalLicenseEnrollment: { findUnique: async ({ where }) => where.licenseId_studentId.studentId === "student1" ? { active: license.enrolled !== false } : null },
     institutionalStudent: { findFirst: async ({ where }) => where.id === "student1" && where.schoolId === "s1" && where.curso === "4M" ? { id: "student1" } : null,
       count: async () => license.rosterSize ?? 1 },
     $transaction: async callback => {
@@ -75,11 +76,11 @@ test("denies missing or invalid contract limits", async () => {
   assert.equal(license.pdfUsed, 0);
 });
 
-test("REVIEW: denies grade roster exceeding contracted seats", async () => {
+test("REVIEW: allows partial grade enrollment within contracted seats", async () => {
   const { api, args, license, usages } = fixture();
-  license.rosterSize = 2;
-  await assert.rejects(chargeInstitutionalExam(api, { ...args, kind: "REVIEW", studentId: "student1", requestKey: "roster-exceeds-001" }), InstitutionalQuotaError);
-  assert.equal(usages.length, 0);
+  license.rosterSize = 40;
+  assert.equal(await chargeInstitutionalExam(api, { ...args, kind: "REVIEW", studentId: "student1", requestKey: "roster-exceeds-001" }), "charged");
+  assert.equal(usages.length, 1);
 });
 
 test("idempotency receipt rejects reuse under another school", async () => {
@@ -96,4 +97,10 @@ test("idempotency receipt rejects reuse under another subject or module", async 
   for (const changed of [{ subject: "M1" }, { module: "SIMCE" }, { level: "3M" }, { organizationId: "other-org" }]) {
     await assert.rejects(chargeInstitutionalExam(api, { ...args, ...changed, kind: "PDF", requestKey }), InstitutionalQuotaError);
   }
+});
+
+test("REVIEW: rejects student without active license enrollment", async () => {
+ const { api, args, license } = fixture();
+ license.enrolled = false;
+ await assert.rejects(chargeInstitutionalExam(api, { ...args, kind: "REVIEW", studentId: "student1", requestKey: "no-enrollment-001" }), InstitutionalQuotaError);
 });
