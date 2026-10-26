@@ -41,6 +41,12 @@ test("PostgreSQL: concurrent PDF requests never exceed license cap", async () =>
     const afterRetry = await db.institutionalExamLicense.findUnique({ where: { id: license.id } });
     assert.equal(afterRetry.pdfUsed, 2);
     assert.equal(await db.institutionalExamUsage.count({ where: { licenseId: license.id } }), 2);
+    const wrongScope = await Promise.allSettled([
+      chargeInstitutionalExam(db, { ...base, subject: "M1", requestKey: first.requestKey }),
+      chargeInstitutionalExam(db, { ...base, licenseId: "other-license", requestKey: first.requestKey }),
+    ]);
+    assert.equal(wrongScope.filter(result => result.status === "rejected").length, 2);
+    assert.equal(await db.institutionalExamUsage.count({ where: { licenseId: license.id } }), 2);
   } finally {
     await db.institutionalExamLicense.deleteMany({ where: { schoolId: school.id } });
     await db.school.delete({ where: { id: school.id } });
