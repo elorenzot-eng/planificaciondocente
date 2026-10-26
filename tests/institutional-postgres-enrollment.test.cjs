@@ -10,6 +10,8 @@ const js = ts.transpileModule(fs.readFileSync(filename, "utf8"), { compilerOptio
 const m = new Module(filename, module);
 m.filename = filename;
 m.paths = module.paths;
+const originalRequire = m.require.bind(m);
+m.require = (id) => id === "./institutional-exam-quota.server" ? { InstitutionalQuotaError: class InstitutionalQuotaError extends Error { constructor(message, status = 500) { super(message); this.status = status; } } } : originalRequire(id);
 m._compile(js, filename);
 const { enrollInstitutionalStudent } = m.exports;
 
