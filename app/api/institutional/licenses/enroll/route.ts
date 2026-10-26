@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   let body: unknown;
   try { body = await request.json(); }
   catch { return NextResponse.json({ error: "JSON inválido" }, { status: 400 }); }
-  if (!body || typeof body !== "object") return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
+  if (!body || typeof body !== "object" || Array.isArray(body)) return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
   const { licenseId, studentId } = body as Record<string, unknown>;
   if (typeof licenseId !== "string" || typeof studentId !== "string" ||
       !licenseId.trim() || !studentId.trim() || licenseId.length > 128 || studentId.length > 128)
