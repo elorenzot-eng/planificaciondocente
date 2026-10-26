@@ -601,3 +601,19 @@ model InstitutionalExamUsage {
   createdAt DateTime @default(now())
   @@index([licenseId, kind, studentKey])
 }
+
+/** Modelo de estudiante asociado a establecimiento para licencias SIMCE/PAES. */
+model InstitutionalStudent {
+  id String @id @default(cuid())
+  schoolId String
+  nombres String
+  apellidoPaterno String
+  apellidoMaterno String
+  rut String
+  curso String
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([schoolId, rut])
+  @@index([schoolId, curso, active])
+}
