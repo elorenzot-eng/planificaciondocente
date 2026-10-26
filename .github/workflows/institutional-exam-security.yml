@@ -42,7 +42,7 @@ jobs:
       - run: npx prisma db push --skip-generate
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/institutional_ci?schema=public
-      - run: node --test tests/institutional-postgres-concurrency.test.cjs
+      - run: node --test tests/institutional-postgres-concurrency.test.cjs tests/institutional-postgres-enrollment.test.cjs
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/institutional_ci?schema=public
       - run: npx prisma validate
