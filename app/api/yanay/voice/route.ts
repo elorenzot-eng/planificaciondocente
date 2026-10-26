@@ -8,18 +8,20 @@ export async function POST(request:Request){
   const body=await request.json().catch(()=>({}));
   const preview=body.preview===true;
   const session=await getSession();
-  const demo=preview; // Public preview only speaks the fixed greeting; custom text requires a session.
-  if(!session&&!demo)return NextResponse.json({error:"Inicia sesión para utilizar la voz neuronal."},{status:401});
-  if(!session&&demo){
+  const origin=request.headers.get("origin");const host=request.headers.get("host");
+  if(!session&&(!origin||!host||(()=>{try{return new URL(origin).host!==host}catch{return true}})()))return NextResponse.json({error:"Origen no autorizado."},{status:403});
+  const demo=preview;
+  if(!session){
    const ip=(request.headers.get("x-forwarded-for")||"unknown").split(",")[0].trim();
    const now=Date.now();const prev=previewRequests.get(ip);
-   if(prev&&prev.until>now&&prev.count>=3)return NextResponse.json({error:"Límite de muestras alcanzado. Intenta nuevamente en unos minutos."},{status:429});
+   if(prev&&prev.until>now&&prev.count>=8)return NextResponse.json({error:"Límite de muestras alcanzado. Intenta nuevamente en unos minutos."},{status:429});
    previewRequests.set(ip,prev&&prev.until>now?{count:prev.count+1,until:prev.until}:{count:1,until:now+600000});
    if(previewRequests.size>1000)for(const [k,v] of previewRequests)if(v.until<=now)previewRequests.delete(k);
   }
   const key=process.env.OPENAI_API_KEY;
   if(!key)return NextResponse.json({error:"Voz neuronal no configurada."},{status:503});
   const text=preview?greeting:typeof body.text==="string"?body.text.trim():"";
+  if(!session&&!preview&&(!text||text.length>520))return NextResponse.json({error:"Mensaje de voz demasiado largo."},{status:400});
   if(!text||text.length>1500)return NextResponse.json({error:"Texto inválido."},{status:400});
   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),25000);
   let result:Response;
