@@ -4,7 +4,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
  * This service must be called by trusted generation/review completion handlers, never
  * by a browser endpoint that accepts arbitrary claims of completion.
  */
-type Db = Pick<PrismaClient, "$transaction">;
+type Db = PrismaClient;
 type Kind = "PDF" | "REVIEW";
 type Charge = { licenseId: string; kind: Kind; requestKey: string; studentId?: string; schoolId: string; organizationId: string; module: string; level: string; subject: string };
 export class InstitutionalQuotaError extends Error {
@@ -15,6 +15,14 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
     throw new InstitutionalQuotaError("Operación inválida", 400);
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
+      // Retry receipt lookup after an uncertain concurrent commit.
+      const receipt = await db.institutionalExamUsage.findUnique({ where: { requestKey: args.requestKey } });
+      if (receipt) {
+        if (receipt.licenseId !== args.licenseId || receipt.kind !== args.kind ||
+            (args.kind === "REVIEW" && receipt.studentKey !== args.studentId))
+          throw new InstitutionalQuotaError("Clave de operación reutilizada", 409);
+        return "duplicate";
+      }
       return await db.$transaction(async tx => {
         const prior = await tx.institutionalExamUsage.findUnique({ where: { requestKey: args.requestKey } });
         if (prior) {
@@ -54,7 +62,7 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
         return "charged" as const;
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2034" && attempt < 2) continue;
+      if (error instanceof Prisma.PrismaClientKnownRequestError && ["P2034", "P2002"].includes(error.code) && attempt < 2) continue;
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002")
         throw new InstitutionalQuotaError("Operación concurrente: consultar el recibo antes de reintentar");
       throw error;
