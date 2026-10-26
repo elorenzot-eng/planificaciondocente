@@ -27,7 +27,7 @@ async function playVoice(payload:{text?:string;preview?:boolean}){if(!voiceRef.c
 async function previewNeural(){if(!neuralBusy)await playVoice({text:welcomeText,preview:true})}
 useEffect(()=>{try{const enabled=localStorage.getItem("yanay-muted")!=="true";voiceRef.current=enabled;setVoice(enabled)}catch{}},[]);
 
-useEffect(()=>{const openCommercial=()=>{openRef.current=true;setOpen(true);setCommercialOpen(true)};window.addEventListener("educantay:commercial",openCommercial);return()=>window.removeEventListener("educantay:commercial",openCommercial)},[]);
+useEffect(()=>{const openCommercial=()=>{openRef.current=true;setOpen(true);setCommercialOpen(true)};const handleLandingClick=(event:MouseEvent)=>{const target=event.target;if(!(target instanceof Element))return;const button=target.closest("button");if(button?.textContent?.trim()==="Solicitar demostración"){event.preventDefault();event.stopPropagation();openCommercial()}};window.addEventListener("educantay:commercial",openCommercial);document.addEventListener("click",handleLandingClick,true);return()=>{window.removeEventListener("educantay:commercial",openCommercial);document.removeEventListener("click",handleLandingClick,true)}},[]);
 
 useEffect(()=>{if(location.pathname!=="/")return;let greeted=false;try{greeted=sessionStorage.getItem("yanay-greeted")==="true"}catch{}if(!greeted)openAssistant()},[]);
 
