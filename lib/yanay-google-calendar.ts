@@ -6,7 +6,7 @@ export const redirectUri = "https://educantay.cl/api/yanay-commercial/google/cal
 export function credentials() {
   const id = process.env.GOOGLE_CALENDAR_CLIENT_ID;
   const secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET;
-  const encryption = process.env.YANAY_CALENDAR_ENCRYPTION_KEY;
+  const encryption = process.env.AUTH_SECRET;
   if (!id || !secret || !encryption) throw new Error("Configuración de calendario incompleta");
   return { id, secret, encryption };
 }
@@ -25,15 +25,23 @@ export function unseal(value: string, secret: string) {
 }
 export async function accessToken() {
   const {id,secret,encryption} = credentials();
-  const connection = await prisma.yanayGoogleCalendarConnection.findUnique({where:{id:"primary"}});
+  const connection = await prisma.yanayGoogleCalendarConnection.findUnique({where:{id:"commercial"}});
   if (!connection) throw new Error("Calendario no autorizado");
   const response = await fetch("https://oauth2.googleapis.com/token", {
     method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
-    body:new URLSearchParams({client_id:id,client_secret:secret,refresh_token:unseal(connection.refreshTokenEncrypted,encryption),grant_type:"refresh_token"}),
+    body:new URLSearchParams({client_id:id,client_secret:secret,refresh_token:unsealLegacy(connection.refreshTokenEncrypted,encryption),grant_type:"refresh_token"}),
     cache:"no-store"
   });
   if (!response.ok) throw new Error("No se pudo renovar la autorización");
   const result = await response.json() as {access_token?:string};
   if (!result.access_token) throw new Error("Token de acceso ausente");
   return result.access_token;
+}
+
+function unsealLegacy(value:string,secret:string){
+ const packed=Buffer.from(value,"base64");
+ if(packed.length<29)throw new Error("Credencial inválida");
+ const decipher=createDecipheriv("aes-256-gcm",createHash("sha256").update(secret).digest(),packed.subarray(0,12));
+ decipher.setAuthTag(packed.subarray(12,28));
+ return Buffer.concat([decipher.update(packed.subarray(28)),decipher.final()]).toString("utf8");
 }
