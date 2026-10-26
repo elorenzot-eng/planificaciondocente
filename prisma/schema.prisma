@@ -560,3 +560,45 @@ model EcepExam {
  updatedAt DateTime @updatedAt
  @@index([userId,status,createdAt])
 }
+
+/** Licencia institucional por establecimiento y módulo contratado. */
+model InstitutionalExamLicense {
+  id String @id @default(cuid())
+  organizationId String
+  schoolId String
+  module String
+  studentCount Int
+  pricePerStudentClp Int @default(6100)
+  startsAt DateTime
+  endsAt DateTime
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quotas InstitutionalExamQuota[]
+  @@index([organizationId,schoolId,module,active,endsAt])
+}
+
+/** Cupos separados por asignatura y nivel; las revisiones se contabilizan por estudiante. */
+model InstitutionalExamQuota {
+  id String @id @default(cuid())
+  licenseId String
+  grade String
+  subject String
+  pdfLimit Int @default(10)
+  pdfUsed Int @default(0)
+  reviewLimit Int
+  reviewUsed Int @default(0)
+  license InstitutionalExamLicense @relation(fields:[licenseId],references:[id],onDelete:Cascade)
+  @@unique([licenseId,grade,subject])
+}
+
+/** Evita cobrar dos veces una misma generación o revisión al reintentar. */
+model InstitutionalExamUsage {
+  id String @id @default(cuid())
+  quotaId String
+  operation String
+  requestKey String @unique
+  studentCount Int @default(0)
+  createdAt DateTime @default(now())
+  @@index([quotaId,operation,createdAt])
+}
