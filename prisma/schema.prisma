@@ -19,6 +19,7 @@ enum Role {
   SUPERADMIN
   SOSTENEDOR
   DIRECTOR
+  ADMIN_COLEGIO
   UTP
   DOCENTE
 }
@@ -49,6 +50,7 @@ model Organization {
   rut String?
   active Boolean @default(true)
   schools School[]
+  examLicenses InstitutionalExamLicense[]
   users User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,6 +65,8 @@ model School {
   organizationId String
   organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade)
   years AcademicYear[]
+  examLicenses InstitutionalExamLicense[]
+  students InstitutionalStudent[]
   users User[]
   courses Course[]
   @@index([organizationId])
@@ -559,4 +563,55 @@ model EcepExam {
  createdAt DateTime @default(now())
  updatedAt DateTime @updatedAt
  @@index([userId,status,createdAt])
+}
+
+model InstitutionalExamLicense {
+ id String @id @default(cuid())
+ organizationId String
+ schoolId String
+ organization Organization @relation(fields:[organizationId],references:[id])
+ school School @relation(fields:[schoolId],references:[id])
+ module String
+ level String
+ subject String
+ studentCount Int
+ pricePerStudentClp Int @default(6100)
+ vatRateBps Int @default(1900)
+ pdfLimit Int @default(10)
+ pdfUsed Int @default(0)
+ reviewsPerStudent Int @default(10)
+ startsAt DateTime
+ endsAt DateTime
+ status String @default("PENDING")
+ paymentReference String?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ usages InstitutionalExamUsage[]
+ @@index([schoolId,module,level,subject,status])
+ @@index([endsAt,status])
+}
+model InstitutionalExamUsage {
+ id String @id @default(cuid())
+ licenseId String
+ license InstitutionalExamLicense @relation(fields:[licenseId],references:[id],onDelete:Cascade)
+ kind String
+ studentKey String?
+ requestKey String @unique
+ createdAt DateTime @default(now())
+ @@index([licenseId,kind,studentKey])
+}
+model InstitutionalStudent {
+ id String @id @default(cuid())
+ schoolId String
+ school School @relation(fields:[schoolId],references:[id],onDelete:Cascade)
+ nombres String
+ apellidoPaterno String
+ apellidoMaterno String
+ rut String
+ curso String
+ active Boolean @default(true)
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([schoolId,rut])
+ @@index([schoolId,curso,active])
 }
