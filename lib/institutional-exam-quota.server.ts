@@ -38,7 +38,8 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
             status: "ACTIVE", startsAt: { lte: new Date() }, endsAt: { gt: new Date() } },
         });
         if (!license) throw new InstitutionalQuotaError("Licencia no vigente o fuera de alcance", 403);
-        if (license.studentCount < 1 || license.pdfLimit < 1 || license.reviewsPerStudent < 1)
+        if (![license.studentCount, license.pdfLimit, license.reviewsPerStudent].every(value => Number.isSafeInteger(value) && value > 0) ||
+            !Number.isSafeInteger(license.pdfUsed) || license.pdfUsed < 0)
           throw new InstitutionalQuotaError("Contrato institucional inválido", 403);
         if (args.kind === "PDF") {
           const result = await tx.institutionalExamLicense.updateMany({
