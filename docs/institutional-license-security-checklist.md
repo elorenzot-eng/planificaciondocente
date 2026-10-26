@@ -13,3 +13,7 @@
 
 ## Condición de integración
 Mantener PR #134 y #135 sin fusionar hasta que se hayan armonizado las migraciones y se hayan ejecutado pruebas de integración sobre PostgreSQL, además de compilación y pruebas funcionales. La compilación o una prueba sintética no demuestra generación real con OpenAI ni validez de PDF.
+
+## Bloqueo de endpoint de consumo directo (PR #135)
+
+La ruta `POST /api/institutional/usage` de PR #135 recibe `kind`, `requestKey` y `studentId` desde el navegador y descuenta cupos sin comprobar un trabajo de generación o corrección completado. **No fusionar ni publicar esa ruta.** El descuento debe ser ejecutado exclusivamente por el manejador servidor que haya persistido el resultado final; `requestKey` debe derivarse de un ID de trabajo verificable, no de una afirmación del cliente. En el mismo proceso validar sesión, establecimiento, asignatura y licencia y usar `chargeInstitutionalExam`. Probar que POST manual no puede gastar cupos.
