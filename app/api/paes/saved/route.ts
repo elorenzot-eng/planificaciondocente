@@ -16,12 +16,14 @@ export const runtime="nodejs";export const dynamic="force-dynamic";
 export async function GET(){
  const session=await getSession(),userId=session?.id;
  if(typeof userId!=="string")return NextResponse.json({error:"Acceso denegado."},{status:401});
+ if(session?.accountType==="INDIVIDUAL"||typeof session?.organizationId!=="string"||!session.organizationId.trim())return NextResponse.json({error:"Solo establecimientos y sostenedores autorizados pueden utilizar PAES."},{status:403});
  const records=await prisma.savedPaesExam.findMany({where:{userId},orderBy:{createdAt:"desc"},select:{id:true,title:true,examType:true,createdAt:true}});
  return NextResponse.json({items:records},{headers:{"Cache-Control":"no-store"}});
 }
 export async function POST(request:NextRequest){
  const session=await getSession(),userId=session?.id;
  if(typeof userId!=="string")return NextResponse.json({error:"Acceso denegado."},{status:401});
+ if(session?.accountType==="INDIVIDUAL"||typeof session?.organizationId!=="string"||!session.organizationId.trim())return NextResponse.json({error:"Solo establecimientos y sostenedores autorizados pueden utilizar PAES."},{status:403});
  let body:{jobId?:string};try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
  if(typeof body.jobId!=="string"||body.jobId.length>100)return NextResponse.json({error:"Identificador inválido."},{status:400});
  const job=await prisma.paesInternalJob.findUnique({where:{id:body.jobId}});
@@ -64,6 +66,7 @@ export async function POST(request:NextRequest){
 export async function DELETE(request:NextRequest){
  const session=await getSession(),userId=session?.id;
  if(typeof userId!=="string")return NextResponse.json({error:"Acceso denegado."},{status:401});
+ if(session?.accountType==="INDIVIDUAL"||typeof session?.organizationId!=="string"||!session.organizationId.trim())return NextResponse.json({error:"Solo establecimientos y sostenedores autorizados pueden utilizar PAES."},{status:403});
  const id=new URL(request.url).searchParams.get("id");
  if(!id)return NextResponse.json({error:"Identificador requerido."},{status:400});
  const deleted=await prisma.savedPaesExam.deleteMany({where:{id,userId}});
