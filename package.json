@@ -13,7 +13,8 @@
     "android:sync": "npx cap sync android",
     "android:open": "npx cap open android",
     "test:yanay": "node --test tests/yanay-commercial.test.cjs",
-    "test:simce": "node --test tests/simce-paper-omr.test.cjs"
+    "test:simce": "node --test tests/simce-paper-omr.test.cjs",
+    "test:institutional": "node --test tests/institutional-exam-access.test.cjs tests/institutional-exam-quota.test.cjs tests/institutional-license-enrollment.test.cjs"
   },
   "dependencies": {
     "@types/node": "^22.0.0",

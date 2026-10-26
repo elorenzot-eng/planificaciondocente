@@ -1,0 +1,50 @@
+name: Institutional exam security checks
+on:
+  pull_request:
+    paths:
+      - 'lib/institutional-exam-*.ts'
+      - 'lib/institutional-license-*.ts'
+      - 'app/api/paes/saved/route.ts'
+      - 'tests/institutional-license-*.test.cjs'
+      - 'tests/institutional-exam-*.test.cjs'
+      - 'package.json'
+      - 'prisma/schema.prisma'
+      - 'app/api/institutional/**'
+      - '.github/workflows/institutional-exam-security.yml'
+  workflow_dispatch:
+
+jobs:
+  institutional-unit-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: institutional_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d institutional_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run test:institutional
+      - run: npx prisma db push --skip-generate
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/institutional_ci?schema=public
+      - run: node --test tests/institutional-postgres-concurrency.test.cjs tests/institutional-postgres-enrollment.test.cjs
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/institutional_ci?schema=public
+      - run: npx prisma validate
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/institutional_ci?schema=public
