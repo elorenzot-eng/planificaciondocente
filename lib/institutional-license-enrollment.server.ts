@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { InstitutionalQuotaError } from "./institutional-exam-quota.server";
 
 export async function enrollInstitutionalStudent(db: PrismaClient, licenseId: string, studentId: string) {
-  if (!licenseId || !studentId) throw new InstitutionalQuotaError("Inscripción inválida", 400);
+  if (typeof licenseId !== "string" || !licenseId.trim() || typeof studentId !== "string" || !studentId.trim()) throw new InstitutionalQuotaError("Inscripción inválida", 400);
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       return await db.$transaction(async tx => {
