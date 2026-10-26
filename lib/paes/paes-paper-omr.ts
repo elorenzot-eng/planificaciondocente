@@ -1,4 +1,4 @@
-import {measureBubble} from "./simce-paper-omr";
+import {measureBubble} from "../simce-paper-omr";
 export type PaesMark="A"|"B"|"C"|"D"|"E"|null|"MULTIPLE"|"UNCERTAIN";
 export type PaesBubble={x:number;y:number;radius:number};
 export type PaesRow={number:number;bubbles:PaesBubble[]};
