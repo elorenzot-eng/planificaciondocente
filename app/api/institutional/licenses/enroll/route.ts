@@ -29,7 +29,9 @@ export async function POST(request: NextRequest) {
     where: { id: licenseId },
     select: { organizationId: true, schoolId: true },
   });
-  if (!license || license.organizationId !== actor.organizationId ||
+  const school = license ? await prisma.school.findUnique({ where: { id: license.schoolId }, select: { active: true, organizationId: true } }) : null;
+  const organization = license ? await prisma.organization.findUnique({ where: { id: license.organizationId }, select: { active: true } }) : null;
+  if (!license || !school?.active || !organization?.active || school.organizationId !== license.organizationId || license.organizationId !== actor.organizationId ||
       (!["SUPERADMIN", "SOSTENEDOR"].includes(actor.role) && actor.schoolId !== license.schoolId))
     return NextResponse.json({ error: "Licencia fuera de alcance" }, { status: 403 });
   try {
