@@ -3,7 +3,7 @@ import { InstitutionalQuotaError } from "./institutional-exam-quota.server";
 
 export async function enrollInstitutionalStudent(db: PrismaClient, licenseId: string, studentId: string) {
   if (typeof licenseId !== "string" || !licenseId.trim() || typeof studentId !== "string" || !studentId.trim()) throw new InstitutionalQuotaError("Inscripción inválida", 400);
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     try {
       return await db.$transaction(async tx => {
         const license = await tx.institutionalExamLicense.findUnique({ where: { id: licenseId } });
@@ -30,7 +30,7 @@ export async function enrollInstitutionalStudent(db: PrismaClient, licenseId: st
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError &&
-          ["P2034", "P2002"].includes(error.code) && attempt < 2) continue;
+          ["P2034", "P2002"].includes(error.code) && attempt < 4) continue;
       throw error;
     }
   }
