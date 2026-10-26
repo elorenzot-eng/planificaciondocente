@@ -23,7 +23,7 @@ function fixture() {
     startsAt: new Date("2020-01-01"), endsAt: new Date("2099-01-01"), studentCount: 1, pdfLimit: 2, pdfUsed: 0, reviewsPerStudent: 2 };
   const api = {
     institutionalExamUsage: {
-      findUnique: async ({ where }) => usages.find(u => u.requestKey === where.requestKey) || null,
+      findUnique: async ({ where }) => { const receipt = usages.find(u => u.requestKey === where.requestKey); return receipt ? { ...receipt, license } : null; },
       count: async ({ where }) => usages.filter(u => u.licenseId === where.licenseId && u.kind === where.kind && u.studentKey === where.studentKey).length,
       create: async ({ data }) => { if (usages.some(u => u.requestKey === data.requestKey)) throw Error("duplicate"); usages.push(data); },
     },
