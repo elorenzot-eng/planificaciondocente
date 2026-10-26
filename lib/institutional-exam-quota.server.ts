@@ -11,7 +11,7 @@ export class InstitutionalQuotaError extends Error {
   constructor(message: string, public status = 409) { super(message); }
 }
 export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"charged" | "duplicate"> {
-  if (!/^[a-zA-Z0-9_-]{12,128}$/.test(args.requestKey) || (args.kind === "REVIEW" && !args.studentId))
+  if (!/^[a-zA-Z0-9_-]{12,128}$/.test(args.requestKey) || !["PDF", "REVIEW"].includes(args.kind) || (args.kind === "REVIEW" && !args.studentId))
     throw new InstitutionalQuotaError("Operación inválida", 400);
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -37,6 +37,8 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
             status: "ACTIVE", startsAt: { lte: new Date() }, endsAt: { gt: new Date() } },
         });
         if (!license) throw new InstitutionalQuotaError("Licencia no vigente o fuera de alcance", 403);
+        if (license.studentCount < 1 || license.pdfLimit < 1 || license.reviewsPerStudent < 1)
+          throw new InstitutionalQuotaError("Contrato institucional inválido", 403);
         if (args.kind === "PDF") {
           const result = await tx.institutionalExamLicense.updateMany({
             where: { id: license.id, pdfUsed: { lt: license.pdfLimit }, status: "ACTIVE",
