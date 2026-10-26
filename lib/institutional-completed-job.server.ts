@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { InstitutionalQuotaError, chargeInstitutionalExam } from "./institutional-exam-quota.server";
+import { InstitutionalQuotaError } from "./institutional-exam-quota.server";
 
 /** Server-only completion gate. Never accept a client assertion that a job completed. */
 export async function chargeCompletedInstitutionalPaes(db: PrismaClient, args: {
