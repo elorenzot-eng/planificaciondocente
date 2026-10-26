@@ -69,7 +69,7 @@ function InstitutionalStudentImportContent() {
     <label>Identificador del establecimiento <input value={schoolId} onChange={e => { setSchoolId(e.target.value); setValidated(false); }} /></label>
     <p><a href={schoolId ? `/api/institutional/students?schoolId=${encodeURIComponent(schoolId)}` : "#"}>Descargar plantilla</a></p>
     <input type="file" accept=".xlsx,.csv,text/csv" onChange={async e => {
-      try { const file = e.target.files?.[0]; if (!file) return; setRows(parseCsv(await file.text())); setFeedback(`Filas cargadas: ${parseCsv(await file.text()).length}`); setErrors([]); }
+      try { const file = e.target.files?.[0]; if (!file) return; const parsed = await parseWorkbook(file); setRows(parsed); setFeedback(`Filas cargadas: ${parsed.length}`); setErrors([]); setValidated(false); }
       catch (err) { setRows([]); setValidated(false); setFeedback(err instanceof Error ? err.message : "Archivo inválido"); }
     }} />
     <p><button disabled={busy || !schoolId || !rows.length} onClick={() => submit(false)}>Validar y previsualizar</button>{" "}
