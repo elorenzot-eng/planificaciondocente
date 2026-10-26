@@ -1,8 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function InstitutionalLicenseAdmin() {
   const [schoolId, setSchoolId] = useState("");
+  const [schools, setSchools] = useState<Array<{id:string;name:string}>>([]);
+  useEffect(() => { fetch("/api/institutional/dashboard").then(r=>r.json()).then(data=>{
+    if (data.user?.role !== "SUPERADMIN") { setFeedback("Acceso reservado al Superadministrador"); return; }
+    setSchools(data.schools || []);
+  }).catch(()=>setFeedback("No se pudieron consultar los establecimientos")); }, []);
   const [module, setModule] = useState("SIMCE");
   const [level, setLevel] = useState("");
   const [subject, setSubject] = useState("");
@@ -28,7 +33,7 @@ export default function InstitutionalLicenseAdmin() {
     <p>Creación y activación manual de contratos anuales SIMCE y PAES, sin Flow.</p>
     <form onSubmit={e => {e.preventDefault(); void send("POST",{schoolId,module,level,subject,studentCount});}}
       style={{display:"grid",gap:12}}>
-      <label>ID del establecimiento <input required value={schoolId} onChange={e=>setSchoolId(e.target.value)} /></label>
+      <label>Establecimiento <select required value={schoolId} onChange={e=>setSchoolId(e.target.value)}><option value="">Seleccione colegio</option>{schools.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
       <label>Módulo <select value={module} onChange={e=>setModule(e.target.value)}><option>SIMCE</option><option>PAES</option></select></label>
       <label>Nivel <input required value={level} onChange={e=>setLevel(e.target.value)} /></label>
       <label>Asignatura <input required value={subject} onChange={e=>setSubject(e.target.value)} /></label>
