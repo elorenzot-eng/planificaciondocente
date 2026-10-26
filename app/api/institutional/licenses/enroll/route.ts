@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       (!["SUPERADMIN", "SOSTENEDOR"].includes(actor.role) && actor.schoolId !== license.schoolId))
     return NextResponse.json({ error: "Licencia fuera de alcance" }, { status: 403 });
   try {
-    const result = await enrollInstitutionalStudent(prisma, licenseId, studentId);
+    const result = await enrollInstitutionalStudent(prisma, licenseId, studentId, actor.id);
     return NextResponse.json({ status: result }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     if (error instanceof InstitutionalQuotaError)
