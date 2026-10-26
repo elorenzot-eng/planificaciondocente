@@ -5,6 +5,26 @@ import { useState } from "react";
 const HEADERS = ["Nombres", "Apellido paterno", "Apellido materno", "RUT", "Curso"] as const;
 type StudentRow = Record<(typeof HEADERS)[number], string>;
 
+async function parseWorkbook(file: File): Promise<StudentRow[]> {
+  if (file.name.toLowerCase().endsWith(".xlsx")) {
+    const ExcelJS = await import("exceljs");
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(await file.arrayBuffer());
+    const sheet = workbook.worksheets[0];
+    if (!sheet) throw new Error("Libro sin hojas");
+    const headers = HEADERS.map((_, i) => String(sheet.getRow(1).getCell(i + 1).text).trim());
+    if (HEADERS.some((col, i) => headers[i] !== col)) throw new Error("Encabezados incorrectos");
+    const records: StudentRow[] = [];
+    sheet.eachRow((row, number) => {
+      if (number === 1) return;
+      const record = Object.fromEntries(HEADERS.map((col, i) => [col, String(row.getCell(i + 1).text).trim()])) as StudentRow;
+      if (HEADERS.some(col => record[col])) records.push(record);
+    });
+    return records;
+  }
+  return parseCsv(await file.text());
+}
+
 function parseCsv(input: string): StudentRow[] {
   const lines = input.replace(/^\uFEFF/, "").split(/\r?\n/).filter(line => line.trim());
   if (!lines.length) throw new Error("Archivo vacío");
@@ -42,10 +62,10 @@ export default function InstitutionalStudentImport() {
   }
   return <main style={{ maxWidth: 850, margin: "32px auto", padding: 20 }}>
     <h1>Carga de estudiantes — EducAntay</h1>
-    <p>Descargue la plantilla CSV compatible con Excel, complete los datos y guárdela como CSV UTF-8.</p>
+    <p>Descargue la plantilla, complétela en Excel y cargue el archivo XLSX o CSV UTF-8.</p>
     <label>Identificador del establecimiento <input value={schoolId} onChange={e => { setSchoolId(e.target.value); setValidated(false); }} /></label>
     <p><a href={schoolId ? `/api/institutional/students?schoolId=${encodeURIComponent(schoolId)}` : "#"}>Descargar plantilla</a></p>
-    <input type="file" accept=".csv,text/csv" onChange={async e => {
+    <input type="file" accept=".xlsx,.csv,text/csv" onChange={async e => {
       try { const file = e.target.files?.[0]; if (!file) return; setRows(parseCsv(await file.text())); setFeedback(`Filas cargadas: ${parseCsv(await file.text()).length}`); setErrors([]); }
       catch (err) { setRows([]); setValidated(false); setFeedback(err instanceof Error ? err.message : "Archivo inválido"); }
     }} />
