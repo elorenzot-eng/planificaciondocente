@@ -560,3 +560,34 @@ model EcepExam {
  updatedAt DateTime @updatedAt
  @@index([userId,status,createdAt])
 }
+
+// Google Calendar authorization for Yanay Commercial. Keep this table in the
+// Prisma schema so prisma db push never attempts to drop stored OAuth tokens.
+model YanayGoogleConnection {
+  email                 String   @id
+  encryptedRefreshToken String
+  updatedAt             DateTime @default(now()) @db.Timestamptz(6)
+}
+
+
+model InstitutionalExamLicense {
+  id String @id @default(cuid())
+  institutionCode String
+  institutionName String
+  product String
+  grade String
+  subject String
+  studentCount Int
+  netPricePerStudent Int @default(6100)
+  pdfLimit Int @default(10)
+  reviewLimit Int
+  pdfUsed Int @default(0)
+  reviewsUsed Int @default(0)
+  startsAt DateTime
+  expiresAt DateTime
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([institutionCode,product,grade,subject])
+  @@index([active,expiresAt])
+}
