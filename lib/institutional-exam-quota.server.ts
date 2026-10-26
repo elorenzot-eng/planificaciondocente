@@ -54,6 +54,8 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
             select: { id: true },
           });
           if (!student) throw new InstitutionalQuotaError("Estudiante no autorizado", 403);
+          const rosterSize = await tx.institutionalStudent.count({ where: { schoolId: license.schoolId, active: true, curso: license.level } });
+          if (rosterSize > license.studentCount) throw new InstitutionalQuotaError("Matrícula excede estudiantes contratados", 403);
           const used = await tx.institutionalExamUsage.count({
             where: { licenseId: license.id, kind: "REVIEW", studentKey: student.id },
           });
