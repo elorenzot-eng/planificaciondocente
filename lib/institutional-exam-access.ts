@@ -31,8 +31,9 @@ export function canAccessInstitutionalExam(
   request: { module: InstitutionalModule; level: string; subject: string; operation: InstitutionalOperation },
   now = new Date(),
 ): boolean {
-  if (!actor.active || actor.accountType !== "INSTITUTIONAL") return false;
-  if (license.status !== "ACTIVE" || !(license.startsAt <= now && now < license.endsAt)) return false;
+  if (!actor || !license || !request || !actor.active || actor.accountType !== "INSTITUTIONAL") return false;
+  if (license.status !== "ACTIVE" || !(license.startsAt instanceof Date) || !(license.endsAt instanceof Date) || !(license.startsAt <= now && now < license.endsAt)) return false;
+  if (!["SIMCE", "PAES"].includes(request.module) || !["GENERATE", "REVIEW", "DOWNLOAD"].includes(request.operation)) return false;
   if (license.module !== request.module || license.level !== request.level || license.subject !== request.subject) return false;
   if (!actor.organizationId || actor.organizationId !== license.organizationId) return false;
   if (actor.role === "SUPERADMIN" || actor.role === "SOSTENEDOR") return true;
