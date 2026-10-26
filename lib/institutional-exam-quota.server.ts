@@ -17,17 +17,17 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       // Retry receipt lookup after an uncertain concurrent commit.
-      const receipt = await db.institutionalExamUsage.findUnique({ where: { requestKey: args.requestKey } });
+      const receipt = await db.institutionalExamUsage.findUnique({ where: { requestKey: args.requestKey }, include: { license: true } });
       if (receipt) {
-        if (receipt.licenseId !== args.licenseId || receipt.kind !== args.kind ||
+        if (receipt.licenseId !== args.licenseId || receipt.kind !== args.kind || receipt.license.schoolId !== args.schoolId || receipt.license.organizationId !== args.organizationId || receipt.license.module !== args.module || receipt.license.level !== args.level || receipt.license.subject !== args.subject ||
             (args.kind === "REVIEW" && receipt.studentKey !== args.studentId))
           throw new InstitutionalQuotaError("Clave de operación reutilizada", 409);
         return "duplicate";
       }
       return await db.$transaction(async tx => {
-        const prior = await tx.institutionalExamUsage.findUnique({ where: { requestKey: args.requestKey } });
+        const prior = await tx.institutionalExamUsage.findUnique({ where: { requestKey: args.requestKey }, include: { license: true } });
         if (prior) {
-          if (prior.licenseId !== args.licenseId || prior.kind !== args.kind ||
+          if (prior.licenseId !== args.licenseId || prior.kind !== args.kind || prior.license.schoolId !== args.schoolId || prior.license.organizationId !== args.organizationId || prior.license.module !== args.module || prior.license.level !== args.level || prior.license.subject !== args.subject ||
               (args.kind === "REVIEW" && prior.studentKey !== args.studentId))
             throw new InstitutionalQuotaError("Clave de operación reutilizada", 409);
           return "duplicate" as const;
