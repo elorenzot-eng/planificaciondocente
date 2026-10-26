@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const HEADERS = ["Nombres", "Apellido paterno", "Apellido materno", "RUT", "Curso"] as const;
 type StudentRow = Record<(typeof HEADERS)[number], string>;
@@ -38,7 +39,9 @@ function parseCsv(input: string): StudentRow[] {
 }
 
 export default function InstitutionalStudentImport() {
+  const params = useSearchParams();
   const [schoolId, setSchoolId] = useState("");
+  useEffect(() => { setSchoolId(params.get("schoolId") || ""); }, [params]);
   const [rows, setRows] = useState<StudentRow[]>([]);
   const [feedback, setFeedback] = useState("");
   const [errors, setErrors] = useState<Array<{fila:number;campo:string;mensaje:string}>>([]);
