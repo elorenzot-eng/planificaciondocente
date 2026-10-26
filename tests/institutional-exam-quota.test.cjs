@@ -20,7 +20,7 @@ const { chargeInstitutionalExam, InstitutionalQuotaError } = mod.exports;
 function fixture() {
   const usages = [];
   const license = { id: "lic1", schoolId: "s1", organizationId: "o1", module: "PAES", level: "4M", subject: "LECTORA", status: "ACTIVE",
-    startsAt: new Date("2020-01-01"), endsAt: new Date("2099-01-01"), pdfLimit: 2, pdfUsed: 0, reviewsPerStudent: 2 };
+    startsAt: new Date("2020-01-01"), endsAt: new Date("2099-01-01"), studentCount: 1, pdfLimit: 2, pdfUsed: 0, reviewsPerStudent: 2 };
   const api = {
     institutionalExamUsage: {
       findUnique: async ({ where }) => usages.find(u => u.requestKey === where.requestKey) || null,
@@ -63,4 +63,13 @@ test("REVIEW: per-student cap and school membership", async () => {
 test("denies license scope mismatch", async () => {
   const { api, args } = fixture();
   await assert.rejects(chargeInstitutionalExam(api, { ...args, subject: "M1", kind: "PDF", requestKey: "scope-request-01" }), InstitutionalQuotaError);
+});
+
+test("denies missing or invalid contract limits", async () => {
+  const { api, args, license } = fixture();
+  for (const invalid of [undefined, 0, -1, 1.5, NaN]) {
+    license.studentCount = invalid;
+    await assert.rejects(chargeInstitutionalExam(api, { ...args, kind: "PDF", requestKey: "invalid-contract-001" }), InstitutionalQuotaError);
+  }
+  assert.equal(license.pdfUsed, 0);
 });
