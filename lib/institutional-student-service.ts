@@ -22,7 +22,9 @@ export async function commitInstitutionalStudentImport(args: ImportArgs) {
   if (!Number.isSafeInteger(args.licensedStudentCount) || args.licensedStudentCount < 1) {
     throw new Error("Matrícula contratada inválida");
   }
-  return prisma.$transaction(async tx => {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await prisma.$transaction(async tx => {
     const existing = await tx.institutionalStudent.findMany({
       where: { schoolId: args.schoolId }, select: { rut: true },
     });
@@ -41,5 +43,10 @@ export async function commitInstitutionalStudentImport(args: ImportArgs) {
       })),
     });
     return { imported: created.count, errors: [] };
-  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== "P2034" || attempt === 2) throw error;
+    }
+  }
+  throw new Error("No fue posible completar la transacción");
 }
