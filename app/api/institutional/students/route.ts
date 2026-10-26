@@ -43,8 +43,8 @@ export async function POST(request: Request) {
       select: { studentCount: true },
     });
     if (!licenses.length) return NextResponse.json({ error: "Sin licencia institucional activa" }, { status: 403 });
-    const courses = await prisma.institutionalStudent.findMany({ where: { schoolId }, select: { curso: true } });
-    const allowedCourses = new Set<string>(Array.isArray(body.allowedCourses) ? body.allowedCourses.filter((x: unknown): x is string => typeof x === "string") : courses.map(c => c.curso));
+    const courses = await prisma.course.findMany({ where: { schoolId }, select: { name: true } });
+    const allowedCourses = new Set(courses.map(c => c.name));
     if (!allowedCourses.size) return NextResponse.json({ error: "Primero configure los cursos del colegio" }, { status: 400 });
     if (body.confirm !== true) {
       const result = await previewInstitutionalStudentImport({ schoolId, rows, allowedCourses });
