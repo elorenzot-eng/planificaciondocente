@@ -88,3 +88,12 @@ test("idempotency receipt rejects reuse under another school", async () => {
   assert.equal(await chargeInstitutionalExam(api, { ...args, kind: "PDF", requestKey }), "charged");
   await assert.rejects(chargeInstitutionalExam(api, { ...args, schoolId: "other-school", kind: "PDF", requestKey }), InstitutionalQuotaError);
 });
+
+test("idempotency receipt rejects reuse under another subject or module", async () => {
+  const { api, args } = fixture();
+  const requestKey = "subject-replay-001";
+  assert.equal(await chargeInstitutionalExam(api, { ...args, kind: "PDF", requestKey }), "charged");
+  for (const changed of [{ subject: "M1" }, { module: "SIMCE" }, { level: "3M" }, { organizationId: "other-org" }]) {
+    await assert.rejects(chargeInstitutionalExam(api, { ...args, ...changed, kind: "PDF", requestKey }), InstitutionalQuotaError);
+  }
+});
