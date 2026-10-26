@@ -66,6 +66,7 @@ model School {
   organization Organization @relation(fields:[organizationId],references:[id],onDelete:Cascade)
   years AcademicYear[]
   examLicenses InstitutionalExamLicense[]
+  students InstitutionalStudent[]
   users User[]
   courses Course[]
   @@index([organizationId])
@@ -607,6 +608,7 @@ model InstitutionalExamUsage {
 model InstitutionalStudent {
   id String @id @default(cuid())
   schoolId String
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   nombres String
   apellidoPaterno String
   apellidoMaterno String
