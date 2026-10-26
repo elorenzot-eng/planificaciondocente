@@ -14,7 +14,7 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
   if (!/^[a-zA-Z0-9_-]{12,128}$/.test(args.requestKey) || !["PDF", "REVIEW"].includes(args.kind) || (args.kind === "REVIEW" && !args.studentId) ||
       ![args.licenseId, args.schoolId, args.organizationId, args.module, args.level, args.subject].every(value => typeof value === "string" && value.trim().length > 0))
     throw new InstitutionalQuotaError("Operación inválida", 400);
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     try {
       // Retry receipt lookup after an uncertain concurrent commit.
       const receipt = await db.institutionalExamUsage.findUnique({ where: { requestKey: args.requestKey }, include: { license: true } });
@@ -68,7 +68,7 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
         return "charged" as const;
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && ["P2034", "P2002"].includes(error.code) && attempt < 2) continue;
+      if (error instanceof Prisma.PrismaClientKnownRequestError && ["P2034", "P2002"].includes(error.code) && attempt < 4) continue;
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002")
         throw new InstitutionalQuotaError("Operación concurrente: consultar el recibo antes de reintentar");
       throw error;
