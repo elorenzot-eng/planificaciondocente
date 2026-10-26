@@ -38,6 +38,7 @@ test("PostgreSQL: concurrent enrollment never exceeds contracted seats", async (
     assert.equal(await db.institutionalLicenseEnrollment.count({where:{licenseId:license.id,active:true}}), 2);
     const outsider = await db.institutionalStudent.create({data:{schoolId:school.id,nombres:"Otro",apellidoPaterno:"CI",apellidoMaterno:"Alumno",rut:stamp+"-outsider",curso:"8B"}});
     await assert.rejects(enrollInstitutionalStudent(db, license.id, outsider.id), error => error.status === 403);
+    await assert.rejects(enrollInstitutionalStudent(db, license.id, students[2].id, "unknown-actor"), error => error.status === 403);
     assert.equal(await db.institutionalLicenseEnrollment.count({where:{licenseId:license.id,active:true}}), 2);
   } finally {
     await db.institutionalExamLicense.deleteMany({where:{schoolId:school.id}});
