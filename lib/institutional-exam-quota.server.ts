@@ -11,7 +11,7 @@ export class InstitutionalQuotaError extends Error {
   constructor(message: string, public status = 409) { super(message); }
 }
 export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"charged" | "duplicate"> {
-  if (!/^[a-zA-Z0-9_-]{12,128}$/.test(args.requestKey) || !["PDF", "REVIEW"].includes(args.kind) || (args.kind === "REVIEW" && !args.studentId))
+  if (!/^[a-zA-Z0-9_-]{12,128}$/.test(args.requestKey) || !["PDF", "REVIEW"].includes(args.kind) || (args.kind === "REVIEW" && !args.studentId) ||\n      ![args.licenseId, args.schoolId, args.organizationId, args.module, args.level, args.subject].every(value => typeof value === "string" && value.trim().length > 0))
     throw new InstitutionalQuotaError("Operación inválida", 400);
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
