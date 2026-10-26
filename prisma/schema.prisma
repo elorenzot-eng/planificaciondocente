@@ -587,9 +587,22 @@ model InstitutionalExamLicense {
  createdAt DateTime @default(now())
  updatedAt DateTime @updatedAt
  usages InstitutionalExamUsage[]
+ enrollments InstitutionalLicenseEnrollment[]
  @@index([schoolId,module,level,subject,status])
  @@index([endsAt,status])
 }
+model InstitutionalLicenseEnrollment {
+ id String @id @default(cuid())
+ licenseId String
+ studentId String
+ license InstitutionalExamLicense @relation(fields:[licenseId],references:[id],onDelete:Cascade)
+ student InstitutionalStudent @relation(fields:[studentId],references:[id],onDelete:Cascade)
+ active Boolean @default(true)
+ createdAt DateTime @default(now())
+ @@unique([licenseId,studentId])
+ @@index([licenseId,active])
+}
+
 model InstitutionalExamUsage {
  id String @id @default(cuid())
  licenseId String
@@ -612,6 +625,7 @@ model InstitutionalStudent {
  active Boolean @default(true)
  createdAt DateTime @default(now())
  updatedAt DateTime @updatedAt
+ enrollments InstitutionalLicenseEnrollment[]
  @@unique([schoolId,rut])
  @@index([schoolId,curso,active])
 }
