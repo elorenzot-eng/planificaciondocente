@@ -24,6 +24,9 @@ export async function POST(request:NextRequest){
  if(typeof userId!=="string")return NextResponse.json({error:"Acceso denegado."},{status:401});
  let body:{jobId?:string};try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
  if(typeof body.jobId!=="string"||body.jobId.length>100)return NextResponse.json({error:"Identificador inválido."},{status:400});
+ const account=await prisma.user.findUnique({where:{id:userId},select:{active:true,accountType:true}});
+ if(!account?.active)return NextResponse.json({error:"Cuenta inactiva."},{status:403});
+ if(account.accountType==="INSTITUTIONAL")return NextResponse.json({error:"El guardado institucional PAES requiere vinculación verificada de licencia y trabajo finalizado."},{status:503});
  const job=await prisma.paesInternalJob.findUnique({where:{id:body.jobId}});
  if(!job||job.userId!==userId)return NextResponse.json({error:"Ensayo no disponible para este usuario."},{status:403});
  let exam:ScienceExam|M1Exam|M2Exam|LectoraExam|HistoryExam,title:string,examType:string;
