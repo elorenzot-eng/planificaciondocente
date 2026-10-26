@@ -33,7 +33,7 @@ function fixture() {
       updateMany: async () => { if (license.pdfUsed >= license.pdfLimit) return { count: 0 }; license.pdfUsed++; return { count: 1 }; },
     },
     institutionalStudent: { findFirst: async ({ where }) => where.id === "student1" && where.schoolId === "s1" && where.curso === "4M" ? { id: "student1" } : null,
-      count: async () => 1 },
+      count: async () => license.rosterSize ?? 1 },
     $transaction: async callback => {
       // Snapshot rollback simulation; NOT a concurrency or PostgreSQL integration test.
       const before = [...usages], count = license.pdfUsed;
@@ -73,4 +73,11 @@ test("denies missing or invalid contract limits", async () => {
     await assert.rejects(chargeInstitutionalExam(api, { ...args, kind: "PDF", requestKey: "invalid-contract-001" }), InstitutionalQuotaError);
   }
   assert.equal(license.pdfUsed, 0);
+});
+
+test("REVIEW: denies grade roster exceeding contracted seats", async () => {
+  const { api, args, license, usages } = fixture();
+  license.rosterSize = 2;
+  await assert.rejects(chargeInstitutionalExam(api, { ...args, kind: "REVIEW", studentId: "student1", requestKey: "roster-exceeds-001" }), InstitutionalQuotaError);
+  assert.equal(usages.length, 0);
 });
