@@ -81,3 +81,10 @@ test("REVIEW: denies grade roster exceeding contracted seats", async () => {
   await assert.rejects(chargeInstitutionalExam(api, { ...args, kind: "REVIEW", studentId: "student1", requestKey: "roster-exceeds-001" }), InstitutionalQuotaError);
   assert.equal(usages.length, 0);
 });
+
+test("idempotency receipt rejects reuse under another school", async () => {
+  const { api, args } = fixture();
+  const requestKey = "school-scope-001";
+  assert.equal(await chargeInstitutionalExam(api, { ...args, kind: "PDF", requestKey }), "charged");
+  await assert.rejects(chargeInstitutionalExam(api, { ...args, schoolId: "other-school", kind: "PDF", requestKey }), InstitutionalQuotaError);
+});
