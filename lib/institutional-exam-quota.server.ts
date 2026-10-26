@@ -50,7 +50,7 @@ export async function chargeInstitutionalExam(db: Db, args: Charge): Promise<"ch
           if (result.count !== 1) throw new InstitutionalQuotaError("Cupo PDF agotado");
         } else {
           const student = await tx.institutionalStudent.findFirst({
-            where: { id: args.studentId!, schoolId: license.schoolId, active: true },
+            where: { id: args.studentId!, schoolId: license.schoolId, curso: license.level, active: true },
             select: { id: true },
           });
           if (!student) throw new InstitutionalQuotaError("Estudiante no autorizado", 403);
