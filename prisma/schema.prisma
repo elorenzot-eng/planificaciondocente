@@ -600,3 +600,10 @@ model LicensedStudent {
   @@unique([schoolId,rut])
   @@index([schoolId,course])
 }
+
+model YanayGoogleCalendarConnection {
+  id String @id
+  email String
+  refreshTokenEncrypted String @db.Text
+  updatedAt DateTime @updatedAt
+}
