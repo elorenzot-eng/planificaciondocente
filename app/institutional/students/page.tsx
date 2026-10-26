@@ -41,7 +41,18 @@ function parseCsv(input: string): StudentRow[] {
 function InstitutionalStudentImportContent() {
   const params = useSearchParams();
   const [schoolId, setSchoolId] = useState("");
-  useEffect(() => { setSchoolId(params.get("schoolId") || ""); }, [params]);
+  const [schools, setSchools] = useState<Array<{id:string;name:string}>>([]);
+  useEffect(() => {
+    fetch("/api/institutional/dashboard", {cache:"no-store"}).then(async response => {
+      if (!response.ok) throw new Error("No autorizado");
+      return response.json();
+    }).then(data => {
+      const authorized = data.schools as Array<{id:string;name:string}>;
+      setSchools(authorized);
+      const requested = params.get("schoolId");
+      setSchoolId(authorized.some(item=>item.id===requested) ? requested! : authorized[0]?.id || "");
+    }).catch(() => setFeedback("No fue posible cargar los establecimientos autorizados"));
+  }, [params]);
   const [rows, setRows] = useState<StudentRow[]>([]);
   const [feedback, setFeedback] = useState("");
   const [errors, setErrors] = useState<Array<{fila:number;campo:string;mensaje:string}>>([]);
@@ -66,7 +77,7 @@ function InstitutionalStudentImportContent() {
   return <main style={{ maxWidth: 850, margin: "32px auto", padding: 20 }}>
     <h1>Carga de estudiantes — EducAntay</h1>
     <p>Descargue la plantilla, complétela en Excel y cargue el archivo XLSX o CSV UTF-8.</p>
-    <label>Identificador del establecimiento <input value={schoolId} onChange={e => { setSchoolId(e.target.value); setValidated(false); }} /></label>
+    <label>Establecimiento <select value={schoolId} onChange={e => { setSchoolId(e.target.value); setValidated(false); setRows([]); setErrors([]); }}><option value="">Seleccione un colegio</option>{schools.map(school => <option key={school.id} value={school.id}>{school.name}</option>)}</select></label>
     <p><a href={schoolId ? `/api/institutional/students?schoolId=${encodeURIComponent(schoolId)}` : "#"}>Descargar plantilla</a></p>
     <input type="file" accept=".xlsx,.csv,text/csv" onChange={async e => {
       try { const file = e.target.files?.[0]; if (!file) return; const parsed = await parseWorkbook(file); setRows(parsed); setFeedback(`Filas cargadas: ${parsed.length}`); setErrors([]); setValidated(false); }
