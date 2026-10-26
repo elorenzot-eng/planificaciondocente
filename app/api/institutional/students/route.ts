@@ -14,8 +14,8 @@ async function authorize(schoolId: string) {
     select: { id: true, role: true, active: true, organizationId: true, schoolId: true },
   });
   if (!user?.active || !["SUPERADMIN", "SOSTENEDOR", "DIRECTOR", "ADMIN_COLEGIO"].includes(user.role)) return null;
-  const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { organizationId: true } });
-  if (!school) return null;
+  const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { organizationId: true, active: true } });
+  if (!school?.active) return null;
   if (user.role !== "SUPERADMIN" && school.organizationId !== user.organizationId) return null;
   if (["DIRECTOR", "ADMIN_COLEGIO"].includes(user.role) && user.schoolId !== schoolId) return null;
   return user;
