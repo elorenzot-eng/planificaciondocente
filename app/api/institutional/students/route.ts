@@ -13,11 +13,11 @@ async function authorize(schoolId: string) {
     where: { id: String(session.id) },
     select: { id: true, role: true, active: true, organizationId: true, schoolId: true },
   });
-  if (!user?.active || !["SUPERADMIN", "SOSTENEDOR", "DIRECTOR"].includes(user.role)) return null;
+  if (!user?.active || !["SUPERADMIN", "SOSTENEDOR", "DIRECTOR", "ADMIN_COLEGIO"].includes(user.role)) return null;
   const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { organizationId: true } });
   if (!school) return null;
   if (user.role !== "SUPERADMIN" && school.organizationId !== user.organizationId) return null;
-  if (user.role === "DIRECTOR" && user.schoolId !== schoolId) return null;
+  if (["DIRECTOR", "ADMIN_COLEGIO"].includes(user.role) && user.schoolId !== schoolId) return null;
   return user;
 }
 export async function GET(request: Request) {
