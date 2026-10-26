@@ -1,3 +1,4 @@
+import {demreReferenceScore} from "../../../../lib/paes/demre-reference-score";
 import {NextRequest,NextResponse} from "next/server";
 import {getSession} from "../../../../lib/auth";
 import {prisma} from "../../../../lib/prisma";
@@ -18,5 +19,6 @@ export async function POST(req:NextRequest){
  const correct=details.filter((d:any)=>d.correct).length;
  const omitted=details.filter((d:any)=>d.omitted).length;
  const total=details.length;
- return NextResponse.json({examTitle:saved.title,examType:saved.examType,total,correct,incorrect:total-correct-omitted,omitted,percentage:Math.round(correct/total*10000)/100,details,scoreType:"PORCENTAJE_DE_LOGRO",note:"Porcentaje de logro EducAntay. No equivale al puntaje PAES oficial DEMRE."},{headers:{"Cache-Control":"private, no-store"}});
+ const demre=demreReferenceScore(saved.examType,total,correct);
+ return NextResponse.json({examTitle:saved.title,examType:saved.examType,total,correct,incorrect:total-correct-omitted,omitted,percentage:Math.round(correct/total*10000)/100,details,demre,scoreType:demre?"REFERENCIAL_DEMRE":"PORCENTAJE_DE_LOGRO",note:demre?"Conversión referencial mediante tabla DEMRE; ensayo EducAntay no equiparado.":"No se aplica conversión DEMRE a pilotos ni ensayos con preguntas no identificadas como puntuables. Se informa porcentaje de logro."},{headers:{"Cache-Control":"private, no-store"}});
 }
