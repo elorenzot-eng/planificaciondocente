@@ -109,6 +109,11 @@ export async function POST(request: Request) {
       const parsed = JSON.parse(raw);
       if (!parsed || !Array.isArray(parsed.activities) || parsed.activities.length!==batchSize) throw new Error("Incorrect question count");
       if (simce && !normalizeSimceAnswers(parsed)) throw new Error("Invalid SIMCE answer choices");
+      if (moduleId==="simce-lectura") {
+        const passages=Array.isArray(parsed.passages)?parsed.passages:[];
+        const passageIds=new Set(passages.map((p:any)=>String(p.id??"")));
+        if (!passages.length || parsed.activities.some((item:any)=>!passageIds.has(String(item.passageId??"")) && passages.length!==1)) throw new Error("SIMCE reading passage references missing");
+      }
       if (difficulty==="Mixta" && (!Array.isArray(parsed.specificationTable) || parsed.specificationTable.length!==batchSize || parsed.specificationTable.some((row:any,i:number)=>row?.difficulty!==difficultyPlan[offset+i]))) throw new Error("Mixed difficulty distribution mismatch");
       return parsed;
     };
