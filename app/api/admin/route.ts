@@ -63,7 +63,7 @@ export async function POST(req: Request) {
   if (body.kind === "user") {
     const organizationId = admin.role === "SUPERADMIN" ? String(body.organizationId||"") : admin.organizationId;
     const role = String(body.role||"");
-    const allowed = admin.role === "SUPERADMIN" ? ["SOSTENEDOR","DIRECTOR","UTP","DOCENTE"] : admin.role === "SOSTENEDOR" ? ["DIRECTOR","UTP","DOCENTE"] : ["UTP","DOCENTE"];
+    const allowed = admin.role === "SUPERADMIN" ? ["SOSTENEDOR","DIRECTOR","ADMIN_COLEGIO","UTP","DOCENTE"] : admin.role === "SOSTENEDOR" ? ["DIRECTOR","ADMIN_COLEGIO","UTP","DOCENTE"] : ["ADMIN_COLEGIO","UTP","DOCENTE"];
     const password = String(body.password||"");
     if (!String(body.name||"").trim() || !String(body.email||"").trim() || !organizationId || !allowed.includes(role)) return NextResponse.json({error:"Datos de usuario o rol no válidos"},{status:400});
     if (password.length < 12) return NextResponse.json({error:"La contraseña debe tener al menos 12 caracteres"},{status:400});
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       const school = await prisma.school.findFirst({where:{id:String(body.schoolId),organizationId,active:true},select:{id:true}});
       if (!school) return NextResponse.json({error:"El establecimiento no pertenece al sostenedor seleccionado"},{status:400});
     }
-    if (role !== "SOSTENEDOR" && !body.schoolId) return NextResponse.json({error:"Director, UTP y Docente deben estar asociados a un establecimiento"},{status:400});
+    if (role !== "SOSTENEDOR" && !body.schoolId) return NextResponse.json({error:"Director, Administrador del Colegio, UTP y Docente deben estar asociados a un establecimiento"},{status:400});
     const passwordHash = await bcrypt.hash(password,12);
     try {
       const item = await prisma.user.create({data:{name:String(body.name).trim(),email:String(body.email).trim().toLowerCase(),role:role as any,passwordHash,organizationId,schoolId:body.schoolId?String(body.schoolId):null}});
