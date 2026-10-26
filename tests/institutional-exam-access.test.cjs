@@ -38,3 +38,11 @@ test("deniega módulo, nivel o asignatura no contratados", () => {
   assert.equal(allowed(actor, license, { ...request, subject: "M1" }), false);
 });
 test("deniega rol no habilitado", () => assert.equal(allowed({ ...actor, role: "INVITADO" }), false));
+
+test("deniega fechas malformadas y operaciones desconocidas", () => {
+  assert.equal(allowed(actor, { ...license, startsAt: "2026-01-01" }), false);
+  assert.equal(allowed(actor, { ...license, endsAt: null }), false);
+  assert.equal(allowed(actor, license, { ...request, operation: "DELETE" }), false);
+  assert.equal(allowed(actor, license, { ...request, module: "OTHER" }), false);
+  assert.equal(allowed(null), false);
+});
