@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 const HEADERS = ["Nombres", "Apellido paterno", "Apellido materno", "RUT", "Curso"] as const;
@@ -38,7 +38,7 @@ function parseCsv(input: string): StudentRow[] {
   });
 }
 
-export default function InstitutionalStudentImport() {
+function InstitutionalStudentImportContent() {
   const params = useSearchParams();
   const [schoolId, setSchoolId] = useState("");
   useEffect(() => { setSchoolId(params.get("schoolId") || ""); }, [params]);
@@ -77,4 +77,8 @@ export default function InstitutionalStudentImport() {
     <p role="status">{feedback}</p>
     {errors.length > 0 && <table><thead><tr><th>Fila</th><th>Campo</th><th>Error</th></tr></thead><tbody>{errors.map((e,i) => <tr key={i}><td>{e.fila}</td><td>{e.campo}</td><td>{e.mensaje}</td></tr>)}</tbody></table>}
   </main>;
+}
+
+export default function InstitutionalStudentImport() {
+  return <Suspense fallback={<p>Cargando formulario…</p>}><InstitutionalStudentImportContent /></Suspense>;
 }
