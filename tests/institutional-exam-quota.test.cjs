@@ -32,7 +32,8 @@ function fixture() {
         where.module === license.module && where.level === license.level && where.subject === license.subject && license.status === "ACTIVE" ? license : null,
       updateMany: async () => { if (license.pdfUsed >= license.pdfLimit) return { count: 0 }; license.pdfUsed++; return { count: 1 }; },
     },
-    institutionalStudent: { findFirst: async ({ where }) => where.id === "student1" && where.schoolId === "s1" ? { id: "student1" } : null },
+    institutionalStudent: { findFirst: async ({ where }) => where.id === "student1" && where.schoolId === "s1" && where.curso === "4M" ? { id: "student1" } : null,
+      count: async () => 1 },
     $transaction: async callback => {
       // Snapshot rollback simulation; NOT a concurrency or PostgreSQL integration test.
       const before = [...usages], count = license.pdfUsed;
