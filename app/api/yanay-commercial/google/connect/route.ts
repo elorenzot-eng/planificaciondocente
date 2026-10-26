@@ -4,7 +4,8 @@ import {SignJWT} from "jose";
 export const runtime="nodejs";
 export async function GET(req:Request){
  const session=await getSession();
- if(!session||!["SUPERADMIN","SUPER_ADMIN"].includes(String(session.role||"").toUpperCase()))return NextResponse.json({error:"Solo superadministración puede conectar el calendario."},{status:403});
+ if(!session)return NextResponse.json({error:"No hay una sesión activa de EducAntay en este navegador. Inicia sesión y vuelve a abrir este enlace.",code:"SESSION_REQUIRED"},{status:401});
+ if(!["SUPERADMIN","SUPER_ADMIN"].includes(String(session.role||"").toUpperCase()))return NextResponse.json({error:"La cuenta conectada no tiene rol SUPERADMIN.",code:"ROLE_REQUIRED",currentRole:String(session.role||"SIN_ROL")},{status:403});
  const client=process.env.GOOGLE_CALENDAR_CLIENT_ID, secret=process.env.GOOGLE_CALENDAR_CLIENT_SECRET, auth=process.env.AUTH_SECRET;
  if(!client||!secret||!auth)return NextResponse.json({error:"Faltan credenciales OAuth del servidor."},{status:503});
  const base=new URL(req.url).origin;
