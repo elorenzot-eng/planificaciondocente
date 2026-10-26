@@ -8,8 +8,9 @@ export async function assertPaesAiAccess(userId:string){
  const user=await prisma.user.findUnique({where:{id:userId},select:{active:true,accountType:true,organizationId:true,schoolId:true,organization:{select:{active:true}},school:{select:{active:true}}}});
  if(!user?.active)throw new PaesQuotaError("Cuenta inactiva.",403);
  if(user.accountType!=="INSTITUTIONAL"||!user.organization?.active||user.school?.active===false)throw new PaesQuotaError("PAES requiere una cuenta institucional activa.",403);
+ if(!user.schoolId)throw new PaesQuotaError("Selecciona un establecimiento con licencia PAES vigente.",403);
  const now=new Date();
- const licenses=await prisma.institutionalExamLicense.count({where:{organizationId:user.organizationId, ...(user.schoolId?{schoolId:user.schoolId}:{}),module:"PAES",active:true,startsAt:{lte:now},endsAt:{gt:now}}});
+ const licenses=await prisma.institutionalExamLicense.count({where:{organizationId:user.organizationId, schoolId:user.schoolId,module:"PAES",active:true,startsAt:{lte:now},endsAt:{gt:now}}});
  if(!licenses)throw new PaesQuotaError("No existe licencia PAES institucional vigente para este establecimiento.",403);
  const access=await checkAiEntitlement(userId);
  if(!access.ok)throw new PaesQuotaError(access.error||"No tienes generaciones IA disponibles.");
