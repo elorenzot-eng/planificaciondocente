@@ -20,9 +20,9 @@ export default function M2Pilot(){
   }catch{setResult({error:"Se interrumpió la conexión. Presiona reanudar para continuar."});}
   finally{setBusy(false);}
  }
- return <main style={{display:"block",width:"100%",minWidth:0,boxSizing:"border-box",minHeight:"100vh",background:"#f5f7fb",fontFamily:"Arial,sans-serif",color:"#17233c",padding:"clamp(16px,3vw,36px)"}}><div style={{width:"100%",minWidth:0,margin:"auto"}}>
- <Link href="/ensayos-paes">← Volver a PAES</Link><h1>PAES Matemática M2 · 55 preguntas</h1><p>Generación experimental restringida. 140 minutos de referencia · 55 preguntas de práctica. La selección de ítems para puntaje en la PAES oficial corresponde al DEMRE. No es material oficial DEMRE.</p>
- <section style={{background:"white",borderRadius:16,padding:24,display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,280px),1fr))",gap:16,alignItems:"end"}}>
+ return <main style={{display:"block",width:"100%",minWidth:0,boxSizing:"border-box",minHeight:"100vh",background:"#f5f7fb",fontFamily:"Arial,sans-serif",color:"#17233c",padding:"clamp(16px,3vw,36px)"}}><div style={{width:"100%",maxWidth:1050,minWidth:0,margin:"auto"}}>
+ <Link href="/ensayos-paes">← Volver a PAES</Link><h1>PAES Matemática M2 IA · 55 preguntas</h1><p>140 minutos de referencia · 55 preguntas de práctica. La selección de ítems para puntaje en la PAES oficial corresponde al DEMRE. No es material oficial DEMRE.</p>
+ <section style={{background:"white",borderRadius:16,padding:24,display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,220px),1fr))",gap:16,alignItems:"end"}}>
  <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);setResult(null);}} style={{display:"block",width:"100%",padding:12,marginTop:8}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
  <button disabled={busy} onClick={run} style={{background:"#0d9488",color:"white",padding:14,border:0,borderRadius:10,cursor:"pointer"}}>{busy?`Generando pregunta ${Math.min(progress+1,55)} de 55…`:jobId?`Reanudar desde ${progress}/55`:"Generar ensayo completo M2"}</button>
  <p role="status">Avance: {progress}/55 · {Math.round(progress/55*100)}%</p>
