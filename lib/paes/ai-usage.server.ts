@@ -5,8 +5,9 @@ export class PaesQuotaError extends Error {
  constructor(message:string,public status:number=429){super(message);}
 }
 export async function assertPaesAiAccess(userId:string){
- const user=await prisma.user.findUnique({where:{id:userId},select:{active:true}});
+ const user=await prisma.user.findUnique({where:{id:userId},select:{active:true,accountType:true,organization:{select:{active:true}},school:{select:{active:true}}}});
  if(!user?.active)throw new PaesQuotaError("Cuenta inactiva.",403);
+ if(user.accountType!=="INSTITUTIONAL"||!user.organization?.active||user.school?.active===false)throw new PaesQuotaError("PAES requiere una cuenta institucional activa.",403);
  const access=await checkAiEntitlement(userId);
  if(!access.ok)throw new PaesQuotaError(access.error||"No tienes generaciones IA disponibles.");
 }
@@ -21,7 +22,8 @@ export async function chargeCompletedPaes(userId:string,jobId:string){
   }
   const user=await tx.user.findUnique({where:{id:userId},select:{active:true,accountType:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyAiLimit:true}});
   if(!user?.active)throw new PaesQuotaError("Cuenta inactiva.",403);
-  if(user.accountType!=="INDIVIDUAL")return;
+  if(user.accountType!=="INSTITUTIONAL")throw new PaesQuotaError("PAES requiere acceso institucional.",403);
+  return;
   const now=new Date(),trial=user.subscriptionStatus==="TRIAL";
   const valid=trial?!!user.trialEndsAt&&user.trialEndsAt>now:user.subscriptionStatus==="ACTIVE"&&!!user.subscriptionEndsAt&&user.subscriptionEndsAt>now;
   if(!valid)throw new PaesQuotaError("Tu suscripción no está activa.",403);
