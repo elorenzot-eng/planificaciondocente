@@ -50,13 +50,18 @@ export async function POST(req: Request) {
 
   if (body.kind === "school") {
     if (admin.role === "DIRECTOR") return NextResponse.json({error:"El Director administra usuarios de su establecimiento; no puede crear establecimientos"},{status:403});
-    const organizationId = admin.role === "SUPERADMIN" ? String(body.organizationId||"") : admin.organizationId;
-    if (!String(body.name||"").trim() || !organizationId) return NextResponse.json({error:"Nombre y sostenedor requeridos"},{status:400});
-    const org = await prisma.organization.findUnique({where:{id:organizationId},select:{id:true,active:true}});
-    if (!org?.active) return NextResponse.json({error:"Sostenedor no válido"},{status:400});
-    const item = await prisma.school.create({data:{
-      name:String(body.name).trim(),rbd:body.rbd?String(body.rbd).trim():null,commune:body.commune?String(body.commune).trim():null,region:body.region?String(body.region):null,organizationId
-    }});
+    const sponsorName=String(body.organizationName||"").trim();
+    if (!String(body.name||"").trim() || (admin.role==="SUPERADMIN"?!sponsorName:!admin.organizationId)) return NextResponse.json({error:"Nombre y sostenedor requeridos"},{status:400});
+    const item=await prisma.$transaction(async tx=>{
+      let organizationId=admin.organizationId;
+      if(admin.role==="SUPERADMIN"){
+        const existing=await tx.organization.findFirst({where:{name:{equals:sponsorName,mode:"insensitive"},active:true},select:{id:true}});
+        organizationId=existing?.id||(await tx.organization.create({data:{name:sponsorName}})).id;
+      }
+      return tx.school.create({data:{
+        name:String(body.name).trim(),rbd:body.rbd?String(body.rbd).trim():null,commune:body.commune?String(body.commune).trim():null,region:body.region?String(body.region):null,organizationId
+      }});
+    });
     return NextResponse.json(item,{status:201});
   }
 
