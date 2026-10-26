@@ -1,12 +1,19 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { InstitutionalQuotaError } from "./institutional-exam-quota.server";
 
-export async function enrollInstitutionalStudent(db: PrismaClient, licenseId: string, studentId: string) {
+export async function enrollInstitutionalStudent(db: PrismaClient, licenseId: string, studentId: string, actorId?: string) {
   if (typeof licenseId !== "string" || !licenseId.trim() || typeof studentId !== "string" || !studentId.trim()) throw new InstitutionalQuotaError("Inscripción inválida", 400);
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       return await db.$transaction(async tx => {
         const license = await tx.institutionalExamLicense.findUnique({ where: { id: licenseId } });
+        if (actorId) {
+          const actor = await tx.user.findUnique({ where: { id: actorId } });
+          if (!actor?.active || actor.accountType !== "INSTITUTIONAL" || actor.organizationId !== license?.organizationId ||
+              !["SUPERADMIN", "SOSTENEDOR", "DIRECTOR", "ADMIN_COLEGIO", "UTP"].includes(actor.role) ||
+              (!["SUPERADMIN", "SOSTENEDOR"].includes(actor.role) && actor.schoolId !== license?.schoolId))
+            throw new InstitutionalQuotaError("Permisos insuficientes", 403);
+        }
         const now = new Date();
         if (!license || license.status !== "ACTIVE" || license.startsAt > now || license.endsAt <= now ||
             !Number.isSafeInteger(license.studentCount) || license.studentCount < 1)
