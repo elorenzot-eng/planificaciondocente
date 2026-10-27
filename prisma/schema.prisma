@@ -647,3 +647,14 @@ model RegistrationIpBlock {
   createdAt DateTime @default(now())
   @@index([expiresAt])
 }
+
+model CommercialLeadActivity {
+ id String @id @default(cuid())
+ userId String
+ adminId String
+ status String
+ note String?
+ doNotContact Boolean @default(false)
+ createdAt DateTime @default(now())
+ @@index([userId,createdAt])
+}
