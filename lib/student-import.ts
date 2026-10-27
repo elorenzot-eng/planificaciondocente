@@ -11,7 +11,7 @@ export const STUDENT_IMPORT_HEADERS = ["Nombres", "Apellido paterno", "Apellido 
 
 export function normalizeChileanRut(value: unknown): string {
   const raw = String(value ?? "").toUpperCase().replace(/[^0-9K]/g, "");
-  if (raw.length < 2) return "";
+  if (raw.length < 2 || raw.length > 9) return "";
   return raw.slice(0, -1) + "-" + raw.slice(-1);
 }
 export function isValidChileanRut(value: unknown): boolean {
