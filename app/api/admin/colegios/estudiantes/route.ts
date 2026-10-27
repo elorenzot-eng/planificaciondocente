@@ -5,6 +5,11 @@ export const runtime="nodejs";
 function rut(v:string){return v.replace(/[^0-9kK]/g,"").toUpperCase()}
 function valid(v:string){const s=rut(v);if(!/^\d{7,8}[0-9K]$/.test(s))return false;let n=0,m=2;for(let i=s.length-2;i>=0;i--){n+=Number(s[i])*m;m=m===7?2:m+1}const d=11-n%11;return (d===11?"0":d===10?"K":String(d))===s.slice(-1)}
 async function admin(){const s=await getSession();if(!s?.id)return false;const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{role:true,active:true}});return u?.active&&u.role==="SUPERADMIN"}
+export async function GET(){
+ if(!await admin())return NextResponse.json({error:"No autorizado"},{status:403});
+ const schools=await prisma.school.findMany({where:{active:true},select:{id:true,name:true,rbd:true,commune:true},orderBy:{name:"asc"},take:500});
+ return NextResponse.json({schools});
+}
 export async function POST(req:Request){
  if(!await admin())return NextResponse.json({error:"Solo el superadministrador puede importar estudiantes."},{status:403});
  const b=await req.json().catch(()=>null);if(!b||typeof b.schoolId!=="string"||!Array.isArray(b.rows)||b.rows.length>2000||!b.rows.length)return NextResponse.json({error:"Solicitud inválida (máximo 2000 filas)"},{status:400});
