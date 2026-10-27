@@ -41,6 +41,8 @@ export function validateStudentImport(rows: unknown[][]): { students: StudentImp
     const reasons: string[] = [];
     if (![firstName, paternalSurname, maternalSurname, course].every(Boolean)) reasons.push("Faltan nombres, apellidos o curso");
     if (!isValidChileanRut(rut)) reasons.push("RUT inválido");
+    if ([firstName, paternalSurname, maternalSurname].some(v => v.length > 120) || course.length > 80) reasons.push("Texto demasiado largo");
+    if (cells.length > 5 && cells.slice(5).some(v => String(v ?? "").trim())) reasons.push("Columnas adicionales no permitidas");
     if (seen.has(rut)) reasons.push("RUT duplicado en la planilla");
     if (reasons.length) {
       issues.push({row: i + 2, reason: reasons.join("; ")});
