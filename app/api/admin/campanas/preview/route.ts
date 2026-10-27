@@ -8,16 +8,17 @@ export async function GET(){
  if(!admin?.active||admin.role!=="SUPERADMIN")return NextResponse.json({error:"Solo Superadmin"},{status:403});
  const now=new Date();
  const base={accountType:"INDIVIDUAL" as const,active:true,subscriptionStatus:"TRIAL" as const,trialEndsAt:{lt:now}};
- const [expired,consented,excluded,enabledCampaigns]=await Promise.all([
+ const [expired,consentRows,excludedRows,enabledCampaigns]=await Promise.all([
  prisma.user.count({where:base}),
- prisma.user.count({where:{...base,commercialEmailConsent:{is:{optedIn:true}}}}),
- prisma.user.count({where:{...base,commercialLeadActivities:{some:{doNotContact:true}}}}),
+ prisma.commercialEmailConsent.findMany({where:{optedIn:true},select:{userId:true},take:10000}),
+ prisma.commercialLeadActivity.findMany({where:{doNotContact:true},select:{userId:true},distinct:["userId"],take:10000}),
  prisma.commercialEmailCampaign.count({where:{enabled:true}})
  ]);
+ const consentIds=consentRows.map(x=>x.userId);const excludedIds=excludedRows.map(x=>x.userId);const [consented,excluded]=await Promise.all([prisma.user.count({where:{...base,id:{in:consentIds}}}),prisma.user.count({where:{...base,id:{in:excludedIds}}})]);
  const campaign=await prisma.commercialEmailCampaign.findFirst({where:{enabled:true},orderBy:{createdAt:"asc"},select:{id:true,name:true}});
  let eligible=0;
  if(campaign){
-  const leads=await prisma.user.findMany({where:{...base,commercialEmailConsent:{is:{optedIn:true}}},select:{id:true},take:500});
+  const leads=await prisma.user.findMany({where:{...base,id:{in:consentIds}},select:{id:true},take:500});
   const cutoff=new Date(Date.now()-30*24*60*60*1000);
   for(const lead of leads){
    const [blocked,already,recent]=await Promise.all([
