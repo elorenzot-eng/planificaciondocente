@@ -1,7 +1,8 @@
 "use client";
 import {useEffect,useState} from "react";
 type License={product:string;grade:string;subject:string;studentCount:number;pdfLimit:number;pdfUsed:number;reviewLimit:number;reviewsUsed:number};
-type School={id:string;name:string;rbd:string|null;licenses:License[]};
+type AcademicResult={studentId:string;course:string;subject:string;product:string;examId:string;examTitle:string;takenAt:string;correctAnswers:number;totalQuestions:number;score:number|null};
+type School={id:string;name:string;rbd:string|null;licenses:License[];academicResults:AcademicResult[]};
 export default function AnaliticaInstitucional(){
  const [schools,setSchools]=useState<School[]>([]);
  const [error,setError]=useState("");
@@ -22,7 +23,8 @@ export default function AnaliticaInstitucional(){
  <h2>{s.name}</h2><p>RBD: {s.rbd||"Sin registro"}</p>
  {s.licenses.length===0?<p>Sin licencias vigentes.</p>:<div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",textAlign:"left"}}><thead><tr><th>Producto</th><th>Nivel</th><th>Asignatura</th><th>Estudiantes</th><th>Ensayos</th><th>Revisiones</th></tr></thead><tbody>{s.licenses.map((l,i)=><tr key={i}><td>{l.product}</td><td>{l.grade}</td><td>{l.subject}</td><td>{l.studentCount}</td><td>{l.pdfUsed} / {l.pdfLimit}</td><td>{l.reviewsUsed} / {l.reviewLimit}</td></tr>)}</tbody></table></div>}
  </section>)}
- <h2>Utilización de licencias</h2>{visibleSchools.map(s=>{const used=s.licenses.reduce((n,l)=>n+l.pdfUsed,0);const limit=s.licenses.reduce((n,l)=>n+l.pdfLimit,0);return <div key={s.id} style={{marginBottom:12}}><span>{s.name}: {used} de {limit} ensayos</span><div style={{height:14,background:"#e7edf0",borderRadius:7,overflow:"hidden"}}><div style={{height:"100%",width:(limit?Math.min(100,used/limit*100):0)+"%",background:"#087e88"}}/></div></div>})}
+ <h2>Resultados académicos por curso</h2>{visibleSchools.map(s=>{const groups=new Map<string,AcademicResult[]>();for(const x of s.academicResults||[]){const key=[x.course,x.product,x.subject].join(" · ");groups.set(key,[...(groups.get(key)||[]),x])}return <section key={s.id}><h3>{s.name}</h3>{groups.size===0?<p>Sin resultados académicos registrados.</p>:Array.from(groups.entries()).map(([key,items])=>{const valid=items.filter(x=>x.totalQuestions>0);const avg=valid.length?valid.reduce((n,x)=>n+x.correctAnswers/x.totalQuestions*100,0)/valid.length:null;return <div key={key} style={{padding:12,borderBottom:"1px solid #ddd"}}><strong>{key}</strong><p>{items.length} resultados registrados · Logro promedio: {avg===null?"Sin datos":avg.toFixed(1)+"%"}</p></div>})}</section>})}
+ <h2>Utilización de licencias (administración)</h2>{visibleSchools.map(s=>{const used=s.licenses.reduce((n,l)=>n+l.pdfUsed,0);const limit=s.licenses.reduce((n,l)=>n+l.pdfLimit,0);return <div key={s.id} style={{marginBottom:12}}><span>{s.name}: {used} de {limit} ensayos</span><div style={{height:14,background:"#e7edf0",borderRadius:7,overflow:"hidden"}}><div style={{height:"100%",width:(limit?Math.min(100,used/limit*100):0)+"%",background:"#087e88"}}/></div></div>})}
  <p style={{marginTop:24}}>Los gráficos de rendimiento se habilitarán cuando los resultados de ensayos estén asociados y validados por establecimiento.</p>
  </main>
 }
