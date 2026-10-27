@@ -16,7 +16,7 @@ async function allowedSchool(user: NonNullable<Awaited<ReturnType<typeof access>
   return prisma.school.findFirst({where:{
     id:schoolId,active:true,
     ...(user.role === "SUPERADMIN" ? {} : {organizationId:user.organizationId}),
-    ...(user.role === "DIRECTOR" ? {id:user.schoolId ?? "__none__"} : {})
+    ...(user.role === "DIRECTOR" ? {id:schoolId === user.schoolId ? schoolId : "__unauthorized__"} : {})
   },select:{id:true,name:true}});
 }
 export async function GET(req:Request) {
@@ -38,7 +38,7 @@ export async function POST(req:Request) {
   try {body=await req.json();} catch {return NextResponse.json({error:"JSON inválido"},{status:400});}
   if (!body || typeof body !== "object") return NextResponse.json({error:"Solicitud inválida"},{status:400});
   const payload = body as {schoolId?:unknown;rows?:unknown};
-  const schoolId = String(payload.schoolId ?? "");
+  const schoolId = typeof payload.schoolId === "string" ? payload.schoolId : "";
   const school = await allowedSchool(user,schoolId);
   if (!school) return NextResponse.json({error:"Colegio no autorizado"},{status:403});
   if (!Array.isArray(payload.rows) || payload.rows.length > 5000 || !payload.rows.every(Array.isArray))
