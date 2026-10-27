@@ -24,7 +24,7 @@ export async function POST(req:Request){
   if(exclusion){excluded++;continue}
   if(prior){already++;continue}
   eligible++;
-  if(!send||sent+failed>=25)continue;
+  if(!send||sent+failed>=50)continue;
   // Atomic unique claim prevents duplicate sends across concurrent invocations.
   const claimed=await prisma.subscriptionReminder.createMany({data:[{userId:user.id,subscriptionEndsAt:user.trialEndsAt,daysBefore:MARKER}],skipDuplicates:true});
   if(!claimed.count){already++;continue}
@@ -40,5 +40,5 @@ export async function POST(req:Request){
    console.error("trial expiration notification failed",user.id,String(e));
   }
  }
- return NextResponse.json({dryRun:!send,expired:users.length,excluded,already,eligible,sent,failed,limitPerRun:25,note:failed?"Revisar logs antes de reintentar: reservas de envío retenidas para evitar duplicados":undefined},{headers:{"Cache-Control":"no-store"}});
+ return NextResponse.json({dryRun:!send,expired:users.length,excluded,already,eligible,sent,failed,limitPerRun:50,note:failed?"Revisar logs antes de reintentar: reservas de envío retenidas para evitar duplicados":undefined},{headers:{"Cache-Control":"no-store"}});
 }
