@@ -1,0 +1,22 @@
+name: Validar importación de estudiantes
+on:
+  pull_request:
+    paths:
+      - "lib/student-import.ts"
+      - "scripts/test-student-import.mjs"
+      - "app/api/admin/student-import/route.ts"
+      - "app/components/StudentsImport.tsx"
+      - ".github/workflows/student-import-test.yml"
+  push:
+    branches:
+      - "feat/importacion-alumnos-2026"
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: node scripts/test-student-import.mjs
