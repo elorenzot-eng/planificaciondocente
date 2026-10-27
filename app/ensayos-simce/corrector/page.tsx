@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { gradeSimce, type SimceAlternative, type SimceMark } from "../../../lib/simce-paper-grading";
 
 const OPTIONS: SimceAlternative[] = ["A", "B", "C", "D"];
@@ -14,6 +14,9 @@ export default function CorrectorSimcePage() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [locked, setLocked] = useState(false);
+  const [roster,setRoster]=useState<{id:string;name:string;licensedStudents:{id:string;firstName:string;paternalSurname:string;maternalSurname:string;course:string}[]}[]>([]);
+  const [course,setCourse]=useState("");
+  useEffect(()=>{fetch("/api/analitica-institucional/nomina",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(j=>setRoster(j.schools||[])).catch(()=>setRoster([]))},[]);
   const [schoolId,setSchoolId]=useState("");
   const [studentId,setStudentId]=useState("");
   const [examId,setExamId]=useState("");
@@ -64,7 +67,7 @@ export default function CorrectorSimcePage() {
       <p>{result.percentage===null?"Porcentaje retenido hasta resolver las marcas dudosas.":`Logro: ${result.percentage}% (porcentaje de aciertos, no puntaje oficial SIMCE)`}</p>
       <button type="button" disabled={result.reviewRequired>0} onClick={()=>setLocked(true)} style={{background:"#6c39ad",color:"white",border:0,borderRadius:8,padding:12,cursor:"pointer",opacity:result.reviewRequired?0.5:1}}>Confirmar revisión</button>{" "}
       <button type="button" disabled={!locked} onClick={exportCsv} style={{background:"#087f91",color:"white",border:0,borderRadius:8,padding:12,cursor:"pointer",opacity:locked?1:0.5}}>Exportar CSV</button>
-      {locked&&<div style={{marginTop:16,display:"grid",gap:10}}><h3>Guardar resultado académico institucional</h3><p>Ingresa los identificadores del colegio y estudiante registrados en la plataforma. La vinculación automática con la nómina está pendiente.</p><label>ID colegio<input value={schoolId} onChange={e=>setSchoolId(e.target.value)} /></label><label>ID estudiante<input value={studentId} onChange={e=>setStudentId(e.target.value)} /></label><label>ID del ensayo<input value={examId} onChange={e=>setExamId(e.target.value)} /></label><label>Asignatura<input value={subject} onChange={e=>setSubject(e.target.value)} /></label><label>Nivel<input value={grade} onChange={e=>setGrade(e.target.value)} /></label><button type="button" disabled={saving||![schoolId,studentId,examId,subject,grade].every(Boolean)} onClick={saveResult}>{saving?"Guardando…":"Guardar resultado académico"}</button>{saveMessage&&<p role="status">{saveMessage}</p>}</div>}
+      {locked&&<div style={{marginTop:16,display:"grid",gap:10}}><h3>Guardar resultado académico institucional</h3><p>Selecciona el establecimiento, curso y estudiante desde la nómina autorizada.</p><label>Colegio <select value={schoolId} onChange={e=>{setSchoolId(e.target.value);setCourse("");setStudentId("")}}><option value="">Seleccionar colegio</option>{roster.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label><label>Curso <select value={course} onChange={e=>{setCourse(e.target.value);setStudentId("")}}><option value="">Seleccionar curso</option>{Array.from(new Set((roster.find(s=>s.id===schoolId)?.licensedStudents||[]).map(x=>x.course))).map(x=><option key={x} value={x}>{x}</option>)}</select></label><label>Estudiante <select value={studentId} onChange={e=>setStudentId(e.target.value)}><option value="">Seleccionar estudiante</option>{(roster.find(s=>s.id===schoolId)?.licensedStudents||[]).filter(x=>x.course===course).map(x=><option key={x.id} value={x.id}>{x.paternalSurname} {x.maternalSurname}, {x.firstName}</option>)}</select></label><label>ID del ensayo<input value={examId} onChange={e=>setExamId(e.target.value)} /></label><label>Asignatura<input value={subject} onChange={e=>setSubject(e.target.value)} /></label><label>Nivel<input value={grade} onChange={e=>setGrade(e.target.value)} /></label><button type="button" disabled={saving||![schoolId,studentId,examId,subject,grade].every(Boolean)} onClick={saveResult}>{saving?"Guardando…":"Guardar resultado académico"}</button>{saveMessage&&<p role="status">{saveMessage}</p>}</div>}
     </section>}
   </main>;
 }
