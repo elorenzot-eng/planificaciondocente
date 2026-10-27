@@ -25,12 +25,12 @@ export async function GET() {
         studentCount:true,pdfLimit:true,pdfUsed:true,reviewLimit:true,reviewsUsed:true}
     }}
   });
-  const results = await prisma.academicExamResult.findMany({where:{schoolId:{in:schools.map(s=>s.id)}},select:{schoolId:true,studentId:true,course:true,subject:true,product:true,examId:true,examTitle:true,takenAt:true,correctAnswers:true,totalQuestions:true,score:true},orderBy:{takenAt:"desc"}});
+  const results = await prisma.academicExamResult.findMany({where:{schoolId:{in:schools.map(s=>s.id)}},select:{schoolId:true,studentId:true,course:true,subject:true,product:true,examId:true,examTitle:true,takenAt:true,correctAnswers:true,totalQuestions:true,score:true,skillResults:true,contentResults:true,achievementLevel:true,levelMethod:true},orderBy:{takenAt:"desc"}});
   const now = new Date();
   return NextResponse.json({
     schools:schools.map(s=>({
       id:s.id,name:s.name,rbd:s.rbd,
-      academicResults:results.filter(x=>x.schoolId===s.id).map(x=>({studentId:x.studentId,course:x.course,subject:x.subject,product:x.product,examId:x.examId,examTitle:x.examTitle,takenAt:x.takenAt,correctAnswers:x.correctAnswers,totalQuestions:x.totalQuestions,score:x.score})),
+      academicResults:results.filter(x=>x.schoolId===s.id).map(x=>({studentId:x.studentId,course:x.course,subject:x.subject,product:x.product,examId:x.examId,examTitle:x.examTitle,takenAt:x.takenAt,correctAnswers:x.correctAnswers,totalQuestions:x.totalQuestions,score:x.score,skillResults:x.skillResults,contentResults:x.contentResults,achievementLevel:x.achievementLevel,levelMethod:x.levelMethod})),
       licenses:s.institutionalLicenses.filter(l=>l.active && l.expiresAt>now)
         .map(l=>({product:l.product,grade:l.grade,subject:l.subject,
           studentCount:l.studentCount,pdfLimit:l.pdfLimit,pdfUsed:l.pdfUsed,
