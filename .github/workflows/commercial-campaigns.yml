@@ -6,15 +6,15 @@ on:
 permissions:
   contents: read
 jobs:
-  send:
+  preview:
     runs-on: ubuntu-latest
-    if: ${{ vars.COMMERCIAL_CAMPAIGNS_ENABLED == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || vars.COMMERCIAL_CAMPAIGNS_ENABLED == 'true' }}
     steps:
-      - name: Ejecutar campaña autorizada
+      - name: Vista previa segura sin envíos
         env:
           CAMPAIGN_CRON_SECRET: ${{ secrets.CAMPAIGN_CRON_SECRET }}
         run: |
-          test -n "$CAMPAIGN_CRON_SECRET" || { echo "Falta secreto"; exit 1; }
-          curl --fail --silent --show-error --max-time 120 --retry 2 \\
-            -H "Authorization: Bearer $CAMPAIGN_CRON_SECRET" \\
-            "https://educantay.cl/api/cron/campanas"
+          test -n "$CAMPAIGN_CRON_SECRET" || { echo "Falta secreto de GitHub"; exit 1; }
+          curl --fail --silent --show-error --max-time 120 --retry 2 \
+            -H "Authorization: Bearer $CAMPAIGN_CRON_SECRET" \
+            "https://educantay.cl/api/cron/campanas?dryRun=true"
