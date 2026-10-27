@@ -18,7 +18,7 @@ export async function GET(){
  const campaign=await prisma.commercialEmailCampaign.findFirst({where:{enabled:true},orderBy:{createdAt:"asc"},select:{id:true,name:true}});
  let eligible=0;
  if(campaign){
-  const leads=await prisma.user.findMany({where:{...base,id:{in:consentIds}},select:{id:true},take:500});
+  const leads=await prisma.user.findMany({where:base,select:{id:true},take:500});
   const cutoff=new Date(Date.now()-30*24*60*60*1000);
   for(const lead of leads){
    const [blocked,already,recent]=await Promise.all([
@@ -26,8 +26,8 @@ export async function GET(){
     prisma.commercialEmailDelivery.findUnique({where:{campaignId_userId:{campaignId:campaign.id,userId:lead.id}},select:{id:true}}),
     prisma.commercialEmailDelivery.findFirst({where:{userId:lead.id,status:{in:["SENT","PROCESSING"]},createdAt:{gte:cutoff}},select:{id:true}})
    ]);
-   if(!blocked&&!already&&!recent)eligible++;
+   if(consentIds.includes(lead.id)&&!blocked&&!already&&!recent)eligible++;
   }
  }
- return NextResponse.json({expired,consented,excluded,enabledCampaigns,eligible,previewCampaign:campaign?.name||null,sendLimit:25,note:"Estimación sin envíos. Revisión limitada a 500 contactos con consentimiento."},{headers:{"Cache-Control":"no-store"}});
+ return NextResponse.json({expired,consented,excluded,enabledCampaigns,eligible,previewCampaign:campaign?.name||null,sendLimit:25,note:"Estimación sin envíos. Revisión de hasta 500 pruebas vencidas, aplicando consentimiento, exclusiones e historial."},{headers:{"Cache-Control":"no-store"}});
 }
