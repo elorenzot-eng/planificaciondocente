@@ -4,7 +4,7 @@ import { getSession } from "../../../lib/auth";
 import { prisma } from "../../../lib/prisma";
 
 const kinds = ["planning", "assessment", "material", "rubric", "guide", "tp", "dua"] as const;
-const forbidden = /(?:simce|paes|ensayo\\s*(?:de\\s*)?(?:simce|paes)|competencia lectora paes)/i;
+const forbidden = /simce|paes|ensayo nacional/i;
 function safeText(value: unknown, max = 200) { return typeof value === "string" ? value.trim().slice(0, max) : ""; }
 function excluded(value: unknown): boolean { return forbidden.test(JSON.stringify(value ?? "")); }
 async function licensedUser() {
