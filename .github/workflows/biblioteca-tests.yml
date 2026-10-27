@@ -1,0 +1,22 @@
+name: Biblioteca EducAntay tests
+on:
+  push:
+    branches:
+      - feat/biblioteca-educantay-compartida
+  pull_request:
+    paths:
+      - "app/api/biblioteca/**"
+      - "app/biblioteca/**"
+      - "lib/biblioteca-policy.ts"
+      - "tests/biblioteca-policy.test.cjs"
+      - ".github/workflows/biblioteca-tests.yml"
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: node --test tests/biblioteca-policy.test.cjs
