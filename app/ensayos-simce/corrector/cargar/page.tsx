@@ -21,6 +21,13 @@ export default function CargaHojaSimce() {
   const [corrections,setCorrections] = useState<Record<number,string>>({});
   const [answerKey,setAnswerKey] = useState("");
   const [studentId,setStudentId] = useState("");
+  const [schoolId,setSchoolId]=useState("");
+  const [course,setCourse]=useState("");
+  const [subject,setSubject]=useState("Lenguaje");
+  const [grade,setGrade]=useState("4° básico");
+  const [roster,setRoster]=useState<{id:string;name:string;licensedStudents:{id:string;firstName:string;paternalSurname:string;maternalSurname:string;course:string}[]}[]>([]);
+  const [saving,setSaving]=useState(false);
+  const [saveMessage,setSaveMessage]=useState("");
   const [essayId,setEssayId] = useState("");
   const [expectedQuestions,setExpectedQuestions] = useState(40);
   const [confirmedReview,setConfirmedReview] = useState(false);
@@ -30,6 +37,7 @@ export default function CargaHojaSimce() {
   const [pdfPage,setPdfPage] = useState(1);
   const [advanced,setAdvanced] = useState(false);
   const [cal,setCal] = useState(simcePaperCalibration);
+  useEffect(()=>{fetch("/api/analitica-institucional/nomina",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(j=>setRoster(j.schools||[])).catch(()=>setRoster([]))},[]);
   useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);},[preview]);
   const choose = (f?:File) => {
     setFile(null);setError("");setResult(null);setQuality(null);
@@ -105,6 +113,7 @@ export default function CargaHojaSimce() {
   const pending=resolved.filter(a=>a.mark==="UNCERTAIN"||a.mark==="MULTIPLE").length;
   const blank=resolved.filter(a=>a.mark===null||a.mark==="").length;
   const readyToScore=keyComplete&&pending===0&&confirmedReview&&studentId.trim().length>0&&essayId.trim().length>0;
+  const saveAcademic=async()=>{if(!readyToScore||saving||!schoolId||!subject||!grade)return;setSaving(true);setSaveMessage("");try{const response=await fetch("/api/analitica-institucional/resultados",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({schoolId,studentId,examId:essayId,examTitle:"Ensayo SIMCE "+essayId,subject,grade,correctAnswers:correct,totalQuestions:expectedQuestions})});const data=await response.json();if(!response.ok)throw new Error(data.error||"No se pudo guardar");setSaveMessage("Resultado guardado en analítica institucional.")}catch(e){setSaveMessage(e instanceof Error?e.message:"Error al guardar")}finally{setSaving(false)}};
   const exportCombined = () => {
     const answers=pages.flatMap(p=>p.answers).sort((a,b)=>a.number-b.number);
     if(!answers.length)return;
@@ -172,7 +181,7 @@ export default function CargaHojaSimce() {
             </select>
           </label>)}
         </details>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}><label>Total de preguntas del ensayo<input type="number" min={1} max={100} value={expectedQuestions} onChange={e=>{setExpectedQuestions(Number(e.target.value));setConfirmedReview(false);}}/></label><label>Estudiante<input value={studentId} onChange={e=>{setStudentId(e.target.value);setConfirmedReview(false);}} maxLength={100}/></label><label>Identificador del ensayo<input value={essayId} onChange={e=>{setEssayId(e.target.value);setConfirmedReview(false);}} maxLength={60}/></label></div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}><label>Total de preguntas del ensayo<input type="number" min={1} max={100} value={expectedQuestions} onChange={e=>{setExpectedQuestions(Number(e.target.value));setConfirmedReview(false);}}/></label><label>Colegio<select value={schoolId} onChange={e=>{setSchoolId(e.target.value);setCourse("");setStudentId("");setConfirmedReview(false)}}><option value="">Seleccionar</option>{roster.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label><label>Curso<select value={course} onChange={e=>{setCourse(e.target.value);setStudentId("");setConfirmedReview(false)}}><option value="">Seleccionar</option>{Array.from(new Set((roster.find(s=>s.id===schoolId)?.licensedStudents||[]).map(x=>x.course))).map(x=><option key={x} value={x}>{x}</option>)}</select></label><label>Estudiante<select value={studentId} onChange={e=>{setStudentId(e.target.value);setConfirmedReview(false)}}><option value="">Seleccionar</option>{(roster.find(s=>s.id===schoolId)?.licensedStudents||[]).filter(x=>x.course===course).map(x=><option key={x.id} value={x.id}>{x.paternalSurname} {x.maternalSurname}, {x.firstName}</option>)}</select></label><label>Identificador del ensayo<input value={essayId} onChange={e=>{setEssayId(e.target.value);setConfirmedReview(false);}} maxLength={60}/></label></div>
         <label style={{display:"flex",gap:8,alignItems:"center",marginBottom:12}}><input type="checkbox" checked={confirmedReview} onChange={e=>setConfirmedReview(e.target.checked)}/> Confirmo que revisé las marcas y que la pauta corresponde a este ensayo.</label>
         <div style={{padding:12,marginBottom:12,background:"#fff",borderRadius:8}}>
           <label style={{display:"grid",gap:6}}>Clave de respuestas (A, B, C, D en orden, sin números)
@@ -181,6 +190,8 @@ export default function CargaHojaSimce() {
           <p style={{fontSize:13}}>Cobertura: {combinedAnswers.length} de {expectedQuestions} preguntas. {completeSet?"Numeración completa.":"Faltan preguntas o existen saltos de numeración."} Clave: {key.length} preguntas. {readyToScore?`Aciertos provisionales: ${correct} de ${expectedQuestions}.`:"La corrección no está lista: verifica cobertura, clave, marcas dudosas, identificación de estudiante y ensayo, y confirmación docente antes de mostrar el resultado global."} Pendientes de revisión óptica: {pending}. Sin respuesta: {blank}.</p>
           <p style={{fontSize:12}}>Resultado provisional; comprueba que la clave corresponda al ensayo y revisa las respuestas dudosas antes de utilizarlo.</p>
         </div>
+        <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:12}}><label>Asignatura<select value={subject} onChange={e=>setSubject(e.target.value)}><option value="Lenguaje">Lenguaje</option><option value="Matemática">Matemática</option></select></label><label>Nivel<input value={grade} onChange={e=>setGrade(e.target.value)} maxLength={60}/></label></div>
+        <button type="button" disabled={!readyToScore||!schoolId||saving} onClick={saveAcademic} style={{padding:10,marginRight:8,background:"#087f91",color:"white"}}>{saving?"Guardando…":"Guardar resultado académico"}</button>{saveMessage&&<p role="status">{saveMessage}</p>}
         <button type="button" onClick={exportCombined} style={{padding:10,marginRight:8}}>Exportar páginas juntas (CSV)</button>
         <button type="button" onClick={()=>{if(window.confirm("¿Iniciar otro estudiante? Se borrarán las lecturas y revisiones actuales. Exporta primero los resultados si deseas conservarlos."))newStudent();}} style={{padding:10}}>Nuevo estudiante · limpiar lecturas</button>
       </section>}
