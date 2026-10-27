@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {getSession} from "../../../../lib/auth";
 export const runtime="nodejs";
-const greeting="Soy Yanay. Mi nombre viene del quechua y significa morenita o amada. Soy una mujer proveniente de la cultura lican antay, y estoy acá para guiarte y acompañarte en EducAntay. Si tienes alguna duda, háblame y te responderé.";
+const greeting="Soy Yanay. Soy una mujer proveniente de la cultura lican antay, soy tu asistente técnico y comercial, espero guiarte y acompañarte en EducAntay.";
 const previewRequests=new Map<string,{count:number;until:number}>();
 export async function POST(request:Request){
  try{
