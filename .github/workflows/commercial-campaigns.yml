@@ -1,0 +1,20 @@
+name: EducAntay campañas comerciales
+on:
+  schedule:
+    - cron: "0 14 * * 1-5"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    if: ${{ vars.COMMERCIAL_CAMPAIGNS_ENABLED == 'true' }}
+    steps:
+      - name: Ejecutar campaña autorizada
+        env:
+          CAMPAIGN_CRON_SECRET: ${{ secrets.CAMPAIGN_CRON_SECRET }}
+        run: |
+          test -n "$CAMPAIGN_CRON_SECRET" || { echo "Falta secreto"; exit 1; }
+          curl --fail --silent --show-error --max-time 120 --retry 2 \\
+            -H "Authorization: Bearer $CAMPAIGN_CRON_SECRET" \\
+            "https://educantay.cl/api/cron/campanas"
