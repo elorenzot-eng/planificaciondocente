@@ -3,18 +3,30 @@ on:
   schedule:
     - cron: "0 14 * * 1-5"
   workflow_dispatch:
+    inputs:
+      send_real:
+        description: "Enviar hasta 25 correos reales a contactos elegibles"
+        type: boolean
+        required: true
+        default: false
 permissions:
   contents: read
 jobs:
-  preview:
+  campaign:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || vars.COMMERCIAL_CAMPAIGNS_ENABLED == 'true' }}
     steps:
-      - name: Vista previa segura sin envíos
+      - name: Ejecutar campaña (simulación por defecto)
         env:
           CAMPAIGN_CRON_SECRET: ${{ secrets.CAMPAIGN_CRON_SECRET }}
+          SEND_REAL: ${{ github.event_name == 'workflow_dispatch' && inputs.send_real == true }}
         run: |
           test -n "$CAMPAIGN_CRON_SECRET" || { echo "Falta secreto de GitHub"; exit 1; }
-          curl --fail --silent --show-error --max-time 120 --retry 2 \
+          if [ "$SEND_REAL" = "true" ]; then
+            URL="https://educantay.cl/api/cron/campanas"
+          else
+            URL="https://educantay.cl/api/cron/campanas?dryRun=true"
+          fi
+          curl --fail --silent --show-error --max-time 120 --retry 0 \
             -H "Authorization: Bearer $CAMPAIGN_CRON_SECRET" \
-            "https://educantay.cl/api/cron/campanas?dryRun=true"
+            "$URL"
