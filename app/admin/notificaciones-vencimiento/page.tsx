@@ -15,7 +15,7 @@ export default function TrialNotices(){
  }
  async function run(send:boolean){
   if(send&&(!preview||preview.eligible===0))return;
-  if(send&&!window.confirm(`Se enviarán hasta ${Math.min(preview!.eligible,25)} notificaciones informativas. Los contactos excluidos no recibirán mensajes. ¿Confirmar envío real?`))return;
+  if(send&&!window.confirm(`Se enviarán hasta ${Math.min(preview!.eligible,50)} notificaciones informativas. Los contactos excluidos no recibirán mensajes. ¿Confirmar envío real?`))return;
   setBusy(send?"send":"preview");setError("");
   try{
    if(send){const result=await request(true);setOutcome(result);setPreview(await request(false))}
@@ -43,10 +43,10 @@ export default function TrialNotices(){
    </section>
    <section style={card}>
     <h2 style={{fontSize:19,margin:"0 0 8px"}}>Preparar y enviar</h2>
-    <p style={{color:"#526174",lineHeight:1.6,margin:"0 0 20px"}}>Primero comprueba los destinatarios. Después podrás confirmar el envío real de un máximo de 25 mensajes por ejecución.</p>
+    <p style={{color:"#526174",lineHeight:1.6,margin:"0 0 20px"}}>Primero comprueba los destinatarios. Después podrás confirmar el envío real de un máximo de 50 mensajes por ejecución.</p>
     <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
      <button type="button" style={{...button,background:"#e2f2f6",color:"#07516a",opacity:busy?.6:1}} disabled={!!busy} onClick={()=>run(false)}>{busy==="preview"?"Comprobando…":"↻ Comprobar destinatarios"}</button>
-     <button type="button" style={{...button,background:"#0b7292",color:"#fff",opacity:busy||!preview||preview.eligible===0?.5:1,cursor:busy||!preview||preview.eligible===0?"not-allowed":"pointer"}} disabled={!!busy||!preview||preview.eligible===0} onClick={()=>run(true)}>{busy==="send"?"Enviando…":`Enviar ahora${preview?.eligible?" · hasta "+Math.min(preview.eligible,25):""}`}</button>
+     <button type="button" style={{...button,background:"#0b7292",color:"#fff",opacity:busy||!preview||preview.eligible===0?.5:1,cursor:busy||!preview||preview.eligible===0?"not-allowed":"pointer"}} disabled={!!busy||!preview||preview.eligible===0} onClick={()=>run(true)}>{busy==="send"?"Enviando…":`Enviar ahora${preview?.eligible?" · hasta "+Math.min(preview.eligible,50):""}`}</button>
     </div>
     {preview?.eligible===0&&<p style={{color:"#166534",marginBottom:0}}>No hay destinatarios pendientes de notificación.</p>}
     {error&&<p role="alert" style={{color:"#b91c1c",fontWeight:600,marginBottom:0}}>Error: {error}</p>}
@@ -62,7 +62,7 @@ export default function TrialNotices(){
    </section>}
    <section style={{...card,background:"#f8fafc"}}>
     <h2 style={{fontSize:17,margin:"0 0 8px"}}>Controles de seguridad</h2>
-    <p style={{fontSize:14,color:"#526174",lineHeight:1.7,margin:0}}>Solo cuentas individuales con prueba vencida · Contactos excluidos bloqueados · Una notificación por vencimiento · Máximo 25 por ejecución · Envío real únicamente con confirmación.</p>
+    <p style={{fontSize:14,color:"#526174",lineHeight:1.7,margin:0}}>Solo cuentas individuales con prueba vencida · Contactos excluidos bloqueados · Una notificación por vencimiento · Máximo 50 por ejecución · Envío real únicamente con confirmación.</p>
    </section>
   </div>
  </main>
