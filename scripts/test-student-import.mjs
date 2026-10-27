@@ -20,4 +20,8 @@ assert.match(duplicated.issues[0].reason,/duplicado/);
 const incomplete=validateStudentImport([["Ana","","Soto","12.345.678-5","4° A"]]);
 assert.equal(incomplete.students.length,0);
 assert.match(incomplete.issues[0].reason,/Faltan/);
+const tooLong=validateStudentImport([["A".repeat(121),"Pérez","Soto","12.345.678-5","4° A"]]);
+assert.match(tooLong.issues[0].reason,/demasiado largo/);
+const extraColumn=validateStudentImport([["Ana","Pérez","Soto","12.345.678-5","4° A","No autorizado"]]);
+assert.match(extraColumn.issues[0].reason,/Columnas adicionales/);
 console.log("Student import validations: OK");
