@@ -38,13 +38,25 @@ export async function POST(request: Request) {
   if (!u) return NextResponse.json({ error: "Se requiere una licencia vigente" }, { status: 403, headers });
   let b: any;
   try { b = await request.json(); } catch { return NextResponse.json({ error: "JSON inválido" }, { status: 400 }); }
-  const kind = safeText(b.kind, 40), title = safeText(b.title);
-  const content = b.content;
-  if (!kinds.includes(kind as any) || !title || !content || typeof content !== "object" || Array.isArray(content) || JSON.stringify(content).length > 150000) return NextResponse.json({ error: "Recurso inválido" }, { status: 400 });
-  const description = safeText(b.description, 600), subject = safeText(b.subject, 120), level = safeText(b.level, 80), objective = safeText(b.objective, 150);
-  if (excluded([kind,title,description,subject,level,objective,content])) return NextResponse.json({ error: "Los ensayos SIMCE y PAES no pueden compartirse" }, { status: 400 });
-  const published = b.published === true;
-  if (published && !canShareEducationalResource({ title, description, subject, level, objective, content })) return NextResponse.json({ error: "El material contiene información reservada o identificable" }, { status: 400 });
+  const kind = safeText(b.sourceKind, 40);
+  const sourceId = safeText(b.sourceId, 100);
+  if (!sourceId || !["planning", "assessment", "material"].includes(kind)) return NextResponse.json({ error: "Selecciona un recurso válido de Mi carpeta" }, { status: 400 });
+  const source = kind === "planning"
+    ? await prisma.planning.findFirst({ where: { id: sourceId, userId: u.id }, include: { course: { select: { level: true } } } })
+    : kind === "assessment"
+    ? await prisma.assessment.findFirst({ where: { id: sourceId, userId: u.id }, include: { course: { select: { level: true } } } })
+    : await prisma.supportMaterial.findFirst({ where: { id: sourceId, userId: u.id }, include: { course: { select: { level: true } } } });
+  if (!source) return NextResponse.json({ error: "Recurso propio no encontrado" }, { status: 404 });
+  const title = safeText(source.title);
+  const content = source.content;
+  const description = "";
+  const subject = kind === "material" ? safeText((source as any).subject, 120) : "";
+  const level = safeText(source.course?.level, 80);
+  const objective = "";
+  if (!title || !content || typeof content !== "object" || Array.isArray(content) || JSON.stringify(content).length > 150000) return NextResponse.json({ error: "Contenido no válido" }, { status: 400 });
+  if (kind === "assessment" && /simce|paes/i.test(String((source as any).type || ""))) return NextResponse.json({ error: "Evaluaciones reservadas" }, { status: 403 });
+  if (!canShareEducationalResource({ title, description, subject, level, objective, content })) return NextResponse.json({ error: "El material contiene información reservada o identificable" }, { status: 400 });
+  const published = false;
   const created = await prisma.sharedLibraryResource.create({ data: { authorId: u.id, title, kind, description, subject, level, objective, content, published } });
   return NextResponse.json({ resource: created }, { status: 201, headers });
 }
