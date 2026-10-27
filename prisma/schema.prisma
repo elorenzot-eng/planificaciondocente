@@ -658,3 +658,30 @@ model CommercialLeadActivity {
  createdAt DateTime @default(now())
  @@index([userId,createdAt])
 }
+
+model CommercialEmailCampaign {
+ id String @id @default(cuid())
+ name String
+ subject String
+ body String @db.Text
+ enabled Boolean @default(false)
+ createdById String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
+model CommercialEmailDelivery {
+ id String @id @default(cuid())
+ campaignId String
+ userId String
+ status String @default("PENDING")
+ sentAt DateTime?
+ error String?
+ createdAt DateTime @default(now())
+ @@unique([campaignId,userId])
+ @@index([status,createdAt])
+}
+model CommercialEmailConsent {
+ userId String @id
+ optedIn Boolean @default(false)
+ updatedAt DateTime @updatedAt
+}
