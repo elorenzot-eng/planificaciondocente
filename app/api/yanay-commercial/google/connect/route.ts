@@ -8,8 +8,7 @@ export async function GET(req:Request){
  if(!["SUPERADMIN","SUPER_ADMIN"].includes(String(session.role||"").toUpperCase()))return NextResponse.json({error:"La cuenta conectada no tiene rol SUPERADMIN.",code:"ROLE_REQUIRED",currentRole:String(session.role||"SIN_ROL")},{status:403});
  const client=process.env.GOOGLE_CALENDAR_CLIENT_ID, secret=process.env.GOOGLE_CALENDAR_CLIENT_SECRET, auth=process.env.AUTH_SECRET;
  if(!client||!secret||!auth)return NextResponse.json({error:"Faltan credenciales OAuth del servidor."},{status:503});
- const base=new URL(req.url).origin;
- if(base!=="https://educantay.cl"&&process.env.NODE_ENV==="production")return NextResponse.json({error:"Origen de autorización inválido."},{status:403});
+ const base="https://educantay.cl";
  const redirect=base+"/api/yanay-commercial/google/callback";
  const state=await new SignJWT({purpose:"yanay-calendar",sub:String(session.id)}).setProtectedHeader({alg:"HS256"}).setIssuedAt().setExpirationTime("10m").sign(new TextEncoder().encode(auth));
  const url=new URL("https://accounts.google.com/o/oauth2/v2/auth");
