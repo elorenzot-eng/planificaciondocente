@@ -26,11 +26,11 @@ export async function POST(req:Request){
   }catch(e){return ask("No pude confirmar la reunión: "+(e instanceof Error?e.message:"Error de calendario")+". Podemos elegir otro horario.",details);}
  }
  const next={...details};
- if(!next.name){next.name=input||undefined;return ask(next.name?"¿De qué colegio o institución nos contactas?":"¿Cuál es tu nombre y apellido?",next);}
+ if(!next.name){if(!input||/agendar|reuni[oó]n|demostraci[oó]n|reservar/i.test(input))return ask("Con gusto coordino una reunión. ¿Cuál es tu nombre y apellido?",next);next.name=input;return ask("¿De qué colegio o institución nos contactas?",next);}
  if(!next.institution){next.institution=input||undefined;return ask(next.institution?"¿Cuál es tu correo electrónico para enviarte la invitación?":"¿De qué colegio o institución nos contactas?",next);}
  if(!next.email){next.email=input||undefined;if(!next.email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next.email))return ask("Dime tu correo electrónico, por favor.",{...next,email:""});return ask("¿Cuál es tu número de teléfono?",next);}
  if(!next.phone){next.phone=input||undefined;if(!next.phone||next.phone.replace(/\D/g,"").length<8)return ask("Dime un teléfono de contacto con código de área, por favor.",{...next,phone:""});return ask("¿Qué día y hora te acomoda? Puedes decir, por ejemplo, 29 de octubre a las 11 de la mañana.",next);}
- if(!next.startsAt)return ask("¿Qué día y hora te acomoda? Dime una fecha concreta.",next);
+ if(!next.startsAt){const date=new Date(input);if(input&&!Number.isNaN(date.getTime())&&date.getTime()>Date.now()+1800000){next.startsAt=date.toISOString();return ask("¿Me autorizas a guardar tus datos y enviarte la invitación de Google Meet?",next);}return ask("Indica la fecha y hora exacta en formato AAAA-MM-DD HH:MM con zona horaria, por ejemplo 2026-10-29T11:00:00-03:00.",next);}
  if(!next.consent){if(/^(s[ií]|autorizo|acepto|de acuerdo)$/i.test(input)){next.consent=true;}else return ask("¿Me autorizas a guardar tus datos y enviar la invitación al correo indicado?",next);}
  return ask("Ya tengo tus datos. Para reservar la reunión, confirma la fecha y hora indicada. Di «confirmo» para continuar.",next);
 }
