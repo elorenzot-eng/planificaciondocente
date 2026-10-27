@@ -14,6 +14,14 @@ export default function CorrectorSimcePage() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [locked, setLocked] = useState(false);
+  const [schoolId,setSchoolId]=useState("");
+  const [studentId,setStudentId]=useState("");
+  const [examId,setExamId]=useState("");
+  const [subject,setSubject]=useState("");
+  const [grade,setGrade]=useState("");
+  const [saving,setSaving]=useState(false);
+  const [saveMessage,setSaveMessage]=useState("");
+  const saveResult=async()=>{if(!result||result.reviewRequired||!locked)return;setSaving(true);setSaveMessage("");try{const res=await fetch("/api/analitica-institucional/resultados",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({schoolId,studentId,examId,examTitle:"Ensayo SIMCE "+examId,subject,grade,correctAnswers:result.correct,totalQuestions:questions.length})});const json=await res.json();if(!res.ok)throw Error(json.error||"No se pudo guardar");setSaveMessage("Resultado académico guardado correctamente.")}catch(e){setSaveMessage(e instanceof Error?e.message:"Error al guardar")}finally{setSaving(false)}};
   const questions = useMemo(() => { try { return parseKey(key); } catch { return []; } }, [key]);
   const result = useMemo(() => {
     if (!questions.length) return null;
@@ -56,7 +64,7 @@ export default function CorrectorSimcePage() {
       <p>{result.percentage===null?"Porcentaje retenido hasta resolver las marcas dudosas.":`Logro: ${result.percentage}% (porcentaje de aciertos, no puntaje oficial SIMCE)`}</p>
       <button type="button" disabled={result.reviewRequired>0} onClick={()=>setLocked(true)} style={{background:"#6c39ad",color:"white",border:0,borderRadius:8,padding:12,cursor:"pointer",opacity:result.reviewRequired?0.5:1}}>Confirmar revisión</button>{" "}
       <button type="button" disabled={!locked} onClick={exportCsv} style={{background:"#087f91",color:"white",border:0,borderRadius:8,padding:12,cursor:"pointer",opacity:locked?1:0.5}}>Exportar CSV</button>
-      {locked&&<p role="status">Revisión confirmada en esta sesión. Aún no se guarda en Mi carpeta.</p>}
+      {locked&&<div style={{marginTop:16,display:"grid",gap:10}}><h3>Guardar resultado académico institucional</h3><p>Ingresa los identificadores del colegio y estudiante registrados en la plataforma. La vinculación automática con la nómina está pendiente.</p><label>ID colegio<input value={schoolId} onChange={e=>setSchoolId(e.target.value)} /></label><label>ID estudiante<input value={studentId} onChange={e=>setStudentId(e.target.value)} /></label><label>ID del ensayo<input value={examId} onChange={e=>setExamId(e.target.value)} /></label><label>Asignatura<input value={subject} onChange={e=>setSubject(e.target.value)} /></label><label>Nivel<input value={grade} onChange={e=>setGrade(e.target.value)} /></label><button type="button" disabled={saving||![schoolId,studentId,examId,subject,grade].every(Boolean)} onClick={saveResult}>{saving?"Guardando…":"Guardar resultado académico"}</button>{saveMessage&&<p role="status">{saveMessage}</p>}</div>}
     </section>}
   </main>;
 }
