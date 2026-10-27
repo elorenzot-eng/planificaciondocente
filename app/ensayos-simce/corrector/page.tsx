@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { gradeSimce, type SimceAlternative, type SimceMark } from "../../../lib/simce-paper-grading";
+import { analyzeSimceDimensions, gradeSimce, type SimceAlternative, type SimceMark } from "../../../lib/simce-paper-grading";
 
 const OPTIONS: SimceAlternative[] = ["A", "B", "C", "D"];
 function parseKey(raw: string) {
@@ -10,6 +10,7 @@ function parseKey(raw: string) {
 }
 export default function CorrectorSimcePage() {
   const [key, setKey] = useState("");
+  const [itemMetadata,setItemMetadata]=useState("");
   const [marks, setMarks] = useState<Record<number, SimceMark>>({});
   const [name, setName] = useState("");
   const [error, setError] = useState("");
@@ -24,8 +25,8 @@ export default function CorrectorSimcePage() {
   const [grade,setGrade]=useState("");
   const [saving,setSaving]=useState(false);
   const [saveMessage,setSaveMessage]=useState("");
-  const saveResult=async()=>{if(!result||result.reviewRequired||!locked)return;setSaving(true);setSaveMessage("");try{const res=await fetch("/api/analitica-institucional/resultados",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({schoolId,studentId,examId,examTitle:"Ensayo SIMCE "+examId,subject,grade,correctAnswers:result.correct,totalQuestions:questions.length})});const json=await res.json();if(!res.ok)throw Error(json.error||"No se pudo guardar");setSaveMessage("Resultado académico guardado correctamente.")}catch(e){setSaveMessage(e instanceof Error?e.message:"Error al guardar")}finally{setSaving(false)}};
-  const questions = useMemo(() => { try { return parseKey(key); } catch { return []; } }, [key]);
+  const saveResult=async()=>{if(!result||result.reviewRequired||!locked)return;setSaving(true);setSaveMessage("");try{const res=await fetch("/api/analitica-institucional/resultados",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({schoolId,studentId,examId,examTitle:"Ensayo SIMCE "+examId,subject,grade,correctAnswers:result.correct,totalQuestions:questions.length,skillResults:analyzeSimceDimensions(result).skills.map(({name,correct,total})=>({name,correct,total})),contentResults:analyzeSimceDimensions(result).contents.map(({name,correct,total})=>({name,correct,total}))})});const json=await res.json();if(!res.ok)throw Error(json.error||"No se pudo guardar");setSaveMessage("Resultado académico guardado correctamente.")}catch(e){setSaveMessage(e instanceof Error?e.message:"Error al guardar")}finally{setSaving(false)}};
+  const questions = useMemo(() => { try { const qs=parseKey(key); const lines=itemMetadata.trim().split(/\\r?\\n/).filter(Boolean); const meta=new Map<number,{axis?:string;skill?:string;content?:string}>();for(const line of lines){const [n,axis,skill,content]=line.split(";").map(s=>s.trim());const number=Number(n);if(Number.isInteger(number)&&number>0)meta.set(number,{axis,skill,content})}return qs.map(q=>({...q,...meta.get(q.number)})); } catch { return []; } }, [key,itemMetadata]);
   const result = useMemo(() => {
     if (!questions.length) return null;
     try { return gradeSimce(questions, questions.map(q => ({number:q.number, mark:marks[q.number] ?? null}))); }
@@ -47,6 +48,7 @@ export default function CorrectorSimcePage() {
     <div style={{background:"#f0fafb",padding:18,borderRadius:12,display:"grid",gap:12}}>
       <label>Estudiante (opcional)<input value={name} maxLength={100} onChange={e=>{setName(e.target.value);setLocked(false);}} style={{display:"block",padding:10,width:"100%",boxSizing:"border-box"}}/></label>
       <label>Pauta del docente (ejemplo: ABCDABCD)<textarea rows={3} value={key} onChange={e=>{setKey(e.target.value);setMarks({});setLocked(false);setError("");}} style={{display:"block",padding:10,width:"100%",boxSizing:"border-box"}}/></label>
+      <label>Tabla de especificaciones opcional (pregunta;eje;habilidad;contenido, una fila por pregunta)<textarea rows={4} value={itemMetadata} placeholder={"1;Lectura;Localizar información;Texto narrativo"} onChange={e=>{setItemMetadata(e.target.value);setLocked(false)}} style={{display:"block",padding:10,width:"100%",boxSizing:"border-box"}}/></label>
       <button type="button" onClick={()=>{try{parseKey(key);setError("");}catch(e){setError(e instanceof Error?e.message:"Pauta inválida");}}} style={{background:"#087f91",color:"white",border:0,borderRadius:8,padding:12,cursor:"pointer"}}>Validar pauta</button>
       {error&&<p role="alert" style={{color:"#a02040"}}>{error}</p>}
     </div>
