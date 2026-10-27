@@ -637,3 +637,13 @@ model AcademicExamResult {
   @@index([schoolId,course,subject,takenAt])
   @@index([studentId,takenAt])
 }
+
+model RegistrationIpBlock {
+  id String @id @default(cuid())
+  ipHash String @unique
+  reason String
+  expiresAt DateTime?
+  createdById String
+  createdAt DateTime @default(now())
+  @@index([expiresAt])
+}
