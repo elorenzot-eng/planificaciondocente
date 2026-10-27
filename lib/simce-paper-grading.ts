@@ -1,6 +1,6 @@
 export type SimceAlternative = "A" | "B" | "C" | "D";
 export type SimceMark = SimceAlternative | null | "MULTIPLE" | "UNCERTAIN";
-export type SimceQuestion = { number: number; correct: SimceAlternative; axis?: string; skill?: string };
+export type SimceQuestion = { number: number; correct: SimceAlternative; axis?: string; skill?: string; content?: string };
 export type SimceAnswer = { number: number; mark: SimceMark };
 export type SimceGrade = {
   correct: number;
@@ -9,7 +9,7 @@ export type SimceGrade = {
   reviewRequired: number;
   total: number;
   percentage: number | null;
-  detail: { number: number; mark: SimceMark; correct: SimceAlternative; status: "correct" | "incorrect" | "blank" | "review"; axis?: string; skill?: string }[];
+  detail: { number: number; mark: SimceMark; correct: SimceAlternative; status: "correct" | "incorrect" | "blank" | "review"; axis?: string; skill?: string; content?: string }[];
 };
 const VALID = new Set(["A", "B", "C", "D"]);
 /** Deterministic scoring after teacher confirmation; never guess uncertain marks. */
@@ -28,7 +28,7 @@ export function gradeSimce(questions: SimceQuestion[], answers: SimceAnswer[]): 
     if (mark !== null && mark !== "MULTIPLE" && mark !== "UNCERTAIN" && !VALID.has(mark)) throw new Error("Marca inválida");
     const status = mark === "MULTIPLE" || mark === "UNCERTAIN" ? "review" as const
       : mark === null ? "blank" as const : mark === q.correct ? "correct" as const : "incorrect" as const;
-    return {number:q.number, mark, correct:q.correct, status, axis:q.axis, skill:q.skill};
+    return {number:q.number, mark, correct:q.correct, status, axis:q.axis, skill:q.skill, content:q.content};
   });
   const correct = detail.filter(d => d.status === "correct").length;
   const incorrect = detail.filter(d => d.status === "incorrect").length;
@@ -36,4 +36,20 @@ export function gradeSimce(questions: SimceQuestion[], answers: SimceAnswer[]): 
   const reviewRequired = detail.filter(d => d.status === "review").length;
   return { correct, incorrect, blank, reviewRequired, total:questions.length,
     percentage:reviewRequired ? null : Math.round(correct / questions.length * 10000) / 100, detail };
+}
+
+/** Aggregates verified item-level outcomes, never assigning official SIMCE levels. */
+export function analyzeSimceDimensions(result:SimceGrade){
+ if(result.reviewRequired)throw new Error("Resuelve las respuestas dudosas antes de analizar");
+ const summarize=(dimension:"axis"|"skill"|"content")=>{
+  const groups=new Map<string,{correct:number;total:number}>();
+  for(const row of result.detail){
+   const name=row[dimension]?.trim();
+   if(!name)continue;
+   const old=groups.get(name)||{correct:0,total:0};
+   groups.set(name,{correct:old.correct+(row.status==="correct"?1:0),total:old.total+1});
+  }
+  return Array.from(groups.entries()).map(([name,v])=>({name,correct:v.correct,total:v.total,percentage:Math.round(v.correct/v.total*10000)/100}));
+ };
+ return {axes:summarize("axis"),skills:summarize("skill"),contents:summarize("content")};
 }
