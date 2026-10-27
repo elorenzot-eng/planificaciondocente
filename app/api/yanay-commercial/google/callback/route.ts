@@ -6,9 +6,8 @@ import {createCipheriv,createHash,randomBytes} from "node:crypto";
 export const runtime="nodejs";
 export async function GET(req:Request){
  const url=new URL(req.url);
- const base=url.origin;
+ const base="https://educantay.cl";
  const fail=(message:string,status=400)=>NextResponse.json({error:message},{status});
- if(process.env.NODE_ENV==="production"&&base!=="https://educantay.cl")return fail("Dominio no autorizado",403);
  const code=url.searchParams.get("code"),state=url.searchParams.get("state");
  if(!code||!state)return fail("Autorización incompleta");
  const auth=process.env.AUTH_SECRET,client=process.env.GOOGLE_CALENDAR_CLIENT_ID,secret=process.env.GOOGLE_CALENDAR_CLIENT_SECRET;
