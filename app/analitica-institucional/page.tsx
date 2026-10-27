@@ -9,6 +9,8 @@ export default function AnaliticaInstitucional(){
  useEffect(()=>{fetch("/api/analitica-institucional",{cache:"no-store"}).then(async r=>{const j=await r.json();if(!r.ok)throw Error(j.error||"Error de acceso");setSchools(j.schools||[])}).catch(e=>setError(e.message)).finally(()=>setLoading(false))},[]);
  return <main style={{maxWidth:1100,margin:"auto",padding:24}}>
  <h1>Analítica institucional</h1>
+ <button type="button" onClick={()=>window.print()} style={{padding:"10px 16px",background:"#087e88",color:"white",border:0,borderRadius:8,cursor:"pointer"}}>Descargar informe en PDF</button>
+ <p style={{fontSize:12}}>Al abrir la impresión, selecciona «Guardar como PDF». El informe contiene únicamente los datos autorizados que se muestran en pantalla.</p>
  <p>Licencias y utilización de ensayos SIMCE y PAES de tus establecimientos autorizados.</p>
  {loading?<p>Cargando datos…</p>:error?<p role="alert">{error}</p>:schools.length===0?<p>No hay establecimientos disponibles para tu cuenta.</p>:schools.map(s=><section key={s.id} style={{border:"1px solid #d8e1e6",borderRadius:12,padding:20,marginTop:16}}>
  <h2>{s.name}</h2><p>RBD: {s.rbd||"Sin registro"}</p>
