@@ -66,6 +66,7 @@ model School {
   users User[]
   institutionalLicenses InstitutionalExamLicense[]
   licensedStudents LicensedStudent[]
+  academicExamResults AcademicExamResult[]
   courses Course[]
   @@index([organizationId])
 }
@@ -597,6 +598,7 @@ model LicensedStudent {
   course String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  academicExamResults AcademicExamResult[]
   @@unique([schoolId,rut])
   @@index([schoolId,course])
 }
@@ -606,4 +608,29 @@ model YanayGoogleCalendarConnection {
   email String
   refreshTokenEncrypted String @db.Text
   updatedAt DateTime @updatedAt
+}
+
+model AcademicExamResult {
+  id String @id @default(cuid())
+  schoolId String
+  school School @relation(fields:[schoolId],references:[id],onDelete:Cascade)
+  studentId String
+  student LicensedStudent @relation(fields:[studentId],references:[id],onDelete:Cascade)
+  product String
+  subject String
+  grade String
+  course String
+  examId String
+  examTitle String
+  takenAt DateTime
+  correctAnswers Int
+  totalQuestions Int
+  score Float?
+  skillResults Json?
+  source String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([schoolId,studentId,product,examId])
+  @@index([schoolId,course,subject,takenAt])
+  @@index([studentId,takenAt])
 }
