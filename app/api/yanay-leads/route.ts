@@ -22,7 +22,7 @@ export async function POST(req:Request){
     const recent=await prisma.yanayCommercialLead.count({where:{email:data.email,createdAt:{gte:new Date(Date.now()-60*60*1000)}}});
     if(recent>=3)return NextResponse.json({error:"Ya recibimos solicitudes recientes de este correo. Intenta más tarde."},{status:429});
     const lead=await prisma.yanayCommercialLead.create({data:{name:data.name,institution:data.institution,role:data.role,phone:data.phone,email:data.email,product:data.product,preferredTime:data.preferredTime,notes:data.notes,consentAt:new Date(),status:"NUEVO"},select:{id:true}});
-    if(data.preferredTime && /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/.test(data.preferredTime)){
+    if(data.preferredTime && !Number.isNaN(Date.parse(data.preferredTime)) && data.preferredTime.endsWith("Z")){
       try{
         const booking=await bookYanayMeeting({name:data.name,email:data.email,institution:data.institution,product:data.product,startsAt:data.preferredTime});
         await prisma.yanayCommercialLead.update({where:{id:lead.id},data:{status:"CONFIRMADO",confirmedMeetingAt:new Date(booking.startsAt)}});
