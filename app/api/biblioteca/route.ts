@@ -31,7 +31,7 @@ export async function GET(request: Request) {
   if (kinds.includes(kind as any)) where.kind = kind;
   if (q) where.OR = [{ title: { contains: q, mode: "insensitive" } }, { subject: { contains: q, mode: "insensitive" } }, { description: { contains: q, mode: "insensitive" } }];
   const rows = await prisma.sharedLibraryResource.findMany({ where, orderBy: { createdAt: "desc" }, take: 100 });
-  return NextResponse.json({ resources: rows.filter(x => !excluded([x.title,x.description,x.content])) }, { headers });
+  return NextResponse.json({ resources: rows.filter(x => canShareEducationalResource({ title:x.title, description:x.description, subject:x.subject, level:x.level, objective:x.objective, content:x.content })) }, { headers });
 }
 export async function POST(request: Request) {
   const u = await licensedUser();
@@ -68,7 +68,7 @@ export async function PATCH(request: Request) {
   const id = safeText(b.id, 100);
   const current = await prisma.sharedLibraryResource.findFirst({ where: { id, authorId: u.id } });
   if (!current) return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404 });
-  if (b.published === true && !canShareEducationalResource(current)) return NextResponse.json({ error: "El material no puede publicarse" }, { status: 400 });
+  if (b.published === true && !canShareEducationalResource({ title:current.title, description:current.description, subject:current.subject, level:current.level, objective:current.objective, content:current.content })) return NextResponse.json({ error: "El material no puede publicarse" }, { status: 400 });
   if (excluded([current.title,current.description,current.content])) return NextResponse.json({ error: "Recurso excluido" }, { status: 400 });
   await prisma.sharedLibraryResource.update({ where: { id }, data: { published: b.published === true } });
   return NextResponse.json({ ok: true }, { headers });
