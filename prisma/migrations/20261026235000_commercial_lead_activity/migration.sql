@@ -1,0 +1,2 @@
+CREATE TABLE "CommercialLeadActivity" ("id" TEXT NOT NULL,"userId" TEXT NOT NULL,"adminId" TEXT NOT NULL,"status" TEXT NOT NULL,"note" TEXT,"doNotContact" BOOLEAN NOT NULL DEFAULT false,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "CommercialLeadActivity_pkey" PRIMARY KEY ("id"));
+CREATE INDEX "CommercialLeadActivity_userId_createdAt_idx" ON "CommercialLeadActivity"("userId","createdAt");
