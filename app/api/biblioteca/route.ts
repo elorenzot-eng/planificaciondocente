@@ -1,3 +1,4 @@
+import { canShareEducationalResource } from "../../../lib/biblioteca-policy";
 import { NextResponse } from "next/server";
 import { getSession } from "../../../lib/auth";
 import { prisma } from "../../../lib/prisma";
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
   const description = safeText(b.description, 600), subject = safeText(b.subject, 120), level = safeText(b.level, 80), objective = safeText(b.objective, 150);
   if (excluded([kind,title,description,subject,level,objective,content])) return NextResponse.json({ error: "Los ensayos SIMCE y PAES no pueden compartirse" }, { status: 400 });
   const published = b.published === true;
+  if (published && !canShareEducationalResource({ title, description, subject, level, objective, content })) return NextResponse.json({ error: "El material contiene información reservada o identificable" }, { status: 400 });
   const created = await prisma.sharedLibraryResource.create({ data: { authorId: u.id, title, kind, description, subject, level, objective, content, published } });
   return NextResponse.json({ resource: created }, { status: 201, headers });
 }
@@ -54,6 +56,7 @@ export async function PATCH(request: Request) {
   const id = safeText(b.id, 100);
   const current = await prisma.sharedLibraryResource.findFirst({ where: { id, authorId: u.id } });
   if (!current) return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404 });
+  if (b.published === true && !canShareEducationalResource(current)) return NextResponse.json({ error: "El material no puede publicarse" }, { status: 400 });
   if (excluded([current.title,current.description,current.content])) return NextResponse.json({ error: "Recurso excluido" }, { status: 400 });
   await prisma.sharedLibraryResource.update({ where: { id }, data: { published: b.published === true } });
   return NextResponse.json({ ok: true }, { headers });
