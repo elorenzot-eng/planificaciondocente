@@ -10,8 +10,8 @@ function excluded(value: unknown): boolean { return forbidden.test(JSON.stringif
 async function licensedUser() {
   const session = await getSession();
   if (!session?.id) return null;
-  const u = await prisma.user.findUnique({ where: { id: String(session.id) }, select: { id: true, active: true, accountType: true, subscriptionStatus: true, subscriptionEndsAt: true, trialEndsAt: true, role: true } });
-  if (!u?.active) return null;
+  const u = await prisma.user.findUnique({ where: { id: String(session.id) }, select: { id: true, active: true, accountType: true, subscriptionStatus: true, subscriptionEndsAt: true, trialEndsAt: true, role: true, organization: { select: { active: true } }, school: { select: { active: true } } } });
+  if (!u?.active || !u.organization.active || (u.school && !u.school.active)) return null;
   if (u.role === "SUPERADMIN") return u;
   if (u.accountType === "INDIVIDUAL") {
     const until = u.subscriptionStatus === "TRIAL" ? u.trialEndsAt : u.subscriptionStatus === "ACTIVE" ? u.subscriptionEndsAt : null;
