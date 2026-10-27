@@ -1,0 +1,4 @@
+import {NextResponse} from "next/server";
+import {createHmac,timingSafeEqual} from "crypto";
+import {prisma} from "../../../../lib/prisma";
+export async function GET(req:Request){const url=new URL(req.url);const id=url.searchParams.get("user")||"",token=url.searchParams.get("token")||"",secret=process.env.CAMPAIGN_UNSUBSCRIBE_SECRET;if(!secret||secret.length<32||!id||!token)return new NextResponse("Enlace inválido",{status:400});const expected=createHmac("sha256",secret).update(id).digest("hex");if(token.length!==expected.length||!timingSafeEqual(Buffer.from(token),Buffer.from(expected)))return new NextResponse("Enlace inválido",{status:400});await prisma.commercialEmailConsent.upsert({where:{userId:id},create:{userId:id,optedIn:false},update:{optedIn:false}});return new NextResponse("Tu correo fue excluido de futuras campañas comerciales de EducAntay.",{headers:{"Content-Type":"text/plain; charset=utf-8","Cache-Control":"no-store"}})}
