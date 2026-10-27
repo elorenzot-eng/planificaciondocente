@@ -7,8 +7,8 @@ function valid(v:string){const s=rut(v);if(!/^\d{7,8}[0-9K]$/.test(s))return fal
 async function admin(){const s=await getSession();if(!s?.id)return false;const u=await prisma.user.findUnique({where:{id:String(s.id)},select:{role:true,active:true}});return u?.active&&u.role==="SUPERADMIN"}
 export async function GET(){
  if(!await admin())return NextResponse.json({error:"No autorizado"},{status:403});
- const schools=await prisma.school.findMany({where:{active:true},select:{id:true,name:true,rbd:true,commune:true},orderBy:{name:"asc"},take:500});
- return NextResponse.json({schools});
+ const schools=await prisma.school.findMany({select:{id:true,name:true,rbd:true,commune:true,active:true,_count:{select:{institutionalLicenses:true}}},orderBy:{name:"asc"},take:500});
+ return NextResponse.json({schools:schools.map(s=>({id:s.id,name:s.name,rbd:s.rbd,commune:s.commune,active:s.active,licenseRecords:s._count.institutionalLicenses})),total:schools.length});
 }
 export async function POST(req:Request){
  if(!await admin())return NextResponse.json({error:"Solo el superadministrador puede importar estudiantes."},{status:403});
