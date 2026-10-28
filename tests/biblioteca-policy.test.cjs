@@ -131,3 +131,9 @@ test("active superadmin access does not depend on institution status",()=>{
  const institution=route.indexOf('if (!u.organization?.active');
  assert.ok(active>=0 && admin>active && institution>admin);
 });
+
+test("license grant checks active school and organization and permits adjacent periods",()=>{
+ const admin=fs.readFileSync("app/api/admin/pedagogical-licenses/route.ts","utf8");
+ assert.match(admin,/!school\.active \|\| !school\.organization\?\.active/);
+ assert.match(admin,/startsAt: \{ lt: expiresAt \}, expiresAt: \{ gt: startsAt \}/);
+});
