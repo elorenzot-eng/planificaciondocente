@@ -69,6 +69,7 @@ model School {
   academicExamResults AcademicExamResult[]
   courses Course[]
   @@index([organizationId])
+  pedagogicalModuleLicenses PedagogicalModuleLicense[]
 }
 model User {
   id String @id @default(cuid())
@@ -98,6 +99,7 @@ model User {
   portfolioReviews PortfolioReview[]
   teachingAssignments TeachingAssignment[]
   hcTeachingAssignments HCTeachingAssignment[]
+  sharedLibraryResources SharedLibraryResource[]
   individualPedagogicalLicenses IndividualPedagogicalLicense[]
   subscriptionPayments SubscriptionPayment[]
   passwordResetTokens PasswordResetToken[]
@@ -690,6 +692,7 @@ model CommercialEmailConsent {
 model SharedLibraryResource {
   id String @id @default(cuid())
   authorId String
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   sourceId String?
   title String
   kind String
@@ -710,6 +713,7 @@ model SharedLibraryResource {
 model PedagogicalModuleLicense {
   id String @id @default(cuid())
   schoolId String
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   module String
   active Boolean @default(true)
   startsAt DateTime @default(now())
