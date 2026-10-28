@@ -18,6 +18,7 @@ async function licensedUser() {
     if (!until || until <= new Date()) return null;
   }
   if (u.accountType === "INSTITUTIONAL") {
+    if (!u.schoolId && u.role !== "SOSTENEDOR") return null;
     const now = new Date();
     const entitlement = await prisma.pedagogicalModuleLicense.findFirst({
       where: {
