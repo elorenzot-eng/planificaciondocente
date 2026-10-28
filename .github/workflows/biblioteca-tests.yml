@@ -33,6 +33,8 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -45,3 +47,17 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
       # Historical migrations depend on tables created outside this repository.\n      # Test the new, self-contained library migration independently.\n      - name: Apply Biblioteca migration to clean PostgreSQL\n        run: |\n          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql\n          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "published" FROM "SharedLibraryResource" LIMIT 0;'\n          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "schoolId" FROM "PedagogicalModuleLicense" LIMIT 0;'\n        env:\n          DATABASE_URL: postgresql://test:test@localhost:5432/test\n
+      - name: Validate migration against main schema baseline
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+        run: |
+          set -euo pipefail
+          git show origin/main:prisma/schema.prisma > /tmp/biblioteca-main-schema.prisma
+          cp prisma/schema.prisma /tmp/biblioteca-feature-schema.prisma
+          cp /tmp/biblioteca-main-schema.prisma prisma/schema.prisma
+          npx prisma db push --skip-generate
+          cp /tmp/biblioteca-feature-schema.prisma prisma/schema.prisma
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'DROP TABLE IF EXISTS "SharedLibraryResource", "PedagogicalModuleLicense" CASCADE;'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
+          npx prisma db push --skip-generate
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('SharedLibraryResource','PedagogicalModuleLicense')" | grep -qx 2
