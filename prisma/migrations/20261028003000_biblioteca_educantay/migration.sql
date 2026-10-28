@@ -41,3 +41,13 @@ CREATE TABLE "IndividualPedagogicalLicense" (
   CONSTRAINT "IndividualPedagogicalLicense_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "IndividualPedagogicalLicense_userId_module_active_expiresAt_idx" ON "IndividualPedagogicalLicense"("userId","module","active","expiresAt");
+
+ALTER TABLE "SharedLibraryResource"
+  ADD CONSTRAINT "SharedLibraryResource_authorId_fkey"
+  FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PedagogicalModuleLicense"
+  ADD CONSTRAINT "PedagogicalModuleLicense_schoolId_fkey"
+  FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "IndividualPedagogicalLicense"
+  ADD CONSTRAINT "IndividualPedagogicalLicense_userId_fkey"
+  FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
