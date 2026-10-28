@@ -57,3 +57,9 @@ test("publication requires explicit boolean and author-scoped update",()=>{
  assert.match(route,/typeof b\.published !== "boolean"/);
  assert.match(route,/updateMany\(\{ where: \{ id, authorId: u\.id \}/);
 });
+
+test("library imports are deduplicated by author and source",()=>{
+ const schema=fs.readFileSync("prisma/schema.prisma","utf8");
+ assert.match(schema, /@@unique\(\[authorId,kind,sourceId\]\)/);
+ assert.match(route, /error\?\.code === "P2002"/);
+});
