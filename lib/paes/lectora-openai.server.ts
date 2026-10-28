@@ -1,6 +1,8 @@
 import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches, assembleLectoraBatches, type LectoraGenerationRequest } from "./lectora-generator";
 import type { LectoraExam } from "./lectora";
 import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
+import { prisma } from "../prisma";
+import type { Prisma } from "@prisma/client";
 
 /**
  * Servicio de generación para ser llamado EXCLUSIVAMENTE desde un endpoint
@@ -125,4 +127,41 @@ export async function resumeCompleteLectoraDraft(
     parts.push(result.exam);
   }
   return assembleLectoraBatches(parts, request.matrix);
+}
+
+/**
+ * Adaptador Prisma para PaesInternalJob. El usuario autenticado debe coincidir
+ * con userId; no expone acceso a trabajos ajenos.
+ * El CAS se basa en nextPart y evita duplicar commits de un mismo bloque.
+ */
+export function createPrismaLectoraCheckpointStore(jobId: string, userId: string): LectoraCheckpointStore {
+  if (!jobId || !userId) throw new Error("Trabajo y usuario requeridos.");
+  return {
+    async load() {
+      const job = await prisma.paesInternalJob.findFirst({
+        where: { id: jobId, userId },
+        select: { nextPart: true, texts: true, items: true, status: true },
+      });
+      if (!job || !["PENDING", "RUNNING", "RETRY"].includes(job.status))
+        throw new Error("Trabajo PAES no disponible para reanudación.");
+      // En trabajos Lectora65, texts almacena el arreglo de bloques completos.
+      const parts = job.texts;
+      if (!Array.isArray(parts)) throw new Error("Bloques persistidos inválidos.");
+      return { nextPart: job.nextPart, parts: parts as unknown as LectoraExam[] };
+    },
+    async commit(expectedPart, next) {
+      if (next.nextPart !== expectedPart + 1 || next.parts.length !== next.nextPart)
+        throw new Error("Transición de progreso PAES inválida.");
+      const updated = await prisma.paesInternalJob.updateMany({
+        where: { id: jobId, userId, nextPart: expectedPart, status: { in: ["PENDING", "RUNNING", "RETRY"] } },
+        data: {
+          nextPart: next.nextPart,
+          texts: next.parts as unknown as Prisma.InputJsonValue,
+          status: "RUNNING",
+          error: null,
+        },
+      });
+      return updated.count === 1;
+    },
+  };
 }
