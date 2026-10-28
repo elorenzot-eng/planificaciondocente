@@ -3,6 +3,7 @@ import type { LectoraExam } from "./lectora";
 import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
 import { prisma } from "../prisma";
 import type { Prisma } from "@prisma/client";
+import { randomUUID } from "node:crypto";
 
 /**
  * Servicio de generación para ser llamado EXCLUSIVAMENTE desde un endpoint
@@ -134,12 +135,12 @@ export async function resumeCompleteLectoraDraft(
  * con userId; no expone acceso a trabajos ajenos.
  * El CAS se basa en nextPart y evita duplicar commits de un mismo bloque.
  */
-export function createPrismaLectoraCheckpointStore(jobId: string, userId: string): LectoraCheckpointStore {
-  if (!jobId || !userId) throw new Error("Trabajo y usuario requeridos.");
+export function createPrismaLectoraCheckpointStore(jobId: string, userId: string, leaseToken: string): LectoraCheckpointStore {
+  if (!jobId || !userId || !leaseToken) throw new Error("Trabajo, usuario y lease requeridos.");
   return {
     async load() {
       const job = await prisma.paesInternalJob.findFirst({
-        where: { id: jobId, userId },
+        where: { id: jobId, userId, leaseToken, leaseExpiresAt: { gt: new Date() } },
         select: { nextPart: true, texts: true, items: true, status: true },
       });
       if (!job || !["PENDING", "RUNNING", "RETRY"].includes(job.status))
@@ -153,7 +154,7 @@ export function createPrismaLectoraCheckpointStore(jobId: string, userId: string
       if (next.nextPart !== expectedPart + 1 || next.parts.length !== next.nextPart)
         throw new Error("Transición de progreso PAES inválida.");
       const updated = await prisma.paesInternalJob.updateMany({
-        where: { id: jobId, userId, nextPart: expectedPart, status: { in: ["PENDING", "RUNNING", "RETRY"] } },
+        where: { id: jobId, userId, leaseToken, leaseExpiresAt: { gt: new Date() }, nextPart: expectedPart, status: "RUNNING" },
         data: {
           nextPart: next.nextPart,
           texts: next.parts as unknown as Prisma.InputJsonValue,
@@ -164,4 +165,49 @@ export function createPrismaLectoraCheckpointStore(jobId: string, userId: string
       return updated.count === 1;
     },
   };
+}
+
+/**
+ * Lease distribuido de un trabajo PAES: una sola ejecución propietaria
+ * durante TTL; las ejecuciones largas deben renovar el lease antes de vencer.
+ */
+export async function acquireLectoraJobLease(jobId: string, userId: string, ttlSeconds = 180):
+  Promise<string | null> {
+  if (!jobId || !userId || !Number.isInteger(ttlSeconds) || ttlSeconds < 30 || ttlSeconds > 600)
+    throw new Error("Parámetros de lease inválidos.");
+  const token = randomUUID();
+  const now = new Date();
+  const updated = await prisma.paesInternalJob.updateMany({
+    where: {
+      id: jobId, userId, status: { in: ["PENDING", "RUNNING", "RETRY"] },
+      OR: [{ leaseToken: null }, { leaseExpiresAt: { lt: now } }],
+    },
+    data: {
+      leaseToken: token, leaseExpiresAt: new Date(now.getTime() + ttlSeconds * 1000),
+      status: "RUNNING",
+    },
+  });
+  return updated.count === 1 ? token : null;
+}
+
+export async function renewLectoraJobLease(jobId: string, userId: string, token: string,
+  ttlSeconds = 180): Promise<boolean> {
+  if (!token || !Number.isInteger(ttlSeconds) || ttlSeconds < 30 || ttlSeconds > 600)
+    throw new Error("Parámetros de renovación inválidos.");
+  const now = new Date();
+  const updated = await prisma.paesInternalJob.updateMany({
+    where: { id: jobId, userId, leaseToken: token, leaseExpiresAt: { gt: now }, status: "RUNNING" },
+    data: { leaseExpiresAt: new Date(now.getTime() + ttlSeconds * 1000) },
+  });
+  return updated.count === 1;
+}
+
+export async function releaseLectoraJobLease(jobId: string, userId: string, token: string):
+  Promise<boolean> {
+  if (!token) return false;
+  const updated = await prisma.paesInternalJob.updateMany({
+    where: { id: jobId, userId, leaseToken: token },
+    data: { leaseToken: null, leaseExpiresAt: null },
+  });
+  return updated.count === 1;
 }
