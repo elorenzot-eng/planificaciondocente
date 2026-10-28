@@ -2,9 +2,10 @@
 const blockedTopics = /simce|paes|ensayo nacional/i;
 const blockedFields = /^(rut|run|dni|studentId|studentName|studentEmail|studentRut|studentRun|studentList|students|estudiantes|alumnos|apellidoPaterno|apellidoMaterno|nombreCompleto|diagnostico|diagnosis|fudei|paci|paec|email|correo|telefono|phone|address|direccion|fechaNacimiento|birthDate)$/i;
 const identityPatterns = [
-  /[\w.+-]+@[\w.-]+\.[a-z]{2,}/i,
-  /\b\d{1,2}\.\d{3}\.\d{3}-[0-9kK]\b/,
-  /\b\d{7,8}-[0-9kK]\b/
+  /[\\w.+-]+@[\\w.-]+\\.[a-z]{2,}/i,
+  /\\b(?:\\d{1,2}[.\\s-]?\\d{3}[.\\s-]?\\d{3}|\\d{7,8})[\\s-]?[0-9kK]\\b/,
+  /\\b(?:\\+?56[\\s-]?)?9[\\s-]?\\d{4}[\\s-]?\\d{4}\\b/,
+  /\\b(?:nombre\\s+(?:completo|del\\s+estudiante|del\\s+alumno)|apellido\\s+(?:paterno|materno)|diagn[oó]stico\\s+(?:del\\s+estudiante|del\\s+alumno))\\s*:/i
 ];
 export function canShareEducationalResource(input: unknown): boolean {
   const raw = JSON.stringify(input ?? "");
