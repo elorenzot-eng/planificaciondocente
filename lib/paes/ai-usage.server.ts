@@ -13,9 +13,9 @@ export async function assertPaesAiAccess(userId:string){
 // Completion receipt and counter are committed together. A retry cannot charge twice.
 export async function chargeCompletedPaes(userId:string,jobId:string){
  return prisma.$transaction(async tx=>{
-  const claim=await tx.paesInternalJob.updateMany({where:{id:jobId,userId,aiChargedAt:null},data:{aiChargedAt:new Date()}});
+  const claim=await tx.paesInternalJob.updateMany({where:{id:jobId,userId,status:"COMPLETED",aiChargedAt:null},data:{aiChargedAt:new Date()}});
   if(claim.count!==1){
-   const job=await tx.paesInternalJob.findFirst({where:{id:jobId,userId},select:{aiChargedAt:true}});
+   const job=await tx.paesInternalJob.findFirst({where:{id:jobId,userId,status:"COMPLETED"},select:{aiChargedAt:true}});
    if(job?.aiChargedAt)return;
    throw new PaesQuotaError("Ensayo no disponible para este usuario.",403);
   }
