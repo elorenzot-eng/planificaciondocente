@@ -52,3 +52,8 @@ test("pedagogical license API prevents overlapping entitlements",()=>{
  assert.match(admin,/status: 409/);
  assert.match(admin,/role === "SUPERADMIN"/);
 });
+
+test("publication requires explicit boolean and author-scoped update",()=>{
+ assert.match(route,/typeof b\.published !== "boolean"/);
+ assert.match(route,/updateMany\(\{ where: \{ id, authorId: u\.id \}/);
+});
