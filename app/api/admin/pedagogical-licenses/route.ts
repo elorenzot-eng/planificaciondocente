@@ -28,8 +28,9 @@ export async function POST(request: Request) {
   if (!schoolId || !modules.includes(moduleName) || !Number.isFinite(startsAt.getTime()) || !Number.isFinite(expiresAt.getTime()) || startsAt >= expiresAt) {
     return NextResponse.json({ error: "Datos de licencia inválidos" }, { status: 400, headers });
   }
-  const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { id: true } });
+  const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { id: true, active: true, organization: { select: { active: true } } } });
   if (!school) return NextResponse.json({ error: "Colegio inexistente" }, { status: 404, headers });
+  if (!school.active || !school.organization?.active) return NextResponse.json({ error: "Colegio u organización inactiva" }, { status: 409, headers });
   const overlap = await prisma.pedagogicalModuleLicense.findFirst({
     where: { schoolId, module: moduleName, active: true, startsAt: { lte: expiresAt }, expiresAt: { gte: startsAt } },
     select: { id: true }
