@@ -25,7 +25,8 @@ export async function POST(request:NextRequest){
  let body:{jobId?:string};try{body=await request.json();}catch{return NextResponse.json({error:"JSON inválido."},{status:400});}
  if(typeof body.jobId!=="string"||body.jobId.length>100)return NextResponse.json({error:"Identificador inválido."},{status:400});
  const job=await prisma.paesInternalJob.findUnique({where:{id:body.jobId}});
- if(!job||job.userId!==userId)return NextResponse.json({error:"Ensayo no disponible para este usuario."},{status:403});
+ if(!job)return NextResponse.json({error:"No se encontró el ensayo. Conserva el identificador y vuelve a iniciar sesión.",code:"JOB_NOT_FOUND"},{status:404});
+ if(job.userId!==userId)return NextResponse.json({error:"El ensayo está asociado a otra sesión. Inicia sesión con la cuenta que comenzó la generación.",code:"JOB_OWNER_MISMATCH"},{status:403});
  let exam:ScienceExam|M1Exam|M2Exam|LectoraExam|HistoryExam,title:string,examType:string;
  if(job.difficulty.startsWith("HISTORIA:")&&job.nextPart===HISTORY_CONFIG.totalQuestions){
   const history:HistoryExam={version:HISTORY_CONFIG.version,items:job.items as unknown as HistoryExam["items"]};
@@ -56,6 +57,15 @@ export async function POST(request:NextRequest){
   if(!reviewLectoraExam(lectora,INTERNAL_65_MATRIX).valid)return NextResponse.json({error:"Ensayo Lectora inválido."},{status:422});
   exam=lectora;title="PAES Competencia Lectora · 65 preguntas";examType="LECTORA";
  }else return NextResponse.json({error:"Ensayo incompleto o no compatible."},{status:400});
+ // Cierre retrocompatible de ensayos Lectora de 30 grupos ya validados.
+ // Nunca se asigna un trabajo a otro usuario ni se altera su contenido.
+ if(examType==="LECTORA"&&job.nextPart===30&&job.status!=="COMPLETED"){
+  const closed=await prisma.paesInternalJob.updateMany({
+   where:{id:job.id,userId,nextPart:30,status:{in:["PENDING","RUNNING"]}},
+   data:{status:"COMPLETED",error:null}
+  });
+  if(closed.count!==1)return NextResponse.json({error:"No se pudo confirmar el cierre del ensayo.",code:"JOB_CLOSE_CONFLICT"},{status:409});
+ }
  const previous=await prisma.savedPaesExam.findUnique({where:{userId_sourceJobId:{userId,sourceJobId:job.id}},select:{id:true}});
  if(!previous)try{await chargeCompletedPaes(userId,job.id);}catch(error){if(error instanceof PaesQuotaError)return NextResponse.json({error:error.message},{status:error.status});throw error;}
  const saved=await prisma.savedPaesExam.upsert({where:{userId_sourceJobId:{userId,sourceJobId:job.id}},create:{userId,sourceJobId:job.id,title,examType,exam:exam as unknown as import("@prisma/client").Prisma.InputJsonValue},update:{},select:{id:true}});

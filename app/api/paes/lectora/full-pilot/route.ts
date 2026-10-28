@@ -43,7 +43,18 @@ export async function POST(request: NextRequest) {
       const review = reviewLectoraExam(exam, INTERNAL_65_MATRIX);
       if (!review.valid) throw new Error("La validación final no fue aprobada.");
       const studentHtml=createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "estudiante"),teacherHtml=createLectoraPrintableHtml(exam, INTERNAL_65_MATRIX, "profesor");
-   await chargeCompletedPaes(session!.id as string,job.id);
+      // Legacy 30-part jobs may remain PENDING after their last group.
+      // Mark completed only after structural review and printable outputs pass.
+      if (job.status !== "COMPLETED") {
+        const finished = await prisma.paesInternalJob.updateMany({
+          where: { id: job.id, userId: session!.id as string, nextPart: 30,
+            status: { in: ["PENDING", "RUNNING"] } },
+          data: { status: "COMPLETED", error: null },
+        });
+        if (finished.count !== 1)
+          return NextResponse.json({ error: "No se pudo confirmar el cierre del ensayo.", jobId: job.id }, { status: 409 });
+      }
+      await chargeCompletedPaes(session!.id as string, job.id);
    return NextResponse.json({ jobId: job.id, status: "COMPLETED", count: exam.items.length,
         warnings: review.warnings, exam,
         studentHtml,
