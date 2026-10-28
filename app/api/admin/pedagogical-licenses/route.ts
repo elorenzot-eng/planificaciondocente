@@ -30,6 +30,11 @@ export async function POST(request: Request) {
   }
   const school = await prisma.school.findUnique({ where: { id: schoolId }, select: { id: true } });
   if (!school) return NextResponse.json({ error: "Colegio inexistente" }, { status: 404, headers });
+  const overlap = await prisma.pedagogicalModuleLicense.findFirst({
+    where: { schoolId, module: moduleName, active: true, startsAt: { lte: expiresAt }, expiresAt: { gte: startsAt } },
+    select: { id: true }
+  });
+  if (overlap) return NextResponse.json({ error: "Ya existe una licencia activa para ese módulo y período" }, { status: 409, headers });
   const license = await prisma.pedagogicalModuleLicense.create({ data: { schoolId, module: moduleName, startsAt, expiresAt, active: true } });
   return NextResponse.json({ license }, { status: 201, headers });
 }
