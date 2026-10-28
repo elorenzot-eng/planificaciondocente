@@ -49,9 +49,9 @@ export default function EnsayosSimcePage() {
     <section className="ea-resource-section" aria-label="Herramientas de corrección SIMCE">
       <h2 className="ea-section-title">Corrector de pruebas SIMCE</h2>
       <div className="ea-resource-grid">
-        <a className="ea-resource-card" href="/ensayos-simce/corrector" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><div><strong>Corrector SIMCE</strong><small>Revisar respuestas, calcular resultados y exportar CSV.</small></div><span>Abrir corrector →</span></a>
-        <a className="ea-resource-card" href="/ensayos-simce/hoja-respuestas" style={{background:"#ECFAF9",borderLeft:"5px solid #0B9DAD"}}><div><strong>Hoja de respuestas</strong><small>Generar e imprimir hojas A–D.</small></div><span>Crear hoja →</span></a>
+                <a className="ea-resource-card" href="/ensayos-simce/hoja-respuestas" style={{background:"#ECFAF9",borderLeft:"5px solid #0B9DAD"}}><div><strong>Hoja de respuestas</strong><small>Generar e imprimir hojas A–D.</small></div><span>Crear hoja →</span></a>
         <a className="ea-resource-card" href="/ensayos-simce/corrector/cargar" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><div><strong>Cargar JPG, PNG o PDF</strong><small>Vista previa de hojas. Lectura automática en desarrollo.</small></div><span>Cargar archivo →</span></a>
+<a className="ea-resource-card" href="/ensayos-simce/corrector" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><div><strong>Corrector SIMCE</strong><small>Revisar respuestas, calcular resultados y exportar CSV.</small></div><span>Abrir corrector →</span></a>
       </div>
     </section>
     <p className="ea-footnote">Los ensayos tipo SIMCE son materiales originales no oficiales. Revisa las preguntas y la hoja de respuestas del docente antes de aplicarlos.</p>
