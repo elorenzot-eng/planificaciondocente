@@ -109,3 +109,9 @@ test("rejects additional personal identifiers in shared materials",()=>{
   {content:{note:"Diagnóstico del estudiante: información reservada"}}
  ]) assert.equal(allowed(value),false);
 });
+
+test("school-linked sostenedores must belong to their own active organization",()=>{
+ assert.match(route,/u\.role === "SOSTENEDOR" && u\.schoolId/);
+ assert.match(route,/id: u\.schoolId, organizationId: u\.organizationId, active: true/);
+ assert.match(route,/if \(!ownSchool\) return null/);
+});
