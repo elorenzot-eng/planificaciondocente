@@ -4,7 +4,6 @@ import { getSession } from "../../../../../lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
 import { randomUUID } from "node:crypto";
-import { timingSafeEqual } from "node:crypto";
 import { generateReviewedLectoraDraft } from "../../../../../lib/paes/lectora-openai.server";
 import { createLectoraPrintableHtml } from "../../../../../lib/paes/lectora-print";
 
@@ -16,16 +15,12 @@ export const maxDuration = 180;
 // conservador. NO es una cuota distribuida ni un sistema de producción.
 let busy = false;
 let lastAttempt = 0;
-function authorized(provided: string | null, expected: string): boolean {
-  if (!provided || !expected || expected.length < 32) return false;
-  const a = Buffer.from(provided), b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
 export async function POST(request: NextRequest) {
   if (process.env.PAES_PILOT_ENABLED !== "true")
     return NextResponse.json({ error: "Piloto PAES no habilitado." }, { status: 404 });
+  // A valid authenticated session is mandatory: a pilot token alone must never bypass quotas.
   const session = await getSession();
-  if (!session && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
+  if (typeof session?.id !== "string")
     return NextResponse.json({ error: "Acceso denegado." }, { status: 403 });
   if (busy || Date.now() - lastAttempt < 600_000)
     return NextResponse.json({ error: "Espere 10 minutos antes de otra prueba." }, { status: 429 });

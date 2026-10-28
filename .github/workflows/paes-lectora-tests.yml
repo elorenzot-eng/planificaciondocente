@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'lib/paes/**'
+      - 'app/api/paes/lectora/pilot/**'
       - 'scripts/paes-print-samples.ts'
       - 'scripts/paes-65-synthetic-validation.ts'
       - '.github/workflows/paes-lectora-tests.yml'
