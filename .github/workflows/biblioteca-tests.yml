@@ -61,9 +61,10 @@ jobs:
 
       - name: Validate migration against main schema baseline
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/test
+          DATABASE_URL: postgresql://test:test@localhost:5432/test_biblioteca_baseline
         run: |
           set -euo pipefail
+          psql "postgresql://test:test@localhost:5432/test" -v ON_ERROR_STOP=1 -c 'CREATE DATABASE test_biblioteca_baseline;'
           git show origin/main:prisma/schema.prisma > /tmp/biblioteca-main-schema.prisma
           cp prisma/schema.prisma /tmp/biblioteca-feature-schema.prisma
           cp /tmp/biblioteca-main-schema.prisma prisma/schema.prisma
