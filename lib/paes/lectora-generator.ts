@@ -77,7 +77,7 @@ export function planLectoraBatches(
   const genres: LectoraGenre[] = ["Literario", "No literario"];
   const valid = (n: unknown): n is number => typeof n === "number" && Number.isInteger(n) && n >= 0;
   if (!matrix.version?.trim() || !matrix.reviewedBy?.trim() ||
-      !/^\d{4}-\\d{2}-\\d{2}$/.test(matrix.reviewedAt ?? "") ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(matrix.reviewedAt ?? "") ||
       !matrix.sourceReference?.trim() ||
       skills.some(k => !valid(matrix.bySkill?.[k])) ||
       genres.some(k => !valid(matrix.byGenre?.[k])) ||
