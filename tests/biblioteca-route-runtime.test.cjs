@@ -6,7 +6,7 @@ const Module = require("node:module");
 const ts = require("typescript");
 
 // Execute the actual Next.js route handlers, replacing only auth, Prisma and NextResponse.
-function loadRoute({ user, license, resources = [] }) {
+function loadRoute({ user, license, individualLicense = true, resources = [] }) {
   const filename = path.resolve("app/api/biblioteca/route.ts");
   const source = fs.readFileSync(filename, "utf8");
   const js = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
@@ -15,6 +15,7 @@ function loadRoute({ user, license, resources = [] }) {
     user: { findUnique: async () => user },
     school: { findFirst: async () => ({ id: user?.schoolId }), findMany: async () => [] },
     pedagogicalModuleLicense: { findFirst: async () => license ? { id: "licensed" } : null },
+    individualPedagogicalLicense: { findFirst: async () => individualLicense ? { id: "individual-licensed" } : null },
     sharedLibraryResource: {
       findMany: async ({ where }) => { calls.push(where); return resources.filter(r => where.authorId ? r.authorId === where.authorId : r.published); },
       findFirst: async ({ where }) => resources.find(r => r.id === where.id && r.authorId === where.authorId) || null,
@@ -138,4 +139,9 @@ test("author's private resources are visible only in mine view", async () => {
   const { route } = loadRoute({ user: individual("ACTIVE"), resources });
   const result = await route.GET(new Request("https://educantay.example/api/biblioteca?mine=1"));
   assert.deepEqual(result.body.resources.map(r => r.id), ["private"]);
+});
+
+test("individual subscription without pedagogical module is denied", async () => {
+  const { route } = loadRoute({ user: individual("ACTIVE"), individualLicense: false });
+  assert.equal((await route.GET(get())).status, 403);
 });
