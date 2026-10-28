@@ -1,6 +1,6 @@
 import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches, assembleLectoraBatches, type LectoraGenerationRequest } from "./lectora-generator";
 import type { LectoraExam } from "./lectora";
-import type { ReviewedLectoraMatrix } from "./lectora-review";
+import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
 
 /**
  * Servicio de generación para ser llamado EXCLUSIVAMENTE desde un endpoint
@@ -80,4 +80,49 @@ export async function generateCompleteLectoraDraft(
   }
   const assembled = assembleLectoraBatches(parts, request.matrix);
   return { exam: assembled.exam, warnings: [...warnings, ...assembled.warnings] };
+}
+
+/** Punto de control persistible: el adaptador DB debe implementar CAS y propiedad del trabajo. */
+export type LectoraCheckpoint = {
+  nextPart: number;
+  parts: LectoraExam[];
+};
+export type LectoraCheckpointStore = {
+  load: () => Promise<LectoraCheckpoint>;
+  /** Debe persistir atómicamente solo si nextPart sigue siendo expectedPart. */
+  commit: (expectedPart: number, next: LectoraCheckpoint) => Promise<boolean>;
+};
+
+/**
+ * Reanuda a partir del último bloque confirmado.
+ * Requiere bloqueo distribuido / compare-and-swap en el almacén suministrado.
+ * No hace cargos de cuota ni escribe SavedPaesExam: responsabilidad del llamador.
+ */
+export async function resumeCompleteLectoraDraft(
+  request: { matrix: ReviewedLectoraMatrix; difficulty: LectoraGenerationRequest["difficulty"] },
+  store: LectoraCheckpointStore,
+  generate: (batch: LectoraGenerationRequest) => Promise<{ exam: LectoraExam; warnings: string[] }> =
+    generateReviewedLectoraDraft,
+): Promise<{ exam: LectoraExam; warnings: string[] }> {
+  const batches = planLectoraBatches(request.matrix);
+  const initial = await store.load();
+  if (!Number.isInteger(initial.nextPart) || initial.nextPart < 0 ||
+      initial.nextPart > batches.length || initial.parts.length !== initial.nextPart)
+    throw new Error("Punto de control PAES inconsistente.");
+  const parts = [...initial.parts];
+  for (let i = 0; i < parts.length; i++) {
+    // El ensamblador final volverá a verificar todos los bloques.
+    if (!parts[i] || !reviewLectoraExam(parts[i], batches[i]).valid)
+      throw new Error("Bloque persistido incompatible con la matriz.");
+  }
+  for (let i = initial.nextPart; i < batches.length; i++) {
+    const result = await generate({ matrix: batches[i], difficulty: request.difficulty });
+    if (!reviewLectoraExam(result.exam, batches[i]).valid)
+      throw new Error("Bloque generado inválido.");
+    const next = { nextPart: i + 1, parts: [...parts, result.exam] };
+    if (!await store.commit(i, next))
+      throw new Error("Conflicto de actualización del trabajo PAES.");
+    parts.push(result.exam);
+  }
+  return assembleLectoraBatches(parts, request.matrix);
 }
