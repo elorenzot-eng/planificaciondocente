@@ -145,3 +145,9 @@ test("license reactivation rejects inactive school or organization",()=>{
  assert.match(patch,/where: \{ id: current\.schoolId \}/);
  assert.match(patch,/!school\?\.active \|\| !school\.organization\?\.active/);
 });
+
+test("authors can unpublish a resource even if its content later becomes restricted",()=>{
+ const patch=route.slice(route.indexOf("export async function PATCH"));
+ assert.match(patch,/b\.published === true && excluded\(\[current\.title,current\.description,current\.content\]\)/);
+ assert.match(patch,/where: \{ id, authorId: u\.id \}, data: \{ published: b\.published \}/);
+});
