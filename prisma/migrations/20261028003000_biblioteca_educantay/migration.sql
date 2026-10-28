@@ -29,3 +29,15 @@ CREATE TABLE "PedagogicalModuleLicense" (
   CONSTRAINT "PedagogicalModuleLicense_pkey" PRIMARY KEY ("id")
 );
 CREATE INDEX "PedagogicalModuleLicense_schoolId_module_active_expiresAt_idx" ON "PedagogicalModuleLicense"("schoolId","module","active","expiresAt");
+
+CREATE TABLE "IndividualPedagogicalLicense" (
+  "id" TEXT NOT NULL,
+  "userId" TEXT NOT NULL,
+  "module" TEXT NOT NULL,
+  "active" BOOLEAN NOT NULL DEFAULT true,
+  "startsAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "expiresAt" TIMESTAMP(3) NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "IndividualPedagogicalLicense_pkey" PRIMARY KEY ("id")
+);
+CREATE INDEX "IndividualPedagogicalLicense_userId_module_active_expiresAt_idx" ON "IndividualPedagogicalLicense"("userId","module","active","expiresAt");
