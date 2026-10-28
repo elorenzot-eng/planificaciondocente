@@ -36,3 +36,10 @@ test("API reads source documents only for their author",()=>{
 test("API restricts publication changes to author",()=>{
  assert.match(route,/authorId: u\.id/);
 });
+
+test("institutional accounts require a current license or subscription",()=>{
+ assert.match(route,/institutionalExamLicense\.findFirst/);
+ assert.match(route,/expiresAt: \{ gt: now \}/);
+ assert.match(route,/startsAt: \{ lte: now \}/);
+ assert.match(route,/if \(!license\) return null/);
+});
