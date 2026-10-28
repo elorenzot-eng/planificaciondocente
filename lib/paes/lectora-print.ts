@@ -35,7 +35,7 @@ export function createLectoraPrintableHtml(
       ).join("");
       const answer = version === "profesor" ?
         `<aside><strong>Clave:</strong> ${"ABCD"[item.correctIndex]} · <strong>Habilidad:</strong> ${escapeHtml(item.skill)}<p><strong>Evidencia:</strong> ${escapeHtml(item.evidence)}</p><p><strong>Justificación:</strong> ${escapeHtml(item.rationale)}</p></aside>` : "";
-      return `<div class="question"><div class="question-number">${n}.</div><div class="question-content"><p>${escapeHtml(item.stem)}</p><ol class="options">${options}</ol>${answer}</div></div>;
+      return `<div class="question"><div class="question-number">${n}.</div><div class="question-content"><p>${escapeHtml(item.stem)}</p><ol class="options">${options}</ol>${answer}</div></div>`;
     }).join("");
     return `<section><article class="passage">${escapeHtml(passage.body)}</article><p class="source">Fuente: ${escapeHtml(passage.sourceAttribution)}</p>${questions}</section>`;
   }).join("");
