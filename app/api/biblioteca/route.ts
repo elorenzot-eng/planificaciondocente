@@ -116,7 +116,7 @@ export async function PATCH(request: Request) {
   const current = await prisma.sharedLibraryResource.findFirst({ where: { id, authorId: u.id } });
   if (!current) return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404 });
   if (b.published === true && !canShareEducationalResource({ title:current.title, description:current.description, subject:current.subject, level:current.level, objective:current.objective, content:current.content })) return NextResponse.json({ error: "El material no puede publicarse" }, { status: 400 });
-  if (excluded([current.title,current.description,current.content])) return NextResponse.json({ error: "Recurso excluido" }, { status: 400 });
+  if (b.published === true && excluded([current.title,current.description,current.content])) return NextResponse.json({ error: "Recurso excluido" }, { status: 400 });
   const changed = await prisma.sharedLibraryResource.updateMany({ where: { id, authorId: u.id }, data: { published: b.published } });
   if (!changed.count) return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404, headers });
   return NextResponse.json({ ok: true }, { headers });
