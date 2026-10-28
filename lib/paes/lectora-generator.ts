@@ -111,3 +111,31 @@ export function planLectoraBatches(
   }
   return batches;
 }
+
+
+/** Consolida bloques ya validados y renumera identificadores para evitar colisiones. */
+export function assembleLectoraBatches(
+  parts: LectoraExam[],
+  matrix: ReviewedLectoraMatrix,
+): { exam: LectoraExam; warnings: string[] } {
+  const planned = planLectoraBatches(matrix);
+  if (parts.length !== planned.length) throw new Error("Faltan bloques del ensayo completo.");
+  const texts: LectoraExam["texts"] = [];
+  const items: LectoraExam["items"] = [];
+  for (const [index, part] of parts.entries()) {
+    const review = reviewLectoraExam(part, planned[index]);
+    if (!review.valid) throw new Error(`Bloque ${index + 1} rechazado.`);
+    const prefix = `B${index + 1}-`;
+    const localIds = new Set(part.texts.map(t => t.id));
+    for (const item of part.items)
+      if (!localIds.has(item.textId)) throw new Error("Pregunta sin texto asociado.");
+    texts.push(...part.texts.map(t => ({ ...t, id: prefix + t.id })));
+    items.push(...part.items.map(item => ({
+      ...item, id: prefix + item.id, textId: prefix + item.textId,
+    })));
+  }
+  const exam: LectoraExam = { specificationVersion: matrix.version, texts, items };
+  const review = reviewLectoraExam(exam, matrix);
+  if (!review.valid) throw new Error("Ensayo completo rechazado por validación estructural.");
+  return { exam, warnings: review.warnings };
+}
