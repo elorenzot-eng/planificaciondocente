@@ -6,11 +6,18 @@ import type { LectoraExam } from "./lectora";
  * autenticado con control de cuota. No exponer como ruta pública directa.
  * OPENAI_API_KEY se consulta sólo en servidor.
  */
+export class LectoraGenerationError extends Error {
+  constructor(public readonly code: "MISSING_KEY" | "PROVIDER_HTTP" | "EMPTY_RESPONSE" | "REVIEW_REJECTED" | "NETWORK_OR_TIMEOUT", public readonly providerStatus?: number) {
+    super("La generación PAES IA no se completó.");
+    this.name = "LectoraGenerationError";
+  }
+}
+
 export async function generateReviewedLectoraDraft(
   request: LectoraGenerationRequest,
 ): Promise<{ exam: LectoraExam; warnings: string[] }> {
   const key = process.env.OPENAI_API_KEY;
-  if (!key) throw new Error("Falta configurar OPENAI_API_KEY en el servidor.");
+  if (!key) throw new LectoraGenerationError("MISSING_KEY");
   const prompt = buildLectoraPrompt(request);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 120_000);
@@ -35,14 +42,18 @@ export async function generateReviewedLectoraDraft(
     });
     if (!response.ok) {
       // No incluir claves, cuerpo del proveedor ni información sensible.
-      throw new Error(`No fue posible generar el ensayo (servicio IA: ${response.status}).`);
+      throw new LectoraGenerationError("PROVIDER_HTTP", response.status);
     }
     const payload: unknown = await response.json();
     const raw = (payload as {
       choices?: Array<{ message?: { content?: string | null } }>
     }).choices?.[0]?.message?.content;
-    if (!raw) throw new Error("El proveedor IA no devolvió contenido.");
-    return parseAndReviewLectoraResponse(raw, request.matrix);
+    if (!raw) throw new LectoraGenerationError("EMPTY_RESPONSE");
+    try { return parseAndReviewLectoraResponse(raw, request.matrix); }
+    catch { throw new LectoraGenerationError("REVIEW_REJECTED"); }
+  } catch (error) {
+    if (error instanceof LectoraGenerationError) throw error;
+    throw new LectoraGenerationError("NETWORK_OR_TIMEOUT");
   } finally {
     clearTimeout(timeout);
   }
