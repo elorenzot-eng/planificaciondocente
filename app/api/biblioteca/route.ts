@@ -40,16 +40,17 @@ export async function GET(request: Request) {
   if (!u) return NextResponse.json({ error: "Se requiere una licencia vigente" }, { status: 403, headers });
   const url = new URL(request.url);
   if (url.searchParams.get("importable") === "1") {
-    const [plannings, assessments, materials] = await Promise.all([
+    const [plannings, assessments, materials, imported] = await Promise.all([
       prisma.planning.findMany({ where: { userId: u.id }, select: { id: true, title: true, content: true }, take: 100 }),
       prisma.assessment.findMany({ where: { userId: u.id }, select: { id: true, title: true, content: true, type: true }, take: 100 }),
-      prisma.supportMaterial.findMany({ where: { userId: u.id }, select: { id: true, title: true, content: true }, take: 100 })
+      prisma.supportMaterial.findMany({ where: { userId: u.id }, select: { id: true, title: true, content: true }, take: 100 }),
+      prisma.sharedLibraryResource.findMany({ where: { authorId: u.id, sourceId: { not: null } }, select: { kind: true, sourceId: true } })
     ]);
     const resources = [
       ...plannings.map(x => ({ ...x, kind: "planning" })),
       ...assessments.map(x => ({ ...x, kind: "assessment" })),
       ...materials.map(x => ({ ...x, kind: "material" }))
-    ].filter(x => !excluded(x) && canShareEducationalResource({ title: x.title, content: x.content }))
+    ].filter(x => !imported.some(i => i.kind === x.kind && i.sourceId === x.id) && !excluded(x) && canShareEducationalResource({ title: x.title, content: x.content }))
       .map(x => ({ id: x.id, title: x.title, kind: x.kind }));
     return NextResponse.json({ resources }, { headers });
   }
