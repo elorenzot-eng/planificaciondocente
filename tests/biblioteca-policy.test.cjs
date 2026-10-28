@@ -63,3 +63,8 @@ test("library imports are deduplicated by author and source",()=>{
  assert.match(schema, /@@unique\(\[authorId,kind,sourceId\]\)/);
  assert.match(route, /error\?\.code === "P2002"/);
 });
+
+test("source picker hides documents already imported by the same author",()=>{
+ assert.match(route,/sourceId: \{ not: null \}/);
+ assert.match(route,/imported\.some\(i => i\.kind === x\.kind && i\.sourceId === x\.id\)/);
+});
