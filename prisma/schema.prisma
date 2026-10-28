@@ -69,6 +69,7 @@ model School {
   academicExamResults AcademicExamResult[]
   courses Course[]
   @@index([organizationId])
+  pedagogicalModuleLicenses PedagogicalModuleLicense[]
 }
 model User {
   id String @id @default(cuid())
@@ -98,6 +99,8 @@ model User {
   portfolioReviews PortfolioReview[]
   teachingAssignments TeachingAssignment[]
   hcTeachingAssignments HCTeachingAssignment[]
+  sharedLibraryResources SharedLibraryResource[]
+  individualPedagogicalLicenses IndividualPedagogicalLicense[]
   subscriptionPayments SubscriptionPayment[]
   passwordResetTokens PasswordResetToken[]
   agendaTasks AgendaTask[]
@@ -684,4 +687,49 @@ model CommercialEmailConsent {
  userId String @id
  optedIn Boolean @default(false)
  updatedAt DateTime @updatedAt
+}
+
+model SharedLibraryResource {
+  id String @id @default(cuid())
+  authorId String
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  sourceId String?
+  title String
+  kind String
+  subject String?
+  level String?
+  objective String?
+  description String?
+  content Json
+  published Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([published,kind,createdAt])
+  @@index([authorId,createdAt])
+  @@unique([authorId,kind,sourceId])
+}
+
+// Acceso explícito por módulo pedagógico; las licencias de ensayos no conceden acceso.
+model PedagogicalModuleLicense {
+  id String @id @default(cuid())
+  schoolId String
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  module String
+  active Boolean @default(true)
+  startsAt DateTime @default(now())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@index([schoolId,module,active,expiresAt])
+}
+
+model IndividualPedagogicalLicense {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module String
+  active Boolean @default(true)
+  startsAt DateTime @default(now())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@index([userId,module,active,expiresAt])
 }
