@@ -1,6 +1,6 @@
 import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches, assembleLectoraBatches, type LectoraGenerationRequest } from "./lectora-generator";
 import type { LectoraExam } from "./lectora";
-import type { ReviewedLectoraMatrix } from "./lectora-review";
+import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
 
 /**
  * Servicio de generación para ser llamado EXCLUSIVAMENTE desde un endpoint
@@ -112,14 +112,13 @@ export async function resumeCompleteLectoraDraft(
   const parts = [...initial.parts];
   for (let i = 0; i < parts.length; i++) {
     // El ensamblador final volverá a verificar todos los bloques.
-    if (!parts[i] || parts[i].items.length !== batches[i].questionCount ||
-        parts[i].specificationVersion !== batches[i].version)
+    if (!parts[i] || !reviewLectoraExam(parts[i], batches[i]).valid)
       throw new Error("Bloque persistido incompatible con la matriz.");
   }
   for (let i = initial.nextPart; i < batches.length; i++) {
     const result = await generate({ matrix: batches[i], difficulty: request.difficulty });
-    if (result.exam.items.length !== batches[i].questionCount)
-      throw new Error("Bloque generado incompleto.");
+    if (!reviewLectoraExam(result.exam, batches[i]).valid)
+      throw new Error("Bloque generado inválido.");
     const next = { nextPart: i + 1, parts: [...parts, result.exam] };
     if (!await store.commit(i, next))
       throw new Error("Conflicto de actualización del trabajo PAES.");
