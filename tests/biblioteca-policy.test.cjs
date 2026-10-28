@@ -84,3 +84,9 @@ test("new library tables have a versioned PostgreSQL migration",()=>{
  assert.match(migration,/CREATE TABLE "PedagogicalModuleLicense"/);
  assert.match(migration,/CREATE UNIQUE INDEX "SharedLibraryResource_authorId_kind_sourceId_key"/);
 });
+
+test("institutional users without a school are denied unless they are sostenedores",()=>{
+ assert.match(route,/if \(!u\.schoolId && u\.role !== "SOSTENEDOR"\) return null/);
+ assert.match(route,/organizationId: u\.organizationId, active: true/);
+ assert.match(route,/if \(!entitlement\) return null/);
+});
