@@ -4,7 +4,7 @@ import { getSession } from "../../../../../lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
 import { randomUUID } from "node:crypto";
-import { generateReviewedLectoraDraft } from "../../../../../lib/paes/lectora-openai.server";
+import { generateReviewedLectoraDraft, LectoraGenerationError } from "../../../../../lib/paes/lectora-openai.server";
 import { createLectoraPrintableHtml } from "../../../../../lib/paes/lectora-print";
 
 export const runtime = "nodejs";
@@ -78,10 +78,11 @@ export async function POST(request: NextRequest) {
       teacherHtml,
     }, { headers: { "Cache-Control": "no-store" } });
   } catch(error) {
-    console.error("[PAES Lectora pilot] request failed", { stage, errorType: error instanceof Error ? error.name : typeof error });
+    const failureCode = error instanceof LectoraGenerationError ? error.code : "UNCLASSIFIED";
+    console.error("[PAES Lectora pilot] request failed", { stage, failureCode, providerStatus: error instanceof LectoraGenerationError ? error.providerStatus : undefined });
     if(reserved&&typeof session?.id==="string")await releaseAiUse(session.id);
     if(error instanceof PaesQuotaError)return NextResponse.json({error:error.message},{status:error.status});
-    return NextResponse.json({ error: "No se completó la prueba. Revise la configuración y registros del servidor.", stage }, { status: 422 });
+    return NextResponse.json({ error: "No se completó la prueba. Revise la configuración y registros del servidor.", stage, failureCode }, { status: 422 });
   } finally {
     busy = false;
   }
