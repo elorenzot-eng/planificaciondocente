@@ -39,6 +39,20 @@ export async function GET(request: Request) {
   const u = await licensedUser();
   if (!u) return NextResponse.json({ error: "Se requiere una licencia vigente" }, { status: 403, headers });
   const url = new URL(request.url);
+  if (url.searchParams.get("importable") === "1") {
+    const [plannings, assessments, materials] = await Promise.all([
+      prisma.planning.findMany({ where: { userId: u.id }, select: { id: true, title: true, content: true }, take: 100 }),
+      prisma.assessment.findMany({ where: { userId: u.id }, select: { id: true, title: true, content: true, type: true }, take: 100 }),
+      prisma.supportMaterial.findMany({ where: { userId: u.id }, select: { id: true, title: true, content: true }, take: 100 })
+    ]);
+    const resources = [
+      ...plannings.map(x => ({ ...x, kind: "planning" })),
+      ...assessments.map(x => ({ ...x, kind: "assessment" })),
+      ...materials.map(x => ({ ...x, kind: "material" }))
+    ].filter(x => !excluded(x) && canShareEducationalResource({ title: x.title, content: x.content }))
+      .map(x => ({ id: x.id, title: x.title, kind: x.kind }));
+    return NextResponse.json({ resources }, { headers });
+  }
   const mine = url.searchParams.get("mine") === "1";
   const kind = safeText(url.searchParams.get("kind"), 40);
   const q = safeText(url.searchParams.get("q"), 100);
