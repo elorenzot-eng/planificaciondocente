@@ -8,6 +8,7 @@ on:
       - "app/api/biblioteca/**"
       - "app/biblioteca/**"
       - "app/api/admin/pedagogical-licenses/**"
+      - "app/api/admin/individual-pedagogical-licenses/**"
       - "app/admin/licencias-pedagogicas/**"
       - "prisma/schema.prisma"
       - "prisma/migrations/**"
