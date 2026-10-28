@@ -1,5 +1,6 @@
-import { buildLectoraPrompt, parseAndReviewLectoraResponse, type LectoraGenerationRequest } from "./lectora-generator";
+import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches, assembleLectoraBatches, type LectoraGenerationRequest } from "./lectora-generator";
 import type { LectoraExam } from "./lectora";
+import type { ReviewedLectoraMatrix } from "./lectora-review";
 
 /**
  * Servicio de generación para ser llamado EXCLUSIVAMENTE desde un endpoint
@@ -57,4 +58,26 @@ export async function generateReviewedLectoraDraft(
   } finally {
     clearTimeout(timeout);
   }
+}
+
+/**
+ * Orquestador de servidor: genera siete bloques y valida el examen final.
+ * No es un endpoint público. El llamador debe gestionar sesión, cuota,
+ * persistencia, cancelación y límites de tiempo de la infraestructura.
+ */
+export async function generateCompleteLectoraDraft(
+  request: { matrix: ReviewedLectoraMatrix; difficulty: LectoraGenerationRequest["difficulty"] },
+  generate: (batch: LectoraGenerationRequest) => Promise<{ exam: LectoraExam; warnings: string[] }> =
+    generateReviewedLectoraDraft,
+): Promise<{ exam: LectoraExam; warnings: string[] }> {
+  const batches = planLectoraBatches(request.matrix);
+  const parts: LectoraExam[] = [];
+  const warnings: string[] = [];
+  for (const matrix of batches) {
+    const result = await generate({ matrix, difficulty: request.difficulty });
+    parts.push(result.exam);
+    warnings.push(...result.warnings);
+  }
+  const assembled = assembleLectoraBatches(parts, request.matrix);
+  return { exam: assembled.exam, warnings: [...warnings, ...assembled.warnings] };
 }

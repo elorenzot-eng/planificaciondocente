@@ -25,7 +25,7 @@ jobs:
       - name: Install TypeScript test runner
         run: npm install --no-save --no-audit --no-fund tsx
       - name: Run PAES Lectora regression checks
-        run: npx tsx -e "import { testLectoraPipeline } from './lib/paes/lectora.test.ts'; testLectoraPipeline(); console.log('PAES Lectora regression tests passed');"
+        run: npx tsx -e "import { testLectoraPipeline, testLectoraCompleteOrchestration } from './lib/paes/lectora.test.ts'; testLectoraPipeline(); testLectoraCompleteOrchestration().then(() => console.log('PAES Lectora regression tests passed')).catch(e => { console.error(e); process.exit(1); });"
       - name: Create printable HTML samples
         run: npx tsx scripts/paes-print-samples.ts
       - name: Upload print samples for inspection
