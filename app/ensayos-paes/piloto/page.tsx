@@ -33,15 +33,23 @@ export default function PaesPilot() {
   const [result, setResult] = useState<PilotResponse | null>(null);
   const [recoverable, setRecoverable] = useState<Array<{id:string;difficulty:string;nextPart:number;status:string}>>([]);
   const [recoverError, setRecoverError] = useState("");
+  const [recoverLoading, setRecoverLoading] = useState(false);
+  const [recoverChecked, setRecoverChecked] = useState(false);
   const findPrevious = async () => {
     setRecoverError("");
+    setRecoverChecked(false);
+    setRecoverLoading(true);
+    setRecoverable([]);
     try {
       const response = await fetch("/api/paes/lectora/full-pilot?action=recover", {method:"POST",headers:{"Content-Type":"application/json"},body:"{}",cache:"no-store"});
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "No se pudo consultar el historial.");
-      setRecoverable(data.jobs || []);
+      if (!Array.isArray(data.jobs)) throw new Error("La respuesta de recuperación no contiene una lista válida.");
+      setRecoverable(data.jobs);
+      setRecoverChecked(true);
       if (!data.jobs?.length) setRecoverError("No se encontraron ensayos previos en esta cuenta.");
     } catch(error) { setRecoverError(error instanceof Error ? error.message : "Error al consultar ensayos."); }
+    finally { setRecoverLoading(false); }
   };
   const run = async () => {
     if (loading) return;
@@ -92,7 +100,8 @@ export default function PaesPilot() {
         <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",width:"100%",boxSizing:"border-box",padding:12,marginTop:8,minHeight:48}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
         <button onClick={run} disabled={loading} style={{padding:14,border:0,borderRadius:10,minHeight:48,width:"fit-content",fontWeight:700,color:"white",background:loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar ensayo de ${questionCount} preguntas`}</button>
         {questionCount === "65" && <div>
-          <button type="button" onClick={findPrevious}>Recuperar ensayo anterior</button>
+          <button type="button" onClick={findPrevious} disabled={recoverLoading}>{recoverLoading ? "Buscando ensayos anteriores…" : "Recuperar ensayo anterior"}</button>
+          {recoverChecked && <p role="status">Consulta completada: {recoverable.length} ensayo(s) asociado(s) a esta cuenta.</p>}
           {recoverError && <p role="alert">{recoverError}</p>}
           {recoverable.length > 0 && <div>
             <p>Selecciona el ensayo que deseas recuperar:</p>
