@@ -13,6 +13,7 @@ on:
       - "prisma/migrations/**"
       - "lib/biblioteca-policy.ts"
       - "tests/biblioteca-policy.test.cjs"
+      - "tests/biblioteca-route-runtime.test.cjs"
       - ".github/workflows/biblioteca-tests.yml"
 jobs:
   policy:
@@ -39,7 +40,7 @@ jobs:
         with:
           node-version: "22"
       - run: npm install --ignore-scripts --no-audit --no-fund
-      - run: node --test tests/biblioteca-policy.test.cjs
+      - run: node --test tests/biblioteca-policy.test.cjs tests/biblioteca-route-runtime.test.cjs
       - run: npx prisma validate
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
