@@ -50,6 +50,9 @@ export async function POST(request: NextRequest) {
       byGenre: { Literario: 5, "No literario": 5 },
     };
     const { exam, warnings } = await generateReviewedLectoraDraft({ matrix, difficulty: difficulty as "Baja" | "Media" | "Alta" | "Mixta" });
+    // Validate both printable versions before persisting or consuming a successful generation.
+    const studentHtml = createLectoraPrintableHtml(exam, matrix, "estudiante");
+    const teacherHtml = createLectoraPrintableHtml(exam, matrix, "profesor");
     let savedId: string | undefined;
     let saveError: string | undefined;
     if (typeof session?.id === "string") {
@@ -68,8 +71,8 @@ export async function POST(request: NextRequest) {
       count: exam.items.length,
       warnings,
       exam,
-      studentHtml: createLectoraPrintableHtml(exam, matrix, "estudiante"),
-      teacherHtml: createLectoraPrintableHtml(exam, matrix, "profesor"),
+      studentHtml,
+      teacherHtml,
     }, { headers: { "Cache-Control": "no-store" } });
   } catch(error) {
     if(reserved&&typeof session?.id==="string")await releaseAiUse(session.id);
