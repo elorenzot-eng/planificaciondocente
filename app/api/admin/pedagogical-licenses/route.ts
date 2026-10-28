@@ -47,6 +47,8 @@ export async function PATCH(request: Request) {
   const current = await prisma.pedagogicalModuleLicense.findUnique({ where: { id: body.id } });
   if (!current) return NextResponse.json({ error: "Licencia inexistente" }, { status: 404, headers });
   if (body.active) {
+    const school = await prisma.school.findUnique({ where: { id: current.schoolId }, select: { active: true, organization: { select: { active: true } } } });
+    if (!school?.active || !school.organization?.active) return NextResponse.json({ error: "No se puede reactivar una licencia de un colegio u organización inactiva" }, { status: 409, headers });
     const overlap = await prisma.pedagogicalModuleLicense.findFirst({
       where: { id: { not: current.id }, schoolId: current.schoolId, module: current.module, active: true, startsAt: { lt: current.expiresAt }, expiresAt: { gt: current.startsAt } },
       select: { id: true }
