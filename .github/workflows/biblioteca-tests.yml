@@ -46,7 +46,16 @@ jobs:
       - run: npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > /tmp/biblioteca-schema.sql
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
-      # Historical migrations depend on tables created outside this repository.\n      # Test the new, self-contained library migration independently.\n      - name: Apply Biblioteca migration to clean PostgreSQL\n        run: |\n          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql\n          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "published" FROM "SharedLibraryResource" LIMIT 0;'\n          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "schoolId" FROM "PedagogicalModuleLicense" LIMIT 0;'\n        env:\n          DATABASE_URL: postgresql://test:test@localhost:5432/test\n
+      # Historical migrations depend on tables created outside this repository.
+      # Test the new, self-contained library migration independently.
+      - name: Apply Biblioteca migration to clean PostgreSQL
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "published" FROM "SharedLibraryResource" LIMIT 0;'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "schoolId" FROM "PedagogicalModuleLicense" LIMIT 0;'
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+
       - name: Validate migration against main schema baseline
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
