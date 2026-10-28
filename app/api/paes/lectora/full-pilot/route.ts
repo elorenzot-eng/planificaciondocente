@@ -23,6 +23,18 @@ export async function POST(request: NextRequest) {
   const session=await getSession();
   if (!session && !authorized(request.headers.get("x-paes-pilot-token"), process.env.PAES_PILOT_TOKEN ?? ""))
     return NextResponse.json({ error: "Acceso denegado." }, { status: 403 });
+  if (request.nextUrl.searchParams.get("action") === "recover") {
+    if (typeof session?.id !== "string")
+      return NextResponse.json({ error: "Inicia sesión para recuperar tu ensayo." }, { status: 401 });
+    const jobs = await prisma.paesInternalJob.findMany({
+      where: { userId: session.id, difficulty: { in: ["Baja", "Media", "Alta", "Mixta"] },
+        nextPart: { gt: 0 } },
+      orderBy: { updatedAt: "desc" },
+      take: 10,
+      select: { id: true, difficulty: true, nextPart: true, status: true, updatedAt: true },
+    });
+    return NextResponse.json({ jobs }, { headers: { "Cache-Control": "no-store" } });
+  }
   let body: { difficulty?: string; jobId?: string };
   try { body = await request.json(); }
   catch { return NextResponse.json({ error: "JSON inválido." }, { status: 400 }); }
