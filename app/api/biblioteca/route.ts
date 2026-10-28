@@ -19,11 +19,7 @@ async function licensedUser() {
   }
   if (u.accountType === "INSTITUTIONAL") {
     if (!u.schoolId && u.role !== "SOSTENEDOR") return null;
-    if (u.schoolId && u.role !== "SOSTENEDOR") {
-      const ownSchool = await prisma.school.findFirst({ where: { id: u.schoolId, organizationId: u.organizationId, active: true }, select: { id: true } });
-      if (!ownSchool) return null;
-    }
-    if (u.role === "SOSTENEDOR" && u.schoolId) {
+    if (u.schoolId) {
       const ownSchool = await prisma.school.findFirst({ where: { id: u.schoolId, organizationId: u.organizationId, active: true }, select: { id: true } });
       if (!ownSchool) return null;
     }
@@ -41,6 +37,7 @@ async function licensedUser() {
     });
     if (!entitlement) return null;
   }
+  if (u.accountType !== "INDIVIDUAL" && u.accountType !== "INSTITUTIONAL") return null;
   return u;
 }
 const headers = { "Cache-Control": "private, no-store" };
