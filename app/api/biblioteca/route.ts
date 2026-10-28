@@ -71,7 +71,10 @@ export async function GET(request: Request) {
   if (kinds.includes(kind as any)) where.kind = kind;
   if (q) where.OR = [{ title: { contains: q, mode: "insensitive" } }, { subject: { contains: q, mode: "insensitive" } }, { description: { contains: q, mode: "insensitive" } }];
   const rows = await prisma.sharedLibraryResource.findMany({ where, orderBy: { createdAt: "desc" }, take: 100 });
-  return NextResponse.json({ resources: rows.filter(x => canShareEducationalResource({ title:x.title, description:x.description, subject:x.subject, level:x.level, objective:x.objective, content:x.content })) }, { headers });
+  const visible = rows.filter(x => canShareEducationalResource({ title:x.title, description:x.description, subject:x.subject, level:x.level, objective:x.objective, content:x.content }));
+  // Public listings must not expose internal author or source identifiers.
+  const resources = mine ? visible : visible.map(({ authorId, sourceId, ...resource }) => resource);
+  return NextResponse.json({ resources }, { headers });
 }
 export async function POST(request: Request) {
   const u = await licensedUser();
