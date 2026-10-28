@@ -4,6 +4,7 @@ import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review"
 import { prisma } from "../prisma";
 import type { Prisma } from "@prisma/client";
 import { randomUUID } from "node:crypto";
+import { createLectoraPrintableHtml } from "./lectora-print";
 
 /**
  * Servicio de generación para ser llamado EXCLUSIVAMENTE desde un endpoint
@@ -239,4 +240,51 @@ export async function runLeasedLectoraJob(
   } finally {
     await releaseLectoraJobLease(jobId, userId, token);
   }
+}
+
+/**
+ * Guarda el examen completo una sola vez por usuario y trabajo. Debe invocarse
+ * únicamente tras generar y revisar los 65 ítems, con lease vigente.
+ * No realiza cargos de IA: el llamador debe gestionar la cuota por separado.
+ */
+export async function saveCompletedLectoraJob(
+  jobId: string, userId: string, leaseToken: string,
+  exam: LectoraExam, matrix: ReviewedLectoraMatrix,
+): Promise<string> {
+  if (!jobId || !userId || !leaseToken || matrix.questionCount !== 65)
+    throw new Error("Datos de cierre PAES inválidos.");
+  if (!reviewLectoraExam(exam, matrix).valid)
+    throw new Error("No se puede guardar un ensayo PAES incompleto.");
+  // Ambas versiones deben ser imprimibles antes de guardar.
+  createLectoraPrintableHtml(exam, matrix, "estudiante");
+  createLectoraPrintableHtml(exam, matrix, "profesor");
+  return prisma.$transaction(async tx => {
+    const job = await tx.paesInternalJob.findFirst({
+      where: {
+        id: jobId, userId, leaseToken, leaseExpiresAt: { gt: new Date() },
+        status: "RUNNING", nextPart: 7,
+      },
+      select: { id: true },
+    });
+    if (!job) throw new Error("Trabajo PAES sin permiso vigente o incompleto.");
+    const saved = await tx.savedPaesExam.upsert({
+      where: { userId_sourceJobId: { userId, sourceJobId: "LECTORA65:" + jobId } },
+      create: {
+        userId, sourceJobId: "LECTORA65:" + jobId,
+        title: "PAES Competencia Lectora · 65 preguntas", examType: "LECTORA",
+        exam: exam as unknown as Prisma.InputJsonValue,
+      },
+      update: {},
+      select: { id: true },
+    });
+    const finished = await tx.paesInternalJob.updateMany({
+      where: {
+        id: jobId, userId, leaseToken, leaseExpiresAt: { gt: new Date() },
+        status: "RUNNING", nextPart: 7,
+      },
+      data: { status: "COMPLETED", error: null },
+    });
+    if (finished.count !== 1) throw new Error("El trabajo PAES cambió durante el cierre.");
+    return saved.id;
+  });
 }
