@@ -702,3 +702,15 @@ model SharedLibraryResource {
   @@index([published,kind,createdAt])
   @@index([authorId,createdAt])
 }
+
+// Acceso explícito por módulo pedagógico; las licencias de ensayos no conceden acceso.
+model PedagogicalModuleLicense {
+  id String @id @default(cuid())
+  schoolId String
+  module String
+  active Boolean @default(true)
+  startsAt DateTime @default(now())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@index([schoolId,module,active,expiresAt])
+}
