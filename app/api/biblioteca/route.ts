@@ -17,6 +17,9 @@ async function licensedUser() {
   if (u.accountType === "INDIVIDUAL") {
     const until = u.subscriptionStatus === "TRIAL" ? u.trialEndsAt : u.subscriptionStatus === "ACTIVE" ? u.subscriptionEndsAt : null;
     if (!until || until <= new Date()) return null;
+    const now = new Date();
+    const individualEntitlement = await prisma.individualPedagogicalLicense.findFirst({ where: { userId: u.id, active: true, module: { in: ["PLANIFICACION", "EVALUACION", "RECURSOS_PEDAGOGICOS"] }, startsAt: { lte: now }, expiresAt: { gt: now } }, select: { id: true } });
+    if (!individualEntitlement) return null;
   }
   if (u.accountType === "INSTITUTIONAL") {
     if (!u.schoolId && u.role !== "SOSTENEDOR") return null;
