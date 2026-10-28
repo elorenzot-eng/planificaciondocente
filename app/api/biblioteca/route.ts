@@ -80,11 +80,14 @@ export async function PATCH(request: Request) {
   if (!u) return NextResponse.json({ error: "Se requiere una licencia vigente" }, { status: 403, headers });
   let b: any;
   try { b = await request.json(); } catch { return NextResponse.json({ error: "JSON inválido" }, { status: 400 }); }
+  if (typeof b.published !== "boolean") return NextResponse.json({ error: "Indica expresamente publicar o retirar" }, { status: 400, headers });
   const id = safeText(b.id, 100);
+  if (!id) return NextResponse.json({ error: "Identificador requerido" }, { status: 400, headers });
   const current = await prisma.sharedLibraryResource.findFirst({ where: { id, authorId: u.id } });
   if (!current) return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404 });
   if (b.published === true && !canShareEducationalResource({ title:current.title, description:current.description, subject:current.subject, level:current.level, objective:current.objective, content:current.content })) return NextResponse.json({ error: "El material no puede publicarse" }, { status: 400 });
   if (excluded([current.title,current.description,current.content])) return NextResponse.json({ error: "Recurso excluido" }, { status: 400 });
-  await prisma.sharedLibraryResource.update({ where: { id }, data: { published: b.published === true } });
+  const changed = await prisma.sharedLibraryResource.updateMany({ where: { id, authorId: u.id }, data: { published: b.published } });
+  if (!changed.count) return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404, headers });
   return NextResponse.json({ ok: true }, { headers });
 }
