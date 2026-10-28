@@ -105,8 +105,23 @@ export default function PaesPilot() {
           {recoverError && <p role="alert">{recoverError}</p>}
           {recoverable.length > 0 && <div>
             <p>Selecciona el ensayo que deseas recuperar:</p>
-            {recoverable.map(job => <button type="button" key={job.id} style={{display:"block",margin:"8px 0",padding:10}} onClick={()=>{
+            {recoverable.map(job => <button type="button" key={job.id} style={{display:"block",margin:"8px 0",padding:10}} onClick={async()=>{
               setJobId(job.id);setDifficulty(job.difficulty);setProgress(job.nextPart);setResult(null);setRecoverable([]);
+              if (job.nextPart !== 30) return;
+              setLoading(true);
+              try {
+                const response = await fetch("/api/paes/lectora/full-pilot", {
+                  method:"POST",headers:{"Content-Type":"application/json"},
+                  body:JSON.stringify({jobId:job.id,difficulty:job.difficulty}),cache:"no-store",
+                });
+                const data = await response.json() as PilotResponse;
+                if (!response.ok) throw new Error(data.error || "No se pudo abrir el ensayo recuperado.");
+                if (data.status !== "COMPLETED" || !data.exam || data.count !== 65 || !data.studentHtml || !data.teacherHtml)
+                  throw new Error("El ensayo recuperado no contiene 65 preguntas y documentos completos.");
+                setResult(data);setJobId(null);setProgress(30);
+              } catch (error) {
+                setResult({error:error instanceof Error ? error.message : "No se pudo recuperar el ensayo."});
+              } finally {setLoading(false);}
             }}>{job.difficulty} · {job.nextPart}/30 grupos · {job.status}</button>)}
           </div>}
         </div>}
