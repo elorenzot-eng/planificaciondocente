@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Dificultad inválida." }, { status: 400 });
   busy = true;
   lastAttempt = Date.now();
+  let stage: "entitlement" | "generation" | "print" | "save" = "entitlement";
   let reserved=false;
   try {
     if(typeof session?.id==="string"){
@@ -49,10 +50,13 @@ export async function POST(request: NextRequest) {
       bySkill: { Localizar: 2, Interpretar: 6, Evaluar: 2 },
       byGenre: { Literario: 5, "No literario": 5 },
     };
+    stage = "generation";
     const { exam, warnings } = await generateReviewedLectoraDraft({ matrix, difficulty: difficulty as "Baja" | "Media" | "Alta" | "Mixta" });
     // Validate both printable versions before persisting or consuming a successful generation.
+    stage = "print";
     const studentHtml = createLectoraPrintableHtml(exam, matrix, "estudiante");
     const teacherHtml = createLectoraPrintableHtml(exam, matrix, "profesor");
+    stage = "save";
     let savedId: string | undefined;
     if (typeof session?.id === "string") {
       try {
@@ -74,9 +78,10 @@ export async function POST(request: NextRequest) {
       teacherHtml,
     }, { headers: { "Cache-Control": "no-store" } });
   } catch(error) {
+    console.error("[PAES Lectora pilot] request failed", { stage, errorType: error instanceof Error ? error.name : typeof error });
     if(reserved&&typeof session?.id==="string")await releaseAiUse(session.id);
     if(error instanceof PaesQuotaError)return NextResponse.json({error:error.message},{status:error.status});
-    return NextResponse.json({ error: "No se completó la prueba. Revise la configuración y registros del servidor." }, { status: 422 });
+    return NextResponse.json({ error: "No se completó la prueba. Revise la configuración y registros del servidor.", stage }, { status: 422 });
   } finally {
     busy = false;
   }
