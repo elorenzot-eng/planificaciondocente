@@ -17,6 +17,20 @@ on:
 jobs:
   policy:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,5 +42,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
       - run: npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > /tmp/biblioteca-schema.sql
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+      - name: Apply migrations to clean PostgreSQL
+        run: npx prisma migrate deploy
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
