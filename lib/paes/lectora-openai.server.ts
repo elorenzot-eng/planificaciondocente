@@ -211,3 +211,32 @@ export async function releaseLectoraJobLease(jobId: string, userId: string, toke
   });
   return updated.count === 1;
 }
+
+/**
+ * Ejecutor privado protegido por lease. La renovación se hace antes y después
+ * de cada llamada al proveedor; el timeout de OpenAI es menor que el TTL.
+ * No crea trabajos, consume cuotas ni habilita un endpoint público.
+ */
+export async function runLeasedLectoraJob(
+  jobId: string,
+  userId: string,
+  request: { matrix: ReviewedLectoraMatrix; difficulty: LectoraGenerationRequest["difficulty"] },
+  generate: (batch: LectoraGenerationRequest) => Promise<{ exam: LectoraExam; warnings: string[] }> =
+    generateReviewedLectoraDraft,
+): Promise<{ exam: LectoraExam; warnings: string[] }> {
+  const token = await acquireLectoraJobLease(jobId, userId, 180);
+  if (!token) throw new Error("El trabajo PAES ya está en ejecución.");
+  try {
+    const store = createPrismaLectoraCheckpointStore(jobId, userId, token);
+    return await resumeCompleteLectoraDraft(request, store, async batch => {
+      if (!await renewLectoraJobLease(jobId, userId, token, 180))
+        throw new Error("Se perdió el permiso de ejecución PAES.");
+      const result = await generate(batch);
+      if (!await renewLectoraJobLease(jobId, userId, token, 180))
+        throw new Error("Se perdió el permiso de ejecución PAES.");
+      return result;
+    });
+  } finally {
+    await releaseLectoraJobLease(jobId, userId, token);
+  }
+}
