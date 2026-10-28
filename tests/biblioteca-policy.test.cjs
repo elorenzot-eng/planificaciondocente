@@ -137,3 +137,11 @@ test("license grant checks active school and organization and permits adjacent p
  assert.match(admin,/!school\.active \|\| !school\.organization\?\.active/);
  assert.match(admin,/startsAt: \{ lt: expiresAt \}, expiresAt: \{ gt: startsAt \}/);
 });
+
+test("license reactivation rejects inactive school or organization",()=>{
+ const admin=fs.readFileSync("app/api/admin/pedagogical-licenses/route.ts","utf8");
+ const patch=admin.slice(admin.indexOf("export async function PATCH"));
+ assert.match(patch,/if \(body\.active\)/);
+ assert.match(patch,/where: \{ id: current\.schoolId \}/);
+ assert.match(patch,/!school\?\.active \|\| !school\.organization\?\.active/);
+});
