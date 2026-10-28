@@ -10,12 +10,33 @@ function excluded(value: unknown): boolean { return forbidden.test(JSON.stringif
 async function licensedUser() {
   const session = await getSession();
   if (!session?.id) return null;
-  const u = await prisma.user.findUnique({ where: { id: String(session.id) }, select: { id: true, active: true, accountType: true, subscriptionStatus: true, subscriptionEndsAt: true, trialEndsAt: true, role: true, organization: { select: { active: true } }, school: { select: { active: true } } } });
+  const u = await prisma.user.findUnique({ where: { id: String(session.id) }, select: { id: true, active: true, accountType: true, subscriptionStatus: true, subscriptionEndsAt: true, trialEndsAt: true, role: true, schoolId: true, organizationId: true, organization: { select: { active: true } }, school: { select: { active: true } } } });
   if (!u?.active || !u.organization.active || (u.school && !u.school.active)) return null;
   if (u.role === "SUPERADMIN") return u;
   if (u.accountType === "INDIVIDUAL") {
     const until = u.subscriptionStatus === "TRIAL" ? u.trialEndsAt : u.subscriptionStatus === "ACTIVE" ? u.subscriptionEndsAt : null;
     if (!until || until <= new Date()) return null;
+  }
+  if (u.accountType === "INSTITUTIONAL") {
+    const now = new Date();
+    const subscribed = (u.subscriptionStatus === "ACTIVE" && !!u.subscriptionEndsAt && u.subscriptionEndsAt > now)
+      || (u.subscriptionStatus === "TRIAL" && !!u.trialEndsAt && u.trialEndsAt > now);
+    if (!subscribed) {
+      const license = await prisma.institutionalExamLicense.findFirst({
+        where: {
+          active: true,
+          startsAt: { lte: now },
+          expiresAt: { gt: now },
+          school: {
+            active: true,
+            organization: { active: true },
+            ...(u.schoolId ? { id: u.schoolId } : { organizationId: u.organizationId })
+          }
+        },
+        select: { id: true }
+      });
+      if (!license) return null;
+    }
   }
   return u;
 }
