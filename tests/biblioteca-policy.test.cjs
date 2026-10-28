@@ -90,3 +90,12 @@ test("institutional users without a school are denied unless they are sostenedor
  assert.match(route,/organizationId: u\.organizationId, active: true/);
  assert.match(route,/if \(!entitlement\) return null/);
 });
+
+test("publishing is opt-in and requires a user confirmation",()=>{
+ const ui=fs.readFileSync("app/biblioteca/page.tsx","utf8");
+ assert.match(route,/const published = false/);
+ assert.match(route,/typeof b\.published !== "boolean"/);
+ assert.match(ui,/confirm\(r\.published\?/);
+ assert.match(ui,/published:!r\.published/);
+ assert.match(route,/canShareEducationalResource\(\{ title:current\.title/);
+});
