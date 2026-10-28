@@ -86,7 +86,15 @@ export async function POST(request: Request) {
   if (kind === "assessment" && /simce|paes/i.test(String((source as any).type || ""))) return NextResponse.json({ error: "Evaluaciones reservadas" }, { status: 403 });
   if (!canShareEducationalResource({ title, description, subject, level, objective, content })) return NextResponse.json({ error: "El material contiene información reservada o identificable" }, { status: 400 });
   const published = false;
-  const created = await prisma.sharedLibraryResource.create({ data: { authorId: u.id, title, kind, description, subject, level, objective, content, published } });
+  const existing = await prisma.sharedLibraryResource.findFirst({ where: { authorId: u.id, kind, sourceId }, select: { id: true } });
+  if (existing) return NextResponse.json({ error: "Este recurso ya está en tu biblioteca" }, { status: 409, headers });
+  let created;
+  try {
+    created = await prisma.sharedLibraryResource.create({ data: { authorId: u.id, sourceId, title, kind, description, subject, level, objective, content, published } });
+  } catch (error: any) {
+    if (error?.code === "P2002") return NextResponse.json({ error: "Este recurso ya está en tu biblioteca" }, { status: 409, headers });
+    throw error;
+  }
   return NextResponse.json({ resource: created }, { status: 201, headers });
 }
 export async function PATCH(request: Request) {
