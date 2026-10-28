@@ -224,12 +224,13 @@ export async function runLeasedLectoraJob(
   request: { matrix: ReviewedLectoraMatrix; difficulty: LectoraGenerationRequest["difficulty"] },
   generate: (batch: LectoraGenerationRequest) => Promise<{ exam: LectoraExam; warnings: string[] }> =
     generateReviewedLectoraDraft,
+  finalize?: (exam: LectoraExam, leaseToken: string) => Promise<void>,
 ): Promise<{ exam: LectoraExam; warnings: string[] }> {
   const token = await acquireLectoraJobLease(jobId, userId, 180);
   if (!token) throw new Error("El trabajo PAES ya está en ejecución.");
   try {
     const store = createPrismaLectoraCheckpointStore(jobId, userId, token);
-    return await resumeCompleteLectoraDraft(request, store, async batch => {
+    const completed = await resumeCompleteLectoraDraft(request, store, async batch => {
       if (!await renewLectoraJobLease(jobId, userId, token, 180))
         throw new Error("Se perdió el permiso de ejecución PAES.");
       const result = await generate(batch);
@@ -237,6 +238,12 @@ export async function runLeasedLectoraJob(
         throw new Error("Se perdió el permiso de ejecución PAES.");
       return result;
     });
+    if (finalize) {
+      if (!await renewLectoraJobLease(jobId, userId, token, 180))
+        throw new Error("Se perdió el permiso antes de guardar el ensayo PAES.");
+      await finalize(completed.exam, token);
+    }
+    return completed;
   } finally {
     await releaseLectoraJobLease(jobId, userId, token);
   }
@@ -287,4 +294,22 @@ export async function saveCompletedLectoraJob(
     if (finished.count !== 1) throw new Error("El trabajo PAES cambió durante el cierre.");
     return saved.id;
   });
+}
+
+/**
+ * Genera/reanuda y guarda dentro del mismo lease. El cierre nunca se ejecuta
+ * después de liberar el permiso. La cuota se gestiona separadamente.
+ */
+export async function runAndSaveLeasedLectoraJob(
+  jobId: string, userId: string,
+  request: { matrix: ReviewedLectoraMatrix; difficulty: LectoraGenerationRequest["difficulty"] },
+  generate: (batch: LectoraGenerationRequest) => Promise<{ exam: LectoraExam; warnings: string[] }> =
+    generateReviewedLectoraDraft,
+): Promise<{ exam: LectoraExam; warnings: string[]; savedId: string }> {
+  let savedId: string | undefined;
+  const result = await runLeasedLectoraJob(jobId, userId, request, generate, async (exam, token) => {
+    savedId = await saveCompletedLectoraJob(jobId, userId, token, exam, request.matrix);
+  });
+  if (!savedId) throw new Error("No se confirmó el guardado del ensayo PAES.");
+  return { ...result, savedId };
 }
