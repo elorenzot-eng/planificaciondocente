@@ -126,7 +126,7 @@ export default function PaesPilot() {
             }}>{job.difficulty} · {job.nextPart}/30 grupos · {job.status}</button>)}
           </div>}
         </div>}
-        {questionCount === "65" && <p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p>}
+        {questionCount === "65" && <p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p><div role="progressbar" aria-label="Progreso de generación PAES" aria-valuemin={0} aria-valuemax={30} aria-valuenow={Math.min(progress,30)} style={{height:12,width:"100%",maxWidth:560,background:"#e2e8f0",borderRadius:999,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:`${Math.min(100,Math.max(0,Math.round(progress/30*100)))}%`,background:"#0B9DAD",borderRadius:999,transition:"width .25s ease"}}/></div><p style={{display:"none"}}></p>}
         
       </section>
       {result?.error && <p role="alert" style={{color:"#b91c1c"}}>{result.error}</p>}
