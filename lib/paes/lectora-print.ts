@@ -37,7 +37,7 @@ export function createLectoraPrintableHtml(
         `<aside><strong>Clave:</strong> ${"ABCD"[item.correctIndex]} · <strong>Habilidad:</strong> ${escapeHtml(item.skill)}<p><strong>Evidencia:</strong> ${escapeHtml(item.evidence)}</p><p><strong>Justificación:</strong> ${escapeHtml(item.rationale)}</p></aside>` : "";
       return `<div class="question"><h3>Pregunta ${n}</h3><p>${escapeHtml(item.stem)}</p><ol class="options">${options}</ol>${answer}</div>`;
     }).join("");
-    return `<section><h2>Texto ${escapeHtml(textId)}</h2><article class="passage">${escapeHtml(passage.body)}</article><p class="source">Fuente: ${escapeHtml(passage.sourceAttribution)}</p>${questions}</section>`;
+    return `<section><article class="passage">${escapeHtml(passage.body)}</article><p class="source">Fuente: ${escapeHtml(passage.sourceAttribution)}</p>${questions}</section>`;
   }).join("");
   const answerSheet = version === "estudiante" ?
     `<section class="answers"><h2>Hoja de respuestas</h2><p>Nombre: __________________________ Curso: __________ Fecha: __________</p><div class="answer-grid">${printedItems.map((_,i) =>
