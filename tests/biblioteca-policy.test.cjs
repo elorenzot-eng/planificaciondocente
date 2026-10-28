@@ -124,3 +124,10 @@ test("institutional school users cannot access a school in another organization"
 test("unknown account types fail closed",()=>{
  assert.match(route,/u\.accountType !== "INDIVIDUAL" && u\.accountType !== "INSTITUTIONAL"/);
 });
+
+test("active superadmin access does not depend on institution status",()=>{
+ const active=route.indexOf('if (!u?.active) return null;');
+ const admin=route.indexOf('if (u.role === "SUPERADMIN") return u;');
+ const institution=route.indexOf('if (!u.organization?.active');
+ assert.ok(active>=0 && admin>active && institution>admin);
+});
