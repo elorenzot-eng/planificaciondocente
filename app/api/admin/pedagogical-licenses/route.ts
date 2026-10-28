@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   if (!school) return NextResponse.json({ error: "Colegio inexistente" }, { status: 404, headers });
   if (!school.active || !school.organization?.active) return NextResponse.json({ error: "Colegio u organización inactiva" }, { status: 409, headers });
   const overlap = await prisma.pedagogicalModuleLicense.findFirst({
-    where: { schoolId, module: moduleName, active: true, startsAt: { lte: expiresAt }, expiresAt: { gte: startsAt } },
+    where: { schoolId, module: moduleName, active: true, startsAt: { lt: expiresAt }, expiresAt: { gt: startsAt } },
     select: { id: true }
   });
   if (overlap) return NextResponse.json({ error: "Ya existe una licencia activa para ese módulo y período" }, { status: 409, headers });
