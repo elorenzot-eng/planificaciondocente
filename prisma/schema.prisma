@@ -496,6 +496,8 @@ model LearningResource {
 
 /** Progreso persistente de generación privada PAES 65; sin datos personales. */
 model PaesInternalJob {
+  leaseToken String?
+  leaseExpiresAt DateTime?
   aiChargedAt DateTime?
   id String @id @default(cuid())
   userId String?
