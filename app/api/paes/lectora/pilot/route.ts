@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
     const studentHtml = createLectoraPrintableHtml(exam, matrix, "estudiante");
     const teacherHtml = createLectoraPrintableHtml(exam, matrix, "profesor");
     let savedId: string | undefined;
-    let saveError: string | undefined;
     if (typeof session?.id === "string") {
       try {
         const saved = await prisma.savedPaesExam.create({data:{
@@ -63,10 +62,10 @@ export async function POST(request: NextRequest) {
           exam:exam as unknown as import("@prisma/client").Prisma.InputJsonValue
         },select:{id:true}});
         savedId=saved.id;
-      } catch { saveError="No se pudo guardar el ensayo en Mi carpeta."; }
+      } catch { throw new Error("No se pudo guardar el ensayo en Mi carpeta."); }
     }
     return NextResponse.json({
-      savedId, saveError,
+      savedId,
       status: "PILOT_ONLY_NOT_FULL_EXAM",
       count: exam.items.length,
       warnings,
