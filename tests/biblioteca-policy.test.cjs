@@ -115,3 +115,8 @@ test("school-linked sostenedores must belong to their own active organization",(
  assert.match(route,/id: u\.schoolId, organizationId: u\.organizationId, active: true/);
  assert.match(route,/if \(!ownSchool\) return null/);
 });
+
+test("institutional school users cannot access a school in another organization",()=>{
+ assert.match(route,/u\.schoolId && u\.role !== "SOSTENEDOR"/);
+ assert.match(route,/id: u\.schoolId, organizationId: u\.organizationId, active: true/);
+});
