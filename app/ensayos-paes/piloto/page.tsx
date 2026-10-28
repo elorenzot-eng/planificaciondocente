@@ -31,6 +31,18 @@ export default function PaesPilot() {
   const [progress, setProgress] = useState(0);
   const [jobId, setJobId] = useState<string | null>(null);
   const [result, setResult] = useState<PilotResponse | null>(null);
+  const [recoverable, setRecoverable] = useState<Array<{id:string;difficulty:string;nextPart:number;status:string}>>([]);
+  const [recoverError, setRecoverError] = useState("");
+  const findPrevious = async () => {
+    setRecoverError("");
+    try {
+      const response = await fetch("/api/paes/lectora/full-pilot?action=recover", {method:"POST",headers:{"Content-Type":"application/json"},body:"{}",cache:"no-store"});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "No se pudo consultar el historial.");
+      setRecoverable(data.jobs || []);
+      if (!data.jobs?.length) setRecoverError("No se encontraron ensayos previos en esta cuenta.");
+    } catch(error) { setRecoverError(error instanceof Error ? error.message : "Error al consultar ensayos."); }
+  };
   const run = async () => {
     if (loading) return;
     setLoading(true);
@@ -79,6 +91,16 @@ export default function PaesPilot() {
         <label>Cantidad de preguntas<select value={questionCount} onChange={e=>{setQuestionCount(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",padding:12,marginTop:8,width:"100%",boxSizing:"border-box",minHeight:48}}><option value="10">10 preguntas</option><option value="65">65 preguntas · ensayo completo</option></select></label>
         <label>Dificultad<select value={difficulty} onChange={e=>{setDifficulty(e.target.value);setJobId(null);setProgress(0);}} style={{display:"block",width:"100%",boxSizing:"border-box",padding:12,marginTop:8,minHeight:48}}>{["Baja","Media","Alta","Mixta"].map(x=><option key={x}>{x}</option>)}</select></label>
         <button onClick={run} disabled={loading} style={{padding:14,border:0,borderRadius:10,minHeight:48,width:"fit-content",fontWeight:700,color:"white",background:loading?"#94a3b8":"#0d9488",cursor:"pointer"}}>{loading && questionCount === "65" ? `Generando grupo ${Math.min(progress+1,30)} de 30…` : loading ? "Generando y validando…" : jobId ? `Reanudar generación (${progress}/30 grupos)` : `Generar ensayo de ${questionCount} preguntas`}</button>
+        {questionCount === "65" && <div>
+          <button type="button" onClick={findPrevious}>Recuperar ensayo anterior</button>
+          {recoverError && <p role="alert">{recoverError}</p>}
+          {recoverable.length > 0 && <div>
+            <p>Selecciona el ensayo que deseas recuperar:</p>
+            {recoverable.map(job => <button type="button" key={job.id} style={{display:"block",margin:"8px 0",padding:10}} onClick={()=>{
+              setJobId(job.id);setDifficulty(job.difficulty);setProgress(job.nextPart);setResult(null);setRecoverable([]);
+            }}>{job.difficulty} · {job.nextPart}/30 grupos · {job.status}</button>)}
+          </div>}
+        </div>}
         {questionCount === "65" && <p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p>}
         
       </section>
