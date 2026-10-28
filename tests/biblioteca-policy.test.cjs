@@ -45,3 +45,10 @@ test("institutional accounts require a current license or subscription",()=>{
  assert.match(route,/startsAt: \{ lte: now \}/);
  assert.match(route,/if \(!entitlement\) return null/);
 });
+
+test("pedagogical license API prevents overlapping entitlements",()=>{
+ const admin=fs.readFileSync("app/api/admin/pedagogical-licenses/route.ts","utf8");
+ assert.match(admin,/schoolId, module: moduleName, active: true/);
+ assert.match(admin,/status: 409/);
+ assert.match(admin,/role === "SUPERADMIN"/);
+});
