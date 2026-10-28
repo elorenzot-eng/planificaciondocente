@@ -1,6 +1,6 @@
 import type { LectoraExam } from "./lectora";
 import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
-import { buildLectoraPrompt, parseAndReviewLectoraResponse } from "./lectora-generator";
+import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches } from "./lectora-generator";
 import { createLectoraPrintableHtml } from "./lectora-print";
 
 /**
@@ -68,5 +68,26 @@ export function testLectoraPipeline(): { exam: LectoraExam; matrix: ReviewedLect
     "ensayo sin arreglo de preguntas aceptado");
   assert(!reviewLectoraExam({ ...exam, texts: undefined } as unknown as LectoraExam, matrix).valid,
     "ensayo sin arreglo de textos aceptado");
+
+  // Matriz ficticia de 65 ítems: verifica partición sin afirmar proporciones oficiales.
+  const fullMatrix: ReviewedLectoraMatrix = {
+    ...matrix, version: "TEST-ONLY-65", questionCount: 65,
+    bySkill: { Localizar: 15, Interpretar: 35, Evaluar: 15 },
+    byGenre: { Literario: 30, "No literario": 35 },
+  };
+  const batches = planLectoraBatches(fullMatrix);
+  assert(batches.length === 7, "se esperan siete bloques");
+  assert(batches.map(b => b.questionCount).join(",") === "10,10,10,10,10,10,5",
+    "los bloques no suman 65");
+  for (const skill of ["Localizar", "Interpretar", "Evaluar"] as const)
+    assert(batches.reduce((n,b) => n + b.bySkill[skill], 0) === fullMatrix.bySkill[skill],
+      "se perdió distribución por habilidad");
+  for (const genre of ["Literario", "No literario"] as const)
+    assert(batches.reduce((n,b) => n + b.byGenre[genre], 0) === fullMatrix.byGenre[genre],
+      "se perdió distribución por género");
+  let rejectedMatrix = false;
+  try { planLectoraBatches({ ...fullMatrix, bySkill: { ...fullMatrix.bySkill, Localizar: 14 } }); }
+  catch { rejectedMatrix = true; }
+  assert(rejectedMatrix, "se aceptó matriz de 65 inconsistente");
   return { exam, matrix };
 }

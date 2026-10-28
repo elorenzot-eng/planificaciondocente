@@ -60,3 +60,54 @@ export function parseAndReviewLectoraResponse(
   if (!review.valid) throw new Error("Ensayo rechazado: " + review.errors.join(" | "));
   return { exam, warnings: review.warnings };
 }
+
+
+/**
+ * Planificación determinista de bloques para un ensayo de 65 preguntas.
+ * Requiere una matriz previamente revisada; no infiere porcentajes oficiales.
+ * Esta función no ejecuta solicitudes a OpenAI ni habilita el examen completo.
+ */
+export function planLectoraBatches(
+  matrix: ReviewedLectoraMatrix,
+  batchSize = 10,
+): ReviewedLectoraMatrix[] {
+  if (matrix.questionCount !== 65 || !Number.isInteger(batchSize) || batchSize < 1 || batchSize > 10)
+    throw new Error("Se requieren 65 preguntas y bloques de 1 a 10 ítems.");
+  const skills: LectoraSkill[] = ["Localizar", "Interpretar", "Evaluar"];
+  const genres: LectoraGenre[] = ["Literario", "No literario"];
+  const valid = (n: unknown): n is number => typeof n === "number" && Number.isInteger(n) && n >= 0;
+  if (!matrix.version?.trim() || !matrix.reviewedBy?.trim() ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(matrix.reviewedAt ?? "") ||
+      !matrix.sourceReference?.trim() ||
+      skills.some(k => !valid(matrix.bySkill?.[k])) ||
+      genres.some(k => !valid(matrix.byGenre?.[k])) ||
+      skills.reduce((s,k) => s + matrix.bySkill[k], 0) !== 65 ||
+      genres.reduce((s,k) => s + matrix.byGenre[k], 0) !== 65)
+    throw new Error("La matriz de 65 preguntas no está revisada o tiene conteos inconsistentes.");
+
+  const remainingSkill = { ...matrix.bySkill };
+  const remainingGenre = { ...matrix.byGenre };
+  const take = <K extends string>(keys: readonly K[], remaining: Record<K, number>, count: number): Record<K, number> => {
+    const result = {} as Record<K, number>;
+    let slots = count;
+    for (const key of keys) {
+      const amount = Math.min(slots, remaining[key]);
+      result[key] = amount;
+      remaining[key] -= amount;
+      slots -= amount;
+    }
+    if (slots !== 0) throw new Error("No hay suficientes ítems para completar el bloque.");
+    return result;
+  };
+  const batches: ReviewedLectoraMatrix[] = [];
+  for (let offset = 0; offset < 65; offset += batchSize) {
+    const count = Math.min(batchSize, 65 - offset);
+    batches.push({
+      ...matrix,
+      questionCount: count,
+      bySkill: take(skills, remainingSkill, count),
+      byGenre: take(genres, remainingGenre, count),
+    });
+  }
+  return batches;
+}
