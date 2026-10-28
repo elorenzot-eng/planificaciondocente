@@ -7,7 +7,7 @@ import { prisma } from "../../../../../lib/prisma";
 import { generateInternal65Part, INTERNAL_65_MATRIX } from "../../../../../lib/paes/lectora-65-internal.server";
 import { reviewLectoraExam } from "../../../../../lib/paes/lectora-review";
 import type { LectoraExam } from "../../../../../lib/paes/lectora";
-import { createLectoraPrintableHtml } from "../../../../../lib/paes/lectora-print";
+import { createLectoraPrintableHtml, createLectoraAnswerSheetHtml } from "../../../../../lib/paes/lectora-print";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
         warnings: review.warnings, exam,
         studentHtml,
         teacherHtml,
+        answerSheetHtml:createLectoraAnswerSheetHtml(exam.items.length,job.id),
       }, { headers: { "Cache-Control": "no-store" } });
     }
   await assertPaesAiAccess(session!.id as string);
