@@ -3,7 +3,7 @@
 ## 1. Comprobación de base de datos (solo lectura)
 En una **copia aislada** de la base PostgreSQL de producción, comprobar:
 - Existencia y definición de las tablas `User`, `School`, `Organization`, `Planning`, `Assessment` y `SupportMaterial`.
-- Si `SharedLibraryResource` y `PedagogicalModuleLicense` ya existen y, en ese caso, comparar columnas, índices y restricciones.
+- Si `SharedLibraryResource`, `PedagogicalModuleLicense` e `IndividualPedagogicalLicense` ya existen y, en ese caso, comparar columnas, índices y restricciones.
 - Aplicar únicamente la migración `20261028003000_biblioteca_educantay` en esa copia. No ejecutar `prisma migrate deploy` sobre toda la cadena histórica: hay migraciones anteriores no reproducibles desde cero.
 - Ejecutar `npx prisma validate`, una compilación con el esquema final y una consulta de lectura/escritura de prueba dentro de una transacción revertida.
 - Verificar respaldo y plan de reversión antes de cualquier cambio en producción.
@@ -14,15 +14,17 @@ SELECT table_name, column_name, data_type, is_nullable
 FROM information_schema.columns
 WHERE table_schema = 'public'
   AND table_name IN ('User','School','Organization','Planning','Assessment','SupportMaterial',
-                     'SharedLibraryResource','PedagogicalModuleLicense')
+                     'SharedLibraryResource','PedagogicalModuleLicense','IndividualPedagogicalLicense')
 ORDER BY table_name, ordinal_position;
 ```
 
 ## 2. Matriz de usuarios de prueba (datos ficticios)
 | Perfil | Licencia/estado | Resultado esperado |
 |---|---|---|
-| Docente individual | ACTIVE vigente | Puede importar sus propios recursos, ver y publicar |
-| Docente individual | TRIAL vigente | Puede usar Biblioteca durante prueba |
+| Docente individual | ACTIVE vigente + licencia pedagógica individual vigente | Puede importar sus propios recursos, ver y publicar |
+| Docente individual | ACTIVE vigente sin licencia pedagógica | 403 |
+| Docente individual | Solo licencia SIMCE/PAES | 403 |
+| Docente individual | TRIAL vigente + licencia pedagógica individual vigente | Puede usar Biblioteca durante prueba |
 | Docente individual | Vencida o cancelada | 403 |
 | Docente institucional | Licencia PLANIFICACION vigente | Acceso permitido |
 | Docente institucional | Solo SIMCE o PAES | 403 |
@@ -46,6 +48,9 @@ ORDER BY table_name, ordinal_position;
 10. Otorgar/reactivar licencia en colegio inactivo: 409.
 11. Otorgar dos licencias superpuestas: 409; permitir períodos contiguos.
 12. Confirmar que no se modifica la portada pública.
+13. Asignar, desactivar y reactivar licencias individuales desde el panel de superadministrador; impedir solapamientos.
+14. Verificar que cuentas individuales existentes sin licencia pedagógica explícita no obtengan acceso por su sola suscripción.
+15. Antes del despliegue, definir asignación controlada a suscriptores pedagógicos existentes, sin incluir productos exclusivamente SIMCE/PAES.
 
 ## 4. Criterios de liberación
 - Todos los checks de GitHub Actions en verde **para el HEAD exacto** del PR.
