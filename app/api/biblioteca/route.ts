@@ -19,6 +19,10 @@ async function licensedUser() {
   }
   if (u.accountType === "INSTITUTIONAL") {
     if (!u.schoolId && u.role !== "SOSTENEDOR") return null;
+    if (u.schoolId && u.role !== "SOSTENEDOR") {
+      const ownSchool = await prisma.school.findFirst({ where: { id: u.schoolId, organizationId: u.organizationId, active: true }, select: { id: true } });
+      if (!ownSchool) return null;
+    }
     if (u.role === "SOSTENEDOR" && u.schoolId) {
       const ownSchool = await prisma.school.findFirst({ where: { id: u.schoolId, organizationId: u.organizationId, active: true }, select: { id: true } });
       if (!ownSchool) return null;
