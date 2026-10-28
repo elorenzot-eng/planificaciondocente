@@ -52,6 +52,7 @@ jobs:
       # Test the new, self-contained library migration independently.
       - name: Apply Biblioteca migration to clean PostgreSQL
         run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'CREATE TABLE "User" ("id" TEXT PRIMARY KEY); CREATE TABLE "School" ("id" TEXT PRIMARY KEY);'
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "published" FROM "SharedLibraryResource" LIMIT 0;'
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "schoolId" FROM "PedagogicalModuleLicense" LIMIT 0;'
@@ -68,10 +69,10 @@ jobs:
           cp /tmp/biblioteca-main-schema.prisma prisma/schema.prisma
           npx prisma db push --skip-generate
           cp /tmp/biblioteca-feature-schema.prisma prisma/schema.prisma
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'DROP TABLE IF EXISTS "SharedLibraryResource", "PedagogicalModuleLicense" CASCADE;'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'DROP TABLE IF EXISTS "SharedLibraryResource", "PedagogicalModuleLicense", "IndividualPedagogicalLicense" CASCADE;'
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
           npx prisma db push --skip-generate
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('SharedLibraryResource','PedagogicalModuleLicense')" | grep -qx 2
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('SharedLibraryResource','PedagogicalModuleLicense','IndividualPedagogicalLicense')" | grep -qx 3
 
       - name: Assert database constraints and publication defaults
         env:
@@ -80,6 +81,8 @@ jobs:
           set -euo pipefail
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 <<'SQL'
           BEGIN;
+          INSERT INTO "User" ("id") VALUES ('ci-author');
+          INSERT INTO "School" ("id") VALUES ('ci-school');
           INSERT INTO "SharedLibraryResource" ("id","authorId","sourceId","title","kind","content","updatedAt")
           VALUES ('ci-1','ci-author','ci-source','Guía','PLANIFICACION','{}'::jsonb,now());
           DO $$
