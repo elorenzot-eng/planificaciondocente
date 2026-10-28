@@ -19,9 +19,9 @@ export async function chargeCompletedPaes(userId:string,jobId:string){
    if(job?.aiChargedAt)return;
    throw new PaesQuotaError("Ensayo no disponible para este usuario.",403);
   }
-  const user=await tx.user.findUnique({where:{id:userId},select:{active:true,accountType:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyAiLimit:true}});
+  const user=await tx.user.findUnique({where:{id:userId},select:{active:true,role:true,accountType:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyAiLimit:true}});
   if(!user?.active)throw new PaesQuotaError("Cuenta inactiva.",403);
-  if(user.accountType!=="INDIVIDUAL")return;
+  if(user.role==="SUPERADMIN"||user.accountType!=="INDIVIDUAL")return;
   const now=new Date(),trial=user.subscriptionStatus==="TRIAL";
   const valid=trial?!!user.trialEndsAt&&user.trialEndsAt>now:user.subscriptionStatus==="ACTIVE"&&!!user.subscriptionEndsAt&&user.subscriptionEndsAt>now;
   if(!valid)throw new PaesQuotaError("Tu suscripción no está activa.",403);
