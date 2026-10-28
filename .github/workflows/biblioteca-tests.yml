@@ -7,6 +7,10 @@ on:
     paths:
       - "app/api/biblioteca/**"
       - "app/biblioteca/**"
+      - "app/api/admin/pedagogical-licenses/**"
+      - "app/admin/licencias-pedagogicas/**"
+      - "prisma/schema.prisma"
+      - "prisma/migrations/**"
       - "lib/biblioteca-policy.ts"
       - "tests/biblioteca-policy.test.cjs"
       - ".github/workflows/biblioteca-tests.yml"
@@ -20,3 +24,9 @@ jobs:
           node-version: "22"
       - run: npm install --ignore-scripts --no-audit --no-fund
       - run: node --test tests/biblioteca-policy.test.cjs
+      - run: npx prisma validate
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+      - run: npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > /tmp/biblioteca-schema.sql
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
