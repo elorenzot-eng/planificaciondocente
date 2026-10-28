@@ -71,7 +71,7 @@ jobs:
           cp /tmp/biblioteca-feature-schema.prisma prisma/schema.prisma
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'DROP TABLE IF EXISTS "SharedLibraryResource", "PedagogicalModuleLicense", "IndividualPedagogicalLicense" CASCADE;'
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
-          npx prisma db push --skip-generate
+          npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code > /tmp/biblioteca-drift.sql || test $? -eq 2
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('SharedLibraryResource','PedagogicalModuleLicense','IndividualPedagogicalLicense')" | grep -qx 3
 
       - name: Assert database constraints and publication defaults
