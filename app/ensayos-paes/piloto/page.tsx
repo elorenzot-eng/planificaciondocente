@@ -15,6 +15,7 @@ type PilotResponse = {
   exam?: { texts?: Array<{id:string;body:string}>; items?: Array<{id:string;stem:string;options:string[];correctIndex:number;rationale:string}> };
   studentHtml?: string;
   teacherHtml?: string;
+  answerSheetHtml?: string;
 };
 function openPrint(html?: string) {
   if (!html) return;
@@ -134,6 +135,7 @@ export default function PaesPilot() {
         <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
           <button onClick={()=>openPrint(result.studentHtml)}>Abrir versión estudiante</button>
           <button onClick={()=>openPrint(result.teacherHtml)}>Abrir versión profesor</button>
+          {result.answerSheetHtml && <button onClick={()=>openPrint(result.answerSheetHtml)}>Abrir hoja de respuestas (óvalos OMR)</button>}
           {questionCount==="65"&&<button disabled={!result.jobId} onClick={async()=>{if(!result.jobId)return;setSaveMessage("Guardando…");try{const response=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:result.jobId})});const data=await response.json();setSaveMessage(response.ok?"Ensayo guardado en Mi carpeta.":data.error||"No se pudo guardar.");}catch{setSaveMessage("Error al guardar.");}}}>Guardar en Mi carpeta</button>}
           <Link href="/ensayos-paes/carpeta">Ver Mi carpeta PAES</Link>
         </div>
