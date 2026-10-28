@@ -65,9 +65,9 @@ export default function EnsayosPaes(){
  <section className="paes-tools" aria-label="Herramientas de corrección PAES">
  <div className="paes-heading"><h2>Panel de corrección PAES</h2><p>Herramientas organizadas como el panel SIMCE.</p></div>
  <div className="paes-tools-grid">
- <Link className="paes-tool" href="/ensayos-paes/corrector" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><strong>Corrector PAES</strong><small>Seleccionar ensayo guardado, ingresar respuestas y calcular resultados.</small><span>Abrir corrector →</span></Link>
- <Link className="paes-tool" href="/ensayos-paes/hoja-respuestas" style={{background:"#ECFAF9",borderLeft:"5px solid #0B9DAD"}}><strong>Hoja de respuestas</strong><small>Generar e imprimir directamente la hoja OMR independiente de 65 preguntas.</small><span>Crear hoja →</span></Link>
+  <Link className="paes-tool" href="/ensayos-paes/hoja-respuestas" style={{background:"#ECFAF9",borderLeft:"5px solid #0B9DAD"}}><strong>Hoja de respuestas</strong><small>Generar e imprimir directamente la hoja OMR independiente de 65 preguntas.</small><span>Crear hoja →</span></Link>
  <Link className="paes-tool" href="/ensayos-paes/corrector/cargar" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><strong>Cargar JPG, PNG o PDF</strong><small>Revisar hojas escaneadas. La lectura óptica automática requiere validación.</small><span>Cargar archivo →</span></Link>
+<Link className="paes-tool" href="/ensayos-paes/corrector" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><strong>Corrector PAES</strong><small>Seleccionar ensayo guardado, ingresar respuestas y calcular resultados.</small><span>Abrir corrector →</span></Link>
  </div></section>
  <p className="paes-note">Los ensayos son material de práctica de EducAntay generado con IA. No corresponden a pruebas oficiales del DEMRE. La configuración específica se realiza dentro de cada generador.</p>
  </div></main>;
