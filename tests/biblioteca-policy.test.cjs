@@ -38,7 +38,7 @@ test("API restricts publication changes to author",()=>{
 });
 
 test("institutional accounts require a current license or subscription",()=>{
- assert.match(route,/institutionalExamLicense\.findFirst/);
+ assert.match(route,/pedagogicalModuleLicense\.findFirst/);\n assert.doesNotMatch(route,/institutionalExamLicense/);\n assert.match(route,/RECURSOS_PEDAGOGICOS/);
  assert.match(route,/expiresAt: \{ gt: now \}/);
  assert.match(route,/startsAt: \{ lte: now \}/);
  assert.match(route,/if \(!license\) return null/);
