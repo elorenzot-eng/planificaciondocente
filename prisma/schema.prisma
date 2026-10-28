@@ -689,6 +689,7 @@ model CommercialEmailConsent {
 model SharedLibraryResource {
   id String @id @default(cuid())
   authorId String
+  sourceId String?
   title String
   kind String
   subject String?
@@ -701,6 +702,7 @@ model SharedLibraryResource {
   updatedAt DateTime @updatedAt
   @@index([published,kind,createdAt])
   @@index([authorId,createdAt])
+  @@unique([authorId,kind,sourceId])
 }
 
 // Acceso explícito por módulo pedagógico; las licencias de ensayos no conceden acceso.
