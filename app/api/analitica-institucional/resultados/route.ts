@@ -13,7 +13,8 @@ export async function POST(request:Request){
  const validDimension=(v:unknown)=>v===undefined||(Array.isArray(v)&&v.length<=100&&v.every((x:unknown)=>{if(!x||typeof x!=="object")return false;const a=x as Record<string,unknown>;return typeof a.name==="string"&&a.name.length<=120&&Number.isInteger(a.correct)&&Number.isInteger(a.total)&&(a.correct as number)>=0&&(a.total as number)>0&&(a.correct as number)<=(a.total as number)}));
  if(!validDimension(skillResults)||!validDimension(contentResults))return NextResponse.json({error:"Desglose pedagógico inválido"},{status:400});
  if((skillResults!==undefined&&skillResults.reduce((n:number,x:{correct:number;total:number})=>n+x.total,0)>totalQuestions)||(contentResults!==undefined&&contentResults.reduce((n:number,x:{correct:number;total:number})=>n+x.total,0)>totalQuestions))return NextResponse.json({error:"El desglose supera el total de preguntas"},{status:400});
- if(!validDimension(skillResults)||!validDimension(contentResults))return NextResponse.json({error:"Desglose pedagógico inválido"},{status:400});
+ const sumCorrect=(v:{correct:number}[]|undefined)=>v?.reduce((n,x)=>n+x.correct,0)??0;
+ if(sumCorrect(skillResults)>correctAnswers||sumCorrect(contentResults)>correctAnswers)return NextResponse.json({error:"El desglose supera las respuestas correctas"},{status:400});
  const school=await prisma.school.findUnique({where:{id:schoolId},select:{id:true,organizationId:true,active:true}});
  if(!school?.active||user.role!=="SUPERADMIN"&&(user.role==="SOSTENEDOR"?school.organizationId!==user.organizationId:school.id!==user.schoolId||school.organizationId!==user.organizationId))return NextResponse.json({error:"Colegio no autorizado"},{status:403});
  const student=await prisma.licensedStudent.findFirst({where:{id:studentId,schoolId},select:{id:true,course:true}});
