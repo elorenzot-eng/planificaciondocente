@@ -99,3 +99,13 @@ test("publishing is opt-in and requires a user confirmation",()=>{
  assert.match(ui,/published:!r\.published/);
  assert.match(route,/canShareEducationalResource\(\{ title:current\.title/);
 });
+
+test("rejects additional personal identifiers in shared materials",()=>{
+ for(const value of [
+  {content:{note:"RUT 12 345 678-5"}},
+  {content:{note:"RUT 123456785"}},
+  {content:{note:"Contacto +56 9 1234 5678"}},
+  {content:{note:"Nombre completo: Estudiante Ejemplo"}},
+  {content:{note:"Diagnóstico del estudiante: información reservada"}}
+ ]) assert.equal(allowed(value),false);
+});
