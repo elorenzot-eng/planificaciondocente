@@ -70,3 +70,39 @@ jobs:
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
           npx prisma db push --skip-generate
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('SharedLibraryResource','PedagogicalModuleLicense')" | grep -qx 2
+
+      - name: Assert database constraints and publication defaults
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+        run: |
+          set -euo pipefail
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          BEGIN;
+          INSERT INTO "SharedLibraryResource" ("id","authorId","sourceId","title","kind","content","updatedAt")
+          VALUES ('ci-1','ci-author','ci-source','Guía','PLANIFICACION','{}'::jsonb,now());
+          DO $$
+          BEGIN
+            IF (SELECT "published" FROM "SharedLibraryResource" WHERE "id"='ci-1') IS DISTINCT FROM false THEN
+              RAISE EXCEPTION 'Resources must be private by default';
+            END IF;
+          END $$;
+          DO $$
+          BEGIN
+            BEGIN
+              INSERT INTO "SharedLibraryResource" ("id","authorId","sourceId","title","kind","content","updatedAt")
+              VALUES ('ci-2','ci-author','ci-source','Duplicado','PLANIFICACION','{}'::jsonb,now());
+              RAISE EXCEPTION 'Duplicate author-kind-source was accepted';
+            EXCEPTION WHEN unique_violation THEN
+              NULL;
+            END;
+          END $$;
+          INSERT INTO "PedagogicalModuleLicense" ("id","schoolId","module","expiresAt")
+          VALUES ('ci-license','ci-school','PLANIFICACION',now()+interval '30 days');
+          DO $$
+          BEGIN
+            IF (SELECT "active" FROM "PedagogicalModuleLicense" WHERE "id"='ci-license') IS DISTINCT FROM true THEN
+              RAISE EXCEPTION 'New licenses must be active by default';
+            END IF;
+          END $$;
+          ROLLBACK;
+          SQL
