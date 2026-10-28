@@ -1,7 +1,7 @@
 import type { LectoraExam } from "./lectora";
 import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
 import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches, assembleLectoraBatches } from "./lectora-generator";
-import { generateCompleteLectoraDraft } from "./lectora-openai.server";
+import { generateCompleteLectoraDraft, resumeCompleteLectoraDraft } from "./lectora-openai.server";
 import { createLectoraPrintableHtml } from "./lectora-print";
 
 /**
@@ -151,4 +151,52 @@ export async function testLectoraCompleteOrchestration(): Promise<void> {
   if (calls !== 7 || result.exam.items.length !== 65 ||
       !reviewLectoraExam(result.exam, matrix).valid)
     throw new Error("Orquestación PAES de 65 preguntas fallida");
+}
+
+/** Simula una caída tras el tercer bloque y recuperación desde el cuarto. */
+export async function testLectoraResume(): Promise<void> {
+  const matrix: ReviewedLectoraMatrix = {
+    version: "TEST-RESUME-65", reviewedBy: "Fixture", reviewedAt: "2026-10-28",
+    sourceReference: "Prueba interna sintética", questionCount: 65,
+    bySkill: { Localizar: 15, Interpretar: 35, Evaluar: 15 },
+    byGenre: { Literario: 30, "No literario": 35 },
+  };
+  let state: { nextPart: number; parts: LectoraExam[] } = { nextPart: 0, parts: [] };
+  const store = {
+    load: async () => ({ ...state, parts: [...state.parts] }),
+    commit: async (expectedPart: number, next: typeof state) => {
+      if (state.nextPart !== expectedPart) return false;
+      state = next;
+      return true;
+    },
+  };
+  let calls = 0;
+  let failAfterThree = true;
+  const generate = async ({ matrix: batch }: { matrix: ReviewedLectoraMatrix; difficulty: "Mixta" }) => {
+    calls++;
+    if (failAfterThree && calls === 4) throw new Error("Interrupción simulada");
+    const genres = (["Literario", "No literario"] as const)
+      .flatMap(g => Array.from({ length: batch.byGenre[g] }, () => g));
+    const skills = (["Localizar", "Interpretar", "Evaluar"] as const)
+      .flatMap(k => Array.from({ length: batch.bySkill[k] }, () => k));
+    const texts: LectoraExam["texts"] = (["Literario", "No literario"] as const)
+      .filter(g => batch.byGenre[g] > 0)
+      .map(g => ({ id: g, genre: g, body: "Texto original de prueba", sourceAttribution: "Fixture" }));
+    const items: LectoraExam["items"] = genres.map((genre, i) => ({
+      id: "P" + i, textId: genre, genre, skill: skills[i],
+      stem: "Pregunta " + i, options: ["A", "B", "C", "D"] as [string,string,string,string],
+      correctIndex: 0, rationale: "Justificación", evidence: "Texto original",
+    }));
+    return { exam: { specificationVersion: batch.version, texts, items }, warnings: [] };
+  };
+  let interrupted = false;
+  try { await resumeCompleteLectoraDraft({ matrix, difficulty: "Mixta" }, store, generate); }
+  catch { interrupted = true; }
+  if (!interrupted || state.nextPart !== 3 || state.parts.length !== 3)
+    throw new Error("No se conservaron los tres bloques confirmados");
+  failAfterThree = false;
+  const result = await resumeCompleteLectoraDraft({ matrix, difficulty: "Mixta" }, store, generate);
+  if (calls !== 8 || state.nextPart !== 7 || result.exam.items.length !== 65 ||
+      !reviewLectoraExam(result.exam, matrix).valid)
+    throw new Error("La reanudación duplicó bloques o produjo un ensayo inválido");
 }
