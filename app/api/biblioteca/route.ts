@@ -19,24 +19,18 @@ async function licensedUser() {
   }
   if (u.accountType === "INSTITUTIONAL") {
     const now = new Date();
-    const subscribed = (u.subscriptionStatus === "ACTIVE" && !!u.subscriptionEndsAt && u.subscriptionEndsAt > now)
-      || (u.subscriptionStatus === "TRIAL" && !!u.trialEndsAt && u.trialEndsAt > now);
-    if (!subscribed) {
-      const license = await prisma.institutionalExamLicense.findFirst({
-        where: {
-          active: true,
-          startsAt: { lte: now },
-          expiresAt: { gt: now },
-          school: {
-            active: true,
-            organization: { active: true },
-            ...(u.schoolId ? { id: u.schoolId } : { organizationId: u.organizationId })
-          }
-        },
-        select: { id: true }
-      });
-      if (!license) return null;
-    }
+    const entitlement = await prisma.pedagogicalModuleLicense.findFirst({
+      where: {
+        active: true,
+        module: { in: ["PLANIFICACION", "EVALUACION", "RECURSOS_PEDAGOGICOS"] },
+        startsAt: { lte: now },
+        expiresAt: { gt: now },
+        schoolId: u.schoolId || undefined,
+        ...(u.schoolId ? {} : { schoolId: { in: (await prisma.school.findMany({ where: { organizationId: u.organizationId, active: true }, select: { id: true } })).map(s => s.id) } })
+      },
+      select: { id: true }
+    });
+    if (!entitlement) return null;
   }
   return u;
 }
