@@ -68,3 +68,19 @@ test("source picker hides documents already imported by the same author",()=>{
  assert.match(route,/sourceId: \{ not: null \}/);
  assert.match(route,/imported\.some\(i => i\.kind === x\.kind && i\.sourceId === x\.id\)/);
 });
+
+test("reactivating a license checks for overlapping active periods",()=>{
+ const admin=fs.readFileSync("app/api/admin/pedagogical-licenses/route.ts","utf8");
+ const patch=admin.slice(admin.indexOf("export async function PATCH"));
+ assert.match(patch,/if \(body\.active\)/);
+ assert.match(patch,/id: \{ not: current\.id \}/);
+ assert.match(patch,/startsAt: \{ lt: current\.expiresAt \}/);
+ assert.match(patch,/expiresAt: \{ gt: current\.startsAt \}/);
+ assert.match(patch,/status: 409/);
+});
+test("new library tables have a versioned PostgreSQL migration",()=>{
+ const migration=fs.readFileSync("prisma/migrations/20261028003000_biblioteca_educantay/migration.sql","utf8");
+ assert.match(migration,/CREATE TABLE "SharedLibraryResource"/);
+ assert.match(migration,/CREATE TABLE "PedagogicalModuleLicense"/);
+ assert.match(migration,/CREATE UNIQUE INDEX "SharedLibraryResource_authorId_kind_sourceId_key"/);
+});
