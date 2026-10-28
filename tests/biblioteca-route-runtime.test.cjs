@@ -145,3 +145,14 @@ test("individual subscription without pedagogical module is denied", async () =>
   const { route } = loadRoute({ user: individual("ACTIVE"), individualLicense: false });
   assert.equal((await route.GET(get())).status, 403);
 });
+
+test("public library listing omits internal author and source IDs", async () => {
+  const row = { id: "resource-1", authorId: "user-2", sourceId: "private-source", title: "Guía", published: true, content: {} };
+  const { route } = loadRoute({ user: individual("ACTIVE"), resources: [row] });
+  const response = await route.GET(get());
+  assert.equal(response.status, 200);
+  assert.equal(response.body.resources.length, 1);
+  assert.equal(response.body.resources[0].id, "resource-1");
+  assert.equal(response.body.resources[0].authorId, undefined);
+  assert.equal(response.body.resources[0].sourceId, undefined);
+});
