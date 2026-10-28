@@ -58,7 +58,7 @@ export default function AnaliticaInstitucional(){
  <style jsx global>{`@media print {
  main > h1, main > h2, main > p, main > label, main > div, main > button {display:none!important}
  main > section:not(:has(.simce-report-print)) {display:none!important}
- main > section:has(.simce-report-print) > :not(div:has(.simce-report-print)) {display:none!important}
+ main > section:has(.simce-report-print) > h3 {display:none!important}
  main > section:has(.simce-report-print) > div:not(:has(.simce-report-print)) {display:none!important}
  div:has(> .simce-report-print) > :not(.simce-report-print) {display:none!important}
  .simce-report-print {display:block!important;break-inside:auto!important;box-shadow:none!important;border:0!important;padding:0!important;margin:0!important;background:white!important;color:#111!important}
