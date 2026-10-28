@@ -43,6 +43,15 @@ export async function PATCH(request: Request) {
   let body: any;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "JSON inválido" }, { status: 400, headers }); }
   if (typeof body.id !== "string" || typeof body.active !== "boolean") return NextResponse.json({ error: "Datos inválidos" }, { status: 400, headers });
+  const current = await prisma.pedagogicalModuleLicense.findUnique({ where: { id: body.id } });
+  if (!current) return NextResponse.json({ error: "Licencia inexistente" }, { status: 404, headers });
+  if (body.active) {
+    const overlap = await prisma.pedagogicalModuleLicense.findFirst({
+      where: { id: { not: current.id }, schoolId: current.schoolId, module: current.module, active: true, startsAt: { lt: current.expiresAt }, expiresAt: { gt: current.startsAt } },
+      select: { id: true }
+    });
+    if (overlap) return NextResponse.json({ error: "No se puede reactivar: existe otra licencia activa para el período" }, { status: 409, headers });
+  }
   const result = await prisma.pedagogicalModuleLicense.updateMany({ where: { id: body.id }, data: { active: body.active } });
   if (!result.count) return NextResponse.json({ error: "Licencia inexistente" }, { status: 404, headers });
   return NextResponse.json({ ok: true }, { headers });
