@@ -92,3 +92,50 @@ test("real PATCH handler lets author withdraw a published resource", async () =>
   assert.equal((await route.PATCH(patch("mine", false))).status, 200);
   assert.equal(resources[0].published, false);
 });
+
+test("inactive user cannot access Biblioteca even with active subscription", async () => {
+  const user = individual("ACTIVE");
+  user.active = false;
+  const { route } = loadRoute({ user });
+  assert.equal((await route.GET(get())).status, 403);
+});
+test("expired ACTIVE subscription is rejected", async () => {
+  const user = individual("ACTIVE");
+  user.subscriptionEndsAt = new Date(now - 86400000);
+  const { route } = loadRoute({ user });
+  assert.equal((await route.GET(get())).status, 403);
+});
+test("current trial grants access, expired trial does not", async () => {
+  const user = individual("TRIAL");
+  const { route } = loadRoute({ user });
+  assert.equal((await route.GET(get())).status, 200);
+  user.trialEndsAt = new Date(now - 86400000);
+  assert.equal((await route.GET(get())).status, 403);
+});
+test("institution with inactive organization is rejected despite license", async () => {
+  const user = institutional();
+  user.organization.active = false;
+  const { route } = loadRoute({ user, license: true });
+  assert.equal((await route.GET(get())).status, 403);
+});
+test("institution with inactive school is rejected despite license", async () => {
+  const user = institutional();
+  user.school.active = false;
+  const { route } = loadRoute({ user, license: true });
+  assert.equal((await route.GET(get())).status, 403);
+});
+test("unknown account type is rejected", async () => {
+  const user = individual("ACTIVE");
+  user.accountType = "UNRECOGNIZED";
+  const { route } = loadRoute({ user });
+  assert.equal((await route.GET(get())).status, 403);
+});
+test("author's private resources are visible only in mine view", async () => {
+  const resources = [
+    { id: "private", authorId: "user-1", published: false, title: "Privado" },
+    { id: "other", authorId: "other", published: false, title: "Ajeno" }
+  ];
+  const { route } = loadRoute({ user: individual("ACTIVE"), resources });
+  const result = await route.GET(new Request("https://educantay.example/api/biblioteca?mine=1"));
+  assert.deepEqual(result.body.resources.map(r => r.id), ["private"]);
+});
