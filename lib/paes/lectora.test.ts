@@ -1,6 +1,6 @@
 import type { LectoraExam } from "./lectora";
 import { reviewLectoraExam, type ReviewedLectoraMatrix } from "./lectora-review";
-import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches } from "./lectora-generator";
+import { buildLectoraPrompt, parseAndReviewLectoraResponse, planLectoraBatches, assembleLectoraBatches } from "./lectora-generator";
 import { createLectoraPrintableHtml } from "./lectora-print";
 
 /**
@@ -89,5 +89,34 @@ export function testLectoraPipeline(): { exam: LectoraExam; matrix: ReviewedLect
   try { planLectoraBatches({ ...fullMatrix, bySkill: { ...fullMatrix.bySkill, Localizar: 14 } }); }
   catch { rejectedMatrix = true; }
   assert(rejectedMatrix, "se aceptó matriz de 65 inconsistente");
+
+  const parts = batches.map((batch, i): LectoraExam => {
+    const texts: LectoraExam["texts"] = [];
+    const items: LectoraExam["items"] = [];
+    for (const genre of ["Literario", "No literario"] as const) {
+      if (batch.byGenre[genre] > 0)
+        texts.push({ id: genre === "Literario" ? "L" : "N", genre,
+          body: "Texto original de prueba para verificar ensamblaje.", sourceAttribution: "Fixture" });
+    }
+    const genres = ["Literario", "No literario"] as const;
+    const skills = ["Localizar", "Interpretar", "Evaluar"] as const;
+    const genreSlots = genres.flatMap(g => Array.from({ length: batch.byGenre[g] }, () => g));
+    const skillSlots = skills.flatMap(k => Array.from({ length: batch.bySkill[k] }, () => k));
+    for (let j = 0; j < batch.questionCount; j++) {
+      const genre = genreSlots[j];
+      items.push({ id: "P" + j, textId: genre === "Literario" ? "L" : "N", genre,
+        skill: skillSlots[j], stem: "Pregunta " + j, options: ["A", "B", "C", "D"],
+        correctIndex: j % 4, rationale: "Justificación", evidence: "Texto original" });
+    }
+    return { specificationVersion: batch.version, texts, items };
+  });
+  const assembled = assembleLectoraBatches(parts, fullMatrix);
+  assert(assembled.exam.items.length === 65, "el ensamblaje no contiene 65 preguntas");
+  assert(new Set(assembled.exam.items.map(x => x.id)).size === 65, "hay IDs duplicados");
+  assert(reviewLectoraExam(assembled.exam, fullMatrix).valid, "ensayo consolidado inválido");
+  let missingBlockRejected = false;
+  try { assembleLectoraBatches(parts.slice(0, 6), fullMatrix); }
+  catch { missingBlockRejected = true; }
+  assert(missingBlockRejected, "se aceptó un ensayo incompleto");
   return { exam, matrix };
 }
