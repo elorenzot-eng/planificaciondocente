@@ -37,7 +37,13 @@ export async function POST(request:Request){
   const payload=await response.json(),raw=payload?.choices?.[0]?.message?.content;
   if(typeof raw!=="string")throw Error("Sin contenido");
   const report:unknown=JSON.parse(raw);
-  if(!report||typeof report!=="object"||typeof (report as {diagnostico?:unknown}).diagnostico!=="string"||!Array.isArray((report as {acciones?:unknown}).acciones))throw Error("Formato inválido");
+  if(!report||typeof report!=="object")throw Error("Formato inválido");
+  const data=report as Record<string,unknown>;
+  const validText=(x:unknown)=>typeof x==="string"&&x.trim().length>0&&x.length<=5000;
+  const validList=(x:unknown)=>Array.isArray(x)&&x.length<=12&&x.every(validText);
+  const required=["foco","accion","responsable","plazo","indicador","meta","verificacion"];
+  const validActions=Array.isArray(data.acciones)&&data.acciones.length>=1&&data.acciones.length<=10&&data.acciones.every((a:unknown)=>a!==null&&typeof a==="object"&&required.every(k=>validText((a as Record<string,unknown>)[k])));
+  if(!validText(data.diagnostico)||!validText(data.seguimiento)||!validList(data.fortalezas)||!validList(data.prioridades)||!validActions)throw Error("Informe IA incompleto");
   return NextResponse.json({report,summary:{course,examId,students:results.length,mean}},{headers:{"Cache-Control":"private, no-store"}});
  }catch{return NextResponse.json({error:"No fue posible generar el informe IA"},{status:502})}finally{clearTimeout(timeout)}
 }
