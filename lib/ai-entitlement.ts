@@ -1,8 +1,10 @@
 import {prisma} from "./prisma";
 
 export async function checkAiEntitlement(userId:string){
- const u=await prisma.user.findUnique({where:{id:userId},select:{accountType:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyAiLimit:true,monthlyAiUsed:true}});
+ const u=await prisma.user.findUnique({where:{id:userId},select:{active:true,role:true,accountType:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyAiLimit:true,monthlyAiUsed:true}});
  if(!u)return{ok:false,error:"Usuario no encontrado"};
+ if(!u.active)return{ok:false,error:"Cuenta inactiva."};
+ if(u.role==="SUPERADMIN")return{ok:true,individual:false,superadmin:true};
  if(u.accountType!=="INDIVIDUAL")return{ok:true,individual:false};
  const now=new Date();
  if(u.subscriptionStatus==="TRIAL"&&(!u.trialEndsAt||u.trialEndsAt<=now)){await prisma.user.update({where:{id:userId},data:{subscriptionStatus:"PAST_DUE"}}).catch(()=>{});return{ok:false,error:"Tu período de prueba de 3 días finalizó. Activa tu Plan Individual para continuar creando con IA."};}
@@ -13,8 +15,10 @@ export async function checkAiEntitlement(userId:string){
 }
 
 export async function reserveAiUse(userId:string){
- const u=await prisma.user.findUnique({where:{id:userId},select:{accountType:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyAiLimit:true}});
+ const u=await prisma.user.findUnique({where:{id:userId},select:{active:true,role:true,accountType:true,subscriptionStatus:true,trialEndsAt:true,subscriptionEndsAt:true,monthlyAiLimit:true}});
  if(!u)return{ok:false,error:"Usuario no encontrado",reserved:false};
+ if(!u.active)return{ok:false,error:"Cuenta inactiva.",reserved:false};
+ if(u.role==="SUPERADMIN")return{ok:true,individual:false,reserved:false};
  if(u.accountType!=="INDIVIDUAL")return{ok:true,individual:false,reserved:false};
  const now=new Date();
  const validPeriod=u.subscriptionStatus==="TRIAL"?!!u.trialEndsAt&&u.trialEndsAt>now:u.subscriptionStatus==="ACTIVE"?!!u.subscriptionEndsAt&&u.subscriptionEndsAt>now:false;
@@ -26,8 +30,8 @@ export async function reserveAiUse(userId:string){
 }
 
 export async function releaseAiUse(userId:string){
- const u=await prisma.user.findUnique({where:{id:userId},select:{accountType:true}});
- if(u?.accountType==="INDIVIDUAL")await prisma.user.updateMany({where:{id:userId,monthlyAiUsed:{gt:0}},data:{monthlyAiUsed:{decrement:1}}});
+ const u=await prisma.user.findUnique({where:{id:userId},select:{accountType:true,role:true}});
+ if(u?.accountType==="INDIVIDUAL"&&u.role!=="SUPERADMIN")await prisma.user.updateMany({where:{id:userId,monthlyAiUsed:{gt:0}},data:{monthlyAiUsed:{decrement:1}}});
 }
 
 // Compatibilidad temporal para código antiguo. Los generadores nuevos deben usar reserveAiUse/releaseAiUse.
