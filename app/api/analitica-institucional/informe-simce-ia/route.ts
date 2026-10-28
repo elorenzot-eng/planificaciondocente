@@ -12,8 +12,10 @@ export async function POST(request:Request){
  if(![schoolId,course,examId].every(x=>typeof x==="string"&&x.trim().length>0&&x.length<=200))return NextResponse.json({error:"Selección inválida"},{status:400});
  const school=await prisma.school.findUnique({where:{id:schoolId},select:{id:true,active:true,organizationId:true}});
  if(!school?.active||(user.role!=="SUPERADMIN"&&(user.role==="SOSTENEDOR"?school.organizationId!==user.organizationId:school.id!==user.schoolId||school.organizationId!==user.organizationId)))return NextResponse.json({error:"Colegio no autorizado"},{status:403});
- const results=await prisma.academicExamResult.findMany({where:{schoolId,course,examId,product:"SIMCE"},select:{correctAnswers:true,totalQuestions:true,skillResults:true,contentResults:true},take:500});
+ const results=await prisma.academicExamResult.findMany({where:{schoolId,course,examId,product:"SIMCE"},select:{correctAnswers:true,totalQuestions:true,skillResults:true,contentResults:true},take:501});
+ if(results.length>500)return NextResponse.json({error:"Este curso y ensayo supera el límite de 500 registros para un informe. Contacta a soporte para generar un análisis completo."},{status:422});
  if(!results.length)return NextResponse.json({error:"No existen resultados para este curso y ensayo"},{status:404});
+ if(!results.some(x=>(Array.isArray(x.skillResults)&&x.skillResults.length>0)||(Array.isArray(x.contentResults)&&x.contentResults.length>0)))return NextResponse.json({error:"Los resultados de este ensayo no incluyen habilidades ni contenidos desglosados. Registra el análisis por ítem antes de generar recomendaciones IA."},{status:422});
  const summarize=(field:"skillResults"|"contentResults")=>{
   const map=new Map<string,{correct:number;total:number}>();
   for(const result of results){const rows=result[field];if(!Array.isArray(rows))continue;
