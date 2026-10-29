@@ -20,5 +20,19 @@ export async function POST(req:NextRequest){
  const omitted=details.filter((d:any)=>d.omitted).length;
  const total=details.length;
  const demre=demreReferenceScore(saved.examType,total,correct);
- return NextResponse.json({examTitle:saved.title,examType:saved.examType,total,correct,incorrect:total-correct-omitted,omitted,percentage:Math.round(correct/total*10000)/100,details,demre,scoreType:demre?"REFERENCIAL_DEMRE":"PORCENTAJE_DE_LOGRO",note:demre?"Conversión referencial mediante tabla DEMRE; ensayo EducAntay no equiparado.":"No se aplica conversión DEMRE a pilotos ni ensayos con preguntas no identificadas como puntuables. Se informa porcentaje de logro."},{headers:{"Cache-Control":"private, no-store"}});
+ let institutionalSave:"NOT_REQUESTED"|"SAVED"="NOT_REQUESTED";
+ if(body.studentId!==undefined){
+  if(typeof body.studentId!=="string"||!body.studentId||body.studentId.length>100)return NextResponse.json({error:"Estudiante institucional inválido."},{status:400});
+  const user=await prisma.user.findUnique({where:{id:session.id},select:{schoolId:true,active:true,role:true}});
+  if(!user?.active||!user.schoolId||!["SUPERADMIN","SOSTENEDOR","DIRECTOR","UTP","DOCENTE"].includes(user.role))return NextResponse.json({error:"Se requiere acceso institucional para registrar resultados."},{status:403});
+  const student=await prisma.licensedStudent.findFirst({where:{id:body.studentId,schoolId:user.schoolId},select:{id:true,course:true}});
+  if(!student)return NextResponse.json({error:"El estudiante no pertenece al establecimiento."},{status:403});
+  await prisma.academicExamResult.upsert({
+   where:{schoolId_studentId_product_examId:{schoolId:user.schoolId,studentId:student.id,product:"PAES",examId:saved.id}},
+   create:{schoolId:user.schoolId,studentId:student.id,product:"PAES",subject:saved.examType,grade:student.course,course:student.course,examId:saved.id,examTitle:saved.title,takenAt:new Date(),correctAnswers:correct,totalQuestions:total,score:demre?.score??null,source:"PAES_CORRECTOR_MANUAL",levelMethod:demre?"REFERENCIAL_DEMRE":null},
+   update:{correctAnswers:correct,totalQuestions:total,score:demre?.score??null,takenAt:new Date(),course:student.course,grade:student.course,source:"PAES_CORRECTOR_MANUAL",levelMethod:demre?"REFERENCIAL_DEMRE":null}
+  });
+  institutionalSave="SAVED";
+ }
+ return NextResponse.json({institutionalSave,examTitle:saved.title,examType:saved.examType,total,correct,incorrect:total-correct-omitted,omitted,percentage:Math.round(correct/total*10000)/100,details,demre,scoreType:demre?"REFERENCIAL_DEMRE":"PORCENTAJE_DE_LOGRO",note:demre?"Conversión referencial mediante tabla DEMRE; ensayo EducAntay no equiparado.":"No se aplica conversión DEMRE a pilotos ni ensayos con preguntas no identificadas como puntuables. Se informa porcentaje de logro."},{headers:{"Cache-Control":"private, no-store"}});
 }
