@@ -108,7 +108,7 @@ export default function PaesPilot() {
             <p>Selecciona el ensayo que deseas recuperar:</p>
             {recoverable.map(job => <button type="button" key={job.id} style={{display:"block",margin:"8px 0",padding:10}} onClick={async()=>{
               setJobId(job.id);setDifficulty(job.difficulty);setProgress(job.nextPart);setResult(null);setRecoverable([]);
-              if (job.nextPart !== 30 && job.status !== "COMPLETED") return;
+              if (job.nextPart !== 30) return;
               setLoading(true);
               try {
                 const response = await fetch("/api/paes/lectora/full-pilot", {
