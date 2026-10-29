@@ -119,11 +119,11 @@ export default function PaesPilot() {
                 if (!response.ok) throw new Error(data.error || "No se pudo abrir el ensayo recuperado.");
                 if (data.status !== "COMPLETED" || !data.exam || data.count !== 65 || !data.studentHtml || !data.teacherHtml)
                   throw new Error("El ensayo recuperado no contiene 65 preguntas y documentos completos.");
-                setResult(data);setJobId(null);setProgress(30);
+                setResult(data);setJobId(job.id);setProgress(30);
               } catch (error) {
                 setResult({error:error instanceof Error ? error.message : "No se pudo recuperar el ensayo."});
               } finally {setLoading(false);}
-            }}>{job.difficulty} · {job.nextPart}/30 grupos · {job.status}</button>)}
+            }}>{job.difficulty} · {job.nextPart}/30 grupos · {job.status === "COMPLETED" || job.nextPart === 30 ? "Abrir ensayo terminado" : "Continuar ensayo pendiente"}</button>)}
           </div>}
         </div>}
         {questionCount === "65" && <><p role="status">Progreso: {progress} de 30 grupos validados · {Math.round(progress/30*100)}%</p><div role="progressbar" aria-label="Progreso de generación PAES" aria-valuemin={0} aria-valuemax={30} aria-valuenow={Math.min(progress,30)} style={{height:12,width:"100%",maxWidth:560,background:"#e2e8f0",borderRadius:999,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:`${Math.min(100,Math.max(0,Math.round(progress/30*100)))}%`,background:"#0B9DAD",borderRadius:999,transition:"width .25s ease"}}/></div></>}
