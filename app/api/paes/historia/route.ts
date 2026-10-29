@@ -21,6 +21,12 @@ export async function POST(request:NextRequest){
   if(job.nextPart===total){
    const exam:HistoryExam={version:HISTORY_CONFIG.version,items:job.items as unknown as HistoryItem[]};
    const errors=validateHistoryExam(exam);if(errors.length)throw Error(errors.join(" | "));
+   // Los ensayos antiguos podían llegar a 65/65 sin pasar de PENDING a COMPLETED.
+   // La transición es idempotente y no modifica las preguntas ya generadas.
+   if(job.status!=="COMPLETED"){
+    const finalized=await prisma.paesInternalJob.updateMany({where:{id:job.id,userId:session.id,nextPart:total,status:{in:["PENDING","RUNNING"]}},data:{status:"COMPLETED",error:null}});
+    if(finalized.count!==1)return NextResponse.json({error:"No se pudo finalizar el ensayo. Intenta recuperar nuevamente.",jobId:job.id,completed:total,total},{status:409});
+   }
    const studentHtml=createHistoryPrint(exam,false),teacherHtml=createHistoryPrint(exam,true);
    await chargeCompletedPaes(session!.id as string,job.id);
    return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:total,total,exam,studentHtml,teacherHtml},{headers:{"Cache-Control":"no-store"}});
@@ -32,7 +38,7 @@ export async function POST(request:NextRequest){
   try{
    const item=await generateHistoryItem(job.nextPart,body.difficulty as "Baja"|"Media"|"Alta"|"Mixta");
    const items=[...(job.items as unknown as HistoryItem[]),item];
-   job=await prisma.paesInternalJob.update({where:{id:job.id},data:{status:"PENDING",nextPart:job.nextPart+1,items:items as unknown as Prisma.InputJsonValue}});
+   job=await prisma.paesInternalJob.update({where:{id:job.id},data:{status:job.nextPart+1===total?"COMPLETED":"PENDING",nextPart:job.nextPart+1,items:items as unknown as Prisma.InputJsonValue}});
    return NextResponse.json({jobId:job.id,status:"IN_PROGRESS",completed:job.nextPart,total},{headers:{"Cache-Control":"no-store"}});
   }catch(e){
    const message=e instanceof Error?e.message:String(e);
