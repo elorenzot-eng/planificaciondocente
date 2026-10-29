@@ -25,7 +25,10 @@ export async function POST(request:NextRequest){
    const exam:ScienceExam={version:full?SCIENCE_FULL_CONFIG.version:SCIENCE_PRACTICE_CONFIG.version,elective:body.elective as ScienceSubject,items:job.items as unknown as ScienceItem[]};
    const errors=full?validateScienceFull(exam):validateSciencePractice(exam);if(errors.length)throw new Error(errors.join(" | "));
    const studentHtml=createSciencePrint(exam,false),teacherHtml=createSciencePrint(exam,true);
-   await chargeCompletedPaes(session!.id as string,job.id);
+   // La liquidación exige un job COMPLETED; persistirlo antes de intentar el cargo.
+   // Si falla el cargo, conservar las 80 preguntas para reintentar sin regenerar.
+   await prisma.paesInternalJob.updateMany({where:{id:job.id,userId:session.id as string,nextPart:total,status:{in:["PENDING","COMPLETED"]}},data:{status:"COMPLETED"}});
+   await chargeCompletedPaes(session.id as string,job.id);
    return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:total,total,exam,studentHtml,teacherHtml},{headers:{"Cache-Control":"no-store"}});
   }
   await assertPaesAiAccess(session!.id as string);
