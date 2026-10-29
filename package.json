@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "npm run test:paes-recovery && prisma generate && next build",
     "start": "prisma db push && next start",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
@@ -13,7 +13,8 @@
     "android:sync": "npx cap sync android",
     "android:open": "npx cap open android",
     "test:yanay": "node --test tests/yanay-commercial.test.cjs",
-    "test:simce": "node --test tests/simce-paper-omr.test.cjs"
+    "test:simce": "node --test tests/simce-paper-omr.test.cjs",
+    "test:paes-recovery": "node --test tests/paes-lectora-recovery.test.cjs"
   },
   "dependencies": {
     "@types/node": "^22.0.0",
