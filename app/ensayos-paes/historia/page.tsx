@@ -20,7 +20,7 @@ export default function HistoriaPaes(){
     const data=await response.json() as Result;
     if(data.jobId){current=data.jobId;setJobId(current);try{window.localStorage.setItem(storageKey,JSON.stringify({jobId:current,progress:typeof data.completed==="number"?data.completed:progress}));}catch{/* Continuar sin persistencia local. */}}
     if(typeof data.completed==="number")setProgress(Math.min(65,Math.max(0,data.completed)));
-    if(!response.ok){if(current&&[403,404].includes(response.status)){setJobId(null);setProgress(0);try{window.localStorage.removeItem(storageKey);}catch{}setResult({error:response.status===403?"No se pudo acceder al ensayo con esta cuenta. Comprueba que hayas iniciado sesión con la misma cuenta que comenzó la generación. Revisa Mi carpeta PAES antes de crear otro ensayo.":"El identificador guardado ya no corresponde a un ensayo disponible. Revisa Mi carpeta PAES o inicia uno nuevo; limpiar el identificador local no borra datos del servidor."});return;}setResult({error:data.error||"No se pudo continuar."});return;}
+    if(!response.ok){if(current&&[403,404].includes(response.status)){setJobId(null);setProgress(0);try{window.localStorage.removeItem(storageKey);}catch{}setResult({error:response.status===403?"No se pudo acceder al ensayo con esta cuenta. Comprueba que hayas iniciado sesión con la misma cuenta que comenzó la generación. Utiliza Recuperar ensayo anterior para consultar los trabajos de esta cuenta.":"El identificador guardado ya no corresponde a un ensayo disponible. Revisa Mi carpeta PAES o inicia uno nuevo; limpiar el identificador local no borra datos del servidor."});return;}setResult({error:data.error||"No se pudo continuar."});return;}
     if(data.status==="COMPLETED"){
      setResult(data);setJobId(null);setProgress(total);try{window.localStorage.removeItem(storageKey);}catch{/* Sin almacenamiento. */}
      if(data.jobId){try{const saved=await fetch("/api/paes/saved",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:data.jobId})});setSaveMessage(saved.ok?"Ensayo guardado automáticamente en Mi carpeta.":"No se pudo guardar automáticamente; utiliza Guardar.");}catch{setSaveMessage("No se pudo guardar automáticamente; utiliza Guardar.");}}
@@ -30,7 +30,7 @@ export default function HistoriaPaes(){
    setResult({error:"Se alcanzó el límite de solicitudes. Presiona reanudar para continuar."});
   }catch{setResult({error:"Conexión interrumpida. Puedes reanudar."});}finally{setBusy(false);}
  }
- return <main style={{display:"block",width:"100%",minWidth:0,boxSizing:"border-box",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,4vw,48px)",fontFamily:"Arial,sans-serif",color:"#17233c"}}><div style={{width:"100%",minWidth:0,margin:"auto"}}>
+ return <main style={{display:"block",width:"100%",minWidth:0,boxSizing:"border-box",minHeight:"100vh",background:"#f5f7fb",padding:"clamp(16px,4vw,48px)",paddingBottom:"clamp(160px,28vh,260px)",fontFamily:"Arial,sans-serif",color:"#17233c"}}><div style={{width:"100%",minWidth:0,margin:"auto"}}>
  <Link href="/ensayos-paes" style={{color:"#c2410c",fontWeight:700,textDecoration:"none"}}>← Volver a Ensayos PAES</Link>
  <h1 style={{marginTop:28}}>PAES Historia y Ciencias Sociales IA</h1><p>Ensayo completo de 65 preguntas. Matriz interna experimental de EducAntay, no oficial DEMRE.</p>
  <section style={{background:"white",border:"1px solid #dce3ed",borderRadius:16,padding:24,marginTop:22}}>
