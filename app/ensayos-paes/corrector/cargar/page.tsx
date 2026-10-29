@@ -45,13 +45,14 @@ export default function CargarHojaPaes(){
     setOpticalReview(readings.filter(r=>r.mark==="UNCERTAIN"||r.mark==="MULTIPLE").map(r=>r.number));
     setOpticalNotes("Lectura preliminar de hoja PAES Lectora de 65 preguntas y cuatro alternativas. Revisar visualmente la alineación y todas las respuestas antes de confirmar. La calibración debe validarse con escaneos reales.");
    }else{
-    const cal=simcePaperCalibration();const count=Math.min(50,answers.length-sheetStart+1);
+    throw Error("Lectura óptica automática de M1, M2, Ciencias e Historia temporalmente deshabilitada: la geometría de la hoja PAES de tres columnas no coincide con la plantilla SIMCE de dos columnas. Revisa las respuestas manualmente hasta completar la calibración PAES.");
+    /* const cal=simcePaperCalibration();const count=Math.min(50,answers.length-sheetStart+1);
     if(!Number.isInteger(sheetStart)||sheetStart<1||sheetStart>answers.length||count<1)throw Error("Selecciona un bloque válido de preguntas.");
     const rows=buildPaesGrid(count,5,canvas.width,canvas.height,{...cal,leftRows:Math.ceil(count/2)});
     const readings=readPaesSheet(pixels,rows,5);
     setAnswers(previous=>previous.map((answer,i)=>i>=sheetStart-1&&i<sheetStart-1+count?(readings[i-sheetStart+1].mark==="UNCERTAIN"||readings[i-sheetStart+1].mark==="MULTIPLE"?"":readings[i-sheetStart+1].mark||""):answer));
     setOpticalReview(previous=>Array.from(new Set([...previous.filter(n=>n<sheetStart||n>=sheetStart+count),...readings.filter(x=>x.mark==="UNCERTAIN"||x.mark==="MULTIPLE").map(x=>sheetStart+x.number-1)])));
-    setOpticalNotes("Lectura experimental del bloque "+sheetStart+"–"+(sheetStart+count-1)+". Verifica todas las respuestas antes de corregir.");
+    setOpticalNotes("Lectura experimental del bloque "+sheetStart+"–"+(sheetStart+count-1)+". Verifica todas las respuestas antes de corregir."); */
    }
   }catch(e){setError(e instanceof Error?e.message:"No se pudo leer la hoja");}finally{setOpticalBusy(false);}
  }
