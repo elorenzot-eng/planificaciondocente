@@ -10,8 +10,8 @@ export default function CienciasPaes(){
  const [full,setFull]=useState(false),[saveMessage,setSaveMessage]=useState(""),[elective,setElective]=useState<Electivo>("Biología"),[difficulty,setDifficulty]=useState("Media"),[jobId,setJobId]=useState<string|null>(null),[progress,setProgress]=useState(0),[busy,setBusy]=useState(false),[result,setResult]=useState<Result|null>(null);
  const total=full?80:12;
  const storageKey=`educantay-paes-ciencias-${full?"80":"12"}-${elective}-${difficulty}`;
- useEffect(()=>{try{const saved=window.localStorage.getItem(storageKey);if(saved){const data=JSON.parse(saved) as {jobId:string;progress:number};if(data.jobId&&Number.isInteger(data.progress)&&data.progress>=0&&data.progress<=total){setJobId(data.jobId);setProgress(data.progress);}}}catch{/* La generación puede iniciarse de nuevo. */}},[storageKey,total]);
- function reset(){setSaveMessage("");try{window.localStorage.removeItem(storageKey);}catch{/* Almacenamiento no disponible. */}setJobId(null);setProgress(0);setResult(null);}
+ useEffect(()=>{setJobId(null);setProgress(0);setResult(null);try{const saved=window.localStorage.getItem(storageKey);if(saved){const data=JSON.parse(saved) as {jobId:string;progress:number};if(data.jobId&&Number.isInteger(data.progress)&&data.progress>=0&&data.progress<=total){setJobId(data.jobId);setProgress(data.progress);}}}catch{/* La generación puede iniciarse de nuevo. */}},[storageKey,total]);
+ function reset(){setSaveMessage("");setJobId(null);setProgress(0);setResult(null);}
  async function generate(){
   if(busy)return;setBusy(true);setResult(null);let current=jobId;
   try{
