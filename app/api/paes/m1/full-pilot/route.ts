@@ -29,6 +29,10 @@ export async function POST(request:NextRequest){
    const exam:M1Exam={version:M1_FULL_CONFIG.version,items:job.items as unknown as M1Item[]};
    const errors=validateM1Full(exam);
    if(errors.length)throw new Error("Validación final: "+errors.join(" | ").slice(0,400));
+   // Older jobs can reach 65/65 while still PENDING; finalize only after validation.
+   if(job.status!=="COMPLETED"){
+    await prisma.paesInternalJob.updateMany({where:{id:job.id,userId:session.id as string,nextPart:65,status:{in:["PENDING","RUNNING"]}},data:{status:"COMPLETED",error:null}});
+   }
    const studentHtml=createM1Print(exam,false),teacherHtml=createM1Print(exam,true);
    await chargeCompletedPaes(session!.id as string,job.id);
    return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:65,total:65,count:65,exam,studentHtml,teacherHtml},{headers:{"Cache-Control":"no-store"}});
