@@ -2,7 +2,8 @@
 import Link from "next/link";
 import {useEffect,useState} from "react";
 type Summary={course:string;subject:string;attempts:number;students:number;accuracyPercent:number|null};
-type Report={totalAttempts:number;uniqueStudents:number;summary:Summary[];error?:string};
+type Dimension={kind:string;name:string;questions:number;accuracyPercent:number};
+type Report={totalAttempts:number;uniqueStudents:number;summary:Summary[];dimensionSummary:Dimension[];error?:string};
 export default function PaesAnalytics(){
  const [data,setData]=useState<Report|null>(null),[error,setError]=useState(""),[loading,setLoading]=useState(true);
  useEffect(()=>{fetch("/api/paes/analytics",{cache:"no-store"}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error||"No se pudo cargar.");setData(d);}).catch(e=>setError(e instanceof Error?e.message:"Error de conexión")).finally(()=>setLoading(false));},[]);
@@ -11,6 +12,7 @@ export default function PaesAnalytics(){
  {loading&&<p role="status">Cargando resultados…</p>}{error&&<p role="alert">{error}</p>}
  {data&&<><div style={{display:"flex",gap:16,flexWrap:"wrap"}}><section style={{padding:20,background:"white",borderRadius:14}}><strong>Evaluaciones registradas</strong><h2>{data.totalAttempts}</h2></section><section style={{padding:20,background:"white",borderRadius:14}}><strong>Estudiantes evaluados</strong><h2>{data.uniqueStudents}</h2></section></div>
  {data.summary.length===0?<p>No existen resultados PAES registrados para este establecimiento. Primero se deben corregir y guardar las hojas de respuestas.</p>:<div style={{overflowX:"auto",background:"white",borderRadius:14,marginTop:24,padding:16}}><table style={{width:"100%",borderCollapse:"collapse",textAlign:"left"}}><thead><tr><th>Curso</th><th>Prueba</th><th>Evaluaciones</th><th>Estudiantes</th><th>Respuestas correctas</th></tr></thead><tbody>{data.summary.map((r,i)=><tr key={i}>{[r.course,r.subject,r.attempts,r.students,r.accuracyPercent===null?"Sin datos":r.accuracyPercent+"%"].map((v,j)=><td key={j} style={{padding:"12px 8px",borderTop:"1px solid #e2e8f0"}}>{v}</td>)}</tr>)}</tbody></table></div>}
+ {data.dimensionSummary?.length>0&&<section style={{marginTop:24,padding:20,background:"white",borderRadius:14}}><h2>Habilidades y contenidos que requieren atención</h2><p>Ordenados por porcentaje de respuestas correctas, de menor a mayor. Solo se incluyen dimensiones con registros válidos.</p>{data.dimensionSummary.slice(0,12).map((d,i)=><div key={i} style={{marginBottom:16}}><strong>{d.kind}: {d.name}</strong><p style={{margin:"4px 0"}}>{d.accuracyPercent}% de respuestas correctas · {d.questions} respuestas evaluadas</p><div style={{height:12,background:"#e2e8f0",borderRadius:10,overflow:"hidden"}}><div style={{height:"100%",width:d.accuracyPercent+"%",background:"#0B9DAD"}}/></div></div>)}</section>}
  <p style={{fontSize:13,color:"#64748b"}}>El porcentaje corresponde a respuestas correctas sobre preguntas respondidas, no a un puntaje DEMRE ni a un nivel de logro oficial.</p></>}
  </main>;
 }
