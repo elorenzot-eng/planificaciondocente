@@ -154,6 +154,16 @@ export default function RecursosAprendizajePage() {
       {resource && <article className="print-content" style={{ marginTop: 20, padding: 18, border: "1px solid #d6e1e7", borderRadius: 12 }}>
         <div className={moduleId==="precursores"||moduleId==="cuadernillos"||moduleId==="fluidez"?"workbook-cover":""}><div><p className={moduleId.startsWith("simce")?"no-print":""} style={{fontWeight:700,color:"#008f98",letterSpacing:2}}>EDUCANTAY · RECURSOS DE APRENDIZAJE</p><h3>{resource.title}</h3>{(moduleId==="precursores"||moduleId==="cuadernillos"||moduleId==="fluidez") && <><h2 style={{fontSize:30,color:"#15324b"}}>CUADERNILLO DE {moduleId==="precursores"?"PRECURSORES DE LA LECTURA":moduleId==="fluidez"?"FLUIDEZ LECTORA":"COMPRENSIÓN DE LECTURA"}</h2><p style={{fontSize:26,color:"#00a6a6",fontWeight:700}}>2° básico</p></>}</div>{(moduleId==="precursores"||moduleId==="cuadernillos"||moduleId==="fluidez") && <div><p>Mi nombre es: ____________________________________</p><p>Mi curso es: __________________</p></div>}</div>{(moduleId==="precursores"||moduleId==="cuadernillos") && resource.studentInstructions && <section className="workbook-instructions"><h3>INSTRUCCIONES</h3><p style={{whiteSpace:"pre-wrap",lineHeight:1.8}}>{resource.studentInstructions}</p></section>}<p>{resource.introduction}</p>
         <div className="no-print"><label>Título editable <input value={resource.title || ""} onChange={e=>{setResource({...resource,title:e.target.value});setSavedMessage("");}} /></label></div>
+        {moduleId.startsWith("simce") && <div className="no-print" style={{margin:"18px 0",padding:"16px 18px",border:"1px solid #d6e1e7",borderRadius:12,background:"#f4f9fc"}}>
+          <p style={{margin:"0 0 12px",color:"#173752"}}>{resource.teacherNotes}</p>
+          <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
+            <button type="button" disabled={saving} onClick={saveResource}>{saving ? "Guardando…" : "Guardar borrador"}</button>
+            <button type="button" onClick={() => printVersion(false)}>Imprimir estudiante / guardar PDF</button>
+            <button type="button" onClick={() => printVersion(true)}>Imprimir profesor / guardar PDF</button>
+          </div>
+          {savedMessage && <p role="status">{savedMessage}</p>}
+        </div>}
+        {!moduleId.startsWith("simce") && <>{notes}{controls}</>}
         {(moduleId.startsWith("simce") ? Array.from({length:Math.ceil((resource.activities?.length||0)/5)},(_:unknown,g:number)=>resource.activities.slice(g*5,g*5+5)) : [resource.activities||[]]).map((group:any[],groupIndex:number)=><div className={moduleId.startsWith("simce") ? `simce-page-group ${groupIndex===0 ? "simce-first-group" : ""}` : ""}>{group.map((a:any,localIndex:number)=>{const i=groupIndex*5+localIndex;return <section key={i} className={`workbook-activity${moduleId.startsWith("simce") ? " simce-question" : ""}`} style={{ padding: 12, borderBottom: "1px solid #ddd" }}>
           {(moduleId==="cuadernillos"||moduleId==="reforzamiento") && a.passageId && resource.passages?.find((p:any)=>p.id===a.passageId) && !resource.activities.slice(0,i).some((prev:any)=>prev.passageId===a.passageId) && <div style={{border:"1px solid #a9c9d2",borderRadius:14,padding:20,marginBottom:18,background:"#fff"}}><p style={{color:"#007e90",fontWeight:700}}>Lee el siguiente texto y responde las preguntas.</p><h3>{resource.passages.find((p:any)=>p.id===a.passageId).title}</h3><p style={{whiteSpace:"pre-wrap",lineHeight:1.8,fontSize:17}}>{resource.passages.find((p:any)=>p.id===a.passageId).text}</p>{resource.passages.find((p:any)=>p.id===a.passageId).illustrationDescription && <p className="no-print" style={{fontSize:12,color:"#6b7280"}}>Ilustración pendiente: {resource.passages.find((p:any)=>p.id===a.passageId).illustrationDescription}</p>}</div>}
           <h4>{moduleId.startsWith("simce") ? `Pregunta ${i+1}` : `Actividad ${i+1}: ${a.skill}`}</h4>{a.stimulus && !(moduleId==="precursores" && /imagen|ilustraci[oó]n|dibujo/i.test(a.stimulus)) && <p>{a.stimulus}</p>}<p><strong>{a.question}</strong></p>{moduleId==="precursores" && a.stimulus && /imagen|ilustraci[oó]n|dibujo/i.test(a.stimulus) && <div className="ea-workbook-visual" role="img" aria-label={a.stimulus}>{findVisual(a.stimulus)||"🖼️"}</div>}
@@ -185,7 +195,7 @@ export default function RecursosAprendizajePage() {
            <small>Resultado del ensayo, no puntaje oficial SIMCE. Preguntas sin responder cuentan como incorrectas.</small>
         </section>}
         {moduleId.startsWith("simce") && Array.isArray(resource.specificationTable) && <section className="print-answers" style={{marginTop:18}}><h3>Hoja de respuestas del docente — habilidades y ejes curriculares</h3><p>Clave de corrección, habilidad evaluada, eje curricular y referencia OA de cada pregunta. Documento de uso docente, no puntaje oficial SIMCE.</p><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>{["Ítem","Eje curricular","OA / referencia curricular","Habilidad evaluada","Dificultad","Puntos","Respuesta correcta"].map(x=><th key={x} style={{border:"1px solid #ccc",padding:5}}>{x}</th>)}</tr></thead><tbody>{resource.specificationTable.map((r:any,i:number)=><tr key={i}>{[r.number,r.curricularAxis,r.learningObjective,r.skill,r.difficulty,r.points,r.correctAnswer].map((v:any,j:number)=><td key={j} style={{border:"1px solid #ccc",padding:5}}>{v}</td>)}</tr>)}</tbody></table></div></section>}
-        <div className="print-answers"><p>{resource.teacherNotes}</p></div>
+        
         {moduleId.startsWith("simce") && printBubbleSheet && <section className="ea-bubble-sheet" aria-label="Hoja de respuestas con óvalos" style={{background:"#fff",padding:24,marginTop:20}}>
           <h2 style={{textAlign:"center",color:"#15324b"}}>HOJA DE RESPUESTAS · ENSAYO SIMCE</h2>
           <p style={{textAlign:"center"}}>{moduleId==="simce-lectura"?"Lectura":"Matemática"} · {grade==="10"?"2° medio":`${grade}° básico`}</p>
@@ -196,10 +206,7 @@ export default function RecursosAprendizajePage() {
           </div>
         </section>}
 
-        <div className="no-print"><button type="button" disabled={saving} onClick={saveResource}>{saving ? "Guardando…" : "Guardar borrador"}</button>{" "}
-        <button type="button" onClick={() => printVersion(false)}>Imprimir estudiante / guardar PDF</button>{" "}
-        <button type="button" onClick={() => printVersion(true)}>Imprimir profesor / guardar PDF</button>
-        {savedMessage && <p role="status">{savedMessage}</p>}</div>
+        
       </article>}
       <p className="no-print"><small>Los ensayos tipo SIMCE son originales y no oficiales. La exportación PDF se realiza mediante la opción «Guardar como PDF» del navegador. Los resultados por estudiante aún no están disponibles.</small></p>
     </section>
