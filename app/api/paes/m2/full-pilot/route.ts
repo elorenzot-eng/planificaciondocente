@@ -29,6 +29,7 @@ export async function POST(request:NextRequest){
    const exam:M2Exam={version:M2_FULL_CONFIG.version,items:job.items as unknown as M2Item[]};
    const errors=validateM2Full(exam);
    if(errors.length)throw new Error("Validación final: "+errors.join(" | ").slice(0,400));
+   if(job.status!=="COMPLETED"){await prisma.paesInternalJob.updateMany({where:{id:job.id,userId:session.id as string,nextPart:55,status:{in:["PENDING","RUNNING"]}},data:{status:"COMPLETED",error:null}});}
    const studentHtml=createM2Print(exam,false),teacherHtml=createM2Print(exam,true);
    await chargeCompletedPaes(session!.id as string,job.id);
    return NextResponse.json({jobId:job.id,status:"COMPLETED",completed:55,total:55,count:55,exam,studentHtml,teacherHtml},{headers:{"Cache-Control":"no-store"}});
