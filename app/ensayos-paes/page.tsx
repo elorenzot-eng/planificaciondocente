@@ -69,6 +69,7 @@ export default function EnsayosPaes(){
  <Link className="paes-tool" href="/ensayos-paes/corrector/cargar" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><strong>Cargar JPG, PNG o PDF</strong><small>Revisar hojas escaneadas. La lectura óptica automática requiere validación.</small><span>Cargar archivo →</span></Link>
 <Link className="paes-tool" href="/ensayos-paes/corrector" style={{background:"#F4F0FD",borderLeft:"5px solid #8650C7"}}><strong>Corrector PAES</strong><small>Seleccionar ensayo guardado, ingresar respuestas y calcular resultados.</small><span>Abrir corrector →</span></Link>
  </div></section>
+ <div style={{marginTop:18}}><Link className="paes-folder" href="/ensayos-paes/analitica">📊 Analítica institucional PAES · resultados e informe pedagógico</Link></div>
  <p className="paes-note">Los ensayos son material de práctica de EducAntay generado con IA. No corresponden a pruebas oficiales del DEMRE. La configuración específica se realiza dentro de cada generador.</p>
  </div></main>;
 }
