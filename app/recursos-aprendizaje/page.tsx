@@ -207,6 +207,10 @@ export default function RecursosAprendizajePage() {
         </section>}
 
         
+        {!moduleId.startsWith("simce") && <>{/* Non-SIMCE guidance and actions remain at end */}<div className="print-answers"><p>{resource.teacherNotes}</p></div><div className="no-print"><button type="button" disabled={saving} onClick={saveResource}>{saving ? "Guardando…" : "Guardar borrador"}</button>{" "}
+        <button type="button" onClick={() => printVersion(false)}>Imprimir estudiante / guardar PDF</button>{" "}
+        <button type="button" onClick={() => printVersion(true)}>Imprimir profesor / guardar PDF</button>
+        {savedMessage && <p role="status">{savedMessage}</p>}</div></>}
       </article>}
       <p className="no-print"><small>Los ensayos tipo SIMCE son originales y no oficiales. La exportación PDF se realiza mediante la opción «Guardar como PDF» del navegador. Los resultados por estudiante aún no están disponibles.</small></p>
     </section>
