@@ -1,0 +1,27 @@
+name: PAES math recovery tests
+on:
+  pull_request:
+    paths:
+      - 'app/ensayos-paes/m1/piloto/page.tsx'
+      - 'app/ensayos-paes/m2/piloto/page.tsx'
+      - 'app/api/paes/m1/**'
+      - 'app/api/paes/m2/**'
+      - 'tests/paes-math-recovery.test.cjs'
+      - '.github/workflows/paes-math-recovery.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'app/ensayos-paes/m1/piloto/page.tsx'
+      - 'app/ensayos-paes/m2/piloto/page.tsx'
+      - 'app/api/paes/m1/**'
+      - 'app/api/paes/m2/**'
+      - 'tests/paes-math-recovery.test.cjs'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/paes-math-recovery.test.cjs
