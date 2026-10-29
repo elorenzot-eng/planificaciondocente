@@ -12,7 +12,21 @@ export default function CorrectorPaes(){
  useEffect(()=>{if(!examId){setAnswers([]);return}fetch("/api/paes/corrector/count?id="+encodeURIComponent(examId)).then(r=>r.json()).then(d=>{if(!d.questionCount){setError(d.error||"Ensayo no disponible");return}const count=d.questionCount;setAnswers(Array(Math.min(count,100)).fill(""));setResult(null);setError(count?"":"No se pudo determinar el número de preguntas")}).catch(()=>setError("Error al abrir ensayo"))},[examId]);
  async function grade(){setBusy(true);setError("");try{const r=await fetch("/api/paes/corrector",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({examId,answers,...(studentId?{studentId}:{})})});const d=await r.json();if(!r.ok)throw Error(d.error||"Error al corregir");setResult(d)}catch(e){setError(e instanceof Error?e.message:"Error")}finally{setBusy(false)}}
  const categories=[{id:"LECTORA",name:"Competencia Lectora",icon:"📖",tone:"#0c8495"},{id:"M1",name:"Matemática M1",icon:"∑",tone:"#6154b9"},{id:"M2",name:"Matemática M2",icon:"π",tone:"#2364b4"},{id:"CIENCIAS",name:"Ciencias",icon:"⚗",tone:"#0b8c83"},{id:"HISTORIA",name:"Historia y Ciencias Sociales",icon:"🌎",tone:"#b67c15"}];
- const classify=(e:Exam)=>{const x=(e.examType+" "+e.title).toUpperCase();if(/LECTORA|COMPRENSI.O.N LECTORA/.test(x))return "LECTORA";if(/MATEM.TICA M2|\\bM2\\b/.test(x))return "M2";if(/MATEM.TICA M1|\\bM1\\b/.test(x))return "M1";if(/CIENCIAS|BIOLOG.A|QU.MICA|F.SICA/.test(x))return "CIENCIAS";if(/HISTORIA|SOCIALES/.test(x))return "HISTORIA";return ""};
+ const classify=(e:Exam)=>{
+  const kind=e.examType.trim().toUpperCase();
+  if(kind==="HISTORIA"||kind==="HISTORY")return "HISTORIA";
+  if(kind==="CIENCIAS"||kind==="SCIENCE")return "CIENCIAS";
+  if(kind==="M1")return "M1";
+  if(kind==="M2")return "M2";
+  if(kind==="LECTORA"||kind==="COMPETENCIA_LECTORA")return "LECTORA";
+  const title=e.title.toUpperCase();
+  if(/HISTORIA|CIENCIAS SOCIALES/.test(title))return "HISTORIA";
+  if(/COMPETENCIA LECTORA|COMPRENSI.N LECTORA/.test(title))return "LECTORA";
+  if(/MATEM.TICA M2|\\bM2\\b/.test(title))return "M2";
+  if(/MATEM.TICA M1|\\bM1\\b/.test(title))return "M1";
+  if(/CIENCIAS|BIOLOG.A|QU.MICA|F.SICA/.test(title))return "CIENCIAS";
+  return "";
+ };
  const available=exams.filter(e=>classify(e)===category).sort((a,b)=>{const ta=a.createdAt?Date.parse(a.createdAt):0,tb=b.createdAt?Date.parse(b.createdAt):0;return tb-ta;});
  const formatExamDate=(value?:string)=>{if(!value)return "Fecha no disponible";const d=new Date(value);return Number.isNaN(d.getTime())?"Fecha no disponible":new Intl.DateTimeFormat("es-CL",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"America/Santiago"}).format(d)};
  const examVersions=new Map<string,number>();const examLabels=new Map<string,string>();for(const exam of [...available].reverse()){const key=exam.examType+"|"+exam.title;const version=(examVersions.get(key)||0)+1;examVersions.set(key,version);examLabels.set(exam.id,exam.title+" · Ensayo "+version+" · "+formatExamDate(exam.createdAt));}
