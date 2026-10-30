@@ -240,14 +240,22 @@ export default function RecursosAprendizajePage() {
         </section>}
         {moduleId.startsWith("simce") && Array.isArray(resource.specificationTable) && <section className="print-answers" style={{marginTop:18}}><h3>Hoja de respuestas del docente — habilidades y ejes curriculares</h3><p>Clave de corrección, habilidad evaluada, eje curricular y referencia OA de cada pregunta. Documento de uso docente, no puntaje oficial SIMCE.</p><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>{["Ítem","Eje curricular","OA / referencia curricular","Habilidad evaluada","Dificultad","Puntos","Respuesta correcta"].map(x=><th key={x} style={{border:"1px solid #ccc",padding:5}}>{x}</th>)}</tr></thead><tbody>{resource.specificationTable.map((r:any,i:number)=><tr key={i}>{[r.number,r.curricularAxis,r.learningObjective,r.skill,r.difficulty,r.points,r.correctAnswer].map((v:any,j:number)=><td key={j} style={{border:"1px solid #ccc",padding:5}}>{v}</td>)}</tr>)}</tbody></table></div></section>}
         
-        {moduleId.startsWith("simce") && printBubbleSheet && <section className="ea-bubble-sheet" aria-label="Hoja de respuestas con óvalos" style={{background:"#fff",padding:24,marginTop:20}}>
-          <h2 style={{textAlign:"center",color:"#15324b"}}>HOJA DE RESPUESTAS · ENSAYO SIMCE</h2>
-          <p style={{textAlign:"center"}}>{moduleId==="simce-lectura"?"Lectura":"Matemática"} · {grade==="10"?"2° medio":`${grade}° básico`}</p>
-          <div style={{display:"grid",gap:12,margin:"25px 0"}}><div>Nombre completo: __________________________________________________</div><div>Curso: ________________________ &nbsp; RUT: ______________________________</div></div>
-          <p style={{fontSize:13}}>Marca completamente un solo óvalo por pregunta.</p>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:"10px 28px"}}>
-            {(resource.activities||[]).map((_:any,i:number)=><div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #d6e1e7",padding:"9px 4px",breakInside:"avoid"}}><strong>{i+1}.</strong><span style={{display:"flex",gap:14}}>{["A","B","C","D"].map(letter=><span key={letter} style={{whiteSpace:"nowrap",fontSize:14}}><span style={{display:"inline-block",border:"1.5px solid #15324b",borderRadius:"50%",width:18,height:18,verticalAlign:"middle",marginRight:4}}/> {letter}</span>)}</span></div>)}
+        {moduleId.startsWith("simce") && printBubbleSheet && <section className="ea-bubble-sheet" aria-label="Hoja de respuestas con óvalos" data-omr-version={`simce-${moduleId}-${resource.activities.length}-v2`} style={{position:"relative",background:"#fff",color:"#111",padding:"13mm 7mm 8mm",margin:"20px auto",width:"190mm",minHeight:"277mm",boxSizing:"border-box",breakInside:"avoid",fontFamily:"Arial,sans-serif"}}>
+          {["top-left","top-right","bottom-left","bottom-right"].map((corner,i)=><span key={corner} aria-hidden="true" style={{position:"absolute",width:"6mm",height:"6mm",background:"#000",...(i<2?{top:"2mm"}:{bottom:"2mm"}),...(i%2===0?{left:"2mm"}:{right:"2mm"})}}/>)}
+          <h2 style={{fontSize:"15pt",margin:"0 0 3mm",color:"#111"}}>EDUCANTAY · Hoja de respuestas SIMCE</h2>
+          <p style={{fontSize:"9pt",margin:"2mm 0"}}>{moduleId==="simce-lectura"?"Lectura":"Matemática"} · {grade==="10"?"2° medio":`${grade}° básico`} · {resource.activities.length} preguntas</p>
+          <p style={{fontSize:"9pt",margin:"2mm 0"}}>Marca completamente un solo óvalo por pregunta.</p>
+          <div style={{fontSize:"10pt",lineHeight:2.4,margin:"7mm 0 5mm"}}>Nombre: _______________________________________<div>RUT: __________________ · Curso: __________ · Fecha: ______________</div></div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:"5mm",marginTop:"6mm"}}>
+            {[0,Math.ceil(resource.activities.length/3),Math.ceil(resource.activities.length/3)*2].map(start=><div key={start}>
+              {Array.from({length:Math.max(0,Math.min(Math.ceil(resource.activities.length/3),resource.activities.length-start))},(_,offset)=>{const number=start+offset+1;return <div data-question={number} key={number} style={{height:"8mm",display:"flex",alignItems:"center",gap:"1.5mm",borderBottom:"0.2mm solid #ddd",whiteSpace:"nowrap",breakInside:"avoid"}}>
+                <span style={{fontSize:"9pt",fontWeight:"bold",width:"7mm"}}>{String(number).padStart(2,"0")}</span>
+                {["A","B","C","D"].map(letter=><span key={letter} style={{display:"flex",alignItems:"center",gap:".4mm",fontSize:"7pt"}}><svg viewBox="0 0 18 18" width="18" height="18" style={{width:"5mm",height:"5mm"}} aria-label={letter}><ellipse cx="9" cy="9" rx="6.5" ry="7" fill="white" stroke="black" strokeWidth="1.2"/></svg>{letter}</span>)}
+              </div>;})}
+            </div>)}
           </div>
+          <p style={{fontSize:"9pt",marginTop:"7mm"}}>Rellena completamente el óvalo elegido con lápiz oscuro. No dobles ni recortes las marcas negras.</p>
+          <span style={{position:"absolute",bottom:"10mm",fontSize:"7pt"}}>Imprimir al 100 % · A4 · Sin ajustar a página · Hoja preparada para calibración OMR</span>
         </section>}
 
         
