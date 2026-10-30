@@ -12,6 +12,11 @@ const MAX_BYTES = 10 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "application/pdf"]);
 export default function CargaHojaSimce() {
   const [file,setFile] = useState<File|null>(null);
+  const [batchFiles,setBatchFiles] = useState<File[]>([]);
+  const [batchResults,setBatchResults] = useState<{filename:string;status:"leída"|"revisar"|"error";correct:number|null;total:number;review:number;message:string}[]>([]);
+  const [batchBusy,setBatchBusy] = useState(false);
+  const [batchDone,setBatchDone] = useState(0);
+
   const [error,setError] = useState("");
   const [preview,setPreview] = useState<string|null>(null);
   const [total,setTotal] = useState(40);
@@ -91,6 +96,61 @@ export default function CargaHojaSimce() {
     }catch(e){setError(e instanceof Error?e.message:"No fue posible analizar la imagen");}
     finally{setBusy(false);}
   }
+
+  const selectBatch=(files:FileList|null)=>{
+    const selected=Array.from(files||[]);
+    if(selected.length>100){setError("Máximo 100 archivos por lote.");return;}
+    const invalid=selected.find(f=>!["jpg","jpeg","png","pdf"].includes(f.name.toLowerCase().split(".").pop()||"")||f.size<1||f.size>MAX_BYTES);
+    if(invalid){setError("Archivo no válido: "+invalid.name+". Usa JPG, PNG o PDF de hasta 10 MB.");return;}
+    setBatchFiles(selected);setBatchResults([]);setBatchDone(0);setError("");
+  };
+  const processBatch=async()=>{
+    if(!batchFiles.length||batchBusy)return;
+    if(!keyValid||key.length!==expectedQuestions||expectedQuestions<1||expectedQuestions>50){setError("Antes de procesar el lote, ingresa una pauta válida con el número exacto de respuestas (máximo 50).");return;}
+    setBatchBusy(true);setBatchDone(0);setBatchResults([]);setError("");
+    const output:typeof batchResults=[];
+    for(const fileItem of batchFiles){
+      try{
+        const canvas=document.createElement("canvas");
+        if(fileItem.name.toLowerCase().endsWith(".pdf")){
+          const pdfjs=await import("pdfjs-dist");
+          pdfjs.GlobalWorkerOptions.workerSrc=new URL("pdfjs-dist/build/pdf.worker.min.mjs",import.meta.url).toString();
+          const doc=await pdfjs.getDocument({data:new Uint8Array(await fileItem.arrayBuffer())}).promise;
+          try{
+            if(doc.numPages!==1)throw new Error("PDF de varias páginas: separar por estudiante antes de procesar.");
+            const page=await doc.getPage(1);const viewport=page.getViewport({scale:2});
+            canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+            const ctx=canvas.getContext("2d",{willReadFrequently:true});if(!ctx)throw new Error("No se pudo leer el PDF");
+            await page.render({canvasContext:ctx,viewport}).promise;
+          }finally{await doc.destroy();}
+        }else{
+          const bitmap=await createImageBitmap(fileItem);
+          try{canvas.width=bitmap.width;canvas.height=bitmap.height;const ctx=canvas.getContext("2d",{willReadFrequently:true});if(!ctx)throw new Error("No se pudo leer la imagen");ctx.drawImage(bitmap,0,0);}finally{bitmap.close();}
+        }
+        const ctx=canvas.getContext("2d",{willReadFrequently:true});if(!ctx)throw new Error("No se pudo procesar la hoja");
+        const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
+        const aligned=autoAlign?rectifySheet(pixels,detectRegistrationCorners(pixels.data,canvas.width,canvas.height)):pixels;
+        const rows=buildSimceGrid(expectedQuestions,{
+          firstColumnA:{x:cal.leftX*aligned.width,y:cal.leftY*aligned.height},
+          secondColumnA:{x:cal.rightX*aligned.width,y:cal.rightY*aligned.height},
+          bubbleSpacing:cal.spacing*aligned.width,rowSpacing:cal.rowSpacing*aligned.height,
+          bubbleRadius:cal.radius*Math.min(aligned.width,aligned.height),leftRows:Math.ceil(expectedQuestions/2)
+        },aligned.width,aligned.height);
+        const reading=readCalibratedSheet({data:aligned.data,width:aligned.width,height:aligned.height},rows);
+        const pending=reading.reviewNumbers.length;
+        const correctCount=reading.answers.filter(a=>a.mark===key[a.number-1]).length;
+        output.push({filename:fileItem.name,status:pending?"revisar":"leída",correct:pending?null:correctCount,total:expectedQuestions,review:pending,message:pending?"Marcas dudosas: revisar individualmente":"Lectura preliminar; validar identidad y respuestas"});
+      }catch(e){output.push({filename:fileItem.name,status:"error",correct:null,total:expectedQuestions,review:0,message:e instanceof Error?e.message:"Error de lectura"});}
+      setBatchResults([...output]);setBatchDone(output.length);
+    }
+    setBatchBusy(false);
+  };
+  const exportBatch=()=>{
+    const safe=(v:string)=>'"'+v.replace(/"/g,'""')+'"';
+    const lines=["Archivo;Estado;Aciertos preliminares;Preguntas;Marcas dudosas;Observación",...batchResults.map(r=>[safe(r.filename),r.status,r.correct??"",r.total,r.review,safe(r.message)].join(";"))];
+    const url=URL.createObjectURL(new Blob(["\\uFEFF".replace("\\uFEFF","\uFEFF")+lines.join("\r\n")],{type:"text/csv;charset=utf-8"}));
+    const link=document.createElement("a");link.href=url;link.download="lote-simce-revision.csv";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
   const newStudent = () => {
     setPages([]);setCorrections({});setConfirmedReview(false);setStudentId("");setResult(null);setFile(null);setPreview(null);setQuality(null);setError("");setFirstQuestion(1);
   };
@@ -141,6 +201,15 @@ export default function CargaHojaSimce() {
   return <main style={{maxWidth:780,margin:"auto",padding:24,fontFamily:"Arial,sans-serif",color:"#173752"}}>
     <a href="/ensayos-simce/corrector" style={{color:"#087f91"}}>← Volver al corrector</a>
     <h1>Cargar hoja de respuestas SIMCE</h1>
+    <section style={{background:"#edf8fa",border:"1px solid #a7d6dc",padding:18,borderRadius:12,marginBottom:20}}>
+      <h2>Carga masiva de hojas · revisión docente</h2>
+      <p>Selecciona hasta 100 archivos JPG, PNG o PDF, uno por estudiante. Cada PDF debe contener una sola página. La lectura se procesa secuencialmente en el navegador; no guarda calificaciones automáticamente.</p>
+      <label>Archivos del lote <input type="file" multiple accept={ACCEPT} disabled={batchBusy} onChange={e=>selectBatch(e.target.files)}/></label>
+      <p>Seleccionados: {batchFiles.length}. Para el lote se utilizarán {expectedQuestions} preguntas y la clave ingresada en el apartado de corrección de esta página.</p>
+      <button type="button" disabled={batchBusy||!batchFiles.length} onClick={processBatch} style={{background:"#087f91",color:"white",padding:"10px 16px",border:0,borderRadius:8}}>{batchBusy?"Procesando…":"Leer lote"}</button>
+      {(batchBusy||batchDone>0)&&<p role="status">Procesadas {batchDone} de {batchFiles.length} hojas ({batchFiles.length?Math.round(batchDone/batchFiles.length*100):0}%).</p>}
+      {batchResults.length>0&&<><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",marginTop:12}}><thead><tr><th>Archivo</th><th>Estado</th><th>Aciertos preliminares</th><th>Observación</th></tr></thead><tbody>{batchResults.map((r,i)=><tr key={i}><td>{r.filename}</td><td>{r.status}</td><td>{r.correct===null?"Pendiente":r.correct+" / "+r.total}</td><td>{r.message}</td></tr>)}</tbody></table></div><button type="button" onClick={exportBatch} style={{marginTop:12,padding:10}}>Exportar resumen del lote (CSV)</button><p style={{fontSize:12}}>Los resultados son preliminares. Para guardar una nota institucional, valida la identidad y las marcas de cada estudiante con el corrector individual. No se asigna un puntaje SIMCE oficial.</p></>}
+    </section>
     <p>Admite JPG, PNG y PDF (máximo 10 MB). En PDF se procesa una página a la vez. La lectura experimental permite alineación mediante las marcas de registro.</p>
     <section style={{border:"2px dashed #39aeb7",background:"#f2fbfb",padding:24,borderRadius:14}}>
       <input type="file" accept={ACCEPT} onChange={e=>choose(e.target.files?.[0])} aria-label="Seleccionar hoja de respuestas"/>
