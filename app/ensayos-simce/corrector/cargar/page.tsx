@@ -148,7 +148,7 @@ export default function CargaHojaSimce() {
   const exportBatch=()=>{
     const safe=(v:string)=>'"'+v.replace(/"/g,'""')+'"';
     const lines=["Archivo;Estado;Aciertos preliminares;Preguntas;Marcas dudosas;Observación",...batchResults.map(r=>[safe(r.filename),r.status,r.correct??"",r.total,r.review,safe(r.message)].join(";"))];
-    const url=URL.createObjectURL(new Blob(["\\uFEFF".replace("\\uFEFF","\uFEFF")+lines.join("\r\n")],{type:"text/csv;charset=utf-8"}));
+    const url=URL.createObjectURL(new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"}));
     const link=document.createElement("a");link.href=url;link.download="lote-simce-revision.csv";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   };
   const newStudent = () => {
