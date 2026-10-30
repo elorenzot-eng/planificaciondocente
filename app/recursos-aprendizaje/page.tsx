@@ -83,7 +83,7 @@ export default function RecursosAprendizajePage() {
       const response = await fetch("/api/recursos-aprendizaje/generar", {
         method:"POST",
         headers:{"Content-Type":"application/json",...(isSimce?{"x-simce-progress":"ndjson"}:{})},
-        body:JSON.stringify({moduleId,grade,difficulty,quantity,oa:isSimce ? availableOA.map(x=>`${x.code} (${x.axis}): ${x.text}`).join("\\n") : "",mode})
+        body:JSON.stringify({moduleId,grade,difficulty,quantity,oa:isSimce ? availableOA.map(x=>`${x.code} (${x.axis}): ${x.text}`).join("\n") : "",mode})
       });
       if (!isSimce) {
         const data = await response.json();
@@ -114,11 +114,11 @@ export default function RecursosAprendizajePage() {
             const {done,value} = await reader.read();
             if (done) break;
             pending += decoder.decode(value,{stream:true});
-            let newline = pending.indexOf("\\n");
+            let newline = pending.indexOf("\n");
             while (newline >= 0) {
               handleLine(pending.slice(0,newline));
               pending = pending.slice(newline+1);
-              newline = pending.indexOf("\\n");
+              newline = pending.indexOf("\n");
             }
           }
           pending += decoder.decode();
