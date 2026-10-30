@@ -27,7 +27,7 @@ export default function RecursosAprendizajePage() {
   useEffect(() => { const q = new URLSearchParams(window.location.search); const m=q.get("modulo"); const g=q.get("nivel"); if (m && modules.some(x=>x.id===m)) setModuleId(m as ModuleKey); if(["4","6","8","10"].includes(g||"")) setGrade(g!); }, []);
   const [printBubbleSheet, setPrintBubbleSheet] = useState(false);
   const [difficulty, setDifficulty] = useState("Intermedio");
-  const [quantity, setQuantity] = useState(10);
+  const [quantity, setQuantity] = useState(35);
   const [oa, setOa] = useState("");
   const [selectedOaIds, setSelectedOaIds] = useState<string[]>([]);
   const [customOaText, setCustomOaText] = useState("");
@@ -129,6 +129,10 @@ export default function RecursosAprendizajePage() {
     } catch (e) { setError(e instanceof Error ? e.message : "No se pudo generar"); }
     finally { setLoading(false); }
   }
+  useEffect(() => {
+    if (!moduleId.startsWith("simce")) return;
+    setQuantity(grade==="4" ? (moduleId==="simce-lectura"?35:36) : grade==="6" ? 35 : grade==="8" ? 40 : (moduleId==="simce-lectura"?43:41));
+  },[grade,moduleId]);
   const selected = useMemo(() => modules.find(m => m.id === moduleId)!, [moduleId]);
   const availableOA = useMemo(() => curriculumOA.filter(x => x.level === (grade==="10"?"2° Medio":`${grade}° Básico`) && x.subject === (moduleId === "simce-matematica" ? "Matemática" : "Lenguaje y Comunicación / Lengua y Literatura") && x.status === "official"), [grade,moduleId]);
   useEffect(()=>{setSelectedOaIds([]);setSelectedCustomOa([]);setCustomOaText("");},[grade,moduleId]);
@@ -179,7 +183,7 @@ export default function RecursosAprendizajePage() {
           <label>Dificultad<select value={difficulty} onChange={e=>setDifficulty(e.target.value)}><option>Inicial</option><option>Intermedio</option><option>Avanzado</option><option>Mixta</option></select></label>
         </div>
         <div className="ea-config-tile" style={{background:"#f8f3fd",borderLeft:"5px solid #9855d4"}}>
-          <label>Cantidad de preguntas<input type="number" min={1} max={40} value={quantity} onChange={e=>setQuantity(Math.max(1,Math.min(40,Number(e.target.value)||1)))}/></label>
+          <label>Cantidad de preguntas {moduleId.startsWith("simce") ? <select value={quantity} onChange={e=>setQuantity(Number(e.target.value))}>{(grade==="4" ? [moduleId==="simce-lectura"?35:36] : grade==="6" ? [30,31,32,33,34,35] : grade==="8" ? [35,36,37,38,39,40] : [moduleId==="simce-lectura"?43:41]).map(n=><option key={n} value={n}>{n} preguntas</option>)}</select> : <input type="number" min={1} max={40} value={quantity} onChange={e=>setQuantity(Math.max(1,Math.min(40,Number(e.target.value)||1)))}/>}</label>
         </div>
         <div className="ea-config-tile" style={{background:"#effbf6",borderLeft:"5px solid #12b981"}}>
           <strong style={{fontSize:16}}>{moduleId.startsWith("simce") ? "Ensayo automático por nivel" : "Cuadernillo automático de 2° básico"}</strong>
