@@ -64,7 +64,7 @@ export default function HojaRespuestasSimce() {
         <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel} · {asignatura}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div><div>Página: {pageIndex+1} de {Math.ceil(total/50)}</div><div>Preguntas: {first}–{first+count-1}</div></div>
         <div className="rut-bubbles" aria-label="RUT: ocho óvalos para el número y uno para el dígito verificador">
           <span className="rut-bubbles-label">RUT:</span>
-          {Array.from({length:8},(_,i)=><span key={i} className="rut-digit" aria-hidden="true"/>)}
+          {Array.from({length:8},(_,i)=><span key={i} style={{display:"inline-flex",alignItems:"center",gap:"1.3mm"}}><span className="rut-digit" aria-hidden="true"/>{(i===1||i===4)&&<span className="rut-separator">.</span>}</span>)}
           <span className="rut-separator">-</span>
           <span className="rut-digit" aria-hidden="true"/>
         </div>
