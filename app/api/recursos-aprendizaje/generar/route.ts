@@ -47,7 +47,7 @@ async function generateResource(request: Request, onProgress: (completed: number
   const quantity = Number(body.quantity);
   const mode = String(body.mode || "Práctica");
   const requestedGrade = String(body.grade || "4");
-  if (!allowed.some(x => x === moduleId) || !["Inicial","Intermedio","Avanzado","Mixta"].includes(difficulty) || !Number.isInteger(quantity) || quantity < 1 || quantity > 40 || !["Diagnóstico","Práctica","Simulacro"].includes(mode) || !["4","6","8","10"].includes(requestedGrade)) {
+  if (!allowed.some(x => x === moduleId) || !["Inicial","Intermedio","Avanzado","Mixta"].includes(difficulty) || !Number.isInteger(quantity) || quantity < 1 || quantity > (moduleId==="simce-lectura"&&requestedGrade==="10"?43:moduleId==="simce-matematica"&&requestedGrade==="10"?41:40) || !["Diagnóstico","Práctica","Simulacro"].includes(mode) || !["4","6","8","10"].includes(requestedGrade)) {
     return NextResponse.json({ error: "Parámetros fuera de rango." }, { status: 400 });
   }
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "Generación IA no configurada." }, { status: 503 });
@@ -159,7 +159,7 @@ async function generateResource(request: Request, onProgress: (completed: number
     } else {
       result=await generateBatch(quantity,0,0);
     }
-    if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 40) throw new Error("Invalid structure");
+    if (!result || typeof result.title !== "string" || !Array.isArray(result.activities) || result.activities.length === 0 || result.activities.length > 43) throw new Error("Invalid structure");
     if (simce && !normalizeSimceAnswers(result)) throw new Error("Invalid answer choices after normalization");
     if (simce) {
       if (result.activities.length !== quantity) throw new Error("Incorrect question count");
