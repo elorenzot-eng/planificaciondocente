@@ -32,6 +32,10 @@ export default function HojaRespuestasSimce() {
       .bubble-row{position:absolute;height:6mm;display:flex;align-items:center;gap:4mm;font-size:11px}
       .bubble-number{position:absolute;right:3mm;width:12mm;text-align:right;font-weight:bold}
       .bubble{position:absolute;top:0;width:6mm;height:6mm;box-sizing:border-box;border:0.35mm solid #172d3b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold}
+      .rut-bubbles{position:absolute;top:43mm;left:20mm;display:flex;align-items:center;gap:1.3mm;font-size:11px;font-weight:700}
+      .rut-bubbles-label{margin-right:3mm}
+      .rut-digit{display:inline-flex;align-items:center;justify-content:center;width:5mm;height:5mm;border:0.35mm solid #172d3b;border-radius:50%;box-sizing:border-box}
+      .rut-separator{font-size:15px;line-height:1;margin:0 0.3mm}
       .sheet-note{position:absolute;bottom:14mm;left:20mm;font-size:10px;color:#465b65}
       @media(max-width:600px){.sheet-fields{grid-template-columns:1fr}.sheet-page{padding:12px}.answer-sheet{transform-origin:top left;max-width:none}}
       @media print{@page{size:A4;margin:12mm}body{background:white!important}.sheet-config,.sheet-back,.sheet-intro{display:none!important}.sheet-page{padding:0;max-width:none}.answer-sheet{margin:0;break-after:page;page-break-after:always}.answer-sheet:last-child{break-after:auto;page-break-after:auto}}
@@ -58,6 +62,12 @@ export default function HojaRespuestasSimce() {
         {[[mm.fiducialLeft,mm.fiducialTop],[mm.fiducialRight,mm.fiducialTop],[mm.fiducialLeft,mm.fiducialBottom],[mm.fiducialRight,mm.fiducialBottom]].map(([x,y],i)=><span key={i} className="sheet-fiducial" style={{left:`${x-6}mm`,top:`${y-6}mm`}}/>)}
         <h2 className="sheet-title">EducAntay · Hoja de respuestas</h2>
         <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel} · {asignatura}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div><div>Página: {pageIndex+1} de {Math.ceil(total/50)}</div><div>Preguntas: {first}–{first+count-1}</div></div>
+        <div className="rut-bubbles" aria-label="RUT: ocho óvalos para el número y uno para el dígito verificador">
+          <span className="rut-bubbles-label">RUT:</span>
+          {Array.from({length:8},(_,i)=><span key={i} style={{display:"inline-flex",alignItems:"center",gap:"1.3mm"}}><span className="rut-digit" aria-hidden="true"/>{(i===1||i===4)&&<span className="rut-separator">.</span>}</span>)}
+          <span className="rut-separator">-</span>
+          <span className="rut-digit" aria-hidden="true"/>
+        </div>
         {[0,1].flatMap(column=>Array.from({length:column===0?leftCount:count-leftCount},(_,offset)=>{
           const number=first+offset+(column===0?0:leftCount);
           const firstX=column===0?mm.firstLeftX:mm.firstRightX;
