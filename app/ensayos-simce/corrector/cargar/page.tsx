@@ -7,9 +7,9 @@ import { rectifySheet } from "../../../../lib/simce-paper-perspective";
 import { buildSimceGrid } from "../../../../lib/simce-paper-grid";
 import { readCalibratedSheet, type OmrSheetResult } from "../../../../lib/simce-paper-sheet-reader";
 
-const ACCEPT = ".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf";
+const ACCEPT = ".pdf,application/pdf";
 const MAX_BYTES = 10 * 1024 * 1024;
-const ALLOWED = new Set(["image/jpeg", "image/png", "application/pdf"]);
+const ALLOWED = new Set(["application/pdf"]);
 export default function CargaHojaSimce() {
   const [file,setFile] = useState<File|null>(null);
   const [batchFiles,setBatchFiles] = useState<File[]>([]);
@@ -49,12 +49,12 @@ export default function CargaHojaSimce() {
     if(!f){setPreview(null);return;}
     const ext=f.name.toLowerCase().split(".").pop();
     const mime=f.type||({jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",pdf:"application/pdf"} as Record<string,string>)[ext||""];
-    if(!ALLOWED.has(mime)||!["jpg","jpeg","png","pdf"].includes(ext||"")){setError("Formato no permitido. Selecciona JPG, PNG o PDF.");return;}
+    if(!ALLOWED.has(mime)||!["pdf"].includes(ext||"")){setError("Formato no permitido. Selecciona un archivo PDF.");return;}
     if(!f.size||f.size>MAX_BYTES){setError("El archivo debe pesar entre 1 byte y 10 MB.");return;}
     setFile(f);setPreview(URL.createObjectURL(f));
   };
   async function analyze(){
-    if(!file||!preview){setError("Selecciona una hoja JPG, PNG o PDF.");return;}
+    if(!file||!preview){setError("Selecciona una hoja PDF.");return;}
     if(!Number.isInteger(total)||total<1||total>50||!Number.isInteger(firstQuestion)||firstQuestion<1||firstQuestion+total-1>100){setError("Cada hoja admite entre 1 y 50 preguntas, numeradas hasta la 100. Revisa el inicio y la cantidad de preguntas.");return;}
     setBusy(true);setError("");setResult(null);
     try{
@@ -100,8 +100,8 @@ export default function CargaHojaSimce() {
   const selectBatch=(files:FileList|null)=>{
     const selected=Array.from(files||[]);
     if(selected.length>100){setError("Máximo 100 archivos por lote.");return;}
-    const invalid=selected.find(f=>!["jpg","jpeg","png","pdf"].includes(f.name.toLowerCase().split(".").pop()||"")||f.size<1||f.size>MAX_BYTES);
-    if(invalid){setError("Archivo no válido: "+invalid.name+". Usa JPG, PNG o PDF de hasta 10 MB.");return;}
+    const invalid=selected.find(f=>!["pdf"].includes(f.name.toLowerCase().split(".").pop()||"")||f.size<1||f.size>MAX_BYTES);
+    if(invalid){setError("Archivo no válido: "+invalid.name+". Usa PDF de hasta 10 MB.");return;}
     setBatchFiles(selected);setBatchResults([]);setBatchDone(0);setError("");
   };
   const processBatch=async()=>{
@@ -203,14 +203,14 @@ export default function CargaHojaSimce() {
     <h1>Cargar hoja de respuestas SIMCE</h1>
     <section style={{background:"#edf8fa",border:"1px solid #a7d6dc",padding:18,borderRadius:12,marginBottom:20}}>
       <h2>Carga masiva de hojas · revisión docente</h2>
-      <p>Selecciona hasta 100 archivos JPG, PNG o PDF, uno por estudiante. Cada PDF debe contener una sola página. La lectura se procesa secuencialmente en el navegador; no guarda calificaciones automáticamente.</p>
+      <p>Selecciona hasta 100 archivos PDF, uno por estudiante. Cada PDF debe contener una sola página. La lectura se procesa secuencialmente en el navegador; no guarda calificaciones automáticamente.</p>
       <label>Archivos del lote <input type="file" multiple accept={ACCEPT} disabled={batchBusy} onChange={e=>selectBatch(e.target.files)}/></label>
       <p>Seleccionados: {batchFiles.length}. Para el lote se utilizarán {expectedQuestions} preguntas y la clave ingresada en el apartado de corrección de esta página.</p>
       <button type="button" disabled={batchBusy||!batchFiles.length} onClick={processBatch} style={{background:"#087f91",color:"white",padding:"10px 16px",border:0,borderRadius:8}}>{batchBusy?"Procesando…":"Leer lote"}</button>
       {(batchBusy||batchDone>0)&&<p role="status">Procesadas {batchDone} de {batchFiles.length} hojas ({batchFiles.length?Math.round(batchDone/batchFiles.length*100):0}%).</p>}
       {batchResults.length>0&&<><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",marginTop:12}}><thead><tr><th>Archivo</th><th>Estado</th><th>Aciertos preliminares</th><th>Observación</th></tr></thead><tbody>{batchResults.map((r,i)=><tr key={i}><td>{r.filename}</td><td>{r.status}</td><td>{r.correct===null?"Pendiente":r.correct+" / "+r.total}</td><td>{r.message}</td></tr>)}</tbody></table></div><button type="button" onClick={exportBatch} style={{marginTop:12,padding:10}}>Exportar resumen del lote (CSV)</button><p style={{fontSize:12}}>Los resultados son preliminares. Para guardar una nota institucional, valida la identidad y las marcas de cada estudiante con el corrector individual. No se asigna un puntaje SIMCE oficial.</p></>}
     </section>
-    <p>Admite JPG, PNG y PDF (máximo 10 MB). En PDF se procesa una página a la vez. La lectura experimental permite alineación mediante las marcas de registro.</p>
+    <p>Admite exclusivamente PDF (máximo 10 MB). En PDF se procesa una página a la vez. La lectura experimental permite alineación mediante las marcas de registro.</p>
     <section style={{border:"2px dashed #39aeb7",background:"#f2fbfb",padding:24,borderRadius:14}}>
       <input type="file" accept={ACCEPT} onChange={e=>choose(e.target.files?.[0])} aria-label="Seleccionar hoja de respuestas"/>
       {error&&<p role="alert" style={{color:"#a41e42"}}>{error}</p>}
