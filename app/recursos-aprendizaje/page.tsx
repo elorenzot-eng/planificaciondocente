@@ -35,6 +35,7 @@ export default function RecursosAprendizajePage() {
   const customOaLines = useMemo(()=>customOaText.split("\n").map(x=>x.trim()).filter(Boolean).slice(0,30),[customOaText]);
   const [mode, setMode] = useState("Práctica");
   const [loading, setLoading] = useState(false);
+  const [simceProgress, setSimceProgress] = useState({completed:0,total:0,percent:0});
   const [error, setError] = useState("");
   const [savedMessage, setSavedMessage] = useState("");
   const [saving, setSaving] = useState(false);
@@ -76,11 +77,55 @@ export default function RecursosAprendizajePage() {
   }
   async function generate() {
     setLoading(true); setError(""); setSavedMessage(""); setResource(null); setResourceId(null);
+    setSimceProgress({completed:0,total:quantity,percent:0});
     try {
-      const response = await fetch("/api/recursos-aprendizaje/generar", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({moduleId,grade,difficulty,quantity,oa: moduleId.startsWith("simce") ? availableOA.map(x=>`${x.code} (${x.axis}): ${x.text}`).join("\n") : "",mode}) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Error de generación");
-      setResource(data.resource);setAnswers({});
+      const isSimce = moduleId.startsWith("simce");
+      const response = await fetch("/api/recursos-aprendizaje/generar", {
+        method:"POST",
+        headers:{"Content-Type":"application/json",...(isSimce?{"x-simce-progress":"ndjson"}:{})},
+        body:JSON.stringify({moduleId,grade,difficulty,quantity,oa:isSimce ? availableOA.map(x=>`${x.code} (${x.axis}): ${x.text}`).join("\\n") : "",mode})
+      });
+      if (!isSimce) {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Error de generación");
+        setResource(data.resource);setAnswers({});
+      } else {
+        if (!response.ok || !response.body) throw new Error("No se pudo iniciar la generación SIMCE");
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let pending = "";
+        let finished = false;
+        const handleLine = (line:string) => {
+          if (!line.trim()) return;
+          const event = JSON.parse(line);
+          if (event.type === "progress") {
+            setSimceProgress({completed:event.completed,total:event.total,percent:event.percent});
+          } else if (event.type === "error") {
+            throw new Error(event.error || "Error de generación SIMCE");
+          } else if (event.type === "complete") {
+            if (!event.resource || event.resource.activities?.length !== quantity) throw new Error("Ensayo SIMCE incompleto");
+            setResource(event.resource);setAnswers({});
+            setSimceProgress({completed:quantity,total:quantity,percent:100});
+            finished = true;
+          }
+        };
+        try {
+          while (true) {
+            const {done,value} = await reader.read();
+            if (done) break;
+            pending += decoder.decode(value,{stream:true});
+            let newline = pending.indexOf("\\n");
+            while (newline >= 0) {
+              handleLine(pending.slice(0,newline));
+              pending = pending.slice(newline+1);
+              newline = pending.indexOf("\\n");
+            }
+          }
+          pending += decoder.decode();
+          if (pending.trim()) handleLine(pending);
+          if (!finished) throw new Error("La generación terminó sin entregar el ensayo completo");
+        } finally { reader.releaseLock(); }
+      }
     } catch (e) { setError(e instanceof Error ? e.message : "No se pudo generar"); }
     finally { setLoading(false); }
   }
@@ -148,7 +193,7 @@ export default function RecursosAprendizajePage() {
         {moduleId.startsWith("simce") && <label style={{display:"inline-flex",alignItems:"center",gap:10,cursor:"pointer",fontSize:15,fontWeight:500}}><input type="checkbox" checked={printBubbleSheet} onChange={e=>setPrintBubbleSheet(e.target.checked)} style={{width:18,height:18,margin:0,flexShrink:0}}/> Incluir hoja de respuestas con óvalos (A, B, C y D)</label>}
       </div>
 
-      {loading && <div className="no-print" role="status" aria-live="polite" style={{marginTop:14,padding:18,background:"#eff8fd",borderLeft:"5px solid #0ea5e9",borderRadius:12,display:"flex",alignItems:"center",gap:12}}><span className="ea-simce-spinner" aria-hidden="true" style={{width:22,height:22,border:"3px solid #b9e7fa",borderTopColor:"#0ea5e9",borderRadius:"50%",display:"inline-block"}}/><span><strong>{moduleId.startsWith("simce")?"Generando ensayo SIMCE con IA":"Generando recurso con IA"}</strong><span style={{display:"block",fontSize:13,marginTop:3}}>Preparando preguntas, respuestas y tabla de especificaciones. Espera a que finalice el proceso.</span></span></div>}
+      {loading && <div className="no-print" role="status" aria-live="polite" style={{marginTop:14,padding:18,background:"#eff8fd",borderLeft:"5px solid #0ea5e9",borderRadius:12,display:"flex",alignItems:"center",gap:12}}><span className="ea-simce-spinner" aria-hidden="true" style={{width:22,height:22,border:"3px solid #b9e7fa",borderTopColor:"#0ea5e9",borderRadius:"50%",display:"inline-block"}}/><span><strong>{moduleId.startsWith("simce")?"Generando ensayo SIMCE con IA":"Generando recurso con IA"}</strong><span style={{display:"block",fontSize:13,marginTop:3}}>Preparando preguntas, respuestas y tabla de especificaciones. Espera a que finalice el proceso.</span>{moduleId.startsWith("simce") && <div style={{marginTop:12,minWidth:240}}><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:5}}><span>{simceProgress.completed} de {simceProgress.total} preguntas validadas</span><strong>{simceProgress.percent}%</strong></div><div role="progressbar" aria-label="Progreso de generación SIMCE" aria-valuemin={0} aria-valuemax={100} aria-valuenow={simceProgress.percent} style={{height:12,borderRadius:8,background:"#cce8ef",overflow:"hidden"}}><div style={{height:"100%",width:`${simceProgress.percent}%`,background:"#0ea5a9",transition:"width 200ms"}}/></div></div>}</span></div>}
       {error && <p role="alert" style={{ color: "#ad2828" }}>{error}</p>}
 
       {resource && <article className="print-content" style={{ marginTop: 20, padding: 18, border: "1px solid #d6e1e7", borderRadius: 12 }}>
