@@ -6,10 +6,16 @@ const choices = ["A", "B", "C", "D"];
 export default function HojaRespuestasSimce() {
   const [ensayo, setEnsayo] = useState("");
   const [nivel, setNivel] = useState("4° básico");
-  const [preguntas, setPreguntas] = useState(40);
+  const [asignatura, setAsignatura] = useState("Lectura");
+  const [preguntas, setPreguntas] = useState(35);
+  const cantidades = nivel==="4° básico" ? [asignatura==="Lectura"?35:36] : nivel==="6° básico" ? [30,31,32,33,34,35] : nivel==="8° básico" ? [35,36,37,38,39,40] : [asignatura==="Lectura"?43:41];
+  const cambiarConfiguracion = (nuevoNivel:string,nuevaAsignatura:string) => {
+    setNivel(nuevoNivel);setAsignatura(nuevaAsignatura);
+    setPreguntas(nuevoNivel==="4° básico"?(nuevaAsignatura==="Lectura"?35:36):nuevoNivel==="6° básico"?35:nuevoNivel==="8° básico"?40:(nuevaAsignatura==="Lectura"?43:41));
+  };
   const [estudiante, setEstudiante] = useState("");
   const [curso, setCurso] = useState("");
-  const total = Math.max(1, Math.min(100, Number(preguntas) || 1));
+  const total = cantidades.includes(preguntas) ? preguntas : cantidades[0];
   return <main className="sheet-page">
     <style>{`
       .sheet-page{max-width:900px;margin:0 auto;padding:24px;color:#18394c;font-family:Arial,sans-serif}
@@ -33,11 +39,12 @@ export default function HojaRespuestasSimce() {
     <a className="sheet-back" href="/ensayos-simce">← Volver a Ensayos SIMCE</a>
     <h1 className="sheet-intro">Hoja de respuestas SIMCE · versión imprimible</h1>
     <section className="sheet-config">
-      <p>Configura e imprime la hoja. Las preguntas se distribuyen por columnas correlativas para facilitar la lectura óptica. La corrección automática aún está en validación. Las cuatro marcas negras ayudan a ubicar la hoja. Si se imprime en más de una página, cada página deberá procesarse por separado.</p>
+      <p>Configura e imprime la hoja. Las preguntas se distribuyen por columnas correlativas para facilitar la lectura óptica. La corrección automática requiere calibración y revisión de las marcas detectadas. Las cuatro marcas negras ayudan a ubicar la hoja. Si se imprime en más de una página, cada página deberá procesarse por separado.</p>
       <div className="sheet-fields">
         <label>Identificador del ensayo<input maxLength={60} value={ensayo} onChange={e=>setEnsayo(e.target.value)} placeholder="Ej. SIMCE-4M-001" /></label>
-        <label>Nivel<select value={nivel} onChange={e=>setNivel(e.target.value)}>{["4° básico","6° básico","8° básico","2° medio"].map(x=><option key={x}>{x}</option>)}</select></label>
-        <label>Número de preguntas (1–100)<input type="number" min={1} max={100} value={preguntas} onChange={e=>setPreguntas(Number(e.target.value))}/></label>
+        <label>Nivel<select value={nivel} onChange={e=>cambiarConfiguracion(e.target.value,asignatura)}>{["4° básico","6° básico","8° básico","2° medio"].map(x=><option key={x}>{x}</option>)}</select></label>
+        <label>Asignatura<select value={asignatura} onChange={e=>cambiarConfiguracion(nivel,e.target.value)}><option>Lectura</option><option>Matemática</option></select></label>
+        <label>Número de preguntas<select value={total} onChange={e=>setPreguntas(Number(e.target.value))}>{cantidades.map(n=><option key={n} value={n}>{n} preguntas</option>)}</select></label>
         <label>Curso<input maxLength={60} value={curso} onChange={e=>setCurso(e.target.value)} /></label>
         <label>Nombre del estudiante<input maxLength={100} value={estudiante} onChange={e=>setEstudiante(e.target.value)} /></label>
       </div>
@@ -50,7 +57,7 @@ export default function HojaRespuestasSimce() {
       return <section className="answer-sheet" key={pageIndex} aria-label={`Hoja imprimible ${pageIndex+1}`}>
         {[[mm.fiducialLeft,mm.fiducialTop],[mm.fiducialRight,mm.fiducialTop],[mm.fiducialLeft,mm.fiducialBottom],[mm.fiducialRight,mm.fiducialBottom]].map(([x,y],i)=><span key={i} className="sheet-fiducial" style={{left:`${x-6}mm`,top:`${y-6}mm`}}/>)}
         <h2 className="sheet-title">EducAntay · Hoja de respuestas</h2>
-        <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div><div>Página: {pageIndex+1} de {Math.ceil(total/50)}</div><div>Preguntas: {first}–{first+count-1}</div></div>
+        <div className="sheet-meta"><div>Ensayo: {ensayo || "________________"}</div><div>Nivel: {nivel} · {asignatura}</div><div>Estudiante: {estudiante || "________________"}</div><div>Curso: {curso || "________________"}</div><div>Página: {pageIndex+1} de {Math.ceil(total/50)}</div><div>Preguntas: {first}–{first+count-1}</div></div>
         {[0,1].flatMap(column=>Array.from({length:column===0?leftCount:count-leftCount},(_,offset)=>{
           const number=first+offset+(column===0?0:leftCount);
           const firstX=column===0?mm.firstLeftX:mm.firstRightX;
