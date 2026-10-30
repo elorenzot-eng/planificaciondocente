@@ -33,7 +33,7 @@ function normalizeSimceAnswers(result: any): boolean {
 }
 
 const allowed = ["simce-lectura","simce-matematica"] as const;
-export async function POST(request: Request) {
+async function generateResource(request: Request, onProgress: (completed: number, total: number) => void = () => {}) {
   const session = await getSession();
   if (!session?.id) return NextResponse.json({ error: "Debes iniciar sesión." }, { status: 401 });
   const account = await prisma.user.findUnique({ where: { id: String(session.id) }, select: { id: true, role: true, active: true, monthlyAiLimit: true, monthlyAiUsed: true } });
@@ -153,6 +153,7 @@ export async function POST(request: Request) {
         const rows=Array.isArray(batch.specificationTable)?batch.specificationTable:[];
         for (let i=0;i<batchSize;i++) allRows.push({...rows[i],number:offset+i+1});
         offset+=batchSize;
+        onProgress(offset,quantity);
       }
       result={...firstBatch,activities:allActivities,passages:allPassages,specificationTable:allRows};
     } else {
@@ -229,4 +230,33 @@ export async function POST(request: Request) {
     console.error("Learning resource generation failure",error instanceof Error ? error.message : String(error));
     return NextResponse.json({error:"No se pudo completar el recurso. Intenta nuevamente o selecciona menos actividades."},{status:502});
   }
+}
+
+export async function POST(request: Request) {
+  if (request.headers.get("x-simce-progress") !== "ndjson") {
+    return generateResource(request);
+  }
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const emit = (event: Record<string, unknown>) => controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
+      try {
+        const response = await generateResource(request, (completed, total) => {
+          // Validated questions, not elapsed-time estimates.
+          emit({type:"progress",completed,total,percent:Math.min(99,Math.floor(completed / total * 100))});
+        });
+        const payload = await response.json();
+        if (!response.ok) emit({type:"error",error:payload.error || "No se pudo generar el ensayo."});
+        else emit({type:"complete",percent:100,...payload});
+      } catch (error) {
+        console.error("SIMCE streaming generation failure", error);
+        emit({type:"error",error:"No se pudo completar el ensayo."});
+      } finally {
+        controller.close();
+      }
+    }
+  });
+  return new Response(stream, {
+    headers: {"Content-Type":"application/x-ndjson; charset=utf-8","Cache-Control":"no-cache, no-transform","X-Accel-Buffering":"no"}
+  });
 }
