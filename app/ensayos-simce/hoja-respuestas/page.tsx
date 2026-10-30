@@ -27,12 +27,12 @@ export default function HojaRespuestasSimce() {
       .answer-sheet{background:white;position:relative;margin:0 auto 20px;width:186mm;height:273mm;box-sizing:border-box;break-inside:avoid;page-break-inside:avoid;overflow:hidden;color:#18394c}
       .sheet-fiducial{position:absolute;width:12mm;height:12mm;background:#111;print-color-adjust:exact;-webkit-print-color-adjust:exact}
       .sheet-title{position:absolute;top:20mm;left:0;width:100%;text-align:center;font-size:18px;margin:0}
-      .sheet-meta{position:absolute;top:29mm;left:20mm;width:146mm;display:grid;grid-template-columns:1fr 1fr;gap:2mm;font-size:10px}
-      .sheet-meta div{border-bottom:1px solid #9daeb9;padding:1mm 0;overflow:hidden;white-space:nowrap}
+      .sheet-meta{position:absolute;top:29mm;left:20mm;width:146mm;display:grid;grid-template-columns:1fr 1fr;column-gap:2mm;row-gap:0;font-size:10px}
+      .sheet-meta div{height:7mm;box-sizing:border-box;border-bottom:1px solid #9daeb9;padding:1mm 0;overflow:hidden;white-space:nowrap}
       .bubble-row{position:absolute;height:6mm;display:flex;align-items:center;gap:4mm;font-size:11px}
       .bubble-number{position:absolute;right:3mm;width:12mm;text-align:right;font-weight:bold}
       .bubble{position:absolute;top:0;width:6mm;height:6mm;box-sizing:border-box;border:0.35mm solid #172d3b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold}
-      .rut-bubbles{position:absolute;top:43mm;left:20mm;display:flex;align-items:center;gap:1.3mm;font-size:11px;font-weight:700}
+      .rut-bubbles{position:absolute;top:52mm;left:20mm;display:flex;align-items:center;gap:1.3mm;font-size:11px;font-weight:700;white-space:nowrap}
       .rut-bubbles-label{margin-right:3mm}
       .rut-digit{display:inline-flex;align-items:center;justify-content:center;width:5mm;height:5mm;border:0.35mm solid #172d3b;border-radius:50%;box-sizing:border-box}
       .rut-separator{font-size:15px;line-height:1;margin:0 0.3mm}
