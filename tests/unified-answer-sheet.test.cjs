@@ -23,15 +23,17 @@ for (const [family,subject,count] of [
     assert.deepEqual(s.alternatives,["A","B","C","D"]);
     assert.equal(s.pages.reduce((n,p)=>n+p.questionCount,0),count);
     const width=1200,height=1600,c=s.calibration;
-    for (const page of s.pages) {\n    const rows=buildSimceGrid(page.questionCount,{
+    for (const page of s.pages) {
+    const rows=buildSimceGrid(page.questionCount,{
       firstColumnA:{x:c.leftX*width,y:c.leftY*height},
       secondColumnA:{x:c.rightX*width,y:c.rightY*height},
       bubbleSpacing:c.spacing*width,rowSpacing:c.rowSpacing*height,
       bubbleRadius:c.radius*Math.min(width,height),
       leftRows:page.leftRows
     },width,height);
-    assert.equal(rows.length,count);
-    assert.equal(rows.at(-1).number,count);
+    assert.equal(rows.length,page.questionCount);
+    assert.equal(rows.at(-1).number,page.questionCount);
+    }
   });
 }
 test("No se mezclan materias ni se aceptan cantidades inválidas",()=>{
