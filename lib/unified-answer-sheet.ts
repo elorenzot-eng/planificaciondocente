@@ -25,7 +25,7 @@ const allowed: Record<ExamFamily, readonly ExamSubject[]> = {
 
 /** Shared contract for generating and scanning a response sheet.
  * The PDF renderer and OMR reader must consume the same calibrated geometry.
- * This module does not itself generate a PDF or recognize a scanned RUT.
+ * This module does not itself generate a PDF or recognize a scanned RUT.\n * Each page uses local row numbers; startQuestion maps them back to global indices.
  */
 export function createUnifiedAnswerSheet(
   family: ExamFamily,
