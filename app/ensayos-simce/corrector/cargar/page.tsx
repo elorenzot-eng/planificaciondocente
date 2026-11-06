@@ -7,9 +7,9 @@ import { rectifySheet } from "../../../../lib/simce-paper-perspective";
 import { buildSimceGrid } from "../../../../lib/simce-paper-grid";
 import { readCalibratedSheet, type OmrSheetResult } from "../../../../lib/simce-paper-sheet-reader";
 
-const ACCEPT = ".pdf,application/pdf";
+const ACCEPT = ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png";
 const MAX_BYTES = 50 * 1024 * 1024;
-const ALLOWED = new Set(["application/pdf"]);
+const ALLOWED = new Set(["application/pdf","image/jpeg","image/png"]);
 export default function CargaHojaSimce() {
   const [file,setFile] = useState<File|null>(null);
   const [batchFiles,setBatchFiles] = useState<File[]>([]);
@@ -49,7 +49,7 @@ export default function CargaHojaSimce() {
     if(!f){setPreview(null);return;}
     const ext=f.name.toLowerCase().split(".").pop();
     const mime=f.type||({jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",pdf:"application/pdf"} as Record<string,string>)[ext||""];
-    if(!ALLOWED.has(mime)||!["pdf"].includes(ext||"")){setError("Formato no permitido. Selecciona un archivo PDF.");return;}
+    if(!ALLOWED.has(mime)||!["pdf","jpg","jpeg","png"].includes(ext||"")){setError("Formato no permitido. Selecciona PDF, JPG o PNG.");return;}
     if(!f.size||f.size>MAX_BYTES){setError("El archivo debe pesar entre 1 byte y 50 MB.");return;}
     setFile(f);setPreview(URL.createObjectURL(f));
   };
@@ -100,8 +100,8 @@ export default function CargaHojaSimce() {
   const selectBatch=(files:FileList|null)=>{
     const selected=Array.from(files||[]);
     if(selected.length>100){setError("Máximo 100 archivos por lote.");return;}
-    const invalid=selected.find(f=>!["pdf"].includes(f.name.toLowerCase().split(".").pop()||"")||f.size<1||f.size>MAX_BYTES);
-    if(invalid){setError("Archivo no válido: "+invalid.name+". Usa PDF de hasta 50 MB.");return;}
+    const invalid=selected.find(f=>!["pdf","jpg","jpeg","png"].includes(f.name.toLowerCase().split(".").pop()||"")||f.size<1||f.size>MAX_BYTES);
+    if(invalid){setError("Archivo no válido: "+invalid.name+". Usa PDF, JPG o PNG de hasta 50 MB.");return;}
     setBatchFiles(selected);setBatchResults([]);setBatchDone(0);setError("");
   };
   const processBatch=async()=>{
