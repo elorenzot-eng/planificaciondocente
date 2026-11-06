@@ -14,7 +14,7 @@ export type UnifiedAnswerSheet = {
   alternatives: readonly ["A", "B", "C", "D"];
   paper: typeof SIMCE_PAPER_MM;
   calibration: ReturnType<typeof simcePaperCalibration>;
-  leftRows: number;
+  leftRows: number;\n  pages: readonly {startQuestion:number;questionCount:number;leftRows:number}[];
 };
 
 const allowed: Record<ExamFamily, readonly ExamSubject[]> = {
@@ -34,7 +34,7 @@ export function createUnifiedAnswerSheet(
   if (!allowed[family]?.includes(subject)) throw new Error("Evaluación o asignatura inválida");
   if (!Number.isInteger(totalQuestions) || totalQuestions < 1 || totalQuestions > 80)
     throw new Error("Cantidad de preguntas inválida");
-  const leftRows = Math.ceil(totalQuestions / 2);
+  const pages = Array.from({length:Math.ceil(totalQuestions/50)},(_,i)=>{\n    const questionCount=Math.min(50,totalQuestions-i*50);\n    return {startQuestion:i*50+1,questionCount,leftRows:Math.ceil(questionCount/2)};\n  });\n  const leftRows = pages[0].leftRows;
   const calibration = simcePaperCalibration();
   return {
     family, subject,
