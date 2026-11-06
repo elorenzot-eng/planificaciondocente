@@ -17,13 +17,16 @@ export function readUnifiedAnswerPages(
   const measurements:OmrSheetResult["measurements"]=[];
   const reviewNumbers:number[]=[];
   for(let i=0;i<pages.length;i++){
-    const raster=pages[i],page=sheet.pages[i],c=sheet.calibration;
+    const raster=pages[i],page=sheet.pages[i],p=sheet.paper;
+    // The printable SVG uses a full 210 × 297 mm A4 viewBox.
+    // Raster input must be a rectified, full-page A4 image with no added margins.
+    const sx=raster.width/210,sy=raster.height/297;
     const rows=buildSimceGrid(page.questionCount,{
-      firstColumnA:{x:c.leftX*raster.width,y:c.leftY*raster.height},
-      secondColumnA:{x:c.rightX*raster.width,y:c.rightY*raster.height},
-      bubbleSpacing:c.spacing*raster.width,
-      rowSpacing:c.rowSpacing*raster.height,
-      bubbleRadius:c.radius*Math.min(raster.width,raster.height),
+      firstColumnA:{x:p.firstLeftX*sx,y:p.firstY*sy},
+      secondColumnA:{x:p.firstRightX*sx,y:p.firstY*sy},
+      bubbleSpacing:p.optionStep*sx,
+      rowSpacing:p.rowStep*sy,
+      bubbleRadius:(p.bubbleDiameter/2)*Math.min(sx,sy),
       leftRows:page.leftRows
     },raster.width,raster.height);
     const result=readCalibratedSheet(raster,rows);
