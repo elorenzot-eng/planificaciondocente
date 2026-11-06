@@ -23,3 +23,16 @@ test("SIMCE 35: accepts one page",()=>{
 test("rejects missing PAES page",()=>{
  assert.throws(()=>readUnifiedAnswerPages("PAES","Ciencias",80,[blank()]),/páginas/);
 });
+
+test("SIMCE: detects a filled B bubble at the exact printable SVG position",()=>{
+ const raster=blank(),sx=raster.width/210,sy=raster.height/297;
+ const cx=40*sx,cy=55*sy,rad=3*Math.min(sx,sy)*0.55;
+ for(let y=Math.floor(cy-rad);y<=Math.ceil(cy+rad);y++)
+  for(let x=Math.floor(cx-rad);x<=Math.ceil(cx+rad);x++)
+   if((x-cx)**2+(y-cy)**2<=rad**2){
+    const k=(y*raster.width+x)*4;
+    raster.data[k]=raster.data[k+1]=raster.data[k+2]=0;
+   }
+ const result=readUnifiedAnswerPages("SIMCE","Lectura",1,[raster]);
+ assert.equal(result.answers[0].mark,"B");
+});
