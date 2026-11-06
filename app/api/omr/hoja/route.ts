@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createUnifiedAnswerSheet, type ExamFamily, type ExamSubject } from "@/lib/unified-answer-sheet";
-import { renderUnifiedAnswerSvg } from "@/lib/unified-answer-svg";
+import { createUnifiedAnswerSheet, type ExamFamily, type ExamSubject } from "../../../../lib/unified-answer-sheet";
+import { renderUnifiedAnswerSvg } from "../../../../lib/unified-answer-svg";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
