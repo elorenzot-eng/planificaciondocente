@@ -1,0 +1,114 @@
+name: Biblioteca EducAntay tests
+on:
+  push:
+    branches:
+      - feat/biblioteca-educantay-compartida
+  pull_request:
+    paths:
+      - "app/api/biblioteca/**"
+      - "app/biblioteca/**"
+      - "app/api/admin/pedagogical-licenses/**"
+      - "app/api/admin/individual-pedagogical-licenses/**"
+      - "app/admin/licencias-pedagogicas/**"
+      - "prisma/schema.prisma"
+      - "prisma/migrations/**"
+      - "lib/biblioteca-policy.ts"
+      - "tests/biblioteca-policy.test.cjs"
+      - "tests/biblioteca-route-runtime.test.cjs"
+      - ".github/workflows/biblioteca-tests.yml"
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: node --test tests/biblioteca-policy.test.cjs tests/biblioteca-route-runtime.test.cjs
+      - run: npx prisma validate
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+      - run: npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > /tmp/biblioteca-schema.sql
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+      # Historical migrations depend on tables created outside this repository.
+      # Test the new, self-contained library migration independently.
+      - name: Apply Biblioteca migration to clean PostgreSQL
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'CREATE TABLE "User" ("id" TEXT PRIMARY KEY); CREATE TABLE "School" ("id" TEXT PRIMARY KEY);'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "published" FROM "SharedLibraryResource" LIMIT 0;'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'SELECT "id", "schoolId" FROM "PedagogicalModuleLicense" LIMIT 0;'
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+      - name: Validate migration against main schema baseline
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test_biblioteca_baseline
+        run: |
+          set -euo pipefail
+          psql "postgresql://test:test@localhost:5432/test" -v ON_ERROR_STOP=1 -c 'CREATE DATABASE test_biblioteca_baseline;'
+          git show origin/main:prisma/schema.prisma > /tmp/biblioteca-main-schema.prisma
+          cp prisma/schema.prisma /tmp/biblioteca-feature-schema.prisma
+          cp /tmp/biblioteca-main-schema.prisma prisma/schema.prisma
+          npx prisma db push --skip-generate
+          cp /tmp/biblioteca-feature-schema.prisma prisma/schema.prisma
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'DROP TABLE IF EXISTS "SharedLibraryResource", "PedagogicalModuleLicense", "IndividualPedagogicalLicense" CASCADE;'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/migrations/20261028003000_biblioteca_educantay/migration.sql
+          npx prisma migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma --exit-code > /tmp/biblioteca-drift.sql || test $? -eq 2
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('SharedLibraryResource','PedagogicalModuleLicense','IndividualPedagogicalLicense')" | grep -qx 3
+
+      - name: Assert database constraints and publication defaults
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+        run: |
+          set -euo pipefail
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          BEGIN;
+          INSERT INTO "User" ("id") VALUES ('ci-author');
+          INSERT INTO "School" ("id") VALUES ('ci-school');
+          INSERT INTO "SharedLibraryResource" ("id","authorId","sourceId","title","kind","content","updatedAt")
+          VALUES ('ci-1','ci-author','ci-source','Guía','PLANIFICACION','{}'::jsonb,now());
+          DO $$
+          BEGIN
+            IF (SELECT "published" FROM "SharedLibraryResource" WHERE "id"='ci-1') IS DISTINCT FROM false THEN
+              RAISE EXCEPTION 'Resources must be private by default';
+            END IF;
+          END $$;
+          DO $$
+          BEGIN
+            BEGIN
+              INSERT INTO "SharedLibraryResource" ("id","authorId","sourceId","title","kind","content","updatedAt")
+              VALUES ('ci-2','ci-author','ci-source','Duplicado','PLANIFICACION','{}'::jsonb,now());
+              RAISE EXCEPTION 'Duplicate author-kind-source was accepted';
+            EXCEPTION WHEN unique_violation THEN
+              NULL;
+            END;
+          END $$;
+          INSERT INTO "PedagogicalModuleLicense" ("id","schoolId","module","expiresAt")
+          VALUES ('ci-license','ci-school','PLANIFICACION',now()+interval '30 days');
+          DO $$
+          BEGIN
+            IF (SELECT "active" FROM "PedagogicalModuleLicense" WHERE "id"='ci-license') IS DISTINCT FROM true THEN
+              RAISE EXCEPTION 'New licenses must be active by default';
+            END IF;
+          END $$;
+          ROLLBACK;
+          SQL
