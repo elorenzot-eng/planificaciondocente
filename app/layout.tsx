@@ -23,7 +23,7 @@ const structuredData = {
       description: "Plataforma para docentes de Chile con planificación, evaluaciones, rúbricas y material educativo asistido por inteligencia artificial.",
       offers: {
         "@type": "Offer",
-        price: "20000",
+        price: "9990",
         priceCurrency: "CLP",
         category: "subscription"
       }
