@@ -1,0 +1,30 @@
+name: EducAntay regression suite
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'lib/**'
+      - 'tests/**'
+      - 'package.json'
+      - '.github/workflows/regression-suite.yml'
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'lib/**'
+      - 'tests/**'
+      - 'package.json'
+  workflow_dispatch:
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Run commercial, SIMCE, PAES, ECEP and Yanay tests
+        run: node --test tests/*.test.cjs
