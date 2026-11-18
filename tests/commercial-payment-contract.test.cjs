@@ -18,7 +18,7 @@ test("Flow callbacks check order ownership, token, amount and idempotency", () =
   for (const file of ["app/api/flow-confirmation/route.ts", "app/api/flow-return/route.ts"]) {
     const source = read(file);
     assert.match(source, /payment\.flowToken\s*!==\s*token/);
-    assert.match(source, /Number\(d\.amount\)\s*===\s*payment\.amount/);
+    assert.match(source, /Number\(d\.amount\)\s*(?:===|!==)\s*payment\.amount/);
     assert.match(source, /fresh\.status\s*===\s*"PAID"/);
     assert.match(source, /user\.accountType\s*!==\s*"INDIVIDUAL"/);
   }
