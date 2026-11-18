@@ -8,10 +8,12 @@ test("Individual subscription price is consistent across checkout, landing and S
   const checkout = read("app/api/flow-checkout/route.ts");
   const landing = read("app/page.tsx");
   const layout = read("app/layout.tsx");
+  const registration = read("app/api/register-individual/route.ts");
   assert.match(checkout, /amount:\s*9990/);
   assert.match(checkout, /amount:"9990"/);
   assert.match(landing, /\$9\.990/);
   assert.match(layout, /price:\s*"9990"/);
+  assert.match(registration, /monthlyPriceClp:\s*9990/);
 });
 
 test("Flow callbacks check order ownership, token, amount and idempotency", () => {
