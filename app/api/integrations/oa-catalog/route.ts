@@ -3,7 +3,7 @@ import {prisma} from "../../../../lib/prisma";
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
 const allowedLevels=new Set(Array.from({length:8},(_,i)=>String(i+1)));
-function grade(raw:string){const match=raw.match(/(?:^|\\D)([1-8])(?=\\D|$)/);return match?match[1]:null;}
+function grade(raw:string){const match=raw.match(/(?:^|\D)([1-8])(?=\D|$)/);return match?match[1]:null;}
 export async function GET(request:NextRequest){
  const expected=process.env.EDUCANTAY_OA_SYNC_SECRET;
  const authorization=request.headers.get("authorization")||"";
